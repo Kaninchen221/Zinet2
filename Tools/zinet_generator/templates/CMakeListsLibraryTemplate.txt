@@ -1,0 +1,27 @@
+message(STATUS "*** Create {argument_target_pretty_name} Lib ***")
+
+add_library({argument_target_name} {argument_library_type}
+	{argument_files}
+)
+
+target_compile_features({argument_target_name} PUBLIC {argument_cpp_version})
+
+set_target_properties({argument_target_name} PROPERTIES
+	LINKER_LANGUAGE CXX
+	INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/{argument_headers_subfolder}
+	INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/{argument_headers_subfolder}
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/{argument_archive_output_subfolder}
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/{argument_library_output_subfolder}
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/{argument_runtime_output_subfolder}
+)
+
+target_include_directories({argument_target_name} PUBLIC {argument_include_directories})
+
+target_link_libraries({argument_target_name} PUBLIC {argument_link_libraries})
+
+target_compile_definitions({argument_target_name} PRIVATE {argument_compile_definitions})
+
+# Tests
+if({argument_should_add_tests})
+	{argument_tests_subfolders}
+endif()

@@ -1,0 +1,30 @@
+#pragma once
+
+#include "{argument_lib_main_header_path}"
+
+#include "Zinet/Core/ZtLogger.h"
+
+namespace {argument_lib_namespace}
+{{
+
+	class {argument_lib_api_macro} {argument_class_name}
+	{{
+
+	protected:
+
+		static inline zt::Logger::SimpleConsoleLogger Logger = zt::Logger::CreateSimpleConsoleLogger("{argument_class_name}");
+
+	public:
+
+		{argument_class_name}() = default;;
+		{argument_class_name}(const {argument_class_name}& other) = default;
+		{argument_class_name}({argument_class_name}&& other) = default;
+
+		{argument_class_name}& operator = (const {argument_class_name}& other) = default;
+		{argument_class_name}& operator = ({argument_class_name}&& other) = default;
+
+		~{argument_class_name}() noexcept = default;
+
+	}};
+
+}}

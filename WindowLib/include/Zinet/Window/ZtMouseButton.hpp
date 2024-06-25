@@ -1,0 +1,24 @@
+#pragma once
+
+#include "Zinet/Window/ZtWindowConfig.hpp"
+
+#include <GLFW/glfw3.h>
+
+namespace zt::wd
+{
+	enum class MouseButton
+	{
+		NUM_1 = GLFW_MOUSE_BUTTON_1,
+		NUM_2 = GLFW_MOUSE_BUTTON_2,
+		NUM_3 = GLFW_MOUSE_BUTTON_3,
+		NUM_4 = GLFW_MOUSE_BUTTON_4,
+		NUM_5 = GLFW_MOUSE_BUTTON_5,
+		NUM_6 = GLFW_MOUSE_BUTTON_6,
+		NUM_7 = GLFW_MOUSE_BUTTON_7,
+		NUM_8 = GLFW_MOUSE_BUTTON_8,
+		LEFT = GLFW_MOUSE_BUTTON_LEFT,
+		RIGHT = GLFW_MOUSE_BUTTON_RIGHT,
+		MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE,
+		LAST = GLFW_MOUSE_BUTTON_LAST
+	};
+}

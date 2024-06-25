@@ -1,0 +1,30 @@
+cmake_minimum_required(VERSION {argument_cmake_minimum_version})
+
+project({argument_project_name} VERSION {argument_project_version}
+                  DESCRIPTION "{argument_project_description}"
+                  LANGUAGES CXX)
+
+# Usefull information
+message(STATUS "*** CMakeList source dir : ${CMAKE_SOURCE_DIR} ***")
+message(STATUS "*** C++ compiler path: ${CMAKE_CXX_COMPILER} ***")
+message(STATUS "*** C compiler path: ${CMAKE_C_COMPILER} ***")
+
+set(CMAKE_CXX_STANDARD 23)
+
+# Global compile options
+add_compile_options({argument_global_compile_options})
+
+# Global compile definitions
+add_compile_definitions({argument_global_compile_definitions})
+
+# Conan
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
+enable_testing()
+
+# Vulkan SDK
+find_package(Vulkan REQUIRED)
+
+# Add subdirectories
+{argument_subdirectories}

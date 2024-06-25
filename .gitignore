@@ -1,0 +1,41 @@
+# Visual Studio
+.vs
+
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeLists.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+# Folder contains build
+[Bb]uild
+
+# Python
+__pycache__
+*/*.egg
+
+# Tools
+Tools/zinet_generator/generator.egg-info
+Tools/zinet_reflector/reflector.egg-info
+
+# Reflector generated files
+Tools/tests/zinet_reflector/test_files/main/main.temp.cpp
+Tools/main.temp.cpp
+
+# Visual Studio Code
+.vscode
+
+# JetBrains
+.idea
+
+# Other
+.html
+Scripts/outputs/*.temp

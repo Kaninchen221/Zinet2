@@ -1,0 +1,8 @@
+#include "{argument_class_header_path}"
+
+namespace {argument_lib_namespace}
+{{
+
+
+
+}}

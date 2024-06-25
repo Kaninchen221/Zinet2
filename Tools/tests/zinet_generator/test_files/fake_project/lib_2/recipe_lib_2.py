@@ -1,0 +1,5 @@
+from zinet_generator.project_generator import ProjectGenerator
+from zinet_generator.cmakelists_generator_root import CMakelistsGeneratorRoot
+
+root = CMakelistsGeneratorRoot()
+project_generator.add_generator(root)

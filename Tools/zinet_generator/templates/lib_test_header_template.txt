@@ -1,0 +1,23 @@
+#pragma once
+
+#include "{argument_class_header_path}"
+
+#include "gtest/gtest.h"
+
+namespace {argument_lib_test_namespace}
+{{
+
+	class {argument_test_class_name} : public ::testing::Test
+	{{
+	protected:
+
+		{argument_class_name} {argument_class_name_lower_case};
+
+	}};
+
+	TEST_F({argument_test_class_name}, PassTest)
+	{{
+
+	}}
+
+}}
