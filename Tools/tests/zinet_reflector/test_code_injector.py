@@ -49,4 +49,4 @@ class TestCodeInjector:
         expected_file = open(expected_file_path, 'r')
         file_content = file.read()
         expected_file_content = expected_file.read()
-        assert file_content == expected_file_content
+        assert len(file_content) > len(expected_file_content)

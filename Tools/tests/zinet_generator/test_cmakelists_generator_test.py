@@ -26,7 +26,7 @@ class TestCMakeListsGeneratorTest():
         cmakelists = self.generatorTest.generate_cmakelists(arguments)
         expected_cmake_lists = open(find_tools_folder() / "tests/zinet_generator/test_files/expected_test_cmakelists"
                                                           ".txt").read()
-        expected_cmake_lists = expected_cmake_lists.format_map(SafeDict(argument_absolute_path=Path(".").absolute()))
+        expected_cmake_lists = expected_cmake_lists.format_map(SafeDict(argument_absolute_path=find_tools_folder().parent))
         expected_cmake_lists = expected_cmake_lists.replace("\\\\", "/")
         expected_cmake_lists = expected_cmake_lists.replace("\\", "/")
 

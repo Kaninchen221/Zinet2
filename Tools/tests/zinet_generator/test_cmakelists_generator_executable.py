@@ -24,7 +24,7 @@ class TestCMakeListsGeneratorExecutable():
 
         cmakelists = self.generator_executable.generate_cmakelists(arguments)
         expected_cmake_lists = open(file_location).read()
-        expected_cmake_lists = expected_cmake_lists.format_map(SafeDict(argument_absolute_path=Path(".").absolute()))
+        expected_cmake_lists = expected_cmake_lists.format_map(SafeDict(argument_absolute_path=find_tools_folder().parent))
         expected_cmake_lists = expected_cmake_lists.replace("\\\\", "/")
         expected_cmake_lists = expected_cmake_lists.replace("\\", "/")
 

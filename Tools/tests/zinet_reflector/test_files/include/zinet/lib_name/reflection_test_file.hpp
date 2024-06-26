@@ -58,20 +58,39 @@ namespace zt::engine
 	public:
 
 /*GENERATED_CODE_START*/
-TextureAsset() = default;
-TextureAsset(const TextureAsset& other) = default;
-TextureAsset(TextureAsset&& other) = default;
-
-~TextureAsset() noexcept = default;
-
-TextureAsset& operator = (const TextureAsset& other) = default;
-TextureAsset& operator = (TextureAsset&& other) = default;
-
-const decltype(texture)& getTexture() const { return texture; }
-
-const decltype(backupTexture)& getBackupTexture() const { return backupTexture; }
-void setBackupTexture(const decltype(backupTexture)& newValue) { backupTexture = newValue; }
-
+		TextureAsset() = default;
+		TextureAsset(const TextureAsset& other) = default;
+		TextureAsset(TextureAsset&& other) = default;
+		
+		~TextureAsset() noexcept = default;
+		
+		TextureAsset& operator = (const TextureAsset& other) = default;
+		TextureAsset& operator = (TextureAsset&& other) = default;
+		
+		const int& getTexture() const { return texture; }
+		
+		const int& getBackupTexture() const { return backupTexture; }
+		void setBackupTexture(const int& newValue) { backupTexture = newValue; }
+		
+		class ClassInfo : public zt::core::reflection::ClassInfo
+		{
+		public:
+		
+			std::string_view getClassName() const override { return "TextureAsset"; }
+			zt::core::reflection::ClassPropertiesInfos getClassPropertiesInfos() override {return zt::core::reflection::ClassPropertiesInfos(std::vector<zt::core::reflection::ClassPropertyInfo>{zt::core::reflection::ClassPropertyInfo{offsetof(CreateInputInfo, count), "count", "int"},
+			                                                                                                                                                                                       zt::core::reflection::ClassPropertyInfo{offsetof(TextureAsset, texture), "texture", "int"},
+			                                                                                                                                                                                       zt::core::reflection::ClassPropertyInfo{offsetof(TextureAsset, backupTexture), "backupTexture", "int"}}); };
+		
+		};
+		const inline static auto AddClassInfoResult = []()
+		{
+			auto& classesInfos = zt::core::reflection::ClassesInfos::Get();
+			classesInfos.addClassInfo<ClassInfo>();
+			return true;
+		}();
+		std::unique_ptr<zt::core::reflection::ClassInfo> getClassInfoObject() const { return std::make_unique<ClassInfo>(); }
+		auto getCopyOfAllMembers() { return std::make_tuple(count, texture, backupTexture); };
+		
 /*GENERATED_CODE_END*/
 
 	};

@@ -8,7 +8,7 @@ from pathlib import Path
 class Menu:
        
         __menuItems = []
-        __menu = ConsoleMenu("Zinet Utilities", "")
+        __menu = ConsoleMenu("Zinet Utilities", "The outputs from scripts are in Scripts/output folder")
 
         def run_script(self, script_file_name, arguments = ""):
                 scriptFilePath = str(Path('.').absolute()) + "/Scripts/" + script_file_name + ' ' + arguments
@@ -39,6 +39,7 @@ class Menu:
                         FunctionItem("Compile Project Release", self.run_script, ["compile.py", "--BuildType Release"]),
                         FunctionItem("Run Automatic Tests", self.run_script, ["run_automatic_tests.py"]),
                         FunctionItem("Run All Tests", self.run_script, ["run_all_tests.py"]),
+                        FunctionItem("Run All Tools Tests", self.run_script, ["run_tools_tests.py"]),
                         FunctionItem("Clear Build Folder", self.run_script, ["build_clear.bat"]),
                         FunctionItem("First Time", self.run_script, ["first_time.py"])
                 ]
