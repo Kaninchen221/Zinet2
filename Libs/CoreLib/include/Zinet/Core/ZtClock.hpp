@@ -2,8 +2,7 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtTime.hpp"
-#include "Zinet/Core/Reflection/ZtClassInfo.hpp"
-#include "Zinet/Core/Reflection/ZtClassesInfos.hpp"
+#include "Zinet/Core/Reflection/ZtReflection.hpp"
 
 #include <chrono>
 
@@ -27,7 +26,8 @@ namespace zt::core
 		UnderlyingClock::time_point savedTimePoint;
 
 	public:
-/*GENERATED_CODE_START*/
+/*GENERATED_CODE_START*/ 
+		
 		Clock() = default;
 		Clock(const Clock& other) = default;
 		Clock(Clock&& other) = default;
@@ -37,19 +37,12 @@ namespace zt::core
 		Clock& operator = (const Clock& other) = default;
 		Clock& operator = (Clock&& other) = default;
 		
-		class ClassInfo : public zt::core::reflection::ClassInfo
+		class ClassInfo
 		{
 		public:
 		
-			std::string_view getClassName() const override { return "Clock"; }
+			static std::string_view GetClassName() { return "Clock"; }
 		};
-		const inline static auto AddClassInfoResult = []()
-		{
-			auto& classesInfos = zt::core::reflection::ClassesInfos::Get();
-			classesInfos.addClassInfo<ClassInfo>();
-			return true;
-		}();
-		std::unique_ptr<zt::core::reflection::ClassInfo> getClassInfoObject() const { return std::make_unique<ClassInfo>(); }
 /*GENERATED_CODE_END*/
 	};
 

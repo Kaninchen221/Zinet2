@@ -65,7 +65,8 @@ namespace zt::engine
 
 	public:
 
-/*GENERATED_CODE_START*/
+/*GENERATED_CODE_START*/ 
+		
 		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)() = default;
 		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)(const (unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)& other) = default;
 		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)((unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)&& other) = default;
@@ -75,23 +76,12 @@ namespace zt::engine
 		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)& operator = (const (unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)& other) = default;
 		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)& operator = ((unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)&& other) = default;
 		
-		class ClassInfo : public zt::core::reflection::ClassInfo
+		class ClassInfo
 		{
 		public:
 		
-			std::string_view getClassName() const override { return "(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)"; }
-			zt::core::reflection::ClassPropertiesInfos getClassPropertiesInfos() override {return zt::core::reflection::ClassPropertiesInfos(std::vector<zt::core::reflection::ClassPropertyInfo>{}); };
-		
+			static std::string_view GetClassName() { return "(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)"; }
 		};
-		const inline static auto AddClassInfoResult = []()
-		{
-			auto& classesInfos = zt::core::reflection::ClassesInfos::Get();
-			classesInfos.addClassInfo<ClassInfo>();
-			return true;
-		}();
-		std::unique_ptr<zt::core::reflection::ClassInfo> getClassInfoObject() const { return std::make_unique<ClassInfo>(); }
-		auto getCopyOfAllMembers() { return std::make_tuple(); };
-		
 /*GENERATED_CODE_END*/
 
 	};

@@ -26,10 +26,11 @@ class CodeGenerator:
         for child_parser_result in parser_result.children:
             for instruction in self.instructions:
                 instruction_generated_code = instruction.generate_code(child_parser_result)
-                if not instruction_generated_code:
-                    continue
 
                 if parser_result.cursor.location.file is None:
+                    continue
+
+                if not instruction_generated_code:
                     continue
 
                 key = parser_result.cursor.location.file.name
