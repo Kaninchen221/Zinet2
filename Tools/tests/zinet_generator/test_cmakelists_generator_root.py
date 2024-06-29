@@ -26,7 +26,9 @@ class TestCmakelistsGeneratorRoot:
         assert arguments['argument_project_description'] == self.generator_root.projectDescription
         assert arguments['argument_global_compile_options'] == self.generator_root.globalCompileOptions
         assert arguments['argument_global_compile_definitions'] == self.generator_root.globalCompileDefinitions
-        assert arguments['argument_subdirectories'] == "add_subdirectory(Core)\nadd_subdirectory(GraphicLayer)\n"
+        assert (arguments['argument_subdirectories'] ==
+                f"add_subdirectory({self.generator_root.libsPath}Core)\n"
+                f"add_subdirectory({self.generator_root.libsPath}GraphicLayer)\n")
 
     def test_generate_cmakelists(self):
         self.prepare_arguments()

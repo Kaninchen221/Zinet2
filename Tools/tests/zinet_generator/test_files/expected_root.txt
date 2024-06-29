@@ -27,5 +27,5 @@ enable_testing()
 find_package(Vulkan REQUIRED)
 
 # Add subdirectories
-add_subdirectory(Core)
-add_subdirectory(GraphicLayer)
+add_subdirectory(Libs/Core)
+add_subdirectory(Libs/GraphicLayer)
