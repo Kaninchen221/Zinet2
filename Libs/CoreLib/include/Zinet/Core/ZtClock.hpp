@@ -42,8 +42,6 @@ namespace zt::core
 		public:
 		
 			std::string_view getClassName() const override { return "Clock"; }
-			zt::core::reflection::ClassPropertiesInfos getClassPropertiesInfos() override {return zt::core::reflection::ClassPropertiesInfos(std::vector<zt::core::reflection::ClassPropertyInfo>{}); };
-		
 		};
 		const inline static auto AddClassInfoResult = []()
 		{
@@ -52,8 +50,6 @@ namespace zt::core
 			return true;
 		}();
 		std::unique_ptr<zt::core::reflection::ClassInfo> getClassInfoObject() const { return std::make_unique<ClassInfo>(); }
-		auto getCopyOfAllMembers() { return std::make_tuple(); };
-		
 /*GENERATED_CODE_END*/
 	};
 

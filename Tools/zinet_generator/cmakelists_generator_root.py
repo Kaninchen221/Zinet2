@@ -7,9 +7,10 @@ class CMakelistsGeneratorRoot(CMakeListsGenerator):
     def __init__(self) -> None:
         super().__init__()
         self.templatePath = CMakeListsGenerator.get_templates_folder() / "CMakeListsRootTemplate.txt"
+        self.libsPath = "Libs/"
 
     def prepare_arguments(self):
-        subdirectories = CMakelistsGeneratorRoot.create_argument_subdirectories(self.subdirectories)
+        subdirectories_arg = self.create_argument_subdirectories()
         arguments = SafeDict(
             argument_cmake_minimum_version = self.cmakeMinimumVersion,
             argument_project_name = self.projectName,
@@ -17,7 +18,7 @@ class CMakelistsGeneratorRoot(CMakeListsGenerator):
             argument_project_description = self.projectDescription,
             argument_global_compile_options = self.globalCompileOptions,
             argument_global_compile_definitions = self.globalCompileDefinitions,
-            argument_subdirectories = subdirectories
+            argument_subdirectories = subdirectories_arg
             )
         
         if hasattr(self.cmdArgs, 'AddressSanitizer') and self.cmdArgs.AddressSanitizer == "true":
@@ -25,10 +26,10 @@ class CMakelistsGeneratorRoot(CMakeListsGenerator):
 
         return arguments
 
-    def create_argument_subdirectories(subdirectories):
+    def create_argument_subdirectories(self):
         argument = ""
-        for subdirectory in subdirectories:
-            argument += "add_subdirectory(" + subdirectory + ")\n"
+        for subdirectory in self.subdirectories:
+            argument += f"add_subdirectory({self.libsPath}{subdirectory})\n"
         return argument
 
     cmakeMinimumVersion = ''
