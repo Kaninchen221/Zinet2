@@ -13,7 +13,16 @@ namespace zt::wd
         {
             Logger->info("Succesfull initialize GLFW");
 
-            //glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Don't create OpenGL context
+            glfwSetErrorCallback(GLFW::ErrorCallback);
+
+#ifdef ZINET_USE_OPENGL
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#else
+	        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Don't create OpenGL context
+#endif // ZINET_USE_OPENGL
+
             glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
             if (hideWindow)
@@ -50,4 +59,10 @@ namespace zt::wd
     {
         glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
     }
+
+	void GLFW::ErrorCallback(int errorCode, const char* errorDescription)
+	{
+        Logger->error("GLFW Error. Code: {}, Description: {}", errorCode, errorDescription);
+	}
+
 }

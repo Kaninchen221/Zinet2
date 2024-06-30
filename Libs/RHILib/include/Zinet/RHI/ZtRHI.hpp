@@ -2,6 +2,8 @@
 
 #include "Zinet/RHI/ZtRHIConfig.hpp"
 
+#include "Zinet/Window/ZtWindow.hpp"
+
 namespace zt::rhi
 {
 
@@ -21,6 +23,12 @@ namespace zt::rhi
 
 		void init();
 		void deinit();
+
+	protected:
+
+		wd::GLFW glfw;
+		wd::Window window;
+
 	};
 
 }

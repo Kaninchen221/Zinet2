@@ -7,7 +7,7 @@ namespace zt::rhi
 
 	void RHI::init()
 	{
-		wd::GLFW::Init(true);
+		window.create();
 
 #ifdef ZINET_USE_OPENGL
 		glbinding::initialize(glfwGetProcAddress);
@@ -16,7 +16,7 @@ namespace zt::rhi
 
 	void RHI::deinit()
 	{
-		wd::GLFW::Deinit();
+
 	}
 
 }

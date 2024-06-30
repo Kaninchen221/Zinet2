@@ -11,7 +11,7 @@ namespace zt::wd
 
 	protected:
 
-		inline static zt::core::ConsoleLogger Logger = zt::core::ConsoleLogger::Create("GLFW");
+		inline static core::ConsoleLogger Logger = zt::core::ConsoleLogger::Create("GLFW");
 
 	public:
 
@@ -33,6 +33,8 @@ namespace zt::wd
 		static void UnhideWindow();
 
 	private:
+
+		static void ErrorCallback(int errorCode, const char* errorDescription);
 
 		inline static bool Initialized = false;
 
