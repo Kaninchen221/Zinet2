@@ -13,7 +13,7 @@ namespace zt::wd
         {
             Logger->info("Succesfull initialize GLFW");
 
-            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Don't create OpenGL context
+            //glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Don't create OpenGL context
             glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
             if (hideWindow)
@@ -26,7 +26,7 @@ namespace zt::wd
         }
         else
         {
-            Logger->error("Failed initialize glfw");
+            Logger->error("Can't initialize GLFW");
             return false;
         }
     }

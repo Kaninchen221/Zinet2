@@ -39,7 +39,7 @@ class Menu:
                         FunctionItem("Compile Project Release", self.run_script, ["compile.py", "--BuildType Release"]),
                         FunctionItem("Run All Automatic Tests", self.run_script, ["run_all_automatic_tests.py"]),
                         FunctionItem("Run All Tools Tests", self.run_script, ["run_tools_tests.py"]),
-                        FunctionItem("Clear Build Folder", self.run_script, ["build_clear.bat"]),
+                        FunctionItem("Clear Build Folder", self.run_script, ["clear_build_folder.py"]),
                         FunctionItem("First Time", self.run_script, ["first_time.py"])
                 ]
 
