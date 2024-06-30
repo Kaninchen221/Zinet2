@@ -4,7 +4,6 @@
 
 #include "Zinet/RHI/ZtRHIConfig.hpp"
 
-#include "Zinet/Window/ZtGLFW.hpp"
 #include "Zinet/Window/ZtWindow.hpp"
 
 #include <gtest/gtest.h>
@@ -35,8 +34,8 @@ namespace zt::rhi::tests
     };
 
     TEST_F(GLBindingTests, MinimalTest)
-    {
-        wd::GLFW::Init(true);
+	{
+        wd::GLFW glfw;
 
         wd::Window window;
         window.create();
@@ -47,9 +46,9 @@ namespace zt::rhi::tests
         // ...
         gl::glEnd();
         
-        window.requestCloseWindow();
+        gl::glViewport(0, 0, 200, 200);
 
-        wd::GLFW::Deinit();
+        window.requestCloseWindow();
     }
 
 }
