@@ -9,7 +9,7 @@
 
 #include <gtest/gtest.h>
 
-namespace zt::core::tests
+namespace zt::rhi::tests
 {
 
     class GLBindingTests : public ::testing::Test

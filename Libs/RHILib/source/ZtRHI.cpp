@@ -1,11 +1,22 @@
 #include "Zinet/RHI/ZtRHI.hpp"
 
-namespace zt::RHI
+#include "Zinet/Window/ZtGLFW.hpp"
+
+namespace zt::rhi
 {
 
-	void RHI::placeholder()
+	void RHI::init()
 	{
+		wd::GLFW::Init(true);
 
+#ifdef ZINET_USE_OPENGL
+		glbinding::initialize(glfwGetProcAddress);
+#endif // ZINET_USE_OPENGL
+	}
+
+	void RHI::deinit()
+	{
+		wd::GLFW::Deinit();
 	}
 
 }

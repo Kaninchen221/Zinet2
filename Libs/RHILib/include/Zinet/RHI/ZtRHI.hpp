@@ -2,7 +2,7 @@
 
 #include "Zinet/RHI/ZtRHIConfig.hpp"
 
-namespace zt::RHI
+namespace zt::rhi
 {
 
 	class ZINET_RHI_API RHI
@@ -19,8 +19,8 @@ namespace zt::RHI
 
 		~RHI() noexcept = default;
 
-		void placeholder();
-
+		void init();
+		void deinit();
 	};
 
 }
