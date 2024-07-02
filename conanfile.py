@@ -16,7 +16,8 @@ class ZinetConan(ConanFile):
         "spirv-tools/2021.4@",
         "shaderc/2021.1@",
         "vulkan-memory-allocator/3.0.1@",
-        "glbinding/3.3.0"
+        "glew/2.2.0",
+        "opengl/system"
         ]
    generators = "cmake"
    default_options = {

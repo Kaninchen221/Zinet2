@@ -4,22 +4,25 @@
 
 #include "Zinet/RHI/ZtRHIConfig.hpp"
 
+#include "Zinet/RHI/OpenGL/ZtGLEW.hpp"
+
 #include "Zinet/Window/ZtWindow.hpp"
+#include "Zinet/Window/ZtGLFW.hpp"
 
 #include <gtest/gtest.h>
 
-namespace zt::rhi::tests
+namespace zt::rhi::opengl::tests
 {
 
-    class GLBindingTests : public ::testing::Test
+    class GLEWTests : public ::testing::Test
     {
     protected:
 
-        GLBindingTests()
+        GLEWTests()
         {
         }
 
-        ~GLBindingTests() override
+        ~GLEWTests() override
         {
         }
 
@@ -33,22 +36,12 @@ namespace zt::rhi::tests
 
     };
 
-    TEST_F(GLBindingTests, MinimalTest)
+    TEST_F(GLEWTests, Test)
 	{
         wd::GLFW glfw;
-
         wd::Window window;
         window.create();
-
-        glbinding::initialize(glfwGetProcAddress);
-        
-        gl::glBegin(gl::GL_TRIANGLES);
-        // ...
-        gl::glEnd();
-        
-        gl::glViewport(0, 0, 200, 200);
-
-        window.requestCloseWindow();
+        GLEW::Init();
     }
 
 }

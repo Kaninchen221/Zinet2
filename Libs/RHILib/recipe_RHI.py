@@ -14,8 +14,7 @@ generator.includeDirectories = """
     ${CONAN_INCLUDE_DIRS_STB}
     ${CONAN_INCLUDE_DIRS_VULKAN-MEMORY-ALLOCATOR}
     ${Vulkan_INCLUDE_DIRS}
-    ${CONAN_INCLUDE_DIRS_GLBINDING}
-    ${CONAN_INCLUDE_DIRS_GLBINDING}/glbinding/3rdparty
+    ${CONAN_INCLUDE_DIRS_GLEW}
     """
 generator.linkLibraries = """
     ZinetCore
@@ -31,6 +30,7 @@ generator.linkLibraries = """
     ${Vulkan_LIBRARIES}
     ${CONAN_LIBS_SPIRV-TOOLS}
     ${CONAN_LIBS_SPIRV-HEADERS}
-    ${CONAN_LIBS_GLBINDING}
+    ${CONAN_LIBS_OPENGL}
+    ${CONAN_LIBS_GLEW}
     """
 project_generator.add_generator(generator)

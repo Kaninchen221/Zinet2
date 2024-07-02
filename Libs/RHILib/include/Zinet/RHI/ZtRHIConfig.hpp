@@ -3,8 +3,7 @@
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
 #ifdef ZINET_USE_OPENGL
-#	include <glbinding/gl/gl.h>
-#	include <glbinding/glbinding.h>
+#	include "GL/glew.h"
 #endif
 
 #ifdef ZINET_USE_VULCAN

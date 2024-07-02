@@ -9,8 +9,8 @@ namespace zt::rhi::tests
 {
 
 #ifdef ZINET_USE_OPENGL
-	static_assert(sizeof(ZtInt) == sizeof(gl::GLint));
-	static_assert(std::is_same_v<ZtInt, gl::GLint>);
+	static_assert(sizeof(ZtInt) == sizeof(GLint));
+	static_assert(std::is_same_v<ZtInt, GLint>);
 #endif // ZINET_USE_OPENGL
 	
 }
