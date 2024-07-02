@@ -5,20 +5,20 @@
 #include "Zinet/RHI/ZtRHIConfig.hpp"
 #include "Zinet/RHI/ZtTypes.hpp"
 
-namespace zt::rhi
+namespace zt::rhi::opengl
 {
 
-	class ZINET_RHI_API OpenGLViewport
+	class ZINET_RHI_API Viewport
 	{
 	public:
-		OpenGLViewport() = default;
-		OpenGLViewport(const OpenGLViewport& other) = default;
-		OpenGLViewport(OpenGLViewport&& other) = default;
+		Viewport() = default;
+		Viewport(const Viewport& other) = default;
+		Viewport(Viewport&& other) = default;
 
-		OpenGLViewport& operator = (const OpenGLViewport& other) = default;
-		OpenGLViewport& operator = (OpenGLViewport&& other) = default;
+		Viewport& operator = (const Viewport& other) = default;
+		Viewport& operator = (Viewport&& other) = default;
 
-		~OpenGLViewport() noexcept = default;
+		~Viewport() noexcept = default;
 
 		void setSize(const std::pair<ZtInt, ZtInt>& newSize);
 		const std::pair<ZtInt, ZtInt>& getSize() const;

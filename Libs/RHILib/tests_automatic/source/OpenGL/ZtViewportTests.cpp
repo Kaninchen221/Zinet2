@@ -1,22 +1,24 @@
 #pragma once
 
-#include "Zinet/RHI/OpenGL/ZtOpenGLViewport.hpp"
+#include "Zinet/RHI/OpenGL/ZtViewport.hpp"
+#include "Zinet/RHI/OpenGL/ZtGLEW.hpp"
 
-#include <gtest/gtest.h>
 #include "Zinet/Window/ZtWindow.hpp"
 
-namespace zt::rhi::tests
+#include <gtest/gtest.h>
+
+namespace zt::rhi::opengl::tests
 {
 
-	class OpenGLViewportTests : public ::testing::Test
+	class ViewportTests : public ::testing::Test
 	{
 	protected:
 
-		OpenGLViewportTests()
+		ViewportTests()
 		{
 		}
 
-		~OpenGLViewportTests() override
+		~ViewportTests() override
 		{
 		}
 
@@ -28,10 +30,10 @@ namespace zt::rhi::tests
 		{
 		}
 
-		OpenGLViewport viewport;
+		Viewport viewport;
 	};
 
-	TEST_F(OpenGLViewportTests, SetGetSizeTest)
+	TEST_F(ViewportTests, SetGetSizeTest)
 	{
 		const ZtInt ExpectedWidth = 100;
 		const ZtInt ExpectedHeight = 120;
@@ -42,7 +44,7 @@ namespace zt::rhi::tests
 		EXPECT_EQ(ActualHeigh, ExpectedHeight);
 	}
 
-	TEST_F(OpenGLViewportTests, SetGetPositionTest)
+	TEST_F(ViewportTests, SetGetPositionTest)
 	{
 		const ZtInt ExpectedPositionX = 4;
 		const ZtInt ExpectedPositionY = 8;
@@ -53,14 +55,14 @@ namespace zt::rhi::tests
 		EXPECT_EQ(ExpectedPositionY, ActualPositionY);
 	}
 
-	TEST_F(OpenGLViewportTests, ApplyTest)
+	TEST_F(ViewportTests, ApplyTest)
 	{
 		wd::GLFW glfw;
 
 		wd::Window window;
 		window.create();
 
-		glbinding::initialize(glfwGetProcAddress);
+		GLEW::Init();
 
 		viewport.setSize({ 100, 100 });
 		viewport.setPosition({ 0, 0 });
