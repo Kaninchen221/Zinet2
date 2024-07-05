@@ -1,7 +1,5 @@
 #include "Zinet/Window/ZtGLFW.hpp"
 
-#include <GLFW/glfw3.h>
-
 namespace zt::wd
 {
     bool GLFW::Init(bool hideWindow)
@@ -16,7 +14,7 @@ namespace zt::wd
             glfwSetErrorCallback(GLFW::ErrorCallback);
 
 #ifdef ZINET_USE_OPENGL
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #else

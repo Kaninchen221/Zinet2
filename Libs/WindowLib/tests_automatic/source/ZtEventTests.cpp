@@ -5,8 +5,6 @@
 
 #include "Zinet/Core/ZtTypeTraits.hpp"
 
-#include <GLFW/glfw3.h>
-
 #include <gtest/gtest.h>
 
 namespace zt::wd::tests

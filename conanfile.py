@@ -12,12 +12,10 @@ class ZinetConan(ConanFile):
         "nlohmann_json/3.10.5@",
         "box2d/2.4.1@",
         "glm/0.9.9.5@",
-        "glslang/11.7.0@",
-        "spirv-tools/2021.4@",
-        "shaderc/2021.1@",
-        "vulkan-memory-allocator/3.0.1@",
-        "glew/2.2.0",
-        "opengl/system"
+        "glslang/1.3.239.0@",
+        "spirv-tools/1.3.239.0@",
+        "shaderc/2023.6@",
+        "vulkan-memory-allocator/cci.20231120@"
         ]
    generators = "cmake"
    default_options = {

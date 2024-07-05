@@ -1,7 +1,9 @@
 #pragma once
 
+#ifdef ZINET_USE_OPENGL
+
 #include "Zinet/RHI/OpenGL/ZtViewport.hpp"
-#include "Zinet/RHI/OpenGL/ZtGLEW.hpp"
+#include "Zinet/RHI/OpenGL/ZtOpenGLResolver.hpp"
 
 #include "Zinet/Window/ZtWindow.hpp"
 
@@ -62,10 +64,12 @@ namespace zt::rhi::opengl::tests
 		wd::Window window;
 		window.create();
 
-		GLEW::Init();
+		OpenGLResolver::Init();
 
 		viewport.setSize({ 100, 100 });
 		viewport.setPosition({ 0, 0 });
 		viewport.apply();
 	}
 }
+
+#endif // ZINET_USE_OPENGL

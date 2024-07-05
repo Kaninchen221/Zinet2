@@ -28,8 +28,9 @@ namespace zt::rhi::opengl
 		const Viewport& getViewport() const { return viewport; }
 		Viewport& getViewport() { return viewport; }
 
-		void setClearColor(const Vector4f& newClearColor);
+		void setClearColor(const Vector4f& newClearColor) { clearColor = newClearColor; }
 		const Vector4f& getClearColor() const { return clearColor; }
+		void applyClearColor();
 
 	protected:
 

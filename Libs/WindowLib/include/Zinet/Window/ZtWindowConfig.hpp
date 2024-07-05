@@ -2,6 +2,10 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
+#define GLFW_INCLUDE_NONE
+#define GLFW_INCLUDE_GLEXT
+#include <GLFW/glfw3.h>
+
 #ifndef ZINET_STATIC
 
 #ifdef ZINET_WINDOWS

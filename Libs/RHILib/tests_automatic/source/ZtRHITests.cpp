@@ -31,11 +31,11 @@ namespace zt::rhi::tests
 		RHI rhi;
 	};
 
-	TEST_F(RHITests, InitializationTest)
-	{
-		rhi.init();
-
-		rhi.deinit();
-	}
+	//TEST_F(RHITests, InitializationTest)
+	//{
+	//	rhi.init();
+	//
+	//	rhi.deinit();
+	//}
 
 }

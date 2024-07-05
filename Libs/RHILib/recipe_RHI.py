@@ -6,6 +6,7 @@ generator.targetPrettyName = "Zinet RHI"
 generator.compileDefinitions = """
     ZINET_CURRENT_PROJECT_ROOT_PATH="${CMAKE_CURRENT_SOURCE_DIR}"
     ZINET_LIB
+    GLAD_API_CALL_EXPORT
     """
 generator.includeDirectories = """
     ${CONAN_INCLUDE_DIRS_SHADERC}
@@ -14,13 +15,14 @@ generator.includeDirectories = """
     ${CONAN_INCLUDE_DIRS_STB}
     ${CONAN_INCLUDE_DIRS_VULKAN-MEMORY-ALLOCATOR}
     ${Vulkan_INCLUDE_DIRS}
-    ${CONAN_INCLUDE_DIRS_GLEW}
+    ${Vulkan_INCLUDE_DIRS}
     """
 generator.linkLibraries = """
     ZinetCore
     ZinetWindow
     ZinetMath
     ImGui
+    Glad
     ${CONAN_LIBS_SHADERC}
     ${CONAN_LIBS_GLFW}
     ${CONAN_LIBS_GLM}
@@ -30,7 +32,5 @@ generator.linkLibraries = """
     ${Vulkan_LIBRARIES}
     ${CONAN_LIBS_SPIRV-TOOLS}
     ${CONAN_LIBS_SPIRV-HEADERS}
-    ${CONAN_LIBS_OPENGL}
-    ${CONAN_LIBS_GLEW}
     """
 project_generator.add_generator(generator)

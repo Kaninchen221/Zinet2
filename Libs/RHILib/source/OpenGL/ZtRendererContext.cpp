@@ -4,11 +4,11 @@
 
 namespace zt::rhi::opengl
 {
-	void RendererContext::setClearColor(const Vector4f& newClearColor)
+	void RendererContext::applyClearColor()
 	{
-		clearColor = newClearColor;
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 	}
+
 }
 
 #endif // ZINET_USE_OPENGL

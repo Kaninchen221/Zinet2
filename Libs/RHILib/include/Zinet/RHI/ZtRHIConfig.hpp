@@ -1,18 +1,17 @@
 #pragma once
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
-
-#ifdef ZINET_USE_OPENGL
-#	include "GL/glew.h"
-#endif
+#include "Zinet/Window/ZtWindowConfig.hpp"
 
 #ifdef ZINET_USE_VULCAN
 #	define GLFW_INCLUDE_VULKAN
 #	include <vulkan/vulkan.h>
 #	include <vulkan/vulkan_raii.hpp>
 #endif
-#	define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+
+#ifdef ZINET_USE_OPENGL
+#	include <glad/gl.hpp>
+#endif
 
 #ifndef ZINET_STATIC
 #	ifdef ZINET_WINDOWS

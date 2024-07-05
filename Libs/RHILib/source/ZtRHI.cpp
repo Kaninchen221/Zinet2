@@ -1,6 +1,6 @@
 #include "Zinet/RHI/ZtRHI.hpp"
 
-#include "Zinet/RHI/OpenGL/ZtGLEW.hpp"
+#include "Zinet/RHI/OpenGL/ZtOpenGLResolver.hpp"
 
 #include "Zinet/Window/ZtGLFW.hpp"
 
@@ -12,7 +12,7 @@ namespace zt::rhi
 		window.create();
 
 #ifdef ZINET_USE_OPENGL
-		opengl::GLEW::Init();
+		opengl::OpenGLResolver::Init();
 #endif // ZINET_USE_OPENGL
 	}
 

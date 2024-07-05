@@ -3,7 +3,7 @@
 #ifdef ZINET_USE_OPENGL
 
 #include "Zinet/RHI/OpenGL/ZtRenderer.hpp"
-#include "Zinet/RHI/OpenGL/ZtGLEW.hpp"
+#include "Zinet/RHI/OpenGL/ZtOpenGLResolver.hpp"
 
 #include "Zinet/Window/ZtWindow.hpp"
 
@@ -30,6 +30,7 @@ namespace zt::rhi::opengl::tests
 		{
 			wd::GLFW::UnhideWindow();
 			window.create();
+			OpenGLResolver::Init();
 			rendererContext.getViewport().setSize({ 500, 500 });
 			rendererContext.getViewport().setPosition({ 0, 0 });
 			rendererContext.getViewport().apply();
