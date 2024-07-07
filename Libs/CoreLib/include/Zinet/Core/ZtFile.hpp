@@ -25,7 +25,7 @@ namespace zt::core
 
 		~File() noexcept;
 
-		void open(const FileFinder::Path& filePath, FileOpenMode openMode);
+		void open(const std::filesystem::path& filePath, FileOpenMode openMode);
 
 		bool isOpen() const;
 

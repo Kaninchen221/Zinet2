@@ -11,7 +11,7 @@ namespace zt::core
 		}
 	}
 
-	void File::open(const FileFinder::Path& filePath, FileOpenMode openMode)
+	void File::open(const std::filesystem::path& filePath, FileOpenMode openMode)
 	{
 		std::ios_base::openmode stdOpenMode = ToStdOpenMode(openMode);
 		fileStream.open(filePath, stdOpenMode);

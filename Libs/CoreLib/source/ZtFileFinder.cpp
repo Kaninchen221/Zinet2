@@ -2,47 +2,57 @@
 
 namespace zt::core
 {
-	FileFinder::Path FileFinder::CurrentPath()
-	{
-		return std::filesystem::current_path();
-	}
 
-	std::vector<FileFinder::FileInfo> FileFinder::FindFiles(Path pathToFolder)
+	std::vector<std::filesystem::directory_entry> FileFinder::FindFiles(const std::filesystem::path& pathToFolder, const bool recursive)
 	{
-		std::vector<FileInfo> files;
+		std::vector<std::filesystem::directory_entry> result;
 
-		std::filesystem::directory_iterator directoryIterator = std::filesystem::directory_iterator(pathToFolder);
-		for (std::filesystem::directory_entry directoryEntry : directoryIterator)
+		auto internal = [&result](auto directoryIterator)
 		{
-			if (directoryEntry.is_regular_file())
+			for (std::filesystem::directory_entry directoryEntry : directoryIterator)
 			{
-				files.push_back(directoryEntry);
-			}
-		}
-
-		return files;
-	}
-
-	std::vector<FileFinder::FileInfo> FileFinder::FindFiles(Path pathToFolder, Extension neededExtension)
-	{
-		std::vector<FileInfo> files;
-
-		std::filesystem::directory_iterator directoryIterator = std::filesystem::directory_iterator(pathToFolder);
-		for (std::filesystem::directory_entry directoryEntry : directoryIterator)
-		{
-			if (directoryEntry.is_regular_file())
-			{
-				Path filePath = directoryEntry.path();
-				Extension fileExtension = filePath.extension();
-
-				if (neededExtension == fileExtension)
+				if (directoryEntry.is_regular_file())
 				{
-					files.push_back(directoryEntry);
+					result.push_back(directoryEntry);
 				}
 			}
-		}
+		};
 
-		return files;
+		if (!recursive)
+			internal(std::filesystem::directory_iterator(pathToFolder));
+		else
+			internal(std::filesystem::recursive_directory_iterator(pathToFolder));
+		
+		return result;
+	}
+
+	std::vector<std::filesystem::directory_entry> FileFinder::FindFiles(const std::filesystem::path& pathToFolder, const std::filesystem::path& neededExtension, const bool recursive)
+	{
+		std::vector<std::filesystem::directory_entry> result;
+
+		auto internal = [&result, &neededExtension](auto directoryIterator)
+		{
+			for (std::filesystem::directory_entry directoryEntry : directoryIterator)
+			{
+				if (directoryEntry.is_regular_file())
+				{
+					std::filesystem::path filePath = directoryEntry.path();
+					std::filesystem::path fileExtension = filePath.extension();
+
+					if (neededExtension == fileExtension)
+					{
+						result.push_back(directoryEntry);
+					}
+				}
+			}
+		};
+
+		if (!recursive)
+			internal(std::filesystem::directory_iterator(pathToFolder));
+		else
+			internal(std::filesystem::recursive_directory_iterator(pathToFolder));
+
+		return result;
 	}
 
 }

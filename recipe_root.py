@@ -8,7 +8,7 @@ root.projectVersion = "0.0.1"
 root.subdirectories = ["CoreLib", "RHILib", "WindowLib", "MathLib", "ThirdParty/ImGuiLib", "ThirdParty/Glad"]
 root.globalCompileOptions = "/W4 /WX /external:W0 /external:anglebrackets /MP"
 root.globalCompileOptionsForAddressSanitizer = "/fsanitize=address /RTCu /experimental:module-"
-root.globalCompileDefinitions = "ZINET_WINDOWS _DISABLE_VECTOR_ANNOTATION _DISABLE_STRING_ANNOTATION _SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING ZINET_USE_OPENGL"
+root.globalCompileDefinitions = "ZINET_WINDOWS _DISABLE_VECTOR_ANNOTATION _DISABLE_STRING_ANNOTATION _SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING ZINET_USE_OPENGL ZINET_ROOT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}\""
 project_generator.add_generator(root)
 
 from zinet_generator.cmakelists_generator_library import CMakeListsGeneratorLibrary

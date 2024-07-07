@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 
 #include "Zinet/Core/ZtFile.hpp"
+#include "Zinet/Core/ZtPaths.hpp"
 
 namespace zt::core::tests
 {
@@ -13,8 +14,8 @@ namespace zt::core::tests
 
 		File file;
 
-		FileFinder::Path testFolderPath = FileFinder::CurrentProjectRootPath() / "file_test_folder";
-		FileFinder::Path pathToReadOnlyFile = testFolderPath / "read_only_file.txt";
+		std::filesystem::path testFolderPath = Paths::CurrentProjectRootPath() / "file_test_folder";
+		std::filesystem::path pathToReadOnlyFile = testFolderPath / "read_only_file.txt";
 	};
 
 	TEST_F(FileTests, OpenTest)
