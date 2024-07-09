@@ -11,7 +11,7 @@ namespace zt::core
 {
 
 	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_OPERATORS)
-		class ZINET_CORE_API File
+	class ZINET_CORE_API File
 	{
 
 	public:
