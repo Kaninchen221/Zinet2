@@ -26,13 +26,11 @@ class CodeGeneratorGetterSetter(CodeGeneratorInstructionBase):
                 getter_name = parser_result.get_member_getter_name()
                 setter_name = parser_result.get_member_setter_name()
 
-                return f"""
-const {member_type_name}& {getter_name}() const {{ return {member_name}; }}
-void {setter_name}(const {member_type_name}& newValue) {{ {member_name} = newValue; }}"""
+                return (f"const {member_type_name}& {getter_name}() const {{ return {member_name}; }}"
+                        f"void {setter_name}(const {member_type_name}& newValue) {{ {member_name} = newValue; }}")
 
             elif self.token_only_getter in parser_result.tokens:
                 member_name = parser_result.get_member_name()
                 member_type_name = parser_result.get_member_type_name()
                 getter_name = parser_result.get_member_getter_name()
-                return f"""
-const {member_type_name}& {getter_name}() const {{ return {member_name}; }}"""
+                return f"const {member_type_name}& {getter_name}() const {{ return {member_name}; }}"
