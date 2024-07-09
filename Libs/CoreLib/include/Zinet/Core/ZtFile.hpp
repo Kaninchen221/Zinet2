@@ -13,6 +13,9 @@ namespace zt::core
 	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_OPERATORS)
 	class ZINET_CORE_API File
 	{
+	protected:
+
+		inline static core::ConsoleLogger Logger = core::ConsoleLogger::Create("File");
 
 	public:
 
@@ -36,6 +39,10 @@ namespace zt::core
 		static std::ios_base::openmode ToStdOpenMode(FileOpenMode openMode);
 
 		void close();
+
+		static bool RemoveFile(const std::filesystem::path& path);
+
+		static File CreateFile(const std::filesystem::path& path);
 
 	protected:
 

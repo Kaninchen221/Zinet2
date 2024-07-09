@@ -23,14 +23,14 @@ namespace zt::core::tests
 		bool isOpen = file.isOpen();
 		ASSERT_FALSE(isOpen);
 
-		file.open(pathToReadOnlyFile, FileOpenMode::In);
+		file.open(pathToReadOnlyFile, FileOpenMode::Read);
 		isOpen = file.isOpen();
 		ASSERT_TRUE(isOpen);
 	}
 
 	TEST_F(FileTests, ReadLineTest)
 	{
-		file.open(pathToReadOnlyFile, FileOpenMode::In);
+		file.open(pathToReadOnlyFile, FileOpenMode::Read);
 
 		std::string actualFirstLine = file.readLine();
 		std::string expectedFirstLine = "test text";
@@ -43,17 +43,33 @@ namespace zt::core::tests
 
 	TEST_F(FileTests, ZtFileOpenModeToStdOpenMode)
 	{
-		std::ios_base::openmode actualOpenMode = File::ToStdOpenMode(FileOpenMode::Truncate);
-		std::ios_base::openmode expectedOpenMode = std::ios_base::trunc;
+		std::ios_base::openmode actualOpenMode = File::ToStdOpenMode(FileOpenMode::ReadWrite);
+		std::ios_base::openmode expectedOpenMode = std::ios_base::in | std::ios_base::out;
 		ASSERT_EQ(actualOpenMode, expectedOpenMode);
 	}
 
 	TEST_F(FileTests, ReadAllTest)
 	{
-		file.open(pathToReadOnlyFile, FileOpenMode::In);
+		file.open(pathToReadOnlyFile, FileOpenMode::Read);
 		std::string actualText = file.readAll();
 		std::string expectedText = "test text\nshould be never modified\n";
 		ASSERT_EQ(actualText, expectedText);
 	}
 
+	TEST_F(FileTests, CreateRemoveFileTest)
+	{
+		const std::filesystem::path testFilePath = testFolderPath / "createFileTest.txt";
+
+		if (std::filesystem::exists(testFilePath))
+			ASSERT_TRUE(File::RemoveFile(testFilePath));
+
+		File createdFile = File::CreateFile(testFilePath);
+		ASSERT_TRUE(createdFile.isOpen());
+		createdFile.close();
+
+		if (std::filesystem::exists(testFilePath))
+			File::RemoveFile(testFilePath);
+		else
+			FAIL() << "File should exists after CreateFile";
+	}
 }

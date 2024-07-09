@@ -40,31 +40,56 @@ namespace zt::core
 	{
 		switch (openMode)
 		{
-		case FileOpenMode::App:
-			return std::ios_base::app;
+			case FileOpenMode::Read:
+				return std::ios_base::in;
 
-		case FileOpenMode::Binary:
-			return std::ios_base::binary;
+			case FileOpenMode::Write:
+				return std::ios_base::out;
 
-		case FileOpenMode::In:
-			return std::ios_base::in;
+			case FileOpenMode::ReadWrite:
+				return std::ios_base::in | std::ios_base::out;
 
-		case FileOpenMode::Out:
-			return std::ios_base::out;
-
-		case FileOpenMode::Truncate:
-			return std::ios_base::trunc;
-
-		case FileOpenMode::Ate:
-			return std::ios_base::ate;
+			default:
+				Logger->error("Invalid openMode: {}", openMode);
+				return std::ios_base::out;
 		}
-
-		return std::ios_base::in;
 	}
 
 	void File::close()
 	{
 		fileStream.close();
+	}
+
+	bool File::RemoveFile(const std::filesystem::path& path)
+	{
+		if (!std::filesystem::is_regular_file(path))
+		{
+			Logger->error("Path is not leading to a file. Path: {}", path.string());
+			return false;
+		}
+
+		std::error_code errorCode;
+		std::filesystem::remove(path, errorCode);
+		if (errorCode)
+		{
+			Logger->error("Internal remove returned error code: {}", errorCode.value());
+			return false;
+		}
+
+		return true;
+	}
+
+	File File::CreateFile(const std::filesystem::path& path)
+	{
+		if (std::filesystem::exists(path))
+		{
+			Logger->error("File already exists, path: {}", path.string());
+			return File{};
+		}
+
+		File file;
+		file.open(path, FileOpenMode::Write);
+		return file;
 	}
 
 }
