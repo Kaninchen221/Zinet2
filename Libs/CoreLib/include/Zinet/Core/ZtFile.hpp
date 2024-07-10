@@ -36,6 +36,8 @@ namespace zt::core
 
 		std::string readAll();
 
+		void write(const std::string& string);
+
 		static std::ios_base::openmode ToStdOpenMode(FileOpenMode openMode);
 
 		void close();

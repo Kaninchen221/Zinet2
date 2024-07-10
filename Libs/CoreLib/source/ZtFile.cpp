@@ -31,9 +31,15 @@ namespace zt::core
 
 	std::string File::readAll()
 	{
+		fileStream.seekg(0);
 		std::string line;
 		std::getline(fileStream, line, '\0');
 		return line;
+	}
+
+	void File::write(const std::string& string)
+	{
+		fileStream << string;
 	}
 
 	std::ios_base::openmode File::ToStdOpenMode(FileOpenMode openMode)
