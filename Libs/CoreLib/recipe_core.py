@@ -11,10 +11,12 @@ generator.includeDirectories = """
     ${CONAN_INCLUDE_DIRS_SPDLOG}
     ${CONAN_INCLUDE_DIRS_PLF_COLONY}
     ${CONAN_INCLUDE_DIRS_FMT}
+    ${CONAN_INCLUDE_DIRS_NLOHMANN_JSON}
     """
 generator.linkLibraries = """
     ${CONAN_LIBS_GTEST}
     ${CONAN_LIBS_SPDLOG}
     ${CONAN_LIBS_FMT}
+    ${CONAN_LIBS_NLOHMANN_JSON}
     """
 project_generator.add_generator(generator)

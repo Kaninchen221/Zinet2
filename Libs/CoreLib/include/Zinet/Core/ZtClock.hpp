@@ -26,8 +26,7 @@ namespace zt::core
 		UnderlyingClock::time_point savedTimePoint;
 
 	public:
-/*GENERATED_CODE_START*/ 
-		
+/*GENERATED_CODE_START*/
 		Clock() = default;
 		Clock(const Clock& other) = default;
 		Clock(Clock&& other) = default;
@@ -37,12 +36,6 @@ namespace zt::core
 		Clock& operator = (const Clock& other) = default;
 		Clock& operator = (Clock&& other) = default;
 		
-		class ClassInfo
-		{
-		public:
-		
-			static std::string_view GetClassName() { return "Clock"; }
-		};
 /*GENERATED_CODE_END*/
 	};
 
