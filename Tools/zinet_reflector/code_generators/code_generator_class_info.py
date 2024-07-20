@@ -1,5 +1,6 @@
 from zinet_reflector.code_generator import CodeGeneratorInstructionBase
 from zinet_reflector.parser_result import ReflectionKind
+from zinet_reflector.code_generators.class_info_parents_children import *
 
 
 class CodeGeneratorClassInfo(CodeGeneratorInstructionBase):
@@ -9,20 +10,19 @@ class CodeGeneratorClassInfo(CodeGeneratorInstructionBase):
     def __init__(self):
         super().__init__()
         self.token = None
-        self.members = []
         self.parser_results = []
+        self.members = []
+        self.class_info_parents_children = ClassInfoParentsChildren()
 
     def generate_code(self, parser_result):
-        result = None
         if parser_result.reflection_kind == ReflectionKind.Class:
             self.parser_results.append(parser_result)
-            result = " "
+            self.class_info_parents_children.generate_code(parser_result)
 
         if parser_result.reflection_kind == ReflectionKind.Member:
             self.members.append(parser_result)
-            result = " "
 
-        return result
+        return ""
 
     def generate_code_post(self, file_path):
         class_parser_result = None
@@ -37,6 +37,10 @@ class CodeGeneratorClassInfo(CodeGeneratorInstructionBase):
 
             if get_class_name_function := self.get_class_name_function(class_parser_result):
                 inside += get_class_name_function
+
+            if parents_children_info := self.class_info_parents_children.generate_code_post():
+                inside += parents_children_info
+            #print(self.class_info_parents_children)
 
             class_info = (""
                           f'\nclass ClassInfo'

@@ -19,13 +19,16 @@ class CodeGenerator:
     def generate_code(self, parser_result):
         generated_code = {}
         self._generate_code_internal(parser_result, generated_code)
-        self._generate_code_post(generated_code)
+        #self._generate_code_post(generated_code)
         return generated_code
 
     def _generate_code_internal(self, parser_result, generated_code):
-        for child_parser_result in parser_result.children:
+        if parser_result.reflection_cursor:
             for instruction in self.instructions:
-                instruction_generated_code = instruction.generate_code(child_parser_result)
+                instruction.__init__()
+
+                print(f"Generate code: {parser_result.cursor.spelling}")
+                instruction_generated_code = instruction.generate_code(parser_result)
 
                 if parser_result.cursor.location.file is None:
                     continue
@@ -38,7 +41,11 @@ class CodeGenerator:
                     generated_code[key] = []
                 generated_code[key].append(instruction_generated_code)
 
-            self._generate_code_internal(child_parser_result, generated_code)
+            for parser_result_child in parser_result.children:
+                self._generate_code_internal(parser_result_child, generated_code)
+
+            print(f"Generate code post: {parser_result.cursor.spelling}")
+            self._generate_code_post(generated_code)
 
     def _generate_code_post(self, generated_code):
         for file_path, code in generated_code.items():
