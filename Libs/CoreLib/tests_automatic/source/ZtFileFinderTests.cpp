@@ -21,9 +21,9 @@ namespace zt::core::tests
 			const std::filesystem::path folderName = "file_finder_test_folder";
 			auto path = Paths::CurrentProjectRootPath();
 			path /= folderName;
-			auto files = FileFinder::FindFiles(path, recursive);
+			auto filesPaths = FileFinder::FindFiles(path, recursive);
 
-			size_t actualFilesCount = files.size();
+			size_t actualFilesCount = filesPaths.size();
 			EXPECT_EQ(actualFilesCount, expectedFilesCount);
 		};
 
@@ -40,8 +40,8 @@ namespace zt::core::tests
 			path /= folderName;
 			const std::filesystem::path extension = ".txt2";
 
-			auto files = FileFinder::FindFiles(path, extension, recursive);
-			size_t actualFilesCount = files.size();
+			auto filesPaths = FileFinder::FindFiles(path, extension, recursive);
+			size_t actualFilesCount = filesPaths.size();
 			EXPECT_EQ(actualFilesCount, expectedFilesCount);
 		};
 

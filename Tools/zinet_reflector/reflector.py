@@ -1,5 +1,6 @@
 import concurrent.futures
 import os
+import pathlib
 import timeit
 from pathlib import Path
 
@@ -7,19 +8,21 @@ import clang
 import winsound
 
 from zinet_reflector.assignor import Assignor
-from zinet_reflector.code_generator import CodeGenerator, print_generated_code, CodeGeneratorInstructionBase
-from zinet_reflector.code_generators.code_generator_class_info import CodeGeneratorClassInfo
+from zinet_reflector.code_generator import *
 from zinet_reflector.code_injector import CodeInjector
 from zinet_reflector.entry_point_main import EntryPointMain
 from zinet_reflector.parser import Parser
-from zinet_reflector.parser_result import print_parser_result
 from zinet_reflector.tokens_finder import TokensFinder
-from zinet_reflector.parser_result import *
 
-from zinet_reflector.code_generators.code_generator_constructors import CodeGeneratorConstructors
-from zinet_reflector.code_generators.code_generator_getter_setter import CodeGeneratorGetterSetter
-from zinet_reflector.code_generators.code_generator_operators import CodeGeneratorOperators
+from zinet_reflector.code_generators.code_generator_object_base_class import *
+from zinet_reflector.code_generators.code_generator_constructors import *
+from zinet_reflector.code_generators.code_generator_operators import *
+from zinet_reflector.code_generators.code_generator_class_info import *
+from zinet_reflector.code_generators.code_generator_getter_setter import *
+
 from zinet_utilities.paths import find_tools_folder
+
+import importlib
 
 
 class Reflector:
@@ -103,12 +106,11 @@ class Reflector:
         find_tokens_elapsed_seconds = find_tokens_end_time - find_tokens_start_time
         print(f"Findings tokens took {find_tokens_elapsed_seconds} seconds")
 
-        #print_parser_result(parse_result)
-
         code_generator = CodeGenerator()
         subclasses = CodeGeneratorInstructionBase.__subclasses__()
         for subclass in subclasses:
             code_generator.instructions.append(subclass())
+        print(f"Code generators: {len(code_generator.instructions)}")
 
         generate_code_start_time = timeit.default_timer()
         generated_code = code_generator.generate_code(parse_result)

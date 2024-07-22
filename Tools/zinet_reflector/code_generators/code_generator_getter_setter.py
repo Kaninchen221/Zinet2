@@ -14,11 +14,11 @@ class CodeGeneratorGetterSetter(CodeGeneratorInstructionBase):
     def generate_code(self, parser_result):
         if parser_result.reflection_kind == self.reflection_kind:
             if not hasattr(parser_result.cursor, "semantic_parent"):
-                return None
+                return ""
 
-            # Ignore Members of any struct
+            # Ignore nested structs
             if parser_result.cursor.semantic_parent.kind == CursorKind.STRUCT_DECL:
-                return None
+                return ""
 
             member_name = parser_result.get_member_name()
             member_type_name = "decltype(" + parser_result.get_member_name() + ")"
