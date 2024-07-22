@@ -17,6 +17,24 @@ namespace zt::rhi::assets
 
 	public:
 /*GENERATED_CODE_START*/
+		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
+		
+		ShaderSource() = default;
+		ShaderSource(const ShaderSource& other) = default;
+		ShaderSource(ShaderSource&& other) = default;
+		~ShaderSource() noexcept = default;
+		
+		ShaderSource& operator = (const ShaderSource& other) = default;
+		ShaderSource& operator = (ShaderSource&& other) = default;
+		
+		class ClassInfo : zt::core::ClassInfoBase
+		{
+		public:
+		
+			static std::string_view GetClassName() { return "ShaderSource"; }
+			constexpr static auto GetParentsClassInfo() { return std::vector{core::assets::Asset::ClassInfo{}}; }
+		};
+		
 /*GENERATED_CODE_END*/
 	};
 

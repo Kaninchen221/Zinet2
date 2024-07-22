@@ -3,6 +3,7 @@
 #include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtPaths.hpp"
+#include "Zinet/Core/ZtObject.hpp"
 
 #include "Zinet/Core/Assets/ZtAsset.hpp"
 
@@ -12,7 +13,7 @@ namespace zt::core::assets
 {
 
 	ZT_REFLECT_CLASS()
-	class ZINET_CORE_API AssetsFinder
+	class ZINET_CORE_API AssetsFinder : public Object
 	{
 	protected:
 
@@ -66,6 +67,31 @@ namespace zt::core::assets
 
 	public:
 /*GENERATED_CODE_START*/
+		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
+		
+		AssetsFinder() = default;
+		AssetsFinder(const AssetsFinder& other) = default;
+		AssetsFinder(AssetsFinder&& other) = default;
+		~AssetsFinder() noexcept = default;
+		
+		AssetsFinder& operator = (const AssetsFinder& other) = default;
+		AssetsFinder& operator = (AssetsFinder&& other) = default;
+		
+		class ClassInfo : zt::core::ClassInfoBase
+		{
+		public:
+		
+			static std::string_view GetClassName() { return "AssetsFinder"; }
+			constexpr static auto GetParentsClassInfo() { return std::vector{Object::ClassInfo{}}; }
+		};
+		
+		const decltype(rootFolder)& getRootFolder() const { return rootFolder; }
+		void setRootFolder(const decltype(rootFolder)& newValue) { rootFolder = newValue; }
+		
+		const decltype(contentFolderName)& getContentFolderName() const { return contentFolderName; }
+		
+		const decltype(assetExtension)& getAssetExtension() const { return assetExtension; }
+		
 /*GENERATED_CODE_END*/
 	};
 
