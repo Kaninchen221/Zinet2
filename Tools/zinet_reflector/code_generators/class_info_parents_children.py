@@ -12,7 +12,7 @@ class ClassInfoParentsChildren:
 
     def generate_code(self, parser_result):
         if parser_result.reflection_kind != self.reflection_kind:
-            return None
+            return ""
 
         children_cursors = parser_result.cursor.get_children()
         self.class_name = parser_result.cursor.spelling
@@ -20,11 +20,21 @@ class ClassInfoParentsChildren:
             if child_cursor.kind == CursorKind.CXX_BASE_SPECIFIER:
                 parent_class_name = child_cursor.spelling
                 self.parents.append(parent_class_name)
-        return None
+        return ""
 
     def generate_code_post(self):
+        result = ""
+        result += self.generate_parents_class_Info()
+        return result
+
+    def generate_parents_class_Info(self):
         if self.parents:
-            return f"\n\t/*{self.parents}*/"
+            initializer_list = "{"
+            for parent in self.parents:
+                initializer_list += f"{parent}::ClassInfo{{}},"
+            initializer_list = initializer_list[0:-1]
+            initializer_list += '}'
+            return f"\n\tconstexpr static auto GetParentsClassInfo() {{ return std::vector{initializer_list}; }}"
         return ""
 
     def __str__(self):
@@ -32,4 +42,6 @@ class ClassInfoParentsChildren:
             return f"Class: {self.class_name} has parents: {self.parents}"
         else:
             return f"Class: {self.class_name} hasn't any parents classes"
+
+    parentsPerClass = {}
 

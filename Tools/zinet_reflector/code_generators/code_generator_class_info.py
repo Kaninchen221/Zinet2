@@ -24,33 +24,29 @@ class CodeGeneratorClassInfo(CodeGeneratorInstructionBase):
 
         return ""
 
-    def generate_code_post(self, file_path):
-        class_parser_result = None
-        for parser_result in self.parser_results:
-            if parser_result.get_cursor_file_path() == file_path:
-                class_parser_result = parser_result
-                break
+    def generate_code_post(self, parser_result):
+        if parser_result.reflection_kind != ReflectionKind.Class:
+            return ""
 
-        if class_parser_result:
-            inside = ""
-            outside = ""
+        inside = ""
+        outside = ""
 
-            if get_class_name_function := self.get_class_name_function(class_parser_result):
-                inside += get_class_name_function
+        if get_class_name_function := self.get_class_name_function(parser_result):
+            inside += get_class_name_function
 
-            if parents_children_info := self.class_info_parents_children.generate_code_post():
-                inside += parents_children_info
-            #print(self.class_info_parents_children)
+        if parents_children_info := self.class_info_parents_children.generate_code_post():
+            inside += parents_children_info
+        #print(self.class_info_parents_children)
 
-            class_info = (""
-                          f'\nclass ClassInfo'
-                          '\n{'
-                          '\npublic:'
-                          f'\n{inside}'
-                          '\n};'
-                          f'{outside}')
+        class_info = (""
+                      f'class ClassInfo : zt::core::ClassInfoBase'
+                      '\n{'
+                      '\npublic:'
+                      f'\n{inside}'
+                      '\n};'
+                      f'{outside}\n')
 
-            return class_info
+        return class_info
 
     @staticmethod
     def get_class_name_function(class_parser_result):

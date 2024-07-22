@@ -21,7 +21,8 @@ class CodeInjector:
             with (open(file_path, 'w') as file):
                 print(f"Inject code into: {file_path}")
 
-                generated_code_as_string = '\n'.join(code)
+                code = list(filter(lambda element: element is not None, code))
+                generated_code_as_string = '\n' + '\n'.join(code)
                 generated_code_as_string = CodeInjector.inject_indentations(generated_code_as_string, '\t\t')
                 file_content = (file_content[:inject_code_start_index]
                                 + generated_code_as_string

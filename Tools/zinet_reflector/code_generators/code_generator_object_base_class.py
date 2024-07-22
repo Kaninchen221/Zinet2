@@ -2,12 +2,12 @@ from zinet_reflector.code_generator import CodeGeneratorInstructionBase
 from zinet_reflector.parser_result import ReflectionKind
 
 
-class CodeGeneratorConstructors(CodeGeneratorInstructionBase):
+class CodeGeneratorObjectBaseClass(CodeGeneratorInstructionBase):
     def __init__(self):
         super().__init__()
         self.reflection_kind = ReflectionKind.Class
         self.token = None
-        self.mute_token = "NO_CONSTRUCTORS"
+        self.mute_token = "NO_TEST_BASE_CLASS_OBJECT"
 
     def generate_code(self, parser_result):
         if parser_result.reflection_kind != self.reflection_kind:
@@ -17,9 +17,5 @@ class CodeGeneratorConstructors(CodeGeneratorInstructionBase):
             return ""
 
         class_name = parser_result.get_class_name()
-        return f"""
-{class_name}() = default;
-{class_name}(const {class_name}& other) = default;
-{class_name}({class_name}&& other) = default;
-
-~{class_name}() noexcept = default;"""
+        return (f"static_assert(IsObjectClassInherited); "
+                f"// Class using ZT_REFLECT_CLASS should inherit public from Object class\n")

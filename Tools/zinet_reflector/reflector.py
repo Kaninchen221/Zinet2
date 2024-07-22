@@ -14,6 +14,7 @@ from zinet_reflector.entry_point_main import EntryPointMain
 from zinet_reflector.parser import Parser
 from zinet_reflector.tokens_finder import TokensFinder
 
+from zinet_reflector.code_generators.code_generator_object_base_class import *
 from zinet_reflector.code_generators.code_generator_constructors import *
 from zinet_reflector.code_generators.code_generator_operators import *
 from zinet_reflector.code_generators.code_generator_class_info import *

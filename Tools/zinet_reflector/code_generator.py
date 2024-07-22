@@ -19,7 +19,6 @@ class CodeGenerator:
     def generate_code(self, parser_result):
         generated_code = {}
         self._generate_code_internal(parser_result, generated_code)
-        #self._generate_code_post(generated_code)
         return generated_code
 
     def _generate_code_internal(self, parser_result, generated_code):
@@ -27,7 +26,8 @@ class CodeGenerator:
             for instruction in self.instructions:
                 instruction.__init__()
 
-                print(f"Generate code: {parser_result.cursor.spelling}")
+            #print(f"Run instructions for: {parser_result.cursor.spelling}")
+            for instruction in self.instructions:
                 instruction_generated_code = instruction.generate_code(parser_result)
 
                 if parser_result.cursor.location.file is None:
@@ -41,18 +41,19 @@ class CodeGenerator:
                     generated_code[key] = []
                 generated_code[key].append(instruction_generated_code)
 
-            for parser_result_child in parser_result.children:
-                self._generate_code_internal(parser_result_child, generated_code)
+            #print(f"Generate code post: {parser_result.cursor.spelling}")
+            self._generate_code_post(parser_result, generated_code)
 
-            print(f"Generate code post: {parser_result.cursor.spelling}")
-            self._generate_code_post(generated_code)
+        for parser_result_child in parser_result.children:
+            self._generate_code_internal(parser_result_child, generated_code)
 
-    def _generate_code_post(self, generated_code):
-        for file_path, code in generated_code.items():
-            for instruction in self.instructions:
-                generated_code_post = instruction.generate_code_post(file_path)
-                if generated_code_post:
-                    code.append(generated_code_post)
+    def _generate_code_post(self, parser_result, generated_code):
+        for instruction in self.instructions:
+            instruction_generated_code = instruction.generate_code_post(parser_result)
+            key = parser_result.cursor.location.file.name
+            if key not in generated_code:
+                generated_code[key] = []
+            generated_code[key].append(instruction_generated_code)
 
 
 def print_generated_code(generated_code):
