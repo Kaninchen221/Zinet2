@@ -17,9 +17,7 @@ class CodeGeneratorConstructors(CodeGeneratorInstructionBase):
             return ""
 
         class_name = parser_result.get_class_name()
-        return f"""
-{class_name}() = default;
-{class_name}(const {class_name}& other) = default;
-{class_name}({class_name}&& other) = default;
-
-~{class_name}() noexcept = default;"""
+        return (f"{class_name}() = default;\n"
+                f"{class_name}(const {class_name}& other) = default;\n"
+                f"{class_name}({class_name}&& other) = default;\n"
+                f"~{class_name}() noexcept = default;\n")
