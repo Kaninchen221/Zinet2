@@ -24,6 +24,7 @@ namespace zt::core::assets
 		Asset() = default;
 		Asset(const Asset& other) = default;
 		Asset(Asset&& other) = default;
+		
 		~Asset() noexcept = default;
 		
 		Asset& operator = (const Asset& other) = default;

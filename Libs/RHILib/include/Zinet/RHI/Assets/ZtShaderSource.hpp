@@ -22,6 +22,7 @@ namespace zt::rhi::assets
 		ShaderSource() = default;
 		ShaderSource(const ShaderSource& other) = default;
 		ShaderSource(ShaderSource&& other) = default;
+		
 		~ShaderSource() noexcept = default;
 		
 		ShaderSource& operator = (const ShaderSource& other) = default;

@@ -72,6 +72,7 @@ namespace zt::core::assets
 		AssetsFinder() = default;
 		AssetsFinder(const AssetsFinder& other) = default;
 		AssetsFinder(AssetsFinder&& other) = default;
+		
 		~AssetsFinder() noexcept = default;
 		
 		AssetsFinder& operator = (const AssetsFinder& other) = default;
