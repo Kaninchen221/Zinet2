@@ -12,11 +12,12 @@ namespace zt::core
 		ClassInfoBase(const ClassInfoBase& other) = default;
 		ClassInfoBase(ClassInfoBase&& other) = default;
 
-		~ClassInfoBase() noexcept = default;
+		virtual ~ClassInfoBase() noexcept = default;
 
 		ClassInfoBase& operator = (const ClassInfoBase& other) = default;
 		ClassInfoBase& operator = (ClassInfoBase&& other) = default;
 
+		virtual std::string_view getClassName() const = 0;
 
 	protected:
 
