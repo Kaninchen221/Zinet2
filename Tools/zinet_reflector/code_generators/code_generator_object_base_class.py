@@ -7,15 +7,23 @@ class CodeGeneratorObjectBaseClass(CodeGeneratorInstructionBase):
         super().__init__()
         self.reflection_kind = ReflectionKind.Class
         self.token = None
-        self.mute_token = "NO_TEST_BASE_CLASS_OBJECT"
 
     def generate_code(self, parser_result):
         if parser_result.reflection_kind != self.reflection_kind:
             return ""
 
-        if self.mute_token in parser_result.tokens:
-            return ""
+        result = ""
+        if "NO_TEST_BASE_CLASS_OBJECT" not in parser_result.tokens:
+            result += (f"static_assert(IsObjectClassInherited); "
+                       f"// Class using ZT_REFLECT_CLASS should inherit public from Object class\n")
 
         class_name = parser_result.get_class_name()
-        return (f"static_assert(IsObjectClassInherited); "
-                f"// Class using ZT_REFLECT_CLASS should inherit public from Object class\n")
+        result += f"const inline static bool RegisterClassResult = RegisterClass<{class_name}>();\n"
+
+        if "NO_CREATE_COPY" not in parser_result.tokens:
+            result += (f"std::unique_ptr<ObjectBase> createCopy() const override {{ "
+                       f"std::unique_ptr<ObjectBase> result = createCopyInternal<{class_name}>(); "
+                       f"*result = *this; "
+                       f"return result; }}\n")
+
+        return result

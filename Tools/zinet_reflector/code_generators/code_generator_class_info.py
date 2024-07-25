@@ -36,10 +36,15 @@ class CodeGeneratorClassInfo(CodeGeneratorInstructionBase):
 
         if parents_children_info := self.class_info_parents_children.generate_code_post():
             inside += parents_children_info
+
+        if "NO_GET_CLASS_INFO" not in parser_result.tokens:
+            if get_class_info_function := self.get_class_info_function():
+                outside += get_class_info_function
+
         #print(self.class_info_parents_children)
 
         class_info = (""
-                      f'class ClassInfo : zt::core::ClassInfoBase'
+                      f'class ClassInfo : public zt::core::ClassInfoBase'
                       '\n{'
                       '\npublic:'
                       f'\n{inside}'
@@ -51,4 +56,9 @@ class CodeGeneratorClassInfo(CodeGeneratorInstructionBase):
     @staticmethod
     def get_class_name_function(class_parser_result):
         class_name = class_parser_result.get_class_name()
-        return f'\n\tstatic std::string_view GetClassName() {{ return "{class_name}"; }}'
+        return f'\n\tstd::string_view getClassName() const override {{ return "{class_name}"; }}'
+
+    @staticmethod
+    def get_class_info_function():
+        return ("\nconst zt::core::ClassInfoBase* getClassInfo() const override "
+                "{ static ClassInfo classInfo; return &classInfo; }\n")

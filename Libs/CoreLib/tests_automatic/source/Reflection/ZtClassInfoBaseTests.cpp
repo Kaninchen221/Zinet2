@@ -27,9 +27,14 @@ namespace zt::core::tests
 		{
 		}
 
+		class ClassInfoBaseDerived : public ClassInfoBase
+		{
+		public:
+			virtual std::string_view getClassName() const { return "ClassInfoBaseDerived"; };
+		};
 	};
 
-	TEST_F(ClassInfoBaseTests, Pass)
+	TEST_F(ClassInfoBaseTests, PassTest)
 	{
 
 	}
