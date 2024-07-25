@@ -2,6 +2,8 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
+#include <memory>
+
 namespace zt::core
 {
 	class ClassInfoBase;
@@ -21,6 +23,6 @@ namespace zt::core
 
 		virtual const ClassInfoBase* getClassInfo() const = 0;
 
-		virtual ObjectBase* createCopy() const = 0;
+		virtual std::unique_ptr<ObjectBase> createCopy() const = 0;
 	};
 }

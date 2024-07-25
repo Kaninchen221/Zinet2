@@ -2,6 +2,7 @@
 
 #include "Zinet/Core/ZtObject.hpp"
 #include "Zinet/Core/ZtClassDefaultObjectRegistry.hpp"
+#include "Zinet/Core/ZtPointersUtilities.hpp"
 
 #include <gtest/gtest.h>
 
@@ -35,9 +36,10 @@ namespace zt::core::tests
 		class ObjectChild : public Object
 		{
 		public:
-			Object* createCopy() const override { Object* result = createCopyInternal<ObjectChild>(); *result = *this; return result; }
+			std::unique_ptr<ObjectBase> createCopy() const override { std::unique_ptr<Object> result = createCopyInternal<ObjectChild>(); *result = *this; return result; }
 
 			int value = 0;
+
 		};
 	};
 
@@ -64,15 +66,14 @@ namespace zt::core::tests
 	{
 		ObjectChild object;
 		object.value = 12333;
-		Object* copy = object.createCopy();
+		std::unique_ptr<ObjectBase> copy = object.createCopy();
 		ASSERT_NE(copy, nullptr);
 		
-		ObjectChild* copyCasted = dynamic_cast<ObjectChild*>(copy);
+		const ObjectBase* copyRawPointer = copy.get();
+		std::unique_ptr<ObjectChild> copyCasted = PointersUtilities::DynamicCastUniquePtr<ObjectBase, ObjectChild>(copy);
 		ASSERT_NE(copyCasted, nullptr);
+		ASSERT_EQ(copyCasted.get(), copyRawPointer);
 
 		ASSERT_EQ(object.value, copyCasted->value);
-		delete copyCasted;
-		copy = nullptr;
-		copyCasted = nullptr;
 	}
 }

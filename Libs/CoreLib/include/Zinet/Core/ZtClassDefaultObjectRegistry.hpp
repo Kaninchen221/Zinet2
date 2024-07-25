@@ -25,7 +25,7 @@ namespace zt::core
 
 		const auto& getClasses() const { return CDOList; }
 
-		ObjectBase* createObjectByClassName(const std::string& name) const;
+		std::unique_ptr<ObjectBase> createObjectByClassName(const std::string& name) const;
 
 	private:
 

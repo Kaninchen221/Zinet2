@@ -54,7 +54,7 @@ namespace zt::core::tests
 	{
 		const ClassDefaultObjectRegistry& CDORegistry = ClassDefaultObjectRegistry::Get();
 		const std::string className = "File";
-		ObjectBase* createdObject = CDORegistry.createObjectByClassName(className);
+		std::unique_ptr<ObjectBase> createdObject = CDORegistry.createObjectByClassName(className);
 
 		ASSERT_NE(createdObject, nullptr);
 	}

@@ -29,7 +29,7 @@ namespace zt::core
 /*GENERATED_CODE_START*/
 		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
 		const inline static bool RegisterClassResult = RegisterClass<Clock>();
-		ObjectBase* createCopy() const { Object* result = createCopyInternal<Clock>(); *result = *this; return result; }
+		std::unique_ptr<ObjectBase> createCopy() const override { std::unique_ptr<ObjectBase> result = createCopyInternal<Clock>(); *result = *this; return result; }
 		
 		Clock() = default;
 		Clock(const Clock& other) = default;

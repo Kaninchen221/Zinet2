@@ -69,7 +69,7 @@ namespace zt::core::assets
 /*GENERATED_CODE_START*/
 		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
 		const inline static bool RegisterClassResult = RegisterClass<AssetsFinder>();
-		ObjectBase* createCopy() const { Object* result = createCopyInternal<AssetsFinder>(); *result = *this; return result; }
+		std::unique_ptr<ObjectBase> createCopy() const override { std::unique_ptr<ObjectBase> result = createCopyInternal<AssetsFinder>(); *result = *this; return result; }
 		
 		AssetsFinder() = default;
 		AssetsFinder(const AssetsFinder& other) = default;

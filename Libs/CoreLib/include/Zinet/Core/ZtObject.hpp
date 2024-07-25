@@ -23,10 +23,10 @@ namespace zt::core
 		template<class T> // Can't use std::derived_from concept because we use this function with incomplete type
 		static bool RegisterClass();
 
-		template<class T> // Same problem as for RegisterClass
-		Object* createCopyInternal() const;
+		template<std::derived_from<Object> T>
+		std::unique_ptr<Object> createCopyInternal() const;
 
-		ObjectBase* createCopy() const override { return nullptr; }
+		std::unique_ptr<ObjectBase> createCopy() const override { return nullptr; }
 
 	protected:
 
@@ -54,20 +54,22 @@ namespace zt::core
 	};
 
 	template<class T>
-	Object* Object::createCopyInternal() const
-	{
-		if constexpr (std::is_copy_constructible_v<T>)
-			return new T(*static_cast<const T*>(this));
-		else
-			return new T();
-	}
-
-	template<class T>
 	bool Object::RegisterClass()
 	{
+		static_assert(std::is_base_of_v<Object, T>);
+
 		ClassDefaultObjectRegistry& CDORegistry = ClassDefaultObjectRegistry::Get();
 		CDORegistry.registerClass(new T{});
 		return true;
+	}
+
+	template<std::derived_from<Object> T>
+	std::unique_ptr<Object> Object::createCopyInternal() const
+	{
+		if constexpr (std::is_copy_constructible_v<T>)
+			return std::unique_ptr<Object>{ new T(*static_cast<const T*>(this)) };
+		else
+			return std::unique_ptr<Object>{ new T() };
 	}
 
 }

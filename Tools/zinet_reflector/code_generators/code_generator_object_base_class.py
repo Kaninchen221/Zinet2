@@ -21,7 +21,8 @@ class CodeGeneratorObjectBaseClass(CodeGeneratorInstructionBase):
         result += f"const inline static bool RegisterClassResult = RegisterClass<{class_name}>();\n"
 
         if "NO_CREATE_COPY" not in parser_result.tokens:
-            result += (f"ObjectBase* createCopy() const {{ Object* result = createCopyInternal<{class_name}>(); "
+            result += (f"std::unique_ptr<ObjectBase> createCopy() const override {{ "
+                       f"std::unique_ptr<ObjectBase> result = createCopyInternal<{class_name}>(); "
                        f"*result = *this; "
                        f"return result; }}\n")
 

@@ -16,7 +16,7 @@ namespace zt::core
 		CDOList.push_back(std::unique_ptr<ObjectBase>(object));
 	}
 
-	ObjectBase* ClassDefaultObjectRegistry::createObjectByClassName(const std::string& name) const
+	std::unique_ptr<ObjectBase> ClassDefaultObjectRegistry::createObjectByClassName(const std::string& name) const
 	{
 		for (const auto& classDefaultObject : CDOList)
 		{
