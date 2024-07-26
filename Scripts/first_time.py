@@ -1,8 +1,25 @@
+import pathlib
 import subprocess
 import site
 from pathlib import Path
 
-from zinet_utilities.paths import find_zinet_root_path
+
+# is_zinet_root_path and find_zinet_root_path are copied from utilities because the utilities could be not installed yet
+def is_zinet_root_path(path):
+    if not (path / "recipe_root.py").exists():
+        return False
+    return True
+
+
+def find_zinet_root_path():
+    root_path = Path('.').absolute()
+    if is_zinet_root_path(root_path):
+        return root_path
+
+    for parent in root_path.parents:
+        if is_zinet_root_path(parent):
+            return parent
+    return None
 
 
 def run_tools_install(project_path):
@@ -11,7 +28,7 @@ def run_tools_install(project_path):
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
                                 shell=True,
-                                universal_newlines=True)
+                                universal_newlines=False)
 
 
 def create_pth_file(project_path):
