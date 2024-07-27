@@ -57,7 +57,11 @@ namespace zt::engine
 
 	public:
 
-/*GENERATED_CODE_START*/ 
+/*GENERATED_CODE_START*/
+		
+		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
+		const inline static bool RegisterClassResult = RegisterClass<TextureAsset>();
+		std::unique_ptr<ObjectBase> createCopy() const override { std::unique_ptr<ObjectBase> result = createCopyInternal<TextureAsset>(); *result = *this; return result; }
 		
 		TextureAsset() = default;
 		TextureAsset(const TextureAsset& other) = default;
@@ -67,21 +71,25 @@ namespace zt::engine
 		
 		TextureAsset& operator = (const TextureAsset& other) = default;
 		TextureAsset& operator = (TextureAsset&& other) = default;
-		 
-		 
 		
-		const int& getTexture() const { return texture; }
-		 
-		
-		const int& getBackupTexture() const { return backupTexture; }
-		void setBackupTexture(const int& newValue) { backupTexture = newValue; }
-		
-		class ClassInfo
+		class ClassInfo : public zt::core::ClassInfoBase
 		{
 		public:
 		
-			static std::string_view GetClassName() { return "TextureAsset"; }
+			std::string_view getClassName() const override { return "TextureAsset"; }
 		};
+		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
+		
+		
+		
+		
+		
+		
+		const decltype(texture)& getTexture() const { return texture; }
+		
+		const decltype(backupTexture)& getBackupTexture() const { return backupTexture; }
+		void setBackupTexture(const decltype(backupTexture)& newValue) { backupTexture = newValue; }
+		
 /*GENERATED_CODE_END*/
 
 	};

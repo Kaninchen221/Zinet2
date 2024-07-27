@@ -21,6 +21,7 @@ _deps
 # Python
 __pycache__
 */*.egg
+.venv
 
 # Tools
 Tools/zinet_generator/generator.egg-info

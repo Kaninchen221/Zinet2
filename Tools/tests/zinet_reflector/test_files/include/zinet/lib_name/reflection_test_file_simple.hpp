@@ -14,7 +14,11 @@ namespace zt::engine
 		ZT_REFLECT_MEMBER()
 		int count;
 
-/*GENERATED_CODE_START*/ 
+/*GENERATED_CODE_START*/
+		
+		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
+		const inline static bool RegisterClassResult = RegisterClass<Asset>();
+		std::unique_ptr<ObjectBase> createCopy() const override { std::unique_ptr<ObjectBase> result = createCopyInternal<Asset>(); *result = *this; return result; }
 		
 		Asset() = default;
 		Asset(const Asset& other) = default;
@@ -24,14 +28,18 @@ namespace zt::engine
 		
 		Asset& operator = (const Asset& other) = default;
 		Asset& operator = (Asset&& other) = default;
-		 
 		
-		class ClassInfo
+		class ClassInfo : public zt::core::ClassInfoBase
 		{
 		public:
 		
-			static std::string_view GetClassName() { return "Asset"; }
+			std::string_view getClassName() const override { return "Asset"; }
 		};
+		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
+		
+		
+		
+		
 /*GENERATED_CODE_END*/
 
 	};
