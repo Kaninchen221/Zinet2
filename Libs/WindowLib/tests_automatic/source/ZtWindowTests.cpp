@@ -64,7 +64,7 @@ namespace zt::wd::tests
 	TEST_F(WindowTests, ShouldBeClosedTest)
 	{
 		window.create();
-		GLboolean shouldBeClosed = window.shouldBeClosed();
+		bool shouldBeClosed = window.shouldBeClosed();
 	
 		ASSERT_FALSE(shouldBeClosed);
 	}

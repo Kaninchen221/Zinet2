@@ -21,10 +21,10 @@ arguments = f'--build {build_folder_path} --config {args.BuildType}'
 print(f"Cmake arguments: '{arguments}'")
 
 process = subprocess.run("cmake " + arguments, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
-                         universal_newlines=True)
-# If you encounter python error in the next lines, this can happen because we encounter some compiler error and its text can't be parsed
+                         universal_newlines=False)
+
 print(f"process.stdout: {process.stdout}")
-print(f"process.stderr: {process.stderr}") 
+print(f"process.stderr: {process.stderr}")
 
 if process.returncode != 0:
     print(f"CMake return code {process.returncode}")
