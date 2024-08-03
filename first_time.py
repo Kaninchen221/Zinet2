@@ -3,14 +3,39 @@ import subprocess
 from Tools.zinet_utilities.paths import *
 
 
-def createENV():
-    env_path = find_venv_folder()
-    print(f"ENV path: {env_path}")
+def logProcess(process):
+    if process.stdout:
+        print(process.stdout)
+
+    if process.stderr:
+        print(process.stderr)
+
+    if process.returncode != 0:
+        raise Exception(str(process.stdout) + str(process.stderr))
+
+
+def createVENV():
+    venv_path = find_venv_folder()
+    print(f"VENV path: {venv_path}")
 
     env_builder = venv.EnvBuilder(system_site_packages=False, clear=True, symlinks=False, upgrade=False, with_pip=True)
-    env_builder.create(env_path)
+    env_builder.create(venv_path)
 
-    return env_path
+    return venv_path
+
+
+def activateVENV():
+    activate_path = find_venv_scripts_folder() / "activate"
+    if not activate_path.exists():
+        raise Exception("Activate path doesn't exist")
+
+    print(f"Activate path: {activate_path}")
+    process = subprocess.run(str(activate_path),
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             shell=True,
+                             universal_newlines=False)
+    logProcess(process)
 
 
 def create_pth_file(env_path):
@@ -24,27 +49,29 @@ def create_pth_file(env_path):
     print(f"Tools pth path: {tools_pth_path}")
 
     with open(tools_pth_path, "w") as file:
-        tools_path = (Path('.') / "Tools").absolute()
+        tools_path = find_tools_folder()
         print(f"Tools path: {tools_path}")
-        file.write(f"{str(tools_path)}")
+        file.write(str(tools_path))
 
 
-def install_requirements(env_path):
+def install_requirements():
     requirements_path = find_tools_folder() / "requirements.txt"
     if not requirements_path.exists():
         raise Exception("requirements.txt file doesn't exist")
 
     print(f"requirements.txt path: {requirements_path}")
-    subprocess.run(f"{env_path}/Scripts/pip install -r " + str(requirements_path), stdout=subprocess.PIPE,
-                   stderr=subprocess.PIPE,
-                   shell=True,
-                   universal_newlines=False)
+    process = subprocess.run(f"{find_venv_pip_path()} install -r " + str(requirements_path), stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             shell=True,
+                             universal_newlines=True)
+    logProcess(process)
 
 
 def main():
-    env_path = createENV()
+    env_path = createVENV()
+    activateVENV()
     create_pth_file(env_path)
-    install_requirements(env_path)
+    install_requirements()
 
 
 main()

@@ -1,57 +1,132 @@
-from consolemenu import ConsoleMenu, SelectionMenu
-from consolemenu.items import MenuItem, FunctionItem
-
+import os
 import subprocess
-
 from pathlib import Path
 
+from Tools.zinet_utilities.paths import find_tools_folder, find_venv_python_path
+
+
+def cls():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def print_centered(text):
+    print('{:^60}'.format(f"{text}"))
+
+
+class MenuOption:
+    def __init__(self):
+        self.name = ""
+        self.run_script_function = None
+        self.args = []
+
+    @staticmethod
+    def create(name, run_script_function, args):
+        menu_option = MenuOption()
+        menu_option.name = name
+        menu_option.run_script_function = run_script_function
+        menu_option.args = args
+        return menu_option
+
+
+def exit_program():
+    exit(0)
+
+
 class Menu:
-       
-        __menuItems = []
-        __menu = ConsoleMenu("Zinet Utilities", "The outputs from scripts are in Scripts/output folder")
+    def __init__(self):
+        self.menu_options = []
+        self.menu_title = "Zinet Utilities"
+        self.description = "The outputs from scripts are in Scripts/output folder"
 
-        def run_script(self, script_file_name, arguments = ""):
-                scriptFilePath = str(Path('.').absolute()) + "/Scripts/" + script_file_name + ' ' + arguments
-                process = subprocess.run(scriptFilePath, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, universal_newlines=True)
+    @staticmethod
+    def run_script(script_file_name, arguments):
+        script_file_path = str(find_tools_folder() / "zinet_utilities" / script_file_name)
+        if not Path(script_file_path).exists():
+            raise Exception(f"Script with path: {script_file_path} doesn't exist")
 
-                outputFileName = "output_" + script_file_name + ".temp";
-                outputFilePath = str(Path('.')) + "/Scripts/outputs/" + outputFileName
-                with open(outputFilePath, 'w') as file:
-                        if process.stdout is not None: file.write(process.stdout)
-                        if process.stderr is not None: file.write(process.stderr)
-                        file.write("Return code: " + str(process.returncode))
+        script_file_final_path = str(find_venv_python_path()) + " " + script_file_path + " " + ' '.join(arguments)
+        process = subprocess.run(script_file_final_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
+                                 universal_newlines=True)
 
-                if process.returncode != 0:
-                       if process.stdout is not None: raise Exception(str(process.stdout))
-                       if process.stderr is not None: raise Exception(str(process.stderr))
+        output_file_name = "output_" + script_file_name + ".temp"
+        output_file_folder = find_tools_folder() / "outputs"
+        if not output_file_folder.exists():
+            raise Exception(f"Script with path: {output_file_folder} doesn't exist")
 
-        
-        def main_menu(self):
-                self.__menuItems = [
-                        FunctionItem("Generate Project Files Address Sanitizer Off", self.run_script, ["generate_project.py", "--AddressSanitizer false"]),
-                        FunctionItem("Generate Project Files Address Sanitizer On", self.run_script, ["generate_project.py", "--AddressSanitizer true"]),
-                        FunctionItem("Generate Reflection", self.run_script, ["reflection.py"]),
-                        FunctionItem("Conan Install Debug", self.run_script, ["conan_install.py", "--BuildType Debug"]),
-                        FunctionItem("Conan Install Release", self.run_script, ["conan_install.py", "--BuildType Release"]),
-                        FunctionItem("Build Project Debug", self.run_script, ["build.py", "--BuildType Debug"]),
-                        FunctionItem("Build Project Release", self.run_script, ["build.py", "--BuildType Release"]),
-                        FunctionItem("Compile Project Debug", self.run_script, ["compile.py", "--BuildType Debug"]),
-                        FunctionItem("Compile Project Release", self.run_script, ["compile.py", "--BuildType Release"]),
-                        FunctionItem("Run All Automatic Tests", self.run_script, ["run_all_automatic_tests.py"]),
-                        FunctionItem("Run All Tools Tests", self.run_script, ["run_tools_tests.py"]),
-                        FunctionItem("Clear Build Folder", self.run_script, ["clear_build_folder.py"]),
-                        FunctionItem("First Time", self.run_script, ["first_time.py"])
-                ]
+        output_file_path = str(output_file_folder) + '/' + output_file_name
 
-                for item in self.__menuItems:
-                        self.__menu.append_item(item)
+        with open(output_file_path, 'w') as file:
+            if process.stdout:
+                file.write(str(process.stdout))
+            if process.stderr:
+                file.write(str(process.stderr))
+            file.write("Return code: " + str(process.returncode))
 
-                self.__menu.show()
+        if process.stdout:
+            print(process.stdout)
 
-                #menu.join()
+        if process.stderr:
+            print(process.stderr)
 
+        if process.returncode != 0:
+            raise Exception(str(process.stdout) + ' : ' + str(process.stderr))
 
+    def print_options(self):
+        menu_text = ""
+        option_index = 1
+        for menu_option in self.menu_options:
+            menu_text += f"    {option_index}: {menu_option.name}\n"
+            option_index += 1
+        print(menu_text)
+
+    def execute_option(self, option_index):
+        menu_option = self.menu_options[option_index - 1]
+        if menu_option.args:
+            menu_option.run_script_function(menu_option.args[0], menu_option.args[1:])
+        else:
+            menu_option.run_script_function()
+
+    def main_menu(self):
+        self.menu_options = [
+            MenuOption.create("Generate Project Files Address Sanitizer Off", self.run_script,
+                              ["generate_project.py", "--AddressSanitizer false"]),
+            MenuOption.create("Generate Project Files Address Sanitizer On", self.run_script,
+                              ["generate_project.py", "--AddressSanitizer true"]),
+            MenuOption.create("Generate Reflection", self.run_script, ["reflection.py"]),
+            MenuOption.create("Conan Install Debug", self.run_script, ["conan_install.py", "--BuildType Debug"]),
+            MenuOption.create("Conan Install Release", self.run_script, ["conan_install.py", "--BuildType Release"]),
+            MenuOption.create("Build Project Debug", self.run_script, ["build.py", "--BuildType Debug"]),
+            MenuOption.create("Build Project Release", self.run_script, ["build.py", "--BuildType Release"]),
+            MenuOption.create("Compile Project Debug", self.run_script, ["compile.py", "--BuildType Debug"]),
+            MenuOption.create("Compile Project Release", self.run_script, ["compile.py", "--BuildType Release"]),
+            MenuOption.create("Run All Automatic Tests", self.run_script, ["run_all_automatic_tests.py"]),
+            MenuOption.create("Run All Tools Tests", self.run_script, ["run_tools_tests.py"]),
+            MenuOption.create("Clear Build Folder", self.run_script, ["clear_build_folder.py"]),
+            MenuOption.create("Exit", exit_program, None)
+        ]
+
+        cls()
+        while True:
+
+            print()
+            print_centered(self.menu_title)
+            print_centered(self.description)
+            print()
+
+            self.print_options()
+
+            option_index = input("Select option: ")
+            if option_index.isdigit():
+                option_index = int(option_index)
+                cls()
+                try:
+                    self.execute_option(option_index)
+                except Exception as exception:
+                    print(f"\n{exception}\n")
+            else:
+                cls()
+
+                
 if __name__ == "__main__":
     menu = Menu()
-    menu.run_script("first_time.py")
     menu.main_menu()

@@ -27,7 +27,8 @@ arguments = (f'-S {zinet_root_path} -B {build_folder_path} -G "Visual Studio 17 
              f'-D TESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON -D TESTS_BUILD=ON')
 print(f"Arguments: {arguments}")
 
-process = subprocess.run("cmake " + arguments, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, universal_newlines=True)
+process = subprocess.run("cmake " + arguments, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
+                         universal_newlines=True)
 print(process.stdout)
 print(process.stderr)
     
