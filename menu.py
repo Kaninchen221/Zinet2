@@ -1,3 +1,4 @@
+import argparse
 import os
 import subprocess
 from pathlib import Path
@@ -37,6 +38,7 @@ class Menu:
         self.menu_options = []
         self.menu_title = "Zinet Utilities"
         self.description = "The outputs from scripts are in Scripts/output folder"
+        self.add_options()
 
     @staticmethod
     def run_script(script_file_name, arguments):
@@ -73,20 +75,26 @@ class Menu:
 
     def print_options(self):
         menu_text = ""
-        option_index = 1
+        option_index = 0
         for menu_option in self.menu_options:
             menu_text += f"    {option_index}: {menu_option.name}\n"
             option_index += 1
         print(menu_text)
 
     def execute_option(self, option_index):
-        menu_option = self.menu_options[option_index - 1]
+        menu_option = self.menu_options[option_index]
         if menu_option.args:
             menu_option.run_script_function(menu_option.args[0], menu_option.args[1:])
         else:
             menu_option.run_script_function()
 
-    def main_menu(self):
+    def execute_option_safe(self, option_index):
+        try:
+            self.execute_option(option_index)
+        except Exception as exception:
+            print(f"\n{exception}\n")
+
+    def add_options(self):
         self.menu_options = [
             MenuOption.create("Generate Project Files Address Sanitizer Off", self.run_script,
                               ["generate_project.py", "--AddressSanitizer false"]),
@@ -105,6 +113,7 @@ class Menu:
             MenuOption.create("Exit", exit_program, None)
         ]
 
+    def main_menu(self):
         cls()
         while True:
 
@@ -119,14 +128,18 @@ class Menu:
             if option_index.isdigit():
                 option_index = int(option_index)
                 cls()
-                try:
-                    self.execute_option(option_index)
-                except Exception as exception:
-                    print(f"\n{exception}\n")
+                self.execute_option_safe(option_index)
             else:
                 cls()
 
                 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Menu.py')
+    parser.add_argument('--Option', type=int, help='Option that should be executed', default='-1')
+    args = parser.parse_args()
+
     menu = Menu()
-    menu.main_menu()
+    if args.Option == -1:
+        menu.main_menu()
+    else:
+        menu.execute_option_safe(args.Option)
