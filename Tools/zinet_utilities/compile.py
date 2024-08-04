@@ -20,6 +20,8 @@ print(f"Build folder path: {build_folder_path}")
 arguments = f'--build {build_folder_path} --config {args.BuildType}'
 print(f"Cmake arguments: '{arguments}'")
 
+# 'universal_newlines' must be False, because otherwise python has problem to decode some characters from MSVC
+# compiler output
 process = subprocess.run("cmake " + arguments, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
                          universal_newlines=False)
 

@@ -21,10 +21,12 @@ _deps
 # Python
 __pycache__
 */*.egg
+.venv
 
 # Tools
 Tools/zinet_generator/generator.egg-info
 Tools/zinet_reflector/reflector.egg-info
+Tools/outputs
 
 # Reflector generated files
 Tools/tests/zinet_reflector/test_files/main/main.temp.cpp

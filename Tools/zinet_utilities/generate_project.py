@@ -1,5 +1,4 @@
 import argparse
-import os
 import subprocess
 import sys
 
@@ -19,7 +18,10 @@ build_folder_path = find_zinet_build_path()
 print(f"Build folder path: {build_folder_path}")
 
 args = f"-m zinet_generator --AddressSanitizer {args.AddressSanitizer}"
-process = subprocess.run("python " + args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
+final_command = f"{sys.executable} " + args
+print(f"Final command: {final_command}")
+
+process = subprocess.run(final_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
                          universal_newlines=True)
 print(process.stdout)
 print(process.stderr)

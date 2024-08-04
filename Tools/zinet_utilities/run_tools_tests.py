@@ -8,7 +8,9 @@ tools_folder_path = find_tools_folder()
 print(f"Tools folder path: {tools_folder_path}")
 os.chdir(tools_folder_path)
 
-process = subprocess.run("pytest", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, universal_newlines=True)
+command = f"{sys.executable} -m pytest"
+process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
+                         universal_newlines=True)
 print(process.stdout)
 print(process.stderr)
     
