@@ -1,3 +1,4 @@
+import os
 import venv
 import subprocess
 from Tools.zinet_utilities.paths import *
@@ -24,27 +25,23 @@ def createVENV():
     return venv_path
 
 
-def activateVENV():
-    activate_path = find_venv_scripts_folder() / "activate"
-    if not activate_path.exists():
-        raise Exception("Activate path doesn't exist")
-
-    print(f"Activate path: {activate_path}")
-    process = subprocess.run(str(activate_path),
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE,
-                             shell=True,
-                             universal_newlines=False)
-    logProcess(process)
+def find_site_packages_path(lib_path):
+    for subdir, directories, files in os.walk(lib_path):
+        for directory in directories:
+            path = Path(str(os.path.join(subdir, directory)))
+            if path.name == "site-packages":
+                print(f"Found site-packages path: {path}")
+                return path
+    raise Exception("Can't find site-packages path")
 
 
 def create_pth_file(env_path):
-    site_packages_path = env_path / 'Lib/site-packages'
-    print(f"Site_packages_path: {site_packages_path}")
+    lib_path = env_path / 'lib'
+    print(f"Lib path: {lib_path}")
+    if not lib_path.exists():
+        raise Exception("Lib folder doesn't exist")
 
-    if not site_packages_path.exists():
-        raise Exception("Can't find 'site-packages' folder path")
-
+    site_packages_path = find_site_packages_path(lib_path)
     tools_pth_path = site_packages_path / "Zinet_Tools.pth"
     print(f"Tools pth path: {tools_pth_path}")
 
@@ -69,7 +66,6 @@ def install_requirements():
 
 def main():
     env_path = createVENV()
-    activateVENV()
     create_pth_file(env_path)
     install_requirements()
 
