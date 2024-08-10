@@ -179,9 +179,9 @@ if __name__ == "__main__":
 
     menu = Menu()
     if args.OptionIndex != -1:
-        menu.execute_option_index_safe(args.OptionIndex)
+        menu.execute_option_index(args.OptionIndex)
     elif args.OptionName != "invalid_name":
-        menu.execute_option_name_safe(args.OptionName)
+        menu.execute_option_name(args.OptionName)
     else:
         menu.main_menu()
 

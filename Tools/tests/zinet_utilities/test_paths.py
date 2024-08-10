@@ -1,6 +1,6 @@
-import platform
-
 from zinet_utilities import paths
+
+from zinet_utilities.platform_info import get_system, SystemInfo
 
 
 class TestUtilities:
@@ -45,9 +45,9 @@ class TestUtilities:
     def test_find_venv_scripts_folder(self):
         venv_scripts_folder = paths.find_venv_scripts_folder()
 
-        if platform.system() == "Windows":
+        if get_system() == SystemInfo.Windows:
             expected = paths.find_venv_folder() / "Scripts"
-        elif platform.system() == "Linux":
+        elif get_system() == SystemInfo.Linux:
             expected = paths.find_venv_folder() / "bin"
         else:
             raise Exception("Not supported os")
@@ -59,9 +59,9 @@ class TestUtilities:
     def test_find_venv_activate_path(self):
         venv_activate_path = paths.find_venv_activate_folder()
 
-        if platform.system() == "Windows":
+        if get_system() == SystemInfo.Windows:
             expected = paths.find_venv_scripts_folder() / "activate.bat"
-        elif platform.system() == "Linux":
+        elif get_system() == SystemInfo.Linux:
             expected = paths.find_venv_scripts_folder() / "activate"
         else:
             raise Exception("Not supported os")
@@ -73,9 +73,9 @@ class TestUtilities:
     def test_find_venv_python_path(self):
         venv_python_path = paths.find_venv_python_path()
 
-        if platform.system() == "Windows":
+        if get_system() == SystemInfo.Windows:
             expected = paths.find_venv_folder() / "Scripts/python.exe"
-        elif platform.system() == "Linux":
+        elif get_system() == SystemInfo.Linux:
             expected = paths.find_venv_folder() / "bin/python3"
         else:
             raise Exception("Not supported os")
@@ -86,12 +86,26 @@ class TestUtilities:
     def test_find_venv_pip_path(self):
         venv_pip_path = paths.find_venv_pip_path()
 
-        if platform.system() == "Windows":
+        if get_system() == SystemInfo.Windows:
             expected = paths.find_venv_folder() / "Scripts/pip.exe"
-        elif platform.system() == "Linux":
+        elif get_system() == SystemInfo.Linux:
             expected = paths.find_venv_folder() / "bin/pip"
         else:
             raise Exception("Not supported os")
 
         assert venv_pip_path.exists()
         assert venv_pip_path == expected
+
+    def test_find_venv_conan_path(self):
+        venv_conan_path = paths.find_venv_conan_path()
+
+        if get_system() == SystemInfo.Windows:
+            expected = paths.find_venv_folder() / "Scripts/conan.exe"
+        elif get_system() == SystemInfo.Linux:
+            expected = paths.find_venv_folder() / "bin/conan"
+        else:
+            raise Exception("Not supported os")
+
+        assert venv_conan_path.exists()
+        assert venv_conan_path == expected
+

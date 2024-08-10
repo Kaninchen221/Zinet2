@@ -75,9 +75,19 @@ def find_venv_python_path():
 
 def find_venv_pip_path():
     if platform.system() == "Windows":
-        python_path = find_venv_scripts_folder() / "pip.exe"
+        pip_path = find_venv_scripts_folder() / "pip.exe"
     elif platform.system() == "Linux":
-        python_path = find_venv_scripts_folder() / "pip3"
+        pip_path = find_venv_scripts_folder() / "pip3"
     else:
         raise Exception("Not supported os")
-    return python_path
+    return pip_path
+
+
+def find_venv_conan_path():
+    if platform.system() == "Windows":
+        conan_path = find_venv_scripts_folder() / "conan.exe"
+    elif platform.system() == "Linux":
+        conan_path = find_venv_scripts_folder() / "conan"
+    else:
+        raise Exception("Not supported os")
+    return conan_path

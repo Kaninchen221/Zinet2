@@ -2,7 +2,8 @@ import argparse
 import subprocess
 import sys
 
-from paths import find_zinet_build_path, find_zinet_root_path, find_conan_profiles_folder
+from paths import find_zinet_build_path, find_zinet_root_path, find_conan_profiles_folder, find_venv_conan_path, \
+    find_venv_python_path
 
 
 def validate_arg(arg_name, arg, possible_values):
@@ -46,7 +47,12 @@ def conan_install():
     build_folder_path = find_zinet_build_path()
     print(f"Zinet build folder path: {build_folder_path}")
 
-    subprocess.run("conan remove --locks", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
+    conan_path = find_venv_conan_path()
+    print(f"Conan path: {conan_path}")
+    if not conan_path.exists():
+        raise Exception("Conan doesn't exist")
+
+    subprocess.run(f"{conan_path} remove --locks", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
                    universal_newlines=True)
 
     arguments = (rf'install {zinet_root_path} '
@@ -54,10 +60,10 @@ def conan_install():
                  f'-pr:b {profile_path} '
                  f'--build="missing" '
                  f'-if {build_folder_path} '
-                 f'-of {zinet_root_path} ')
+                 f'-of {build_folder_path} ')
     print(f"Arguments: {arguments}")
 
-    process = subprocess.run("conan " + arguments, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
+    process = subprocess.run(f"{conan_path} " + arguments, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
                              universal_newlines=True)
     print(process.stdout)
     print(process.stderr)

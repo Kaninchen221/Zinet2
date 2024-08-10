@@ -1,13 +1,15 @@
-from conans import ConanFile, CMake
+from conan import ConanFile
+from conan.tools import cmake
 
 class ZinetConan(ConanFile):
    settings = "os", "compiler", "build_type", "arch"
    requires = [
+        "cmake/3.30.1@",
         "gtest/1.10.0@",
         "spdlog/1.9.2@",
         "plf_colony/7.06@",
         "glfw/3.3.6@",
-        "stb/20200203@",
+        "stb/cci.20240531@",
         "pybind11/2.9.1@",
         "nlohmann_json/3.10.5@",
         "box2d/2.4.1@",
@@ -19,8 +21,8 @@ class ZinetConan(ConanFile):
         ]
    generators = "cmake"
    default_options = {
-        "gtest:shared": True,
-        "glfw:shared": True
+        "gtest/*:shared": True,
+        "glfw/*:shared": True
    }
 
    def imports(self):
