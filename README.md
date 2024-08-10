@@ -12,11 +12,10 @@
 + For minimum setup, run the "`menu.py`" and execute these scripts:
 	- First Time
 	- Generate Project Files Address Sanitizer Off
-	- Generate Reflection
 	- Conan Install Debug
 	- Build Project Debug
 	  
-+ The solution file will be in the build folder
++ The project files will be in the build folder
 
 ## FAQ
   + If you have a strange problem with the "Conan Install" step, then try "conan remove --locks" command
