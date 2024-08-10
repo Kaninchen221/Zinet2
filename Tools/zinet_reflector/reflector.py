@@ -1,11 +1,7 @@
-import concurrent.futures
 import os
-import pathlib
 import timeit
-from pathlib import Path
 
 import clang
-import winsound
 
 from zinet_reflector.assignor import Assignor
 from zinet_reflector.code_generator import *
@@ -21,6 +17,8 @@ from zinet_reflector.code_generators.code_generator_class_info import *
 from zinet_reflector.code_generators.code_generator_getter_setter import *
 
 from zinet_utilities.paths import find_tools_folder
+from zinet_utilities import platform_info
+from zinet_utilities.platform_info import SystemInfo
 
 import importlib
 
@@ -47,7 +45,14 @@ class Reflector:
 
     @staticmethod
     def load_libclang_dll():
-        library_path = find_tools_folder() / "libclang.dll"
+        system_info = platform_info.get_system()
+        if system_info == SystemInfo.Windows:
+            library_path = find_tools_folder() / "libclang.dll"
+        elif system_info == SystemInfo.Linux:
+            library_path = find_tools_folder() / "libclang.so"
+        else:
+            raise Exception("Not supported os")
+
         library_raw_path = str(library_path)
         print(f"Set libclang.dll path: {library_raw_path}")
         assert library_path.is_file()
