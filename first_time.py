@@ -24,20 +24,6 @@ def createVENV():
     return venv_path
 
 
-def activateVENV():
-    activate_path = find_venv_scripts_folder() / "activate"
-    if not activate_path.exists():
-        raise Exception("Activate path doesn't exist")
-
-    print(f"Activate path: {activate_path}")
-    process = subprocess.run(str(activate_path),
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE,
-                             shell=True,
-                             universal_newlines=False)
-    logProcess(process)
-
-
 def create_pth_file(env_path):
     site_packages_path = env_path / 'Lib/site-packages'
     print(f"Site_packages_path: {site_packages_path}")
@@ -69,7 +55,6 @@ def install_requirements():
 
 def main():
     env_path = createVENV()
-    activateVENV()
     create_pth_file(env_path)
     install_requirements()
 
