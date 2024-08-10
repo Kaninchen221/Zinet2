@@ -61,5 +61,5 @@ class EntryPointMain:
 
     def _create_main_file(self, main_file_content, folder_for_temp_main):
         self.main_file_path = folder_for_temp_main / "main.temp.cpp"
-        with (open(self.main_file_path, 'w') as file):
+        with open(self.main_file_path, 'w') as file:
             file.write(main_file_content)
