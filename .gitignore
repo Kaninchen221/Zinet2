@@ -26,7 +26,7 @@ __pycache__
 # Tools
 Tools/zinet_generator/generator.egg-info
 Tools/zinet_reflector/reflector.egg-info
-Tools/outputs
+Tools/outputs/*.py.temp
 
 # Reflector generated files
 Tools/tests/zinet_reflector/test_files/main/main.temp.cpp

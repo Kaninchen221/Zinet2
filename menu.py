@@ -60,7 +60,7 @@ class Menu:
         output_file_name = "output_" + script_file_name + ".temp"
         output_file_folder = find_tools_folder() / "outputs"
         if not output_file_folder.exists():
-            raise Exception(f"Script with path: {output_file_folder} doesn't exist")
+            raise Exception(f"Scripts outputs folder: {output_file_folder} doesn't exist")
 
         output_file_path = str(output_file_folder) + '/' + output_file_name
 
