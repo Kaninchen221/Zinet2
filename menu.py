@@ -123,10 +123,17 @@ class Menu:
                               ["generate_project.py", "--AddressSanitizer true"]),
             MenuOption.create("generate_reflection", "Generate Reflection", self.run_script,
                               ["reflection.py"]),
-            MenuOption.create("conan_install_debug", "Conan Install Debug", self.run_script,
-                              ["conan_install.py", "--BuildType Debug"]),
-            MenuOption.create("conan_install_release", "Conan Install Release", self.run_script,
-                              ["conan_install.py", "--BuildType Release"]),
+
+            MenuOption.create("conan_install_windows_msvc_debug", "Conan Install Windows MSVC Debug", self.run_script,
+                              ["conan_install.py", "--BuildType Debug --Compiler MSVC --Platform Windows"]),
+            MenuOption.create("conan_install_windows_msvc_release", "Conan Install Windows MSVC Release", self.run_script,
+                              ["conan_install.py", "--BuildType Release --Compiler MSVC --Platform Windows"]),
+
+            MenuOption.create("conan_install_linux_gcc_debug", "Conan Install Linux GCC Debug", self.run_script,
+                              ["conan_install.py", "--BuildType Debug --Compiler GCC --Platform Linux"]),
+            MenuOption.create("conan_install_linux_gcc_release", "Conan Install Linux GCC Release", self.run_script,
+                              ["conan_install.py", "--BuildType Release --Compiler GCC --Platform Linux"]),
+
             MenuOption.create("build_project_debug", "Build Project Debug", self.run_script,
                               ["build.py", "--BuildType Debug"]),
             MenuOption.create("build_project_release", "Build Project Release", self.run_script,
