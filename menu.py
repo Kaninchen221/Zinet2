@@ -15,17 +15,24 @@ def print_centered(text):
 
 
 class MenuOption:
+    last_index = 0
+
     def __init__(self):
         self.name = ""
+        self.pretty_name = ""
         self.run_script_function = None
         self.args = []
+        self.index = 0
 
     @staticmethod
-    def create(name, run_script_function, args):
+    def create(name, pretty_name, run_script_function, args):
         menu_option = MenuOption()
         menu_option.name = name
+        menu_option.pretty_name = pretty_name
         menu_option.run_script_function = run_script_function
         menu_option.args = args
+        menu_option.index = MenuOption.last_index
+        MenuOption.last_index += 1
         return menu_option
 
 
@@ -77,40 +84,64 @@ class Menu:
         menu_text = ""
         option_index = 0
         for menu_option in self.menu_options:
-            menu_text += f"    {option_index}: {menu_option.name}\n"
+            menu_text += f"    {option_index}: {menu_option.pretty_name}\n"
             option_index += 1
         print(menu_text)
 
-    def execute_option(self, option_index):
+    def execute_option_index(self, option_index):
         menu_option = self.menu_options[option_index]
         if menu_option.args:
             menu_option.run_script_function(menu_option.args[0], menu_option.args[1:])
         else:
             menu_option.run_script_function()
 
-    def execute_option_safe(self, option_index):
+    def execute_option_index_safe(self, option_index):
         try:
-            self.execute_option(option_index)
+            self.execute_option_index(option_index)
+        except Exception as exception:
+            print(f"\n{exception}\n")
+
+    def execute_option_name(self, option_name):
+        menu_option = [option for option in self.menu_options if option.name == option_name][0]
+        self.execute_option_index(menu_option.index)
+
+    def execute_option_name_safe(self, option_name):
+        try:
+            self.execute_option_name(option_name)
+        except IndexError as exception:
+            print(f"\n{exception}\nIndex out of range could be an invalid name\n")
         except Exception as exception:
             print(f"\n{exception}\n")
 
     def add_options(self):
         self.menu_options = [
-            MenuOption.create("Generate Project Files Address Sanitizer Off", self.run_script,
+            MenuOption.create("generate_project_address_sanitizer_off",
+                              "Generate Project Files Address Sanitizer Off", self.run_script,
                               ["generate_project.py", "--AddressSanitizer false"]),
-            MenuOption.create("Generate Project Files Address Sanitizer On", self.run_script,
+            MenuOption.create("generate_project_address_sanitizer_on",
+                              "Generate Project Files Address Sanitizer On", self.run_script,
                               ["generate_project.py", "--AddressSanitizer true"]),
-            MenuOption.create("Generate Reflection", self.run_script, ["reflection.py"]),
-            MenuOption.create("Conan Install Debug", self.run_script, ["conan_install.py", "--BuildType Debug"]),
-            MenuOption.create("Conan Install Release", self.run_script, ["conan_install.py", "--BuildType Release"]),
-            MenuOption.create("Build Project Debug", self.run_script, ["build.py", "--BuildType Debug"]),
-            MenuOption.create("Build Project Release", self.run_script, ["build.py", "--BuildType Release"]),
-            MenuOption.create("Compile Project Debug", self.run_script, ["compile.py", "--BuildType Debug"]),
-            MenuOption.create("Compile Project Release", self.run_script, ["compile.py", "--BuildType Release"]),
-            MenuOption.create("Run All Automatic Tests", self.run_script, ["run_all_automatic_tests.py"]),
-            MenuOption.create("Run All Tools Tests", self.run_script, ["run_tools_tests.py"]),
-            MenuOption.create("Clear Build Folder", self.run_script, ["clear_build_folder.py"]),
-            MenuOption.create("Exit", exit_program, None)
+            MenuOption.create("generate_reflection", "Generate Reflection", self.run_script,
+                              ["reflection.py"]),
+            MenuOption.create("conan_install_debug", "Conan Install Debug", self.run_script,
+                              ["conan_install.py", "--BuildType Debug"]),
+            MenuOption.create("conan_install_release", "Conan Install Release", self.run_script,
+                              ["conan_install.py", "--BuildType Release"]),
+            MenuOption.create("build_project_debug", "Build Project Debug", self.run_script,
+                              ["build.py", "--BuildType Debug"]),
+            MenuOption.create("build_project_release", "Build Project Release", self.run_script,
+                              ["build.py", "--BuildType Release"]),
+            MenuOption.create("compile_project_debug", "Compile Project Debug", self.run_script,
+                              ["compile.py", "--BuildType Debug"]),
+            MenuOption.create("compile_project_release", "Compile Project Release", self.run_script,
+                              ["compile.py", "--BuildType Release"]),
+            MenuOption.create("run_all_automatic_tests", "Run All Automatic Tests", self.run_script,
+                              ["run_all_automatic_tests.py"]),
+            MenuOption.create("run_all_tools_tests", "Run All Tools Tests", self.run_script,
+                              ["run_tools_tests.py"]),
+            MenuOption.create("clear_build_folder", "Clear Build Folder", self.run_script,
+                              ["clear_build_folder.py"]),
+            MenuOption.create("exit", "Exit", exit_program, None)
         ]
 
     def main_menu(self):
@@ -128,18 +159,23 @@ class Menu:
             if option_index.isdigit():
                 option_index = int(option_index)
                 cls()
-                self.execute_option_safe(option_index)
+                self.execute_option_index_safe(option_index)
             else:
                 cls()
 
                 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Menu.py')
-    parser.add_argument('--Option', type=int, help='Option that should be executed', default='-1')
+    parser.add_argument('--OptionIndex', type=int, help='Option index that should be executed', default='-1')
+    parser.add_argument('--OptionName', type=str, help='Option name that should be executed', default="invalid_name")
     args = parser.parse_args()
 
     menu = Menu()
-    if args.Option == -1:
-        menu.main_menu()
+    if args.OptionIndex != -1:
+        menu.execute_option_index_safe(args.OptionIndex)
+    elif args.OptionName != "invalid_name":
+        menu.execute_option_name_safe(args.OptionName)
     else:
-        menu.execute_option_safe(args.Option)
+        menu.main_menu()
+
+
