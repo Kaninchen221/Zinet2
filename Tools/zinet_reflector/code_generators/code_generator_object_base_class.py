@@ -18,7 +18,9 @@ class CodeGeneratorObjectBaseClass(CodeGeneratorInstructionBase):
                        f"// Class using ZT_REFLECT_CLASS should inherit public from Object class\n")
 
         class_name = parser_result.get_class_name()
-        result += f"const inline static bool RegisterClassResult = RegisterClass<{class_name}>();\n"
+
+        if "NO_REGISTER_CLASS" not in parser_result.tokens:
+            result += f"const inline static bool RegisterClassResult = RegisterClass<{class_name}>();\n"
 
         if "NO_CREATE_COPY" not in parser_result.tokens:
             result += (f"std::unique_ptr<ObjectBase> createCopy() const override {{ "

@@ -46,7 +46,6 @@ namespace zt::core
 		public:
 		
 			std::string_view getClassName() const override { return "Object"; }
-			constexpr static auto GetParentsClassInfo() { return std::vector{ObjectBase::ClassInfo{}}; }
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		
