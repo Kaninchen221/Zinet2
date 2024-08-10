@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from zinet_reflector.parser_result import *
 
 
@@ -8,7 +10,10 @@ class CodeInjector:
 
     def inject_code(self, generated_code):
         for file_path, code in generated_code.items():
-            with (open(file_path, 'r+') as file):
+            if not Path(file_path).exists():
+                raise Exception(f"File doesn't exist: {file_path}")
+
+            with open(file_path, 'r+') as file:
                 file_content = file.read()
                 try:
                     inject_code_start_index = (file_content.index(self.token_inject_code_start)
@@ -18,7 +23,7 @@ class CodeInjector:
                     #print(f"Ignore {file_path} It hasn't injection tokens")
                     continue
 
-            with (open(file_path, 'w') as file):
+            with open(file_path, 'w') as file:
                 print(f"Inject code into: {file_path}")
 
                 code = list(filter(lambda element: element is not None, code))
