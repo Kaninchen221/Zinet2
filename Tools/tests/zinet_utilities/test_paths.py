@@ -37,6 +37,12 @@ class TestUtilities:
         expected = paths.find_tools_folder() / "conan_profiles"
         assert actual == expected
 
+    def test_find_status_icons_folder(self):
+        actual = paths.find_status_icons_folder()
+        expected = paths.find_tools_folder() / "status_icons"
+        assert actual == expected
+        assert expected.exists()
+
     def test_find_venv_folder(self):
         actual = paths.find_venv_folder()
         expected = paths.find_zinet_root_path() / ".venv"
@@ -55,7 +61,6 @@ class TestUtilities:
         assert venv_scripts_folder.exists()
         assert venv_scripts_folder == expected
 
-
     def test_find_venv_activate_path(self):
         venv_activate_path = paths.find_venv_activate_folder()
 
@@ -68,7 +73,6 @@ class TestUtilities:
 
         assert venv_activate_path.exists()
         assert venv_activate_path == expected
-
 
     def test_find_venv_python_path(self):
         venv_python_path = paths.find_venv_python_path()

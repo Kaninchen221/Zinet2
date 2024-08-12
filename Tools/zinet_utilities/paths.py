@@ -39,6 +39,10 @@ def find_conan_profiles_folder():
     return find_tools_folder() / "conan_profiles"
 
 
+def find_status_icons_folder():
+    return find_tools_folder() / "status_icons"
+
+
 def find_venv_folder():
     return find_zinet_root_path() / ".venv"
 
