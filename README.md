@@ -9,7 +9,7 @@
 	- CMake 3.26.4 or newer
 + Clone repo
 + Run `first_time.py`
-+ For minimum setup, run the "`menu.py`" and execute these scripts:
++ For minimum setup, run the `menu.py` and execute these scripts:
 	- First Time
 	- Generate Project Files Address Sanitizer Off
 	- Conan Install Debug
