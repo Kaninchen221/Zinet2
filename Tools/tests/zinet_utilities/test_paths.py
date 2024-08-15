@@ -93,7 +93,7 @@ class TestUtilities:
         if get_system() == SystemInfo.Windows:
             expected = paths.find_venv_folder() / "Scripts/pip.exe"
         elif get_system() == SystemInfo.Linux:
-            expected = paths.find_venv_folder() / "bin/pip"
+            expected = paths.find_venv_folder() / "bin/pip3"
         else:
             raise Exception("Not supported os")
 

@@ -14,7 +14,7 @@ from zinet_utilities.paths import find_tools_folder
 class TestCodeInjector:
 
     def test_inject_code(self):
-        path_to_main = find_tools_folder() / r"tests\zinet_reflector\test_files\include\zinet\lib_name\main.cpp"
+        path_to_main = find_tools_folder() / r"tests/zinet_reflector/test_files/include/zinet/lib_name/main.cpp"
         parser = Parser()
         parse_result = parser.parse(path_to_main)
 

@@ -68,26 +68,35 @@ namespace zt::engine
 /*GENERATED_CODE_START*/
 		
 		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
-		const inline static bool RegisterClassResult = RegisterClass<(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)>();
-		std::unique_ptr<ObjectBase> createCopy() const override { std::unique_ptr<ObjectBase> result = createCopyInternal<(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)>(); *result = *this; return result; }
+		const inline static bool RegisterClassResult = RegisterClass<TextureAsset>();
+		std::unique_ptr<ObjectBase> createCopy() const override { std::unique_ptr<ObjectBase> result = createCopyInternal<TextureAsset>(); *result = *this; return result; }
 		
-		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)() = default;
-		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)(const (unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)& other) = default;
-		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)((unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)&& other) = default;
+		TextureAsset() = default;
+		TextureAsset(const TextureAsset& other) = default;
+		TextureAsset(TextureAsset&& other) = default;
 		
-		~(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)() noexcept = default;
+		~TextureAsset() noexcept = default;
 		
-		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)& operator = (const (unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)& other) = default;
-		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)& operator = ((unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)&& other) = default;
+		TextureAsset& operator = (const TextureAsset& other) = default;
+		TextureAsset& operator = (TextureAsset&& other) = default;
 		
 		class ClassInfo : public zt::core::ClassInfoBase
 		{
 		public:
 		
-			std::string_view getClassName() const override { return "(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)"; }
+			std::string_view getClassName() const override { return "TextureAsset"; }
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		
+		
+		
+		
+		
+		
+		const decltype(texture)& getTexture() const { return texture; }
+		
+		const decltype(backupTexture)& getBackupTexture() const { return backupTexture; }
+		void setBackupTexture(const decltype(backupTexture)& newValue) { backupTexture = newValue; }
 		
 /*GENERATED_CODE_END*/
 

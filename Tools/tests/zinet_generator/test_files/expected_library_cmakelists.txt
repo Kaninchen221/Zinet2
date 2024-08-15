@@ -29,7 +29,7 @@ target_compile_definitions(target_name PRIVATE )
 
 # Tests
 if(TRUE)
-	add_subdirectory(tests_system)
 	add_subdirectory(tests_unit)
+	add_subdirectory(tests_system)
 	
 endif()

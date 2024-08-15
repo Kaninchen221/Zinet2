@@ -34,7 +34,7 @@ class TestCmakelistsGeneratorRoot:
         self.prepare_arguments()
         arguments = self.generator_root.prepare_arguments()
         cmakelists = self.generator_root.generate_cmakelists(arguments)
-        expected_cmake_lists_path = find_tools_folder() / r"tests\zinet_generator\test_files\expected_root.txt"
+        expected_cmake_lists_path = find_tools_folder() / r"tests/zinet_generator/test_files/expected_root.txt"
         expected_cmake_lists = open(expected_cmake_lists_path).read()
 
         assert cmakelists == expected_cmake_lists

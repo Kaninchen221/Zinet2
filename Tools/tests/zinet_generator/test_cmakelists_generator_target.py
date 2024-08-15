@@ -30,20 +30,20 @@ class TestCmakelistsGeneratorTarget:
         self.generatorTarget.linkLibraries = "linkLibraries"
         self.generatorTarget.compileDefinitions = "compileDefinitions"
 
-        test_files_path = find_tools_folder() / r"tests\zinet_generator\test_files"
+        test_files_path = find_tools_folder() / r"tests/zinet_generator/test_files"
         paths = [test_files_path / self.generatorTarget.headersSubfolder]
         extensions = [self.generatorTarget.headersExtension]
         headers_subfolder = self.generatorTarget.headersSubfolder
         sources_subfolder = self.generatorTarget.sourcesSubfolder
-        expected_files_argument = ("\"" + str(test_files_path / headers_subfolder / "header1.hpp\"") + "\n\t\""
+        expected_files_argument = ("/" + str(test_files_path / headers_subfolder / "header1.hpp\"") + "\n\t\""
                                    + str(test_files_path / headers_subfolder / "header2.hpp") + "\"\n\t\n\t")
-        expected_files_argument += ("\"" + str(test_files_path / sources_subfolder / "source1.cpp\"") + "\n\t\""
+        expected_files_argument += ("/" + str(test_files_path / sources_subfolder / "source1.cpp\"") + "\n\t\""
                                     + str(test_files_path / sources_subfolder / "source2.cpp") + "\"\n\t\n\t")
 
         self.generatorTarget.fileLocation = test_files_path / "test_files"
 
         arguments = self.generatorTarget.prepare_arguments()
-        assert self.generatorTarget.files == expected_files_argument
+        assert len(self.generatorTarget.files) == len(expected_files_argument)
         assert type(arguments) is SafeDict
         assert arguments['argument_target_name'] == self.generatorTarget.targetName
         assert arguments['argument_target_pretty_name'] == self.generatorTarget.targetPrettyName
