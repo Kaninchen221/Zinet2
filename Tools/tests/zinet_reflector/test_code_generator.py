@@ -14,8 +14,8 @@ from zinet_utilities.paths import find_tools_folder
 class TestCodeGenerator:
 
     def test_generate_code(self):
-        path = find_tools_folder() / (r"tests/zinet_reflector/test_files\include\zinet\lib_name"
-                                      r"\reflection_test_file_with_macros.hpp")
+        path = find_tools_folder() / (r"tests/zinet_reflector/test_files/include/zinet/lib_name"
+                                      r"/reflection_test_file_with_macros.hpp")
         parser = Parser()
         parse_result = parser.parse(path)
 

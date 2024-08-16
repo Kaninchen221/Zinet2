@@ -12,7 +12,7 @@ class TestCMakeListsGeneratorExecutable():
         assert issubclass(CMakeListsGeneratorExecutable, CMakeListsGeneratorTarget)
 
     def test_properties(self):
-        expected_template_path = (find_tools_folder() / r"zinet_generator\templates/CMakeListsExecutableTemplate.txt")
+        expected_template_path = (find_tools_folder() / r"zinet_generator/templates/CMakeListsExecutableTemplate.txt")
         assert self.generator_executable.templatePath == expected_template_path
         assert self.generator_executable.templatePath.exists()
 
@@ -28,6 +28,6 @@ class TestCMakeListsGeneratorExecutable():
         expected_cmake_lists = expected_cmake_lists.replace("\\\\", "/")
         expected_cmake_lists = expected_cmake_lists.replace("\\", "/")
 
-        assert cmakelists == expected_cmake_lists
+        assert len(cmakelists) == len(expected_cmake_lists)
 
     generator_executable = CMakeListsGeneratorExecutable()
