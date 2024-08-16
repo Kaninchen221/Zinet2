@@ -17,11 +17,11 @@ class CMakeListsGeneratorLibrary(CMakeListsGeneratorTarget):
                 testsSubfolders += "add_subdirectory(" + path.name + ")\n\t"
 
         result = super().prepare_arguments()
-        result |= SafeDict(
+        result.update(SafeDict(
             argument_library_type = self.libraryType,
             argument_should_add_tests = self.shouldAddTests,
             argument_tests_subfolders = testsSubfolders
-        )
+        ))
         return result
         
     libraryType = "STATIC"
