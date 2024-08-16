@@ -12,7 +12,6 @@ class ZinetConan(ConanFile):
         "stb/cci.20240531@",
         "pybind11/2.9.1@",
         "nlohmann_json/3.10.5@",
-        "box2d/2.4.1@",
         "glm/0.9.9.5@",
         "glslang/1.3.239.0@",
         "spirv-tools/1.3.239.0@",
