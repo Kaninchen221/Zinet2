@@ -4,7 +4,6 @@ from conan.tools import cmake
 class ZinetConan(ConanFile):
    settings = "os", "compiler", "build_type", "arch"
    requires = [
-        "cmake/3.30.1@",
         "gtest/1.10.0@",
         "spdlog/1.9.2@",
         "plf_colony/7.06@",
