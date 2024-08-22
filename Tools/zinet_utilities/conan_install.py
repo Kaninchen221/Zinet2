@@ -60,7 +60,8 @@ def conan_install():
                  f'-pr:b {profile_path} '
                  f'--build="missing" '
                  f'-if {build_folder_path} '
-                 f'-of {build_folder_path} ')
+                 f'-of {build_folder_path} '
+                 f'-c tools.system.package_manager:mode=install ')
     print(f"Arguments: {arguments}")
 
     process = subprocess.run(f"{conan_path} " + arguments, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
