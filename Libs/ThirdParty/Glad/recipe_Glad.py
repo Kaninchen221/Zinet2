@@ -2,7 +2,7 @@ from zinet_generator.cmakelists_generator_library import CMakeListsGeneratorLibr
 
 generator = CMakeListsGeneratorLibrary()
 generator.targetName = "Glad"
-generator.targetPrettyName = "Glad Lib"
+generator.targetPrettyName = "Glad"
 generator.headersExtension = "hpp"
 generator.sourcesExtension = "cpp"
 generator.compileDefinitions = """

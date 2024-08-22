@@ -2,7 +2,7 @@ from zinet_generator.cmakelists_generator_library import CMakeListsGeneratorLibr
 
 generator = CMakeListsGeneratorLibrary()
 generator.targetName = "ImGui"
-generator.targetPrettyName = "Imgui Lib"
+generator.targetPrettyName = "Imgui"
 generator.compileDefinitions = """
     ZINET_LIB
     """

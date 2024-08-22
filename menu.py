@@ -134,14 +134,21 @@ class Menu:
             MenuOption.create("conan_install_linux_gcc_release", "Conan Install Linux GCC Release", self.run_script,
                               ["conan_install.py", "--BuildType Release --Compiler GCC --Platform Linux"]),
 
-            MenuOption.create("build_project_debug", "Build Project Debug", self.run_script,
-                              ["build.py", "--BuildType Debug"]),
-            MenuOption.create("build_project_release", "Build Project Release", self.run_script,
-                              ["build.py", "--BuildType Release"]),
+            MenuOption.create("build_project_debug_visual_studio", "Build Project Debug Visual Studio", self.run_script,
+                              ["build.py", '--BuildType Debug --CMakeGenerator "Visual Studio 17 2022"']),
+            MenuOption.create("build_project_release_visual_studio", "Build Project Release Visual Studio", self.run_script,
+                              ["build.py", '--BuildType Release --CMakeGenerator "Visual Studio 17 2022"']),
+
+            MenuOption.create("build_project_debug_makefiles", "Build Project Debug Makefiles", self.run_script,
+                              ["build.py", '--BuildType Debug --CMakeGenerator "Unix Makefiles"']),
+            MenuOption.create("build_project_release_makefiles", "Build Project Release Makefiles", self.run_script,
+                              ["build.py", '--BuildType Release --CMakeGenerator "Unix Makefiles"']),
+
             MenuOption.create("compile_project_debug", "Compile Project Debug", self.run_script,
                               ["compile.py", "--BuildType Debug"]),
             MenuOption.create("compile_project_release", "Compile Project Release", self.run_script,
                               ["compile.py", "--BuildType Release"]),
+
             MenuOption.create("run_all_automatic_tests", "Run All Automatic Tests", self.run_script,
                               ["run_all_automatic_tests.py"]),
             MenuOption.create("run_all_tools_tests", "Run All Tools Tests", self.run_script,
