@@ -1,8 +1,12 @@
 #pragma once
 
-#include <intrin.h>
-#include <source_location>
-#include <string>
+#include "Zinet/Core/ZtCoreConfig.hpp"
+
+#ifdef ZINET_MSVC
+	#include <intrin.h>
+#elif ZINET_GCC
+	#include <signal.h>
+#endif
 
 namespace zt::core
 {
@@ -11,11 +15,15 @@ namespace zt::core
 
 	static inline bool Ensure(bool Value)
 	{
+#ifdef ZINET_MSVC
 		if (!Value)
 		{
 			__nop();
 			__debugbreak();
 		}
+#elif ZINET_GCC
+		raise(SIGTRAP);
+#endif
 
 		return Value;
 	}

@@ -2,6 +2,8 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
+#include <string_view>
+
 namespace zt::core
 {
 	class ZINET_CORE_API ClassInfoBase

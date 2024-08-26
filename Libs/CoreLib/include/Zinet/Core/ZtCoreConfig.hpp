@@ -27,7 +27,7 @@
 
 	#define ZINET_CORE_API
 
-#endif
+#endif // ZINET_STATIC
 
 #define ZT_GENERATED_BODY(...)
 #define ZT_REFLECT_NAMESPACE(...)
@@ -41,6 +41,14 @@
 
 #ifdef _DEBUG
 	#define ZINET_DEBUG
+#endif
+
+#ifdef _MSC_VER
+	#define ZINET_MSVC
+#elif __GNUC__ && __cplusplus
+	#define ZINET_GCC
+#else
+	#error "Not supported compiler"
 #endif
 
 #include "Zinet/Core/ZtDebug.hpp"
