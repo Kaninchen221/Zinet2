@@ -2,6 +2,8 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
+#include <compare>
+
 namespace zt::core
 {
 

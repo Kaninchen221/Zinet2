@@ -27,7 +27,7 @@
 
 	#define ZINET_CORE_API
 
-#endif
+#endif // ZINET_STATIC
 
 #define ZT_GENERATED_BODY(...)
 #define ZT_REFLECT_NAMESPACE(...)
@@ -40,7 +40,21 @@
 #define ZINET_DEBUG_UI
 
 #ifdef _DEBUG
-	#define ZINET_DEBUG
-#endif
+	#define ZINET_DEBUG 1
+#elif
+	#define ZINET_DEBUG 0
+#endif // _DEBUG
+
+#ifdef _MSC_VER
+	#define ZINET_MSVC 1
+#else
+	#define ZINET_MSVC 0
+#endif // _MSC_VER
+
+#ifdef __GNUC__
+	#define ZINET_GCC 1
+#else
+	#define ZINET_GCC 0
+#endif // __GNUC__
 
 #include "Zinet/Core/ZtDebug.hpp"

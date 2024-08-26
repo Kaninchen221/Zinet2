@@ -2,7 +2,7 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
-#include <cstdint>
+#include <limits>
 
 namespace zt::core
 {
