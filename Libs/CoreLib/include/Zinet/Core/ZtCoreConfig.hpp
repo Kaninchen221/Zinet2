@@ -41,7 +41,7 @@
 
 #ifdef _DEBUG
 	#define ZINET_DEBUG 1
-#elif
+#else
 	#define ZINET_DEBUG 0
 #endif // _DEBUG
 
