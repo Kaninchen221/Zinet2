@@ -134,9 +134,9 @@ class Menu:
             MenuOption.create("conan_install_linux_gcc_release", "Conan Install Linux GCC Release", self.run_script,
                               ["conan_install.py", "--BuildType Release --Compiler GCC --Platform Linux"]),
 
-            MenuOption.create("build_project_debug_visual_studio", "Build Project Debug Visual Studio", self.run_script,
+            MenuOption.create("build_project_debug_visual_studio", "Build Project Debug Visual Studio 17 2022", self.run_script,
                               ["build.py", '--BuildType Debug --CMakeGenerator "Visual Studio 17 2022"']),
-            MenuOption.create("build_project_release_visual_studio", "Build Project Release Visual Studio", self.run_script,
+            MenuOption.create("build_project_release_visual_studio", "Build Project Release Visual Studio 17 2022", self.run_script,
                               ["build.py", '--BuildType Release --CMakeGenerator "Visual Studio 17 2022"']),
 
             MenuOption.create("build_project_debug_makefiles", "Build Project Debug Makefiles", self.run_script,
