@@ -19,14 +19,14 @@ namespace zt::core
 	{
 		if (!Value)
 		{
-	#if ZINET_MSVC
+		#if ZINET_MSVC
 			__nop();
 			__debugbreak();
-	#endif // ZINET_MSVC
+		#endif // ZINET_MSVC
 
-	#if ZINET_GCC
+		#if ZINET_GCC
 			raise(SIGTRAP);
-	#endif // ZINET_GCC
+		#endif // ZINET_GCC
 		}
 
 		return Value;
