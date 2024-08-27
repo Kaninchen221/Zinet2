@@ -12,7 +12,11 @@ message(STATUS "*** C compiler path: ${CMAKE_C_COMPILER} ***")
 set(CMAKE_CXX_STANDARD 23)
 
 # Global compile options
-add_compile_options(/W4 /WX)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    add_compile_options(-w -Werror)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    add_compile_options(/W4 /WX)
+endif()
 
 # Global compile definitions
 add_compile_definitions(opt1 opt2 opt3)

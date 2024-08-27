@@ -24,7 +24,8 @@ class TestCmakelistsGeneratorRoot:
         assert arguments['argument_project_name'] == self.generator_root.projectName
         assert arguments['argument_project_version'] == self.generator_root.projectVersion
         assert arguments['argument_project_description'] == self.generator_root.projectDescription
-        assert arguments['argument_global_compile_options'] == self.generator_root.globalCompileOptions
+        assert arguments['argument_global_compile_options_gnu'] == self.generator_root.globalCompileOptionsGNU
+        assert arguments['argument_global_compile_options_msvc'] == self.generator_root.globalCompileOptionsMSVC
         assert arguments['argument_global_compile_definitions'] == self.generator_root.globalCompileDefinitions
         assert (arguments['argument_subdirectories'] ==
                 f"add_subdirectory({self.generator_root.libsPath}Core)\n"
@@ -44,7 +45,8 @@ class TestCmakelistsGeneratorRoot:
         self.generator_root.projectName = "project name"
         self.generator_root.projectVersion = "project version"
         self.generator_root.projectDescription = "description"
-        self.generator_root.globalCompileOptions = "/W4 /WX"
+        self.generator_root.globalCompileOptionsGNU = "-w -Werror"
+        self.generator_root.globalCompileOptionsMSVC = "/W4 /WX"
         self.generator_root.globalCompileOptionsForAddressSanitizer = "/AddressSanitizer"
         self.generator_root.globalCompileDefinitions = "opt1 opt2 opt3"
         self.generator_root.subdirectories = ["Core", "GraphicLayer"]

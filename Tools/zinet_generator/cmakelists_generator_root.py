@@ -16,7 +16,8 @@ class CMakelistsGeneratorRoot(CMakeListsGenerator):
             argument_project_name = self.projectName,
             argument_project_version = self.projectVersion,
             argument_project_description = self.projectDescription,
-            argument_global_compile_options = self.globalCompileOptions,
+            argument_global_compile_options_msvc = self.globalCompileOptionsMSVC,
+            argument_global_compile_options_gnu = self.globalCompileOptionsGNU,
             argument_global_compile_definitions = self.globalCompileDefinitions,
             argument_subdirectories = subdirectories_arg
             )
@@ -36,7 +37,8 @@ class CMakelistsGeneratorRoot(CMakeListsGenerator):
     projectName = ''
     projectVersion = ''
     projectDescription = ''
-    globalCompileOptions = ''
+    globalCompileOptionsMSVC = ''
+    globalCompileOptionsGNU = ''
     globalCompileOptionsForAddressSanitizer = ''
     globalCompileDefinitions = ''
     subdirectories = ''
