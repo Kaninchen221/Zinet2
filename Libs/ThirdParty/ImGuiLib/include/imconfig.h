@@ -128,26 +128,21 @@ namespace ImGui
 }
 */
 
+#include "Zinet/Core/ZtCoreConfig.hpp"
+
 #ifndef ZINET_STATIC
 
-#ifdef ZINET_WINDOWS
-#define ZINET_API_EXPORT __declspec(dllexport)
-#define ZINET_API_IMPORT __declspec(dllimport)
-#else 
-#error Not supported OS platform
-#endif // ZINET_WINDOWS
-
-#ifdef ZINET_LIB
-#define IMGUI_API ZINET_API_EXPORT
-#define IMGUI_IMPL_API ZINET_API_EXPORT
-#else
-#define IMGUI_API ZINET_API_IMPORT
-#define IMGUI_IMPL_API ZINET_API_IMPORT
-#endif // ZINET_LIB
+#   ifdef ZINET_LIB
+#       define IMGUI_API ZINET_API_EXPORT
+#       define IMGUI_IMPL_API ZINET_API_EXPORT
+#   else
+#       define IMGUI_API ZINET_API_IMPORT
+#       define IMGUI_IMPL_API ZINET_API_IMPORT
+#   endif // ZINET_LIB
 
 #else
 
-#define IMGUI_API
-#define IMGUI_IMPL_API
+#   define IMGUI_API
+#   define IMGUI_IMPL_API
 
 #endif

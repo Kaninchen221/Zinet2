@@ -11,6 +11,7 @@ generator.includeDirectories = """
     ${Vulkan_INCLUDE_DIRS}
     """
 generator.linkLibraries = """
+    ZinetCore
     ${CONAN_LIBS_GLFW}
     ${Vulkan_LIBRARIES}
     """
