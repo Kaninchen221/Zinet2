@@ -14,7 +14,7 @@
 #endif
 
 #ifndef ZINET_STATIC
-#	ifdef ZINET_WINDOWS
+#	if ZINET_WINDOWS
 #		define ZINET_API_EXPORT __declspec(dllexport)
 #		define ZINET_API_IMPORT __declspec(dllimport)
 #	else
