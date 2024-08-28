@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Zinet/Core/ZtIDTypes.hpp"
-
 #include "Zinet/Core/ZtTypeTraits.hpp"
 
 #include <gtest/gtest.h>

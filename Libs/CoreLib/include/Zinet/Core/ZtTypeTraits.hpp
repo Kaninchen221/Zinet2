@@ -2,6 +2,7 @@
 
 #include <type_traits>
 #include <cstdlib>
+#include <functional>
 
 namespace zt::core
 {
