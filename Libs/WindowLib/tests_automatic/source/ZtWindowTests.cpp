@@ -16,16 +16,15 @@ namespace zt::wd::tests
 	{
 	protected:
 
+		GLFW glfw;
 		Window window{};
 
 		void SetUp() override
 		{
-			GLFW::Init();
 		}
 
 		void TearDown() override
 		{
-			GLFW::Deinit();
 		}
 	};
 

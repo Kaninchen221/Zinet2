@@ -13,6 +13,7 @@ namespace zt::wd::tests
 	{
 	protected:
 
+		GLFW glfw;
 		Window window;
 		Keyboard keyboard{ window };
 
@@ -20,12 +21,10 @@ namespace zt::wd::tests
 
 		void SetUp() override
 		{
-			GLFW::Init();
 		}
 
 		void TearDown() override
 		{
-			GLFW::Deinit();
 		}
 	};
 

@@ -18,17 +18,16 @@ namespace zt::wd::tests
 	{
 	protected:
 
+		GLFW glfw;
 		Window window;
 		Mouse mouse{ window };
 
 		void SetUp() override
 		{
-			GLFW::Init();
 		}
 
 		void TearDown() override
 		{
-			GLFW::Deinit();
 		}
 	};
 
@@ -73,7 +72,7 @@ namespace zt::wd::tests
 
 	TEST(Mouse, PositionCallback)
 	{
-		GLFW::Init();
+		GLFW glfw;
 
 		Window window;
 		window.create();
@@ -92,8 +91,6 @@ namespace zt::wd::tests
 		Mouse::PositionCallback(window.getInternal(), expectedSecondPosition.x, expectedSecondPosition.y);
 		Vector2d actualSecondPosition = positions[0].position;
 		ASSERT_EQ(expectedSecondPosition, actualSecondPosition);
-
-		GLFW::Deinit();
 	}
 
 	TEST_F(MouseTests, GetPositionEvents)
