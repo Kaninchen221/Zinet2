@@ -20,6 +20,7 @@ for file in os.listdir():
     if get_system() == SystemInfo.Other:
         raise Exception("Not supported OS Platform")
 
+    command = str(bin_folder_path / file)
     process = subprocess.run(file, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
                              universal_newlines=True)
     print(process.stdout)
