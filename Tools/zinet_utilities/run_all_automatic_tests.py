@@ -8,9 +8,8 @@ from zinet_utilities.platform_info import get_system, SystemInfo
 
 bin_folder_path = find_zinet_bin_path()
 print(f"Bin folder path: {bin_folder_path}")
-os.chdir(bin_folder_path)
 
-for file in os.listdir():
+for file in os.listdir(bin_folder_path):
     if get_system() == SystemInfo.Windows and (not file.endswith(".exe") or file.find("Automatic") == -1):
         continue
 
@@ -21,7 +20,8 @@ for file in os.listdir():
         raise Exception("Not supported OS Platform")
 
     command = str(bin_folder_path / file)
-    process = subprocess.run(file, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
+    print("Run: " + command)
+    process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
                              universal_newlines=True)
     print(process.stdout)
     print(process.stderr)
