@@ -1,6 +1,8 @@
 from conan import ConanFile
 from conan.tools import cmake
 
+from Tools.zinet_utilities.platform_info import *
+
 class ZinetConan(ConanFile):
    settings = "os", "compiler", "build_type", "arch"
    requires = [
@@ -22,6 +24,10 @@ class ZinetConan(ConanFile):
         "gtest/*:shared": True,
         "glfw/*:shared": True
    }
+
+   if get_system() == SystemInfo.Linux:
+        default_options["glfw/*:with_x11"] = False
+        default_options["glfw/*:with_wayland"] = True
 
    def imports(self):
        self.copy(pattern="*.dll", dst="bin", keep_path=False)
