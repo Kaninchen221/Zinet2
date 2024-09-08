@@ -26,7 +26,6 @@ class ZinetConan(ConanFile):
    }
 
    if get_system() == SystemInfo.Linux:
-        default_options["glfw/*:with_x11"] = False
         default_options["glfw/*:with_wayland"] = True
 
    def imports(self):
