@@ -139,10 +139,10 @@ class Menu:
             MenuOption.create("build_project_release_visual_studio", "Build Project Release Visual Studio 17 2022", self.run_script,
                               ["build.py", '--BuildType Release --CMakeGenerator "Visual Studio 17 2022"']),
 
-            MenuOption.create("build_project_debug_makefiles", "Build Project Debug Makefiles", self.run_script,
-                              ["build.py", '--BuildType Debug --CMakeGenerator "Unix Makefiles"']),
-            MenuOption.create("build_project_release_makefiles", "Build Project Release Makefiles", self.run_script,
-                              ["build.py", '--BuildType Release --CMakeGenerator "Unix Makefiles"']),
+            MenuOption.create("build_project_debug_ninja", "Build Project Debug Ninja", self.run_script,
+                              ["build.py", '--BuildType Debug --CMakeGenerator "Ninja"']),
+            MenuOption.create("build_project_release_ninja", "Build Project Release Ninja", self.run_script,
+                              ["build.py", '--BuildType Release --CMakeGenerator "Ninja"']),
 
             MenuOption.create("compile_project_debug", "Compile Project Debug", self.run_script,
                               ["compile.py", "--BuildType Debug"]),
