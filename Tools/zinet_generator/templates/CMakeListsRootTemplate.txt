@@ -22,9 +22,21 @@ endif()
 add_compile_definitions({argument_global_compile_definitions})
 
 # Conan
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+include(build/conan/conan_toolchain.cmake)
+find_package(GTest)
+find_package(spdlog)
+find_package(plf_colony)
+find_package(glfw3)
+find_package(stb)
+find_package(pybind11)
+find_package(nlohmann_json)
+find_package(glm)
+find_package(shaderc)
+find_package(glslang)
+find_package(SPIRV-Tools)
+find_package(vulkan-memory-allocator)
 
+# Tests
 enable_testing()
 
 # Vulkan SDK

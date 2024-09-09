@@ -59,8 +59,7 @@ def conan_install():
                  f'-pr {profile_path} '
                  f'-pr:b {profile_path} '
                  f'--build="missing" '
-                 f'-if {build_folder_path} '
-                 f'-of {build_folder_path} '
+                 f'-of {build_folder_path}/conan '
                  f'-c tools.system.package_manager:mode=install ')
     print(f"Arguments: {arguments}")
 

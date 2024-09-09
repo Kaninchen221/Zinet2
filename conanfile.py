@@ -9,7 +9,7 @@ class ZinetConan(ConanFile):
         "gtest/1.15.0@",
         "spdlog/1.9.2@",
         "plf_colony/7.06@",
-        "glfw/3.3.6@",
+        "glfw/3.4@",
         "stb/cci.20240531@",
         "pybind11/2.9.1@",
         "nlohmann_json/3.10.5@",
@@ -19,7 +19,7 @@ class ZinetConan(ConanFile):
         "shaderc/2023.6@",
         "vulkan-memory-allocator/cci.20231120@"
         ]
-   generators = "cmake"
+   generators = ["CMakeToolchain", "CMakeDeps"]
    default_options = {
         "gtest/*:shared": True,
         "glfw/*:shared": True
