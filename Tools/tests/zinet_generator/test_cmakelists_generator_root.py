@@ -28,8 +28,12 @@ class TestCmakelistsGeneratorRoot:
         assert arguments['argument_global_compile_options_msvc'] == self.generator_root.globalCompileOptionsMSVC
         assert arguments['argument_global_compile_definitions'] == self.generator_root.globalCompileDefinitions
         assert (arguments['argument_subdirectories'] ==
-                f"add_subdirectory({self.generator_root.libsPath}Core)\n"
-                f"add_subdirectory({self.generator_root.libsPath}GraphicLayer)\n")
+                f"add_subdirectory({self.generator_root.libsPath}CoreLib)\n"
+                f"add_subdirectory({self.generator_root.libsPath}RHILib)\n"
+                f"add_subdirectory({self.generator_root.libsPath}WindowLib)\n"
+                f"add_subdirectory({self.generator_root.libsPath}MathLib)\n"
+                f"add_subdirectory({self.generator_root.libsPath}ThirdParty/ImGuiLib)\n"
+                f"add_subdirectory({self.generator_root.libsPath}ThirdParty/Glad)\n")
 
     def test_generate_cmakelists(self):
         self.prepare_arguments()
@@ -49,6 +53,6 @@ class TestCmakelistsGeneratorRoot:
         self.generator_root.globalCompileOptionsMSVC = "/W4 /WX"
         self.generator_root.globalCompileOptionsForAddressSanitizer = "/AddressSanitizer"
         self.generator_root.globalCompileDefinitions = "opt1 opt2 opt3"
-        self.generator_root.subdirectories = ["Core", "GraphicLayer"]
+        self.generator_root.subdirectories = ["CoreLib", "RHILib", "WindowLib", "MathLib", "ThirdParty/ImGuiLib", "ThirdParty/Glad"]
 
     generator_root = CMakelistsGeneratorRoot()

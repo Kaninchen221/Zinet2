@@ -9,13 +9,6 @@ generator.compileDefinitions = """
     GLAD_API_CALL_EXPORT
     """
 generator.includeDirectories = """
-    ${CONAN_INCLUDE_DIRS_SHADERC}
-    ${CONAN_INCLUDE_DIRS_GLFW}
-    ${CONAN_INCLUDE_DIRS_GLM}
-    ${CONAN_INCLUDE_DIRS_STB}
-    ${CONAN_INCLUDE_DIRS_VULKAN-MEMORY-ALLOCATOR}
-    ${Vulkan_INCLUDE_DIRS}
-    ${Vulkan_INCLUDE_DIRS}
     """
 generator.linkLibraries = """
     ZinetCore
@@ -23,14 +16,13 @@ generator.linkLibraries = """
     ZinetMath
     ImGui
     Glad
-    ${CONAN_LIBS_SHADERC}
-    ${CONAN_LIBS_GLFW}
-    ${CONAN_LIBS_GLM}
-    ${CONAN_LIBS_GLSLANG}
-    ${CONAN_LIBS_STB}
-    ${CONAN_LIBS_VULKAN-MEMORY-ALLOCATOR}
+    shaderc::shaderc
+    glfw
+    glm::glm
+    glslang::glslang
+    stb::stb
+    vulkan-memory-allocator::vulkan-memory-allocator
     ${Vulkan_LIBRARIES}
-    ${CONAN_LIBS_SPIRV-TOOLS}
-    ${CONAN_LIBS_SPIRV-HEADERS}
+    spirv-tools::spirv-tools
     """
 project_generator.add_generator(generator)

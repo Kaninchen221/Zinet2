@@ -7,12 +7,11 @@ generator.compileDefinitions = """
     ZINET_LIB
     """
 generator.includeDirectories = """
-    ${CONAN_INCLUDE_DIRS_GLFW}
-    ${Vulkan_INCLUDE_DIRS}
+    ${VulkanHeaders_INCLUDE_DIRS}
     """
 generator.linkLibraries = """
     ZinetCore
-    ${CONAN_LIBS_GLFW}
+    glfw
     ${Vulkan_LIBRARIES}
     """
 project_generator.add_generator(generator)

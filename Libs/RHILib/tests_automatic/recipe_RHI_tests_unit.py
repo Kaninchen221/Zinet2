@@ -12,6 +12,6 @@ generator.includeDirectories = """
 generator.linkLibraries =  """
     ZinetWindow
     ZinetRHI
-    ${CONAN_LIBS_GTEST}
+    gtest::gtest
     """
 project_generator.add_generator(generator)

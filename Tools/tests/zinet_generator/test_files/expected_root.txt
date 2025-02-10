@@ -22,14 +22,31 @@ endif()
 add_compile_definitions(opt1 opt2 opt3)
 
 # Conan
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+include(build/conan/conan_toolchain.cmake)
+find_package(GTest CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+find_package(plf_colony CONFIG REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
+find_package(stb CONFIG REQUIRED)
+find_package(pybind11 CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
+find_package(shaderc CONFIG REQUIRED)
+find_package(glslang CONFIG REQUIRED)
+find_package(SPIRV-Tools CONFIG REQUIRED)
+find_package(vulkan-memory-allocator CONFIG REQUIRED)
 
+# Tests
 enable_testing()
 
 # Vulkan SDK
 find_package(Vulkan REQUIRED)
 
 # Add subdirectories
-add_subdirectory(Libs/Core)
-add_subdirectory(Libs/GraphicLayer)
+add_subdirectory(Libs/CoreLib)
+add_subdirectory(Libs/RHILib)
+add_subdirectory(Libs/WindowLib)
+add_subdirectory(Libs/MathLib)
+add_subdirectory(Libs/ThirdParty/ImGuiLib)
+add_subdirectory(Libs/ThirdParty/Glad)
+

@@ -8,17 +8,13 @@ generator.compileDefinitions = """
     ZINET_LIB
     """
 generator.includeDirectories = """
-    ${CONAN_INCLUDE_DIRS_SPDLOG}
-    ${CONAN_INCLUDE_DIRS_FMT}
-    ${CONAN_INCLUDE_DIRS_GLFW}
-    ${CONAN_INCLUDE_DIRS_GLM}
     """
 generator.linkLibraries = """
     ZinetCore
     ZinetMath
-    ${CONAN_LIBS_SPDLOG}
-    ${CONAN_LIBS_FMT}
-    ${CONAN_LIBS_GLFW}
-    ${CONAN_LIBS_GLM}
+    spdlog::spdlog
+    fmt::fmt
+    glfw
+    glm::glm
     """
 project_generator.add_generator(generator)
