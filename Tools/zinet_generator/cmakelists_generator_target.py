@@ -52,5 +52,5 @@ class CMakeListsGeneratorTarget(CMakeListsGenerator):
     compileDefinitions = ""
     archiveOutputSubfolder = "archive"
     libraryOutputSubfolder = "lib"
-    runtimeOutputSubfolder = "runtime"
+    runtimeOutputSubfolder = "bin"
 

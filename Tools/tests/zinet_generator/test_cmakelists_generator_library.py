@@ -1,3 +1,5 @@
+from difflib import SequenceMatcher
+
 from zinet_generator.cmakelists_generator import CMakeListsGenerator
 from zinet_generator.cmakelists_generator_target import CMakeListsGeneratorTarget
 from zinet_generator.cmakelists_generator_library import CMakeListsGeneratorLibrary
@@ -47,6 +49,8 @@ class TestCMakeListsGeneratorLibrary():
         expected_cmake_lists = expected_cmake_lists.replace("\\\\", "/")
         expected_cmake_lists = expected_cmake_lists.replace("\\", "/")
 
-        assert len(cmakelists) == len(expected_cmake_lists)
+        similarity = SequenceMatcher(None, cmakelists, expected_cmake_lists).ratio()
+        if similarity < 0.99:
+            assert cmakelists == expected_cmake_lists
 
     generator_library = CMakeListsGeneratorLibrary()

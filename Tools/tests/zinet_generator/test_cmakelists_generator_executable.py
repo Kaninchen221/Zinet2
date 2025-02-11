@@ -28,6 +28,6 @@ class TestCMakeListsGeneratorExecutable():
         expected_cmake_lists = expected_cmake_lists.replace("\\\\", "/")
         expected_cmake_lists = expected_cmake_lists.replace("\\", "/")
 
-        assert len(cmakelists) == len(expected_cmake_lists)
+        assert cmakelists == expected_cmake_lists
 
     generator_executable = CMakeListsGeneratorExecutable()

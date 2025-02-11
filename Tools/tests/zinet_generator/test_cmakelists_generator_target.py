@@ -23,7 +23,7 @@ class TestCmakelistsGeneratorTarget:
         assert self.generatorTarget.compileDefinitions == ""
         assert self.generatorTarget.archiveOutputSubfolder == "archive"
         assert self.generatorTarget.libraryOutputSubfolder == "lib"
-        assert self.generatorTarget.runtimeOutputSubfolder == "runtime"
+        assert self.generatorTarget.runtimeOutputSubfolder == "bin"
 
     def test_prepare_arguments(self):
         self.generatorTarget.includeDirectories = "includeDirectories"

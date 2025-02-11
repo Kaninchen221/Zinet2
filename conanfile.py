@@ -1,11 +1,13 @@
 from conan import ConanFile
 from conan.tools import cmake
+from conan.tools.files import copy
+from pathlib import Path
 
 from Tools.zinet_utilities.platform_info import *
 
 class ZinetConan(ConanFile):
-   settings = "os", "compiler", "build_type", "arch"
-   requires = [
+    settings = "os", "compiler", "build_type", "arch"
+    requires = [
         "gtest/1.15.0@",
         "spdlog/1.9.2@",
         "plf_colony/7.06@",
@@ -19,16 +21,27 @@ class ZinetConan(ConanFile):
         "shaderc/2023.6@",
         "vulkan-memory-allocator/cci.20231120@"
         ]
-   generators = ["CMakeToolchain", "CMakeDeps"]
-   default_options = {
+    generators = ["CMakeToolchain", "CMakeDeps"]
+    default_options = {
         "gtest/*:shared": True,
         "glfw/*:shared": True
-   }
+    }
 
-   if get_system() == SystemInfo.Linux:
+    if get_system() == SystemInfo.Linux:
         default_options["glfw/*:with_wayland"] = True
 
-   def imports(self):
-       self.copy(pattern="*.dll", dst="bin", keep_path=False)
-       self.copy(pattern="*.dylib", dst="lib", keep_path=False)
-       self.copy(pattern="*.pdb", dst="bin", keep_path=False)
+    def generate(self):
+        for dep in self.dependencies.values():
+            
+            bin_path = Path(self.source_folder) / "build" / "bin" / str(self.settings.build_type)
+            
+            if self.settings.compiler == "gcc":
+                lib_ext = "*.so"
+            elif self.settings.compiler == "msvc":
+                lib_ext = "*.dll"
+                
+            if dep.cpp_info.bindirs:
+                copy(self, lib_ext, src=dep.cpp_info.bindirs[0], dst=bin_path, keep_path=False)
+                
+            if dep.cpp_info.libdirs:
+                copy(self, lib_ext, src=dep.cpp_info.libdirs[0], dst=bin_path, keep_path=False)
