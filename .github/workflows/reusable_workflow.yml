@@ -15,7 +15,6 @@ on:
       python_path:
         required: true
         type: string
-        
       conan_install_step_name:
         required: true
         type: string
