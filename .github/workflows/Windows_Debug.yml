@@ -16,7 +16,7 @@ jobs:
       os: windows
       name: Windows_Debug
       pretty_name: "Windows Debug"
-      python_path: .venv/Scripts/python.exe
+      python_path: ".venv/Scripts/python.exe"
       conan_install_step_name: "conan_install_windows_msvc_debug"
       build_project_files_step_name: "build_project_debug_visual_studio"
       compile_step_name: "compile_project_debug"
