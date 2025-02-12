@@ -18,7 +18,9 @@ on:
 
 jobs:
   build_test_deploy_upload:
-    runs-on: ${{ inputs.os }}
+    runs-on: 
+      - ${{ inputs.os }}
+      - self-hosted
     name: ${{ inputs.name }}
 
     steps:
