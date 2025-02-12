@@ -14,8 +14,8 @@ jobs:
     uses: ./.github/workflows/reusable_workflow.yml
     with:
       os: windows
-      name: Windows
-      pretty_name: Windows
+      name: Windows_Debug
+      pretty_name: Windows Debug
       python_path: .venv/Scripts/python.exe
 
       conan_install_step_name: conan_install_windows_msvc_debug
