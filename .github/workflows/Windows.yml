@@ -1,0 +1,19 @@
+name: Windows
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+permissions:
+    contents: write
+
+jobs:
+  call_reusable_workflow:
+    uses: ./.github/workflows/reusable_workflow.yml
+    with:
+      os: windows-latest
+      name: Windows_Latest
+      pretty_name: Windows Latest
+      python_path: .venv/Scripts/python.exe

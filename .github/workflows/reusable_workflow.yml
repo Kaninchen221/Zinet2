@@ -1,0 +1,35 @@
+name: Reusable Workflow
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
+      pretty_name:
+        required: true
+        type: string
+      name:
+        required: true
+        type: string
+      python_path:
+        required: true
+        type: string
+
+jobs:
+  build_test_deploy_upload:
+    runs-on: ${{ inputs.os }}
+    name: ${{ inputs.name }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.11.4
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11.4"
+      
+      - name: Setup Project
+        run: python3 first_time.py
+        
+      - name: Pytest
+        run: ${{ inputs.python_path }} -m pytest Tools/tests
