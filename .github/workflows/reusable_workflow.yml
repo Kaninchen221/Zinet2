@@ -52,13 +52,13 @@ jobs:
         run: ${{ inputs.python_path }} menu.py --OptionName generate_project_address_sanitizer_off
 
       - name: Conan Install
-        run: ${{ inputs.python_path }} menu.py --OptionName ${{ conan_install_step_name }}
+        run: ${{ inputs.python_path }} menu.py --OptionName ${{ inputs.conan_install_step_name }}
 
       - name: Build Project Files
-        run: ${{ inputs.python_path }} menu.py --OptionName ${{ build_project_files_step_name }}
+        run: ${{ inputs.python_path }} menu.py --OptionName ${{ inputs.build_project_files_step_name }}
 
       - name: Compile project
-        run: ${{ inputs.python_path }} menu.py --OptionName ${{ compile_step_name }}
+        run: ${{ inputs.python_path }} menu.py --OptionName ${{ inputs.compile_step_name }}
 
       - name: Run All Automatic Tests
         run: ${{ inputs.python_path }} menu.py --OptionName run_all_automatic_tests
