@@ -3,9 +3,9 @@
 ![Linux Debug Badge](https://github.com/Kaninchen221/Zinet2/actions/workflows/Linux_Debug.yml/badge.svg)
 ![Linux Release Badge](https://github.com/Kaninchen221/Zinet2/actions/workflows/Linux_Release.yml/badge.svg)
 
-# Zinet 2
+# Zinet
 
-## Step by step first time
+## Step by step first time Windows
 
 + Install:
 	- Python 3.11.4 or newer
@@ -18,7 +18,7 @@
 	- Conan Install Debug
 	- Build Project Debug
 	  
-+ The project files will be in the build folder
++ Project files will be in the build folder
 
 ## FAQ
   + If you have a strange problem with the "Conan Install" step, then try "conan remove --locks" command
