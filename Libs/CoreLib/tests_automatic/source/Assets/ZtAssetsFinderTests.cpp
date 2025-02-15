@@ -56,7 +56,7 @@ namespace zt::core::assets::tests
 	TEST(AssetsFinderSimpleTests, GetAssetExtensionTest)
 	{
 		const AssetsFinder assetsFinder;
-		EXPECT_EQ(assetsFinder.getAssetExtension(), "asset");
+		EXPECT_EQ(assetsFinder.getAssetFileExtension(), "asset");
 	}
 
 	TEST_F(AssetsFinderTests, FindAssetsTest)
@@ -67,10 +67,10 @@ namespace zt::core::assets::tests
 			.reimport = true
 		};
 
-		 const AssetsFinder::FindAssetsResult findAssetsResult = assetsFinderConst.findAssets(findAssetsInput);
+		const AssetsFinder::FindAssetsResult findAssetsResult = assetsFinderConst.findAssets(findAssetsInput);
 
-		 EXPECT_EQ(findAssetsResult.filesPaths.size(), 2u);
-		 EXPECT_EQ(findAssetsResult.assetsFilesPaths.size(), 2u);
+		EXPECT_EQ(findAssetsResult.filesPaths.size(), 3u);
+		EXPECT_EQ(findAssetsResult.assetsFilesPaths.size(), 3u);
 	}
 
 	TEST_F(AssetsFinderTests, IsAssetFilePathTest)
@@ -115,6 +115,11 @@ namespace zt::core::assets::tests
 
 		const AssetsFinder::CreateAssetsResult createAssetsResult = assetsFinderConst.createAssets(findAssetsResult);
 
-		EXPECT_EQ(createAssetsResult.assets.size(), 2u);
+		EXPECT_EQ(createAssetsResult.assets.size(), 3u);
+
+		for (const auto& asset : createAssetsResult.assets)
+		{
+			EXPECT_FALSE(asset.getMetaData().is_null());
+		}
 	}
 }

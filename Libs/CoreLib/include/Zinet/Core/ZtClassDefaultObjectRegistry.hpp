@@ -23,7 +23,7 @@ namespace zt::core
 
 		void registerClass(ObjectBase* object);
 
-		const auto& getClasses() const { return CDOList; }
+		const auto& getCDOs() const { return CDOList; }
 
 		std::unique_ptr<ObjectBase> createObjectByClassName(const std::string& name) const;
 

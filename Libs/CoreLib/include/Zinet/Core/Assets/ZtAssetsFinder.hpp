@@ -54,7 +54,7 @@ namespace zt::core::assets
 
 	protected:
 
-		void createAssetFile(const std::filesystem::path& path) const;
+		void createAssetFile(const std::filesystem::path& filePath, const std::filesystem::path& path) const;
 
 		ZT_REFLECT_MEMBER(ReadWrite)
 		std::filesystem::path rootFolder = Paths::RootPath();
@@ -63,7 +63,7 @@ namespace zt::core::assets
 		std::string contentFolderName = "Content";
 
 		ZT_REFLECT_MEMBER(ReadOnly)
-		std::string assetExtension = "asset";
+		std::string assetFileExtension = "asset";
 
 	public:
 /*GENERATED_CODE_START*/
@@ -95,7 +95,7 @@ namespace zt::core::assets
 		
 		const decltype(contentFolderName)& getContentFolderName() const { return contentFolderName; }
 		
-		const decltype(assetExtension)& getAssetExtension() const { return assetExtension; }
+		const decltype(assetFileExtension)& getAssetFileExtension() const { return assetFileExtension; }
 		
 /*GENERATED_CODE_END*/
 	};

@@ -2,20 +2,31 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtObject.hpp"
+#include "Zinet/Core/ZtLogger.hpp"
 
 #include <filesystem>
+
+#include <nlohmann/json.hpp>
 
 namespace zt::core::assets
 {
 	ZT_REFLECT_CLASS()
 	class ZINET_CORE_API Asset : public Object
 	{
+	protected:
+
+		inline static core::ConsoleLogger Logger = core::ConsoleLogger::Create("Asset");
 
 	public:
 
+		std::unique_ptr<Asset> createObject(const std::filesystem::path& contentRootFolder) const;
+
+		virtual bool loadContentUsingMetaData(const std::filesystem::path& contentRootFolder) { return false; }
 
 	protected:
 
+		ZT_REFLECT_MEMBER(ReadWrite)
+		nlohmann::json metaData;
 
 	public:
 /*GENERATED_CODE_START*/
@@ -41,6 +52,9 @@ namespace zt::core::assets
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		
+		
+		const decltype(metaData)& getMetaData() const { return metaData; }
+		void setMetaData(const decltype(metaData)& newValue) { metaData = newValue; }
 		
 /*GENERATED_CODE_END*/
 	};

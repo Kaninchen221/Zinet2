@@ -28,6 +28,10 @@ namespace zt::core
 
 		virtual std::unique_ptr<ObjectBase> createCopy() const = 0;
 
+		virtual bool canBeCreatedFromAsset() const { return false; }
+
+		virtual std::string_view getAssetExtension() const { return ""; }
+
 	public:
 		/*GENERATED_CODE_START*/
 		class ClassInfo : public zt::core::ClassInfoBase

@@ -45,7 +45,7 @@ namespace zt::core::tests
 		CDORegistry.registerClass(object);
 
 		const ClassDefaultObjectRegistry& ConstCDORegistry = ClassDefaultObjectRegistry::Get();
-		const auto& classes = ConstCDORegistry.getClasses();
+		const auto& classes = ConstCDORegistry.getCDOs();
 		ASSERT_FALSE(classes.empty());
 		ASSERT_EQ(&*classes.back(), object);
 	}

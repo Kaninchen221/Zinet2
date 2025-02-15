@@ -48,6 +48,7 @@ namespace zt::core
 
 	protected:
 
+		ZT_REFLECT_MEMBER(ReadOnly)
 		std::fstream fileStream;
 
 	public:
@@ -64,6 +65,8 @@ namespace zt::core
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		
+		
+		const decltype(fileStream)& getFileStream() const { return fileStream; }
 		
 /*GENERATED_CODE_END*/
 	};
