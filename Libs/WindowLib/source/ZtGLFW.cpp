@@ -7,24 +7,35 @@ namespace zt::wd
         if (Initialized)
             return true;
 
+#if ZINET_WINDOWS
+		if (glfwPlatformSupported(GLFW_PLATFORM_WIN32))
+		{
+			glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WIN32);
+			Logger->info("WIN32 is a supported platform");
+		}
+		else
+		{
+			Logger->error("WIN32 is not a supported platform while we are in window");
+			return false;
+		}
+#elif ZINET_LINUX
+		if (glfwPlatformSupported(GLFW_PLATFORM_WAYLAND))
+		{
+			glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
+			Logger->info("Wayland is a supported platform");
+		}
+		else
+		{
+			Logger->error("Wayland is not a supported platform while we are in linux");
+			return false;
+		}
+#endif
+
         if (glfwInit())
         {
             Logger->info("Succesfull initialize GLFW");
 
             glfwSetErrorCallback(GLFW::ErrorCallback);
-
-#if ZINET_LINUX
-            if (glfwPlatformSupported(GLFW_PLATFORM_WAYLAND))
-			{
-				glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
-                Logger->info("Wayland is a supported platform");
-            }
-            else
-            {
-                Logger->error("Wayland is not a supported platform");
-                return false;
-            }
-#endif
 
 
 #ifdef ZINET_USE_OPENGL
