@@ -26,12 +26,6 @@ on:
         type: string
       
 jobs:
-  linux_debug_info:
-    runs-on: Linux
-    steps:
-      - name: Print important env vars
-        run: printenv XDG_RUNTIME_DIR && ls -ld "$XDG_RUNTIME_DIR"
-    
   build_test_deploy_upload:
     runs-on: 
       - ${{ inputs.os }}
