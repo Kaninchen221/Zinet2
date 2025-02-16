@@ -41,6 +41,12 @@ jobs:
       - name: Debug Info
         run: echo "Runner name ${{ runner.name }}"
 
+      - name: Start Virtual Display when using Linux
+        if: runner.os == 'Linux'
+        run: |
+          apt install -y weston
+          weston --backend=headless-backend.so --idle-time=0 &
+
       - name: Setup Project
         run: python3 first_time.py
 
