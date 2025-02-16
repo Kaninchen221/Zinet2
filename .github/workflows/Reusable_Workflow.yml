@@ -25,6 +25,9 @@ on:
         required: true
         type: string
       
+env:
+  XDG_RUNTIME_DIR: /run/xdg_runtime
+  
 jobs:
   build_test_deploy_upload:
     runs-on: 
