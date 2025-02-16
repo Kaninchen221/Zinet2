@@ -33,11 +33,11 @@ class ZinetConan(ConanFile):
     def generate(self):
         for dep in self.dependencies.values():
             
-            bin_path = Path(self.source_folder) / "build" / "bin" / str(self.settings.build_type)
-            
             if self.settings.compiler == "gcc":
+                bin_path = Path(self.source_folder) / "build" / "bin"
                 lib_ext = "*.so"
             elif self.settings.compiler == "msvc":
+                bin_path = Path(self.source_folder) / "build" / "bin" / str(self.settings.build_type)
                 lib_ext = "*.dll"
                 
             if dep.cpp_info.bindirs:
