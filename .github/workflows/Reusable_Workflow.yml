@@ -30,7 +30,7 @@ jobs:
     runs-on: Linux
     steps:
       - name: Setup env variables
-        run: export XDG_RUNTIME_DIR=/tmp/$(id -u) && printenv XDG_RUNTIME_DIR
+        run: mkdir /run/xdg_runtime && export XDG_RUNTIME_DIR=/run/xdg_runtime && printenv XDG_RUNTIME_DIR
     
   build_test_deploy_upload:
     runs-on: 
