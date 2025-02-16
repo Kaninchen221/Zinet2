@@ -26,6 +26,12 @@ on:
         type: string
       
 jobs:
+  setup_system_linux:
+    runs-on: Linux
+    steps:
+      - name: Setup env variables
+        run: export XDG_RUNTIME_DIR=/run/user/$(id -u)
+    
   build_test_deploy_upload:
     runs-on: 
       - ${{ inputs.os }}
