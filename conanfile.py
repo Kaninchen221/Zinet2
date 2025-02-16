@@ -45,3 +45,4 @@ class ZinetConan(ConanFile):
                 
             if dep.cpp_info.libdirs:
                 copy(self, lib_ext, src=dep.cpp_info.libdirs[0], dst=bin_path, keep_path=False)
+                
