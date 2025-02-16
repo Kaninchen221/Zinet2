@@ -10,14 +10,6 @@ permissions:
     contents: write
 
 jobs:
-  print_debug_info:
-    runs-on: self-hosted
-    steps:
-      - name: Who am I
-        run: whoami
-      - name: Print important env vars
-        run: printenv XDG_RUNTIME_DIR
-        
   call_reusable_workflow:
     uses: ./.github/workflows/Reusable_Workflow.yml
     with:
