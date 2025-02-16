@@ -22,7 +22,7 @@ namespace zt::wd
             else
             {
                 Logger->error("Wayland is not a supported platform");
-                return false
+                return false;
             }
 #endif
 
