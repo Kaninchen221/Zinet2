@@ -13,6 +13,20 @@ namespace zt::wd
 
             glfwSetErrorCallback(GLFW::ErrorCallback);
 
+#if ZINET_LINUX
+            if (glfwPlatformSupported(GLFW_PLATFORM_WAYLAND))
+			{
+				glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
+                Logger->info("Wayland is a supported platform");
+            }
+            else
+            {
+                Logger->error("Wayland is not a supported platform");
+                return false
+            }
+#endif
+
+
 #ifdef ZINET_USE_OPENGL
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
