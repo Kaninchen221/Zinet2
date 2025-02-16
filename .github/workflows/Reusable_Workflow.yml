@@ -26,11 +26,11 @@ on:
         type: string
       
 jobs:
-  setup_system_linux:
+  linux_debug_info:
     runs-on: Linux
     steps:
-      - name: Setup env variables
-        run: mkdir -p /run/xdg_runtime && export XDG_RUNTIME_DIR=/run/xdg_runtime && printenv XDG_RUNTIME_DIR && ls -ld "$XDG_RUNTIME_DIR"
+      - name: Print important env vars
+        run: printenv XDG_RUNTIME_DIR && ls -ld "$XDG_RUNTIME_DIR"
     
   build_test_deploy_upload:
     runs-on: 
