@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Print important env vars
         run: printenv XDG_RUNTIME_DIR
+      - name: Who am I
+        run: whoami
         
   call_reusable_workflow:
     uses: ./.github/workflows/Reusable_Workflow.yml
