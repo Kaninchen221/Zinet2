@@ -27,6 +27,7 @@ on:
       
 env:
   XDG_RUNTIME_DIR: /run/xdg_runtime
+  WAYLAND_DISPLAY: wayland-1
   
 jobs:
   build_test_deploy_upload:
