@@ -19,6 +19,17 @@ namespace zt::wd
 			return false;
 		}
 #elif ZINET_LINUX
+		std::string_view xdg_env_var_name = "XDG_RUNTIME_DIR";
+		if (const char* env_var = std::getenv(xdg_env_var_name.data()))
+		{
+			Logger->info("{}: {}", xdg_env_var_name, env_var);
+		}
+		else
+		{
+			Logger->error("Couldn't get env var: {}", xdg_env_var_name);
+			return false;
+		}
+
 		if (glfwPlatformSupported(GLFW_PLATFORM_WAYLAND))
 		{
 			glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
