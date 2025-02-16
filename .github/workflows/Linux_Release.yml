@@ -14,7 +14,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Print important env vars
-        run: printenv XDG_RUNTIME_DIR && ls -ld "$XDG_RUNTIME_DIR"
+        run: printenv XDG_RUNTIME_DIR
         
   call_reusable_workflow:
     uses: ./.github/workflows/Reusable_Workflow.yml
