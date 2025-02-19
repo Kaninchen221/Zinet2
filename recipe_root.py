@@ -5,7 +5,7 @@ root.cmakeMinimumVersion = "3.20"
 root.projectDescription = "Game Engine"
 root.projectName = "Zinet2"
 root.projectVersion = "0.0.1"
-root.subdirectories = ["CoreLib", "RHILib", "WindowLib", "MathLib", "ThirdParty/ImGuiLib", "ThirdParty/Glad"]
+root.subdirectories = ["CoreLib", "SoftwareRendererLib", "WindowLib", "MathLib", "ThirdParty/ImGuiLib", "ThirdParty/Glad"]
 root.globalCompileOptionsMSVC = "/W4 /WX /external:W0 /external:anglebrackets /MP"
 root.globalCompileOptionsGNU = "-Wall -Wextra -w -Werror -pedantic -pedantic-errors"
 root.globalCompileOptionsForAddressSanitizer = "/fsanitize=address /RTCu /experimental:module-"
