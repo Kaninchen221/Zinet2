@@ -45,7 +45,8 @@ jobs:
       - name: Start Virtual Display when using Linux
         if: runner.os == 'Linux'
         run: |
-          chmod 0700 /run/xdg_runtime
+          mkdir -p $XDG_RUNTIME_DIR
+          chmod 0700 $XDG_RUNTIME_DIR
           apt install -y weston
           weston --backend=wayland-backend.so --idle-time=0 &
 
