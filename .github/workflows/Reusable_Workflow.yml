@@ -45,6 +45,7 @@ jobs:
       - name: Start Virtual Display when using Linux
         if: runner.os == 'Linux'
         run: |
+          export XDG_RUNTIME_DIR=/run/xdg_runtime
           mkdir -p /run/xdg_runtime
           chmod 0700 /run/xdg_runtime
           apt install -y weston
