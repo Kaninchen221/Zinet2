@@ -19,7 +19,12 @@ namespace zt::core::assets
 			return false;
 		}
 
-		const auto path = contentRootFolder / *findIt;
+		std::string fileRelativePath = *findIt;
+#if ZINET_LINUX
+		std::replace(fileRelativePath.begin(), fileRelativePath.end(), '\\', '/');
+#endif
+		const auto path = contentRootFolder / fileRelativePath;
+
 		std::error_code error_code;
 		if (!std::filesystem::exists(path, error_code))
 		{
