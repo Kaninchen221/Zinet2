@@ -20,9 +20,12 @@ namespace zt::core::assets
 		}
 
 		const auto path = contentRootFolder / *findIt;
-		if (!std::filesystem::exists(path))
+		std::error_code error_code;
+		if (!std::filesystem::exists(path, error_code))
 		{
 			Logger->error("Path to content file doesn't exist: {}", path.string());
+			Logger->error("Error code: {} Error Message: {}", error_code.value(), error_code.message());
+
 			return false;
 		}
 
