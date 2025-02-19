@@ -48,7 +48,7 @@ jobs:
           mkdir -p $XDG_RUNTIME_DIR
           chmod 0700 $XDG_RUNTIME_DIR
           apt install -y weston
-          weston --backend=wayland-backend.so --idle-time=0 &
+          weston --backend=drm-backend.so --idle-time=0 &
 
       - name: Setup Project
         run: python3 first_time.py
