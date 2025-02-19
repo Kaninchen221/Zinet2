@@ -47,7 +47,7 @@ jobs:
         run: |
           chmod 0700 /run/xdg_runtime
           apt install -y weston
-          weston --backend=headless-backend.so --idle-time=0 &
+          weston --backend=wayland-backend.so --idle-time=0 &
 
       - name: Setup Project
         run: python3 first_time.py
