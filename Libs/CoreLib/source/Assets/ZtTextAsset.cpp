@@ -24,7 +24,8 @@ namespace zt::core::assets
 		if (!std::filesystem::exists(path, error_code))
 		{
 			Logger->error("Path to content file doesn't exist: {}", path.string());
-			Logger->error("Error code: {} Error Message: {}", error_code.value(), error_code.message());
+			if (error_code)
+				Logger->error("Error code: {} Error Message: {}", error_code.value(), error_code.message());
 
 			return false;
 		}
