@@ -31,7 +31,7 @@ public:
 	static void CalculateAllocatedBlocksCount();
 
 // 	template<MustBePlusOrMinus Operation>
-// 	static void CalculateAllocatedSizeCountStatistics(BigUInt size);
+// 	static void CalculateAllocatedSizeCountStatistics(BigUInt resolution);
 
 	static void* NewPointer(std::size_t size);
 
@@ -71,15 +71,15 @@ void ZinetCollectAllocationDebugData::CalculateAllocatedBlocksCount()
 }
 // 
 // template<MustBePlusOrMinus Operation>
-// void ZinetCollectAllocationDebugData::CalculateAllocatedSizeCountStatistics(BigUInt size)
+// void ZinetCollectAllocationDebugData::CalculateAllocatedSizeCountStatistics(BigUInt resolution)
 // {
 // 	if constexpr (std::is_same_v<Operation, std::plus<>>)
 // 	{
-// 		AllocatedSizeCountStatistics[size]++;
+// 		AllocatedSizeCountStatistics[resolution]++;
 // 	}
 // 	else if constexpr (std::is_same_v<Operation, std::minus<>>)
 // 	{
-// 		std::pair<BigUInt, BigUInt>& element = AllocatedSizeCountStatistics.at(size);
+// 		std::pair<BigUInt, BigUInt>& element = AllocatedSizeCountStatistics.at(resolution);
 // 		if (element.second > 0)
 // 			--AllocatedBlocksCount;
 // 		else
@@ -107,7 +107,7 @@ void* ZinetCollectAllocationDebugData::NewPointer(std::size_t size)
 
 		CalculateAllocatedBlocksCount<std::plus<>>();
 
-		return newPointer; // Out of size
+		return newPointer; // Out of resolution
 	}
 	else
 	{

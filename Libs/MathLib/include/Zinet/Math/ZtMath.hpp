@@ -53,6 +53,8 @@ namespace zt
 
 		static std::uint32_t GetMaximumMipmapLevelsCount(const Vector2ui& textureSize);
 
+		static float Distance(const Vector2f& vector1, const Vector2f& vector2);
+
 		void INeedGeneratedLib() const;
 	};
 
@@ -60,5 +62,10 @@ namespace zt
 	{
 		std::uint32_t mipmapLevels = static_cast<std::uint32_t>(std::floor(std::log2(std::max(textureSize.x, textureSize.y)))) + 1;
 		return mipmapLevels;
+	}
+
+	inline float Math::Distance(const Vector2f& vector1, const Vector2f& vector2)
+	{
+		return std::sqrtf(std::powf(vector2.x - vector1.x, 2) + std::powf(vector2.y - vector1.y, 2));
 	}
 }

@@ -2,7 +2,7 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
-#include "Zinet/Core/Reflection/ZtReflection.hpp"
+#include "Zinet/Core/Reflection/ZtClassInfoBase.hpp"
 
 #include <memory>
 

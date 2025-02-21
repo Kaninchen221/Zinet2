@@ -34,4 +34,11 @@ namespace zt
 
 	using Matrix4f = glm::mat4;
 
+	using Color = Vector4<std::uint8_t>;
+	const Vector4<std::uint8_t> RedColor{ 255, 0, 0, 255 };
+	const Vector4<std::uint8_t> GreenColor{ 0, 255, 0, 255 };
+	const Vector4<std::uint8_t> BlueColor{ 0, 0, 255, 255 };
+	const Vector4<std::uint8_t> BlackColor{ 0, 0, 0, 255 };
+	const Vector4<std::uint8_t> WhiteColor{ 255, 255, 255, 255 };
+	const Vector4<std::uint8_t> ZeroColor{ 0, 0, 0, 0 };
 }

@@ -4,8 +4,8 @@
 #include "Zinet/Core/ZtClassDefaultObjectRegistry.hpp"
 #include "Zinet/Core/ZtObjectBase.hpp"
 
-#include "Zinet/Core/Reflection/ZtReflection.hpp"
-
+#include <vector>
+#include <memory>
 #include <type_traits>
 
 namespace zt::core
