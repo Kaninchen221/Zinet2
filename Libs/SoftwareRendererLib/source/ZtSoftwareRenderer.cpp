@@ -3,6 +3,8 @@
 
 #include "Zinet/Math/ZtMath.hpp"
 
+#include "Zinet/Core/ZtClock.hpp"
+
 #include <utility>
 #include <cmath>
 #include <algorithm>
@@ -40,16 +42,16 @@ namespace zt::software_renderer
 
 		// Write to render target?
 
-		std::vector<Pixel> pixels;
-
 		if (drawInputInfo.drawMode == DrawMode::Points)
 		{
+			std::vector<Pixel> pixels;
 			pixels.reserve(pixels.size());
 			for (const auto& vertex : drawInputInfo.vertices)
 			{
 				Pixel& pixel = pixels.emplace_back();
 				rasterizeVertexAsPoint(vertex, pixel, renderTarget);
 			}
+			renderTarget.writePixels(pixels);
 		}
 		else if (drawInputInfo.drawMode == DrawMode::Lines || drawInputInfo.drawMode == DrawMode::Triangles)
 		{
@@ -63,9 +65,9 @@ namespace zt::software_renderer
 				const std::vector<Pixel> secondLinePixels = rasterizeLine(drawInputInfo.vertices[secondIndex], drawInputInfo.vertices[thirdIndex], renderTarget);
 				const std::vector<Pixel> thirdLinePixels = rasterizeLine(drawInputInfo.vertices[thirdIndex], drawInputInfo.vertices[firstIndex], renderTarget);
 
-				pixels.append_range(firstLinePixels);
-				pixels.append_range(secondLinePixels);
-				pixels.append_range(thirdLinePixels);
+				renderTarget.writePixels(firstLinePixels);
+				renderTarget.writePixels(secondLinePixels);
+				renderTarget.writePixels(thirdLinePixels);
 			}
 		}
 		
@@ -77,12 +79,11 @@ namespace zt::software_renderer
 				const size_t secondIndex = drawInputInfo.indices[index + 1];
 				const size_t thirdIndex = drawInputInfo.indices[index + 2];
 
-				std::vector<Pixel> fillPixels = barycentricFillTriangle(drawInputInfo.vertices[firstIndex], drawInputInfo.vertices[secondIndex], drawInputInfo.vertices[thirdIndex], renderTarget);
-				pixels.append_range(fillPixels);
+				const std::vector<Pixel> pixels = barycentricFillTriangle(drawInputInfo.vertices[firstIndex], drawInputInfo.vertices[secondIndex], drawInputInfo.vertices[thirdIndex], renderTarget);
+				renderTarget.writePixels(pixels);
 			}
 		}
 
-		renderTarget.writePixels(pixels);
 	}
 
 	void SoftwareRenderer::rasterizeVertexAsPoint(const Vertex& vertex, Pixel& pixel, const RenderTarget& renderTarget) const
@@ -246,6 +247,11 @@ namespace zt::software_renderer
 
 	std::vector<Pixel> SoftwareRenderer::barycentricFillTriangle(const Vertex& vertex1, const Vertex& vertex2, const Vertex& vertex3, const RenderTarget& renderTarget)
 	{
+#if ZINET_DEBUG
+		core::Clock clock;
+		clock.start();
+#endif
+
 		std::vector<Pixel> result;
 
 		const Vector2ui p1 = renderTarget.normalizedCoordsToPixelCoords(vertex1.position);
@@ -267,24 +273,34 @@ namespace zt::software_renderer
 
 		for (std::uint32_t py = minY; py <= maxY; py++)
 		{
+			const std::uint32_t diffP3YPY = p3.y - py;
+			const std::uint32_t diffP2YPY = p2.y - py;
+			const std::uint32_t diffP1YPY = p1.y - py;
+
 			for (std::uint32_t px = minX; px <= maxX; px++)
 			{
-				float alpha = ((p2.x - px) * (p3.y - py) - (p2.y - py) * (p3.x - px)) / area;
-				float beta = ((p3.x - px) * (p1.y - py) - (p3.y - py) * (p1.x - px)) / area;
-				float gamma = 1u - alpha - beta;
+				const float alpha = ((p2.x - px) * diffP3YPY - diffP2YPY * (p3.x - px)) / area;
+				const float beta = ((p3.x - px) * diffP1YPY - diffP3YPY * (p1.x - px)) / area;
+				const float gamma = 1u - alpha - beta;
 
 				if (alpha >= 0 && beta >= 0 && gamma >= 0) 
 				{
-					Color color;
-					color.r = static_cast<std::uint8_t>(alpha * static_cast<std::uint32_t>(c1.r) + beta * static_cast<std::uint32_t>(c2.r) + gamma * static_cast<std::uint32_t>(c3.r));
-					color.g = static_cast<std::uint8_t>(alpha * static_cast<std::uint32_t>(c1.g) + beta * static_cast<std::uint32_t>(c2.g) + gamma * static_cast<std::uint32_t>(c3.g));
-					color.b = static_cast<std::uint8_t>(alpha * static_cast<std::uint32_t>(c1.b) + beta * static_cast<std::uint32_t>(c2.b) + gamma * static_cast<std::uint32_t>(c3.b));
-					color.a = static_cast<std::uint8_t>(alpha * static_cast<std::uint32_t>(c1.a) + beta * static_cast<std::uint32_t>(c2.a) + gamma * static_cast<std::uint32_t>(c3.a));
+					const Color color { 
+						static_cast<std::uint8_t>(alpha * static_cast<std::uint32_t>(c1.r) + beta * static_cast<std::uint32_t>(c2.r) + gamma * static_cast<std::uint32_t>(c3.r)),
+						static_cast<std::uint8_t>(alpha * static_cast<std::uint32_t>(c1.g) + beta * static_cast<std::uint32_t>(c2.g) + gamma * static_cast<std::uint32_t>(c3.g)),
+						static_cast<std::uint8_t>(alpha * static_cast<std::uint32_t>(c1.b) + beta * static_cast<std::uint32_t>(c2.b) + gamma * static_cast<std::uint32_t>(c3.b)),
+						static_cast<std::uint8_t>(alpha * static_cast<std::uint32_t>(c1.a) + beta * static_cast<std::uint32_t>(c2.a) + gamma * static_cast<std::uint32_t>(c3.a))
+					};
 
 					result.push_back(Pixel{ .coords = { px, py }, .color = color });
 				}
 			}
 		}
+
+#if ZINET_DEBUG
+		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
+		Logger->info("Barycentric fill triangle took: {} milliseconds", elapsedTime);
+#endif
 
 		return result;
 	}

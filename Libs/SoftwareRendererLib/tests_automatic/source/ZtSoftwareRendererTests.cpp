@@ -98,8 +98,7 @@ namespace zt::software_renderer::tests
 
 		drawInputInfo.drawMode = DrawMode::Triangles;
 		drawInputInfo.antialiasing = false;
-		for (size_t index = 0; index < 60; ++index)
-			softwareRenderer.draw(drawInputInfo, renderTarget);
+		softwareRenderer.draw(drawInputInfo, renderTarget);
 
 		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_triangles_result.png";
 		const bool saveResult = renderTarget.saveToFilePNG(path);
