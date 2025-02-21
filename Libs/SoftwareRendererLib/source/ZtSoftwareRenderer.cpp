@@ -51,7 +51,7 @@ namespace zt::software_renderer
 				rasterizeVertexAsPoint(vertex, pixel, renderTarget);
 			}
 		}
-		else if (drawInputInfo.drawMode == DrawMode::Lines)
+		else if (drawInputInfo.drawMode == DrawMode::Lines || drawInputInfo.drawMode == DrawMode::Triangles)
 		{
 			for (size_t index = 0; index < drawInputInfo.indices.size(); index += 3)
 			{
@@ -68,7 +68,8 @@ namespace zt::software_renderer
 				pixels.append_range(thirdLinePixels);
 			}
 		}
-		else if (drawInputInfo.drawMode == DrawMode::Triangles)
+		
+		if (drawInputInfo.drawMode == DrawMode::Triangles)
 		{
 			for (size_t index = 0; index < drawInputInfo.indices.size(); index += 3)
 			{
@@ -247,13 +248,6 @@ namespace zt::software_renderer
 	{
 		std::vector<Pixel> result;
 
-		auto plot = [&](const Vector2ui& coords, const Color& color)
-		{
-			Pixel& pixel = result.emplace_back();
-			pixel.coords = coords;
-			pixel.color = color;
-		};
-
 		const Vector2ui p1 = renderTarget.normalizedCoordsToPixelCoords(vertex1.position);
 		const Vector2ui p2 = renderTarget.normalizedCoordsToPixelCoords(vertex2.position);
 		const Vector2ui p3 = renderTarget.normalizedCoordsToPixelCoords(vertex3.position);
@@ -262,12 +256,14 @@ namespace zt::software_renderer
 		const Color& c2 = vertex2.color;
 		const Color& c3 = vertex3.color;
 
-		std::uint32_t minX = std::min({ p1.x, p2.x, p3.x });
-		std::uint32_t maxX = std::max({ p1.x, p2.x, p3.x });
-		std::uint32_t minY = std::min({ p1.y, p2.y, p3.y });
-		std::uint32_t maxY = std::max({ p1.y, p2.y, p3.y });
+		const std::uint32_t minX = std::min({ p1.x, p2.x, p3.x });
+		const std::uint32_t maxX = std::max({ p1.x, p2.x, p3.x });
+		const std::uint32_t minY = std::min({ p1.y, p2.y, p3.y });
+		const std::uint32_t maxY = std::max({ p1.y, p2.y, p3.y });
 
-		float area = static_cast<float>((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x));
+		result.reserve(maxX * maxY);
+
+		const float area = static_cast<float>((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x));
 
 		for (std::uint32_t py = minY; py <= maxY; py++)
 		{
@@ -285,7 +281,7 @@ namespace zt::software_renderer
 					color.b = static_cast<std::uint8_t>(alpha * static_cast<std::uint32_t>(c1.b) + beta * static_cast<std::uint32_t>(c2.b) + gamma * static_cast<std::uint32_t>(c3.b));
 					color.a = static_cast<std::uint8_t>(alpha * static_cast<std::uint32_t>(c1.a) + beta * static_cast<std::uint32_t>(c2.a) + gamma * static_cast<std::uint32_t>(c3.a));
 
-					plot({ px, py }, color);
+					result.push_back(Pixel{ .coords = { px, py }, .color = color });
 				}
 			}
 		}

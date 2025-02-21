@@ -52,11 +52,11 @@ namespace zt::software_renderer::tests
 
 		void createRenderTarget(RenderTarget& renderTarget)
 		{
-			const Vector2ui size = { 256, 128 };
+			const Vector2ui size = { 1920, 1080 };
 			const ColorFormat colorFormat = ColorFormat::R8G8B8A8_SRGB;
 			bool renderTargetCreateResult = renderTarget.create(size, colorFormat);
 			ASSERT_TRUE(renderTargetCreateResult);
-			renderTarget.fill(WhiteColor);
+			//renderTarget.fill(WhiteColor);
 		}
 	};
 
