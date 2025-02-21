@@ -51,7 +51,7 @@ namespace zt::software_renderer
 				rasterizeVertexAsPoint(vertex, pixel, renderTarget);
 			}
 		}
-		else if (drawInputInfo.drawMode == DrawMode::Lines || drawInputInfo.drawMode == DrawMode::Triangles)
+		else if (drawInputInfo.drawMode == DrawMode::Lines)
 		{
 			for (size_t index = 0; index < drawInputInfo.indices.size(); index += 3)
 			{
@@ -68,8 +68,7 @@ namespace zt::software_renderer
 				pixels.append_range(thirdLinePixels);
 			}
 		}
-
-		if (drawInputInfo.drawMode == DrawMode::Triangles)
+		else if (drawInputInfo.drawMode == DrawMode::Triangles)
 		{
 			for (size_t index = 0; index < drawInputInfo.indices.size(); index += 3)
 			{
