@@ -7,7 +7,7 @@
 
 #include <type_traits>
 #include <array>
-#include <cmath>
+#include <math.h>
 
 namespace zt 
 {
