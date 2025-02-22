@@ -4,13 +4,41 @@
 
 namespace zt::software_renderer
 {
+	inline int ColorFormatToChannels(ColorFormat colorFormat)
+	{
+		if (colorFormat == ColorFormat::R8G8B8A8_SRGB)
+		{
+			return 4u;
+		}
+		else
+		{
+			auto Logger = core::ConsoleLogger::Create("ColorFormatToChannels");
+			Logger->error("Invalid ColorFormat: {}", colorFormat);
+			return -1;
+		}
+	}
+
+	RenderTarget& RenderTarget::operator=(const RenderTarget& other)
+	{
+		createEmpty(other.resolution, other.colorFormat);
+
+		std::memcpy(buffer, other.buffer, getBytes());
+
+		return *this;
+	}
+
 	RenderTarget::~RenderTarget() noexcept
 	{
 		clear();
 	}
 
-	bool RenderTarget::create(const Vector2ui& newResolution, const ColorFormat newColorFormat)
+	bool RenderTarget::createEmpty(const Vector2ui& newResolution, const ColorFormat newColorFormat)
 	{
+#if ZINET_DEBUG
+		core::Clock clock;
+		clock.start();
+#endif
+
 		if (buffer)
 		{
 			Logger->error("RenderTarget already has valid buffer inside destroy the render target first");
@@ -23,50 +51,54 @@ namespace zt::software_renderer
 			return false;
 		}
 
-		if (newColorFormat == ColorFormat::R8G8B8A8_SRGB)
-		{
-			channels = 4u;
-		}
-		else
-		{
-			Logger->error("Invalid ColorFormat: {}", newColorFormat);
+		channels = ColorFormatToChannels(newColorFormat);
+		if (channels == -1)
 			return false;
-		}
 
 		resolution = newResolution;
 		colorFormat = newColorFormat;
 
-		const auto bytes = channels * resolution.x * resolution.y;
-		buffer = (stbi_uc*)std::malloc(bytes);
+		const auto bytes = getBytes();
+		buffer = reinterpret_cast<stbi_uc*>(std::malloc(bytes));
+
+#if ZINET_DEBUG
+		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
+		Logger->info("CreateEmpty render target took: {} milliseconds", elapsedTime);
+#endif
 
 		return true;
 	}
 
 	bool RenderTarget::fill(const Color& color)
 	{
-		// Naive implementation it's good enough for now
+#if ZINET_DEBUG
+		core::Clock clock;
+		clock.start();
+#endif
 
 		if (channels != color.length())
 		{
-			Logger->error("color components count must be equal to channels");
+			Logger->error("Color components count must be equal to channels");
 			return false;
 		}
 
-		const size_t pixelsCount = resolution.x * resolution.y * channels;
-		for (size_t index = 0u; index < pixelsCount; index += channels)
+		const size_t bytes = getBytes();
+		for (size_t index = 0u; index < bytes; index += channels)
 		{
-			buffer[index] = color.r;
-			buffer[index + 1] = color.g;
-			buffer[index + 2] = color.b;
-			buffer[index + 3] = color.a;
+			std::memcpy(&buffer[index], &color, channels);
 		}
+
+#if ZINET_DEBUG
+		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
+		Logger->info("Fill render target took: {} milliseconds", elapsedTime);
+#endif
 
 		return true;
 	}
 
 	Color RenderTarget::getPixelColor(size_t index) const
 	{
-		const size_t pixelsCount = resolution.x * resolution.y;
+		const size_t pixelsCount = getPixelsCount();
 		if (index >= pixelsCount)
 		{
 			Logger->error("Pixel index is out of the render target bounds Resolution: {}, {} PixelIndex: {}", resolution.x, resolution.y, index);
@@ -75,11 +107,14 @@ namespace zt::software_renderer
 		index *= channels;
 
 		Color result;
-		result.r = buffer[index];
-		result.g = buffer[index + 1];
-		result.b = buffer[index + 2];
-		result.a = buffer[index + 3];
+		std::memcpy(&result, &buffer[index], channels);
 
+		return result;
+	}
+
+	Color RenderTarget::getPixelColor(const Vector2ui& pixelCoords) const
+	{
+		const Color result = getPixelColor(pixelCoordsToPixelIndex(pixelCoords));
 		return result;
 	}
 
@@ -122,7 +157,7 @@ namespace zt::software_renderer
 
 	bool RenderTarget::writePixelColor(size_t pixelIndex, const Color& color)
 	{
-		const size_t pixelsCount = resolution.x * resolution.y;
+		const size_t pixelsCount = getPixelsCount();
 		if (pixelIndex >= pixelsCount)
 		{
 			Logger->error("Pixel index is out of the render target bounds Resolution: {}, {} PixelIndex: {}", resolution.x, resolution.y, pixelIndex);
@@ -131,12 +166,15 @@ namespace zt::software_renderer
 
 		pixelIndex *= channels;
 
-		buffer[pixelIndex] = color.r;
-		buffer[pixelIndex + 1] = color.g;
-		buffer[pixelIndex + 2] = color.b;
-		buffer[pixelIndex + 3] = color.a;
+		std::memcpy(&buffer[pixelIndex], &color, channels);
 
 		return true;
+	}
+
+	void RenderTarget::writePixel(const Pixel& pixel)
+	{
+		const size_t pixelIndex = pixelCoordsToPixelIndex(pixel.coords);
+		writePixelColor(pixelIndex, pixel.color);
 	}
 
 	size_t RenderTarget::normalizedCoordsToPixelIndex(const Vector2f& normalized) const

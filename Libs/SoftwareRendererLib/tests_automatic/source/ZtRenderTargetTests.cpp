@@ -37,7 +37,7 @@ namespace zt::software_renderer::tests
 		// Create render target (It contains random data from memory)
 		const Vector2i expectedResolution = { 8, 12 };
 		const ColorFormat expectedColorFormat = ColorFormat::R8G8B8A8_SRGB;
-		const bool renderTargetCreateResult = renderTarget.create(expectedResolution, expectedColorFormat);
+		const bool renderTargetCreateResult = renderTarget.createEmpty(expectedResolution, expectedColorFormat);
 
 		// Test properties
 		ASSERT_TRUE(renderTargetCreateResult);
@@ -87,4 +87,26 @@ namespace zt::software_renderer::tests
 		ASSERT_TRUE(saveToPNGResultAfterWritePixel);
 	}
 
+	TEST_F(RenderTargetTests, CopyTest)
+	{
+		const Vector2i expectedResolution = { 4, 3 };
+		const ColorFormat expectedColorFormat = ColorFormat::R8G8B8A8_SRGB;
+		const bool renderTargetCreateResult = renderTarget.createEmpty(expectedResolution, expectedColorFormat);
+		renderTarget.fill(WhiteColor);
+		ASSERT_TRUE(renderTargetCreateResult);
+		
+		const Pixel expectedPixel = Pixel{ .coords{ 1, 0 }, .color = BlackColor };
+		renderTarget.writePixel(expectedPixel);
+
+		const RenderTarget renderTargetCopy = renderTarget;
+		const Color actualColor = renderTargetCopy.getPixelColor(expectedPixel.coords);
+		ASSERT_EQ(expectedPixel.color, actualColor);
+
+		const Color firstPixelColor = renderTargetCopy.getPixelColor({ 0, 0 });
+		ASSERT_EQ(firstPixelColor, WhiteColor);
+
+		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "copy_render_target_test.png";
+		const bool saveToPNGResult = renderTargetCopy.saveToFilePNG(path);
+		ASSERT_TRUE(saveToPNGResult);
+	}
 }

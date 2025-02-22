@@ -23,7 +23,9 @@ namespace zt::software_renderer
 		R8G8B8A8_SRGB
 	};
 
-	ZT_REFLECT_CLASS(NO_CONSTRUCTORS)
+	int ColorFormatToChannels(ColorFormat colorFormat);
+
+	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_OPERATORS)
 	class ZINET_SOFTWARE_RENDERER_API RenderTarget : public core::Object
 	{
 	protected:
@@ -33,16 +35,21 @@ namespace zt::software_renderer
 	public:
 
 		RenderTarget() = default;
-		RenderTarget(const RenderTarget& other) = default;
+		RenderTarget(const RenderTarget& other) { *this = other; };
 		RenderTarget(RenderTarget&& other) = default;
 
 		~RenderTarget() noexcept;
 
-		bool create(const Vector2ui& newSize, const ColorFormat newColorFormat);
+		RenderTarget& operator = (const RenderTarget& other);
+		RenderTarget& operator = (RenderTarget&& other) = default;
+
+		bool createEmpty(const Vector2ui& newSize, const ColorFormat newColorFormat);
 
 		bool fill(const Color& color);
 
 		Color getPixelColor(size_t index) const;
+
+		Color getPixelColor(const Vector2ui& pixelCoords) const;
 
 		void clear();
 
@@ -52,6 +59,8 @@ namespace zt::software_renderer
 
 		bool writePixelColor(size_t pixelIndex, const Color& color);
 
+		void writePixel(const Pixel& pixel);
+
 		void writePixels(const auto& pixels);
 
 		size_t normalizedCoordsToPixelIndex(const Vector2f& normalized) const;
@@ -59,6 +68,10 @@ namespace zt::software_renderer
 		Vector2ui normalizedCoordsToPixelCoords(const Vector2f& normalized) const;
 
 		size_t pixelCoordsToPixelIndex(const Vector2ui& pixelCoords) const;
+
+		size_t getBytes() const { return channels * resolution.x * resolution.y; }
+
+		size_t getPixelsCount() const { return resolution.x * resolution.y; }
 
 	protected:
 
@@ -78,9 +91,6 @@ namespace zt::software_renderer
 		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
 		const inline static bool RegisterClassResult = RegisterClass<RenderTarget>();
 		std::unique_ptr<ObjectBase> createCopy() const override { std::unique_ptr<ObjectBase> result = createCopyInternal<RenderTarget>(); *result = *this; return result; }
-		
-		RenderTarget& operator = (const RenderTarget& other) = default;
-		RenderTarget& operator = (RenderTarget&& other) = default;
 		
 		class ClassInfo : public zt::core::ClassInfoBase
 		{

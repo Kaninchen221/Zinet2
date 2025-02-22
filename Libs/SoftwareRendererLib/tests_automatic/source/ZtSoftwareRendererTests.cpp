@@ -38,8 +38,8 @@ namespace zt::software_renderer::tests
 			.drawMode = DrawMode::Points,
 			.antialiasing = false,
 			.vertices = std::vector<Vertex>{ 
-				Vertex{ { .25f, .25f, 0.f }, RedColor }, 
-				Vertex{ { .75f, .25f, 0.f }, GreenColor }, 
+				Vertex{ { .30f, .25f, 0.f }, RedColor }, 
+				Vertex{ { .80f, .25f, 0.f }, GreenColor }, 
 				Vertex{ { .25f, .75f, 0.f }, BlueColor }, 
 				Vertex{ { .75f, .75f, 0.f }, BlackColor } 
 			},
@@ -54,9 +54,9 @@ namespace zt::software_renderer::tests
 		{
 			const Vector2ui size = { 1920, 1080 };
 			const ColorFormat colorFormat = ColorFormat::R8G8B8A8_SRGB;
-			bool renderTargetCreateResult = renderTarget.create(size, colorFormat);
+			bool renderTargetCreateResult = renderTarget.createEmpty(size, colorFormat);
 			ASSERT_TRUE(renderTargetCreateResult);
-			//renderTarget.fill(WhiteColor);
+			renderTarget.fill(WhiteColor);
 		}
 	};
 
