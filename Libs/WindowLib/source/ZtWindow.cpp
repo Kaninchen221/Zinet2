@@ -54,14 +54,6 @@ namespace zt::wd
         event.bindCallbacks();
     }
 
-    void Window::bindFramebufferSizeCallback()
-    {
-        if (!internalWindow)
-            return;
-
-        glfwSetFramebufferSizeCallback(internalWindow, &Window::FramebufferSizeCallback);
-    }
-
     bool Window::isOpen() const
     {
         if (!internalWindow)
@@ -114,4 +106,16 @@ namespace zt::wd
         glfwSetWindowShouldClose(internalWindow, true);
 	}
 
+	void Window::swapBuffers()
+	{
+        glfwSwapBuffers(internalWindow);
+	}
+
+	void Window::bindFramebufferSizeCallback()
+	{
+		if (!internalWindow)
+			return;
+
+		glfwSetFramebufferSizeCallback(internalWindow, &Window::FramebufferSizeCallback);
+	}
 }

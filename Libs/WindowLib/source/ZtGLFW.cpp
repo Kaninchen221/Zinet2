@@ -15,7 +15,7 @@ namespace zt::wd
 		}
 		else
 		{
-			Logger->error("WIN32 is not a supported platform while we are in window");
+			Logger->error("WIN32 is not a supported platform while we are using windows");
 			return false;
 		}
 #elif ZINET_LINUX
@@ -92,7 +92,7 @@ namespace zt::wd
     void GLFW::UnhideWindow()
     {
         glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
-    }
+	}
 
 	void GLFW::ErrorCallback(int errorCode, const char* errorDescription)
 	{

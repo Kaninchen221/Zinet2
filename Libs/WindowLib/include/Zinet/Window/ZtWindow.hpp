@@ -63,6 +63,8 @@ namespace zt::wd
 
 		void* getWindowResizedCallbackUserPointer() { return windowResizedCallbackUserPointer; }
 
+		void swapBuffers();
+
 	protected:
 
 		GLFWwindow* internalWindow{};
