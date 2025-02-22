@@ -1,3 +1,4 @@
+
 ![Windows Debug Badge](https://github.com/Kaninchen221/Zinet2/actions/workflows/Windows_Debug.yml/badge.svg)
 ![Windows Release Badge](https://github.com/Kaninchen221/Zinet2/actions/workflows/Windows_Release.yml/badge.svg)
 ![Linux Debug Badge](https://github.com/Kaninchen221/Zinet2/actions/workflows/Linux_Debug.yml/badge.svg)
@@ -5,7 +6,7 @@
 
 # Zinet
 
-## Step by step first time Windows
+## Step by step Windows
 
 + Install:
 	- Python 3.11.4 or newer
@@ -19,6 +20,11 @@
 	- Build Project Debug
 	  
 + Project files will be in the build folder
+
+## Runners Info 
+I have two self hosted runners:  
++ Windows 10 with Visual Studio 
++ Linux Debian with GNU
 
 ## FAQ
   + If you have a strange problem with the "Conan Install" step, then try "conan remove --locks" command
