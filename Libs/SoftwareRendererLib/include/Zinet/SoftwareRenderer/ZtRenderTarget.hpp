@@ -73,6 +73,8 @@ namespace zt::software_renderer
 
 		size_t getPixelsCount() const { return resolution.x * resolution.y; }
 
+		stbi_uc* get() { return buffer; }
+
 	protected:
 
 		ZT_REFLECT_MEMBER(ReadOnly)

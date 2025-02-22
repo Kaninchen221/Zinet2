@@ -5,6 +5,7 @@
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Math/ZtVecTypes.hpp"
 
 namespace zt::opengl_renderer
 {
@@ -19,7 +20,36 @@ namespace zt::opengl_renderer
 
 		bool init();
 
+		void preRender();
+
 		void render();
+
+		void postRender();
+
+		void setupTexture(const Vector2<GLsizei>& size, const void* data);
+
+		const char* getVertexShaderSource() const;
+		const char* getFragmentShaderSource() const;
+
+		GLuint compileShader(GLenum type, const char* source) const;
+
+		const std::array<float, 16> vertices = std::array {
+			// Positions  // TexCoords
+			-1.0f, 1.0f,  0.0f, 0.0f,
+			 1.0f, 1.0f,  1.0f, 0.0f,
+			 1.0f, -1.0f, 1.0f, 1.0f,
+			-1.0f, -1.0f, 0.0f, 1.0f
+		};
+		const std::array<GLuint, 6u> indices = std::array{ 0u, 1u, 3u, 1u, 2u, 3u };
+
+		GLuint vertexShader;
+		GLuint fragmentShader;
+
+		GLuint shaderProgram;
+
+		GLuint VBO, VAO, EBO;
+
+		GLuint textureID;
 
 	public:
 /*GENERATED_CODE_START*/
