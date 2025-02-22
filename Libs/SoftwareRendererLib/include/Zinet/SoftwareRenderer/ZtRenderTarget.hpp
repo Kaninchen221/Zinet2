@@ -8,6 +8,8 @@
 
 #include "Zinet/Math/ZtVecTypes.hpp"
 
+#include <filesystem>
+
 namespace zt::software_renderer
 {
 	struct ZINET_SOFTWARE_RENDERER_API Pixel

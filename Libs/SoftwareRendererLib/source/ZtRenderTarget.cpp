@@ -1,7 +1,5 @@
 #include "Zinet/SoftwareRenderer/ZtRenderTarget.hpp"
 
-#include <filesystem>
-
 #include "Zinet/Core/ZtFile.hpp"
 
 namespace zt::software_renderer
