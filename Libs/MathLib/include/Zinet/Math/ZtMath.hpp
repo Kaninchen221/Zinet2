@@ -67,6 +67,6 @@ namespace zt
 
 	inline float Math::Distance(const Vector2f& vector1, const Vector2f& vector2)
 	{
-		return std::sqrtf(std::powf(vector2.x - vector1.x, 2) + std::powf(vector2.y - vector1.y, 2));
+		return static_cast<float>(std::sqrt(std::pow(vector2.x - vector1.x, 2) + std::pow(vector2.y - vector1.y, 2)));
 	}
 }
