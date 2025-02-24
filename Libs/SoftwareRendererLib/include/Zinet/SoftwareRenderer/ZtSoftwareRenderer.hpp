@@ -20,7 +20,7 @@ namespace zt::software_renderer
 
 	struct ZINET_SOFTWARE_RENDERER_API Vertex
 	{
-		Vector3f position;
+		Vector2f position;
 		Vector4f color;
 	};
 
@@ -60,11 +60,16 @@ namespace zt::software_renderer
 
 		void draw(DrawInputInfo drawInputInfo, RenderTarget& renderTarget);
 
+	protected:
+
+		void rasterization(DrawInputInfo& drawInputInfo, RenderTarget& renderTarget);
+
 		void rasterizeVertexAsPoint(const Vertex& vertex, Pixel& pixel, const RenderTarget& renderTarget) const;
 		std::vector<Pixel> rasterizeLine(const Vertex& firstVertex, const Vertex& secondVertex, const RenderTarget& renderTarget) const;
 		std::vector<Pixel> rasterizeLineAntialiasing(const Vertex& firstVertex, const Vertex& secondVertex, const RenderTarget& renderTarget) const;
 
 		// The outputs are pixels filling the triangle
 		std::vector<Pixel> barycentricFillTriangle(const Vertex& vertex1, const Vertex& vertex2, const Vertex& vertex3, const RenderTarget& renderTarget);
+
 	};
 }

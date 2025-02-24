@@ -8,6 +8,7 @@
 #include <utility>
 #include <cmath>
 #include <algorithm>
+#include <stdfloat>
 
 namespace zt::software_renderer
 {
@@ -42,6 +43,12 @@ namespace zt::software_renderer
 
 		// Write to render target?
 
+		rasterization(drawInputInfo, renderTarget);
+
+	}
+
+	void SoftwareRenderer::rasterization(DrawInputInfo& drawInputInfo, RenderTarget& renderTarget)
+	{
 		if (drawInputInfo.drawMode == DrawMode::Points)
 		{
 			std::vector<Pixel> pixels;
@@ -53,7 +60,7 @@ namespace zt::software_renderer
 			}
 			renderTarget.writePixels(pixels);
 		}
-		else if (drawInputInfo.drawMode == DrawMode::Lines || drawInputInfo.drawMode == DrawMode::Triangles)
+		else if (drawInputInfo.drawMode == DrawMode::Lines)// || drawInputInfo.drawMode == DrawMode::Triangles)
 		{
 			for (size_t index = 0; index < drawInputInfo.indices.size(); index += 3)
 			{
@@ -70,8 +77,7 @@ namespace zt::software_renderer
 				renderTarget.writePixels(thirdLinePixels);
 			}
 		}
-		
-		if (drawInputInfo.drawMode == DrawMode::Triangles)
+		else if (drawInputInfo.drawMode == DrawMode::Triangles)
 		{
 			for (size_t index = 0; index < drawInputInfo.indices.size(); index += 3)
 			{
@@ -83,7 +89,6 @@ namespace zt::software_renderer
 				renderTarget.writePixels(pixels);
 			}
 		}
-
 	}
 
 	void SoftwareRenderer::rasterizeVertexAsPoint(const Vertex& vertex, Pixel& pixel, const RenderTarget& renderTarget) const
@@ -269,7 +274,7 @@ namespace zt::software_renderer
 
 		result.reserve(maxX * maxY);
 
-		const float area = static_cast<float>((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x));
+		const float invArea = 1.f / float((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x));
 
 		for (std::uint32_t py = minY; py <= maxY; py++)
 		{
@@ -279,17 +284,19 @@ namespace zt::software_renderer
 
 			for (std::uint32_t px = minX; px <= maxX; px++)
 			{
-				const float alpha = ((p2.x - px) * diffP3YPY - diffP2YPY * (p3.x - px)) / area;
-				const float beta = ((p3.x - px) * diffP1YPY - diffP3YPY * (p1.x - px)) / area;
-				const float gamma = 1u - alpha - beta;
+				const float alpha = ((p2.x - px) * diffP3YPY - diffP2YPY * (p3.x - px)) * invArea;
+				const float beta = ((p3.x - px) * diffP1YPY - diffP3YPY * (p1.x - px)) * invArea;
+				const float gamma = 1.f - alpha - beta;
 
-				if (alpha >= 0 && beta >= 0 && gamma >= 0) 
+				const float nearlyZero = 1e-6f;
+
+				if (alpha >= 0 && beta >= 0 && gamma >= nearlyZero)
 				{
 					const Color color { 
-						static_cast<std::uint8_t>(alpha * static_cast<std::uint32_t>(c1.r) + beta * static_cast<std::uint32_t>(c2.r) + gamma * static_cast<std::uint32_t>(c3.r)),
-						static_cast<std::uint8_t>(alpha * static_cast<std::uint32_t>(c1.g) + beta * static_cast<std::uint32_t>(c2.g) + gamma * static_cast<std::uint32_t>(c3.g)),
-						static_cast<std::uint8_t>(alpha * static_cast<std::uint32_t>(c1.b) + beta * static_cast<std::uint32_t>(c2.b) + gamma * static_cast<std::uint32_t>(c3.b)),
-						static_cast<std::uint8_t>(alpha * static_cast<std::uint32_t>(c1.a) + beta * static_cast<std::uint32_t>(c2.a) + gamma * static_cast<std::uint32_t>(c3.a))
+						static_cast<std::uint8_t>(alpha * c1.r + beta * c2.r + gamma * c3.r),
+						static_cast<std::uint8_t>(alpha * c1.g + beta * c2.g + gamma * c3.g),
+						static_cast<std::uint8_t>(alpha * c1.b + beta * c2.b + gamma * c3.b),
+						static_cast<std::uint8_t>(alpha * c1.a + beta * c2.a + gamma * c3.a)
 					};
 
 					result.push_back(Pixel{ .coords = { px, py }, .color = color });

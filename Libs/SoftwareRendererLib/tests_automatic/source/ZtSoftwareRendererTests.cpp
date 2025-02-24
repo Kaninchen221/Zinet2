@@ -38,10 +38,10 @@ namespace zt::software_renderer::tests
 			.drawMode = DrawMode::Points,
 			.antialiasing = false,
 			.vertices = std::vector<Vertex>{ 
-				Vertex{ { .30f, .25f, 0.f }, RedColor }, 
-				Vertex{ { .80f, .25f, 0.f }, GreenColor }, 
-				Vertex{ { .25f, .75f, 0.f }, BlueColor }, 
-				Vertex{ { .75f, .75f, 0.f }, BlackColor } 
+				Vertex{ { .30f, .25f }, RedColor }, 
+				Vertex{ { .80f, .25f }, GreenColor }, 
+				Vertex{ { .25f, .75f }, BlueColor }, 
+				Vertex{ { .75f, .75f }, BlackColor } 
 			},
 			.indices = { 
 				0, 1, 2, 

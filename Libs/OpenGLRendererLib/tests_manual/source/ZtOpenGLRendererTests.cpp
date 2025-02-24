@@ -44,10 +44,10 @@ namespace zt::opengl_renderer::tests
 			.drawMode = sf::DrawMode::Triangles,
 			.antialiasing = false,
 			.vertices = std::vector<sf::Vertex>{
-				sf::Vertex{ { .30f, .25f, 0.f }, RedColor },
-				sf::Vertex{ { .80f, .25f, 0.f }, GreenColor },
-				sf::Vertex{ { .25f, .75f, 0.f }, BlueColor },
-				sf::Vertex{ { .75f, .75f, 0.f }, BlackColor }
+				sf::Vertex{ { .30f, .25f }, RedColor },
+				sf::Vertex{ { .80f, .25f }, GreenColor },
+				sf::Vertex{ { .25f, .75f }, BlueColor },
+				sf::Vertex{ { .75f, .75f }, BlackColor }
 			},
 			.indices = {
 				0, 1, 2,
