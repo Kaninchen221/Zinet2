@@ -7,6 +7,11 @@
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Math/ZtVecTypes.hpp"
 
+namespace zt::wd
+{
+	class Window;
+}
+
 namespace zt::opengl_renderer
 {
 	ZT_REFLECT_CLASS()
@@ -16,9 +21,11 @@ namespace zt::opengl_renderer
 
 		inline static zt::core::ConsoleLogger Logger = zt::core::ConsoleLogger::Create("OpenGLRenderer");
 
+		static void WindowResized(void* renderer, const Vector2ui& size) { glViewport(0, 0, size.x, size.y); }
+
 	public:
 
-		bool init();
+		bool init(wd::Window& window);
 
 		void preRender();
 

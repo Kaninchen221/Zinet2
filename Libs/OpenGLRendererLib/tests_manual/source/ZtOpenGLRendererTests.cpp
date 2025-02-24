@@ -71,7 +71,7 @@ namespace zt::opengl_renderer::tests
 
 		const float min = 0.1f;
 		const float max = 0.30f;
-		if (vertex.position.x <= min or vertex.position.x >= max)
+		if (vertex.position.x <= min || vertex.position.x >= max)
 		{
 			direction *= -1.f;
 			vertex.position.x = std::clamp(vertex.position.x, min, max);
@@ -90,7 +90,7 @@ namespace zt::opengl_renderer::tests
 
 		window.create();
 
-		if (!openGLRenderer.init())
+		if (!openGLRenderer.init(window))
 			FAIL() << "OpenGL renderer failed init";
 
 		openGLRenderer.preRender();

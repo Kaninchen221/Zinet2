@@ -1,8 +1,10 @@
 #include "Zinet/OpenGLRenderer/ZtOpenGLRenderer.hpp"
 
+#include "Zinet/Window/ZtWindow.hpp"
+
 namespace zt::opengl_renderer
 {
-	bool OpenGLRenderer::init()
+	bool OpenGLRenderer::init(wd::Window& window)
 	{
 		const int version = gladLoadGL((GLADloadfunc)glfwGetProcAddress);
 		if (version == 0)
@@ -14,6 +16,8 @@ namespace zt::opengl_renderer
 		{
 			Logger->info("Succesfull load GL using GLAD");
 		}
+
+		window.setWindowResizedCallback(this, &OpenGLRenderer::WindowResized);
 
 		return true;
 	}
@@ -59,8 +63,8 @@ namespace zt::opengl_renderer
 		// Set texture parameters
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
 
 	void OpenGLRenderer::render()

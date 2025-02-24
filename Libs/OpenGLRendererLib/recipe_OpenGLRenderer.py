@@ -12,6 +12,7 @@ generator.includeDirectories = """
 generator.linkLibraries = """
     ZinetCore
     ZinetMath
+    ZinetWindow
     Glad
     glfw
     """

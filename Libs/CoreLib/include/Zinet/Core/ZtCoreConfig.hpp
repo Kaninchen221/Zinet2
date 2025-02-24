@@ -70,10 +70,7 @@
 #	define ZINET_CORE_API
 #endif // ZINET_STATIC
 
-#if ZINET_DEBUG
-#	define ZINET_TIME_TRACE 1
-#else
-#	define ZINET_TIME_TRACE 0
-#endif
+// Uncomment for time tracing info 
+//#define ZINET_TIME_TRACE
 
 #include "Zinet/Core/ZtDebug.hpp"
