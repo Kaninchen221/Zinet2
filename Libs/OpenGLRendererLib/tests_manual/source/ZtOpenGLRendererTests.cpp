@@ -10,6 +10,8 @@
 #include "Zinet/SoftwareRenderer/ZtSoftwareRenderer.hpp"
 #include "Zinet/SoftwareRenderer/ZtRenderTarget.hpp"
 
+#include <algorithm>
+
 namespace zt::opengl_renderer::tests
 {
 	namespace sf = software_renderer;
@@ -17,6 +19,8 @@ namespace zt::opengl_renderer::tests
 	class OpenGLRendererTests : public ::testing::Test
 	{
 	protected:
+
+		inline static core::ConsoleLogger Logger = core::ConsoleLogger::Create("OpenGLRendererTests");
 
 		OpenGLRendererTests()
 		{
@@ -29,15 +33,14 @@ namespace zt::opengl_renderer::tests
 		void SetUp() override
 		{
 			renderTarget.createEmpty({ 1920, 1080 }, sf::ColorFormat::R8G8B8A8_SRGB);
-			renderTarget.fill(WhiteColor);
-
-			softwareRenderer.draw(drawInputInfo, renderTarget);
 		}
 
 		void TearDown() override
 		{
 		}
 		
+		void changeVertices();
+
 		sf::DrawInputInfo drawInputInfo
 		{
 			// (0,0) point is in upper left corner
@@ -61,6 +64,22 @@ namespace zt::opengl_renderer::tests
 		sf::SoftwareRenderer softwareRenderer;
 	};
 
+	void OpenGLRendererTests::changeVertices()
+	{
+		static float direction = 1.f;
+		auto& vertex = drawInputInfo.vertices[0];
+
+		const float min = 0.1f;
+		const float max = 0.30f;
+		if (vertex.position.x <= min or vertex.position.x >= max)
+		{
+			direction *= -1.f;
+			vertex.position.x = std::clamp(vertex.position.x, min, max);
+		}
+
+		vertex.position.x += direction * 0.005f;
+	}
+
 	TEST_F(OpenGLRendererTests, Test)
 	{
 		wd::GLFW glfw;
@@ -75,12 +94,16 @@ namespace zt::opengl_renderer::tests
 			FAIL() << "OpenGL renderer failed init";
 
 		openGLRenderer.preRender();
-
-		openGLRenderer.setupTexture(renderTarget.getResolution(), renderTarget.get());
 		while (!window.shouldBeClosed())
 		{
 			event.pollEvents();
 
+			changeVertices();
+
+			renderTarget.fill(WhiteColor);
+			softwareRenderer.draw(drawInputInfo, renderTarget);
+
+			openGLRenderer.setupTexture(renderTarget.getResolution(), renderTarget.get());
 			openGLRenderer.render();
 
 			window.swapBuffers();
