@@ -8,7 +8,6 @@
 #include <utility>
 #include <cmath>
 #include <algorithm>
-#include <stdfloat>
 
 namespace zt::software_renderer
 {
