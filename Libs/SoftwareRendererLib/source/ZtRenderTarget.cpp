@@ -34,7 +34,7 @@ namespace zt::software_renderer
 
 	bool RenderTarget::createEmpty(const Vector2ui& newResolution, const ColorFormat newColorFormat)
 	{
-#if ZINET_DEBUG
+#if ZINET_TIME_TRACE
 		core::Clock clock;
 		clock.start();
 #endif
@@ -61,7 +61,7 @@ namespace zt::software_renderer
 		const auto bytes = getBytes();
 		buffer = reinterpret_cast<stbi_uc*>(std::malloc(bytes));
 
-#if ZINET_DEBUG
+#if ZINET_TIME_TRACE
 		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
 		Logger->info("CreateEmpty render target took: {} milliseconds", elapsedTime);
 #endif
@@ -71,7 +71,7 @@ namespace zt::software_renderer
 
 	bool RenderTarget::fill(const Color& color)
 	{
-#if ZINET_DEBUG
+#if ZINET_TIME_TRACE
 		core::Clock clock;
 		clock.start();
 #endif
@@ -88,7 +88,7 @@ namespace zt::software_renderer
 			std::memcpy(&buffer[index], &color, channels);
 		}
 
-#if ZINET_DEBUG
+#if ZINET_TIME_TRACE
 		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
 		Logger->info("Fill render target took: {} milliseconds", elapsedTime);
 #endif

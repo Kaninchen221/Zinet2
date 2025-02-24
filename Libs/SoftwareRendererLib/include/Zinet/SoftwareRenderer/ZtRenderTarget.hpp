@@ -5,6 +5,7 @@
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtClock.hpp"
+#include "Zinet/Core/ZtCoreConfig.hpp"
 
 #include "Zinet/Math/ZtVecTypes.hpp"
 
@@ -116,7 +117,7 @@ namespace zt::software_renderer
 
 	void RenderTarget::writePixels(const auto& pixels)
 	{
-#if ZINET_DEBUG
+#if ZINET_TIME_TRACE
 		core::Clock clock;
 		clock.start();
 #endif
@@ -127,7 +128,7 @@ namespace zt::software_renderer
 			writePixelColor(pixelIndex, pixel.color);
 		}
 
-#if ZINET_DEBUG
+#if ZINET_TIME_TRACE
 		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
 		Logger->info("Write pixels count: {} took: {} milliseconds", pixels.size(), elapsedTime);
 #endif

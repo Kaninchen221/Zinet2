@@ -14,7 +14,7 @@ namespace zt::software_renderer
 {
 	void SoftwareRenderer::draw(DrawInputInfo drawInputInfo, RenderTarget& renderTarget)
 	{
-#if ZINET_DEBUG
+#if ZINET_TIME_TRACE
 		// Validate indices
 		if (drawInputInfo.indices.size() % 3 != 0)
 		{
@@ -252,7 +252,7 @@ namespace zt::software_renderer
 
 	std::vector<Pixel> SoftwareRenderer::barycentricFillTriangle(const Vertex& vertex1, const Vertex& vertex2, const Vertex& vertex3, const RenderTarget& renderTarget)
 	{
-#if ZINET_DEBUG
+#if ZINET_TIME_TRACE
 		core::Clock clock;
 		clock.start();
 #endif
@@ -304,7 +304,7 @@ namespace zt::software_renderer
 			}
 		}
 
-#if ZINET_DEBUG
+#if ZINET_TIME_TRACE
 		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
 		Logger->info("Barycentric fill triangle took: {} milliseconds", elapsedTime);
 #endif
