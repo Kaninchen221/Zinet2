@@ -11,11 +11,11 @@
 
 namespace zt::software_renderer
 {
-	void SoftwareRenderer::draw(DrawInputInfo drawInputInfo, RenderTarget& renderTarget)
+	void SoftwareRenderer::draw(DrawInfo drawInputInfo, RenderTarget& renderTarget)
 	{
-#if ZINET_TIME_TRACE
-		// Validate indices
-		if (drawInputInfo.indices.size() % 3 != 0)
+#if ZINET_DEBUG
+		if ((drawInputInfo.drawMode == DrawMode::Triangles || drawInputInfo.drawMode == DrawMode::TrianglesLines) &&
+			 drawInputInfo.indices.size() % 3 != 0)
 		{
 			Logger->error("Indices has invalid number of elements: {}", drawInputInfo.indices.size());
 			return;
@@ -25,9 +25,12 @@ namespace zt::software_renderer
 		// Input Assembler
 
 		// Vertex Shader
-		for (auto& vertex : drawInputInfo.vertices)
+		if (drawInputInfo.shaderProgram.vertexShader)
 		{
-			drawInputInfo.vertexShader.processVertex(vertex);
+			for (auto& vertex : drawInputInfo.vertices)
+			{
+				drawInputInfo.shaderProgram.vertexShader.processVertex(vertex);
+			}
 		}
 
 		// Tessellation
@@ -37,19 +40,13 @@ namespace zt::software_renderer
 		// Rasterization
 		std::vector<Pixel> pixels = rasterization(drawInputInfo, renderTarget);
 
-		// Fragment Shader
-		for (Pixel& pixel : pixels)
-		{
-			drawInputInfo.fragmentShader.processFragment(pixel);
-		}
-
 		// Color Blending
 
-		// Write to render target
+		// Fragment shader and write to render target
 		writePixels(drawInputInfo, pixels, renderTarget);
 	}
 
-	std::vector<Pixel> SoftwareRenderer::rasterization(DrawInputInfo& drawInputInfo, RenderTarget& renderTarget)
+	std::vector<Pixel> SoftwareRenderer::rasterization(DrawInfo& drawInputInfo, RenderTarget& renderTarget)
 	{
 		std::vector<Pixel> result;
 
@@ -62,7 +59,7 @@ namespace zt::software_renderer
 				rasterizeVertexAsPoint(vertex, pixel, renderTarget);
 			}
 		}
-		else if (drawInputInfo.drawMode == DrawMode::Lines)// || drawInputInfo.drawMode == DrawMode::Triangles)
+		else if (drawInputInfo.drawMode == DrawMode::TrianglesLines)
 		{
 			for (size_t index = 0; index < drawInputInfo.indices.size(); index += 3)
 			{
@@ -74,9 +71,10 @@ namespace zt::software_renderer
 				const std::vector<Pixel> secondLinePixels = rasterizeLine(drawInputInfo.vertices[secondIndex], drawInputInfo.vertices[thirdIndex], renderTarget);
 				const std::vector<Pixel> thirdLinePixels = rasterizeLine(drawInputInfo.vertices[thirdIndex], drawInputInfo.vertices[firstIndex], renderTarget);
 
-				result.append_range(firstLinePixels);
-				result.append_range(secondLinePixels);
-				result.append_range(thirdLinePixels);
+				result.reserve(result.size() + firstLinePixels.size() + secondLinePixels.size() + thirdLinePixels.size());
+				result.insert(result.end(), firstLinePixels.begin(), firstLinePixels.end());
+				result.insert(result.end(), secondLinePixels.begin(), secondLinePixels.end());
+				result.insert(result.end(), thirdLinePixels.begin(), thirdLinePixels.end());
 			}
 		}
 		else if (drawInputInfo.drawMode == DrawMode::Triangles)
@@ -94,7 +92,8 @@ namespace zt::software_renderer
 					.v3 = drawInputInfo.vertices[thirdIndex]
 				};
 				const std::vector<Pixel> pixels = barycentricFillTriangle(triangle, renderTarget);
-				result.append_range(pixels);
+				result.reserve(result.size() + pixels.size());
+				result.insert(result.end(), pixels.begin(), pixels.end());
 			}
 		}
 
@@ -106,7 +105,6 @@ namespace zt::software_renderer
 		const Vector2ui pixelCoords = renderTarget.normalizedCoordsToPixelCoords(vertex.position);
 		pixel.coords = pixelCoords;
 		pixel.color = vertex.color;
-		// TODO fragment shader process
 	}
 
 	std::vector<zt::software_renderer::Pixel> SoftwareRenderer::rasterizeLine(const Vertex& firstVertex, const Vertex& secondVertex, const RenderTarget& renderTarget) const
@@ -323,16 +321,26 @@ namespace zt::software_renderer
 		return result;
 	}
 
-	void SoftwareRenderer::writePixels(const DrawInputInfo& drawInputInfo, std::vector<Pixel>& pixels, RenderTarget& renderTarget)
+	void SoftwareRenderer::writePixels(const DrawInfo& drawInputInfo, std::vector<Pixel>& pixels, RenderTarget& renderTarget)
 	{
-		FragmentShader fragmentShader = drawInputInfo.fragmentShader;
-
-		for (Pixel& pixel : pixels)
+		auto fragmentShader = drawInputInfo.shaderProgram.fragmentShader;
+		if (fragmentShader)
 		{
-			Color* sourceColor = renderTarget.getPixelColorAddr(pixel.coords);
-			fragmentShader.sourceColor = sourceColor;
-			fragmentShader.processFragment(pixel);
-			*sourceColor = pixel.color;
+			for (Pixel& pixel : pixels)
+			{
+				Color* sourceColor = renderTarget.getPixelColorAddr(pixel.coords);
+				fragmentShader.sourceColor = sourceColor;
+				fragmentShader.processFragment(pixel);
+				*sourceColor = pixel.color;
+			}
+		}
+		else
+		{
+			for (Pixel& pixel : pixels)
+			{
+				Color* sourceColor = renderTarget.getPixelColorAddr(pixel.coords);
+				*sourceColor = pixel.color;
+			}
 		}
 	}
 

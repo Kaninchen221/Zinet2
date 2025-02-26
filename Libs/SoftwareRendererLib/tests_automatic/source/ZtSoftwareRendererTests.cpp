@@ -32,9 +32,9 @@ namespace zt::software_renderer::tests
 
 		SoftwareRenderer softwareRenderer;
 
-		DrawInputInfo getInputDrawInfoRect() const
+		DrawInfo getInputDrawInfoRect() const
 		{
-			return DrawInputInfo
+			return DrawInfo
 			{
 				// (0,0) point is in upper left corner
 				.drawMode = DrawMode::Points,
@@ -48,14 +48,30 @@ namespace zt::software_renderer::tests
 				.indices = {
 					0, 1, 2,
 					1, 3, 2
-				},
-				.vertexShader = VertexShader{}
+				}
 			};
 		}
 
-		void createRenderTarget(RenderTarget& renderTarget, Color fillColor = WhiteColor)
+		DrawInfo getInputDrawInfoTriangle() const
 		{
-			const Vector2ui size = { 1920, 1080 };
+			return DrawInfo
+			{
+				// (0,0) point is in upper left corner
+				.drawMode = DrawMode::Triangles,
+				.antialiasing = false,
+				.vertices = std::vector<Vertex>{
+					Vertex{ { .25f, .25f }, RedColor },
+					Vertex{ { .75f, .25f }, GreenColor },
+					Vertex{ { .25f, .75f }, BlueColor }
+				},
+				.indices = {
+					0, 1, 2
+				}
+			};
+		}
+
+		void createRenderTarget(RenderTarget& renderTarget, Color fillColor = WhiteColor, Vector2ui size = Vector2ui{ 1920, 1080 })
+		{
 			const ColorFormat colorFormat = ColorFormat::R8G8B8A8_SRGB;
 			bool renderTargetCreateResult = renderTarget.createEmpty(size, colorFormat);
 			ASSERT_TRUE(renderTargetCreateResult);
@@ -81,7 +97,7 @@ namespace zt::software_renderer::tests
 		createRenderTarget(renderTarget);
 
 		auto drawInfo = getInputDrawInfoRect();
-		drawInfo.drawMode = DrawMode::Lines;
+		drawInfo.drawMode = DrawMode::TrianglesLines;
 		drawInfo.antialiasing = false;
 		softwareRenderer.draw(drawInfo, renderTarget);
 
@@ -101,6 +117,28 @@ namespace zt::software_renderer::tests
 		softwareRenderer.draw(drawInfo, renderTarget);
 
 		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_triangles_result.png";
+		const bool saveResult = renderTarget.saveToFilePNG(path);
+		ASSERT_TRUE(saveResult);
+	}
+
+	TEST_F(SoftwareRendererTests, DrawTriangleWithCustomShadersTest)
+	{
+		class CustomVertexShader
+		{
+			void processVertex(Vertex& vertex) const { vertex.position.x += 0.5f; }
+		};
+
+		class CustomFragmentShader : public FragmentShader
+		{
+
+		};
+
+		RenderTarget renderTarget;
+		createRenderTarget(renderTarget, WhiteColor, { 200, 200 });
+
+		softwareRenderer.draw(getInputDrawInfoTriangle(), renderTarget);
+
+		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_triangle_with_custom_shaders_result.png";
 		const bool saveResult = renderTarget.saveToFilePNG(path);
 		ASSERT_TRUE(saveResult);
 	}

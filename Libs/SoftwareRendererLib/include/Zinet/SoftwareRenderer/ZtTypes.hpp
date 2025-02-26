@@ -34,7 +34,7 @@ namespace zt::software_renderer
 	enum class DrawMode
 	{
 		Points,
-		Lines,
+		TrianglesLines,
 		Triangles
 	};
 
@@ -44,6 +44,8 @@ namespace zt::software_renderer
 
 		// The vertex param is the input and the output
 		void processVertex(Vertex& vertex) const { }
+
+		operator bool() const { return true; }
 
 	};
 
@@ -55,6 +57,8 @@ namespace zt::software_renderer
 
 		// The fragment param is the input and the output
 		void processFragment(Pixel& fragment) const {}
+
+		operator bool() const { return true; }
 
 	};
 }

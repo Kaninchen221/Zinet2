@@ -41,7 +41,7 @@ namespace zt::opengl_renderer::tests
 		
 		void changeVertices();
 
-		sf::DrawInputInfo drawInputInfo
+		sf::DrawInfo drawInputInfo
 		{
 			// (0,0) point is in upper left corner
 			.drawMode = sf::DrawMode::Triangles,
@@ -55,8 +55,7 @@ namespace zt::opengl_renderer::tests
 			.indices = {
 				0, 1, 2,
 				1, 3, 2
-			},
-			.vertexShader = sf::VertexShader{}
+			}
 		};
 
 		OpenGLRenderer openGLRenderer;

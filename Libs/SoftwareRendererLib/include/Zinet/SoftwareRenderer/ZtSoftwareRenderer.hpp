@@ -9,14 +9,19 @@ namespace zt::software_renderer
 {
 	class RenderTarget;
 
-	struct ZINET_SOFTWARE_RENDERER_API DrawInputInfo
+	struct ZINET_SOFTWARE_RENDERER_API ShaderProgram
+	{
+		VertexShader vertexShader;
+		FragmentShader fragmentShader;
+	};
+
+	struct ZINET_SOFTWARE_RENDERER_API DrawInfo
 	{
 		DrawMode drawMode = DrawMode::Points;
 		bool antialiasing = false;
 		std::vector<Vertex> vertices;
 		std::vector<size_t> indices;
-		VertexShader vertexShader;
-		FragmentShader fragmentShader;
+		ShaderProgram shaderProgram;
 	};
 
 	class ZINET_SOFTWARE_RENDERER_API SoftwareRenderer
@@ -36,11 +41,13 @@ namespace zt::software_renderer
 
 		~SoftwareRenderer() noexcept = default;
 
-		void draw(DrawInputInfo drawInputInfo, RenderTarget& renderTarget);
+		void draw(DrawInfo drawInputInfo, RenderTarget& renderTarget);
+
+		// TODO: draw render target in render target
 
 	protected:
 
-		std::vector<Pixel> rasterization(DrawInputInfo& drawInputInfo, RenderTarget& renderTarget);
+		std::vector<Pixel> rasterization(DrawInfo& drawInputInfo, RenderTarget& renderTarget);
 
 		void rasterizeVertexAsPoint(const Vertex& vertex, Pixel& pixel, const RenderTarget& renderTarget) const;
 		std::vector<Pixel> rasterizeLine(const Vertex& firstVertex, const Vertex& secondVertex, const RenderTarget& renderTarget) const;
@@ -49,7 +56,7 @@ namespace zt::software_renderer
 		// The outputs are pixels filling the triangle
 		std::vector<Pixel> barycentricFillTriangle(const Triangle& triangle, const RenderTarget& renderTarget);
 
-		void writePixels(const DrawInputInfo& drawInputInfo, std::vector<Pixel>& pixels, RenderTarget& renderTarget);
+		void writePixels(const DrawInfo& drawInputInfo, std::vector<Pixel>& pixels, RenderTarget& renderTarget);
 
 	};
 }
