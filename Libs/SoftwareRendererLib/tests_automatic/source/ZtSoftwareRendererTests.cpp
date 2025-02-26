@@ -32,31 +32,34 @@ namespace zt::software_renderer::tests
 
 		SoftwareRenderer softwareRenderer;
 
-		DrawInputInfo drawInputInfo
+		DrawInputInfo getInputDrawInfoRect() const
 		{
-			// (0,0) point is in upper left corner
-			.drawMode = DrawMode::Points,
-			.antialiasing = false,
-			.vertices = std::vector<Vertex>{ 
-				Vertex{ { .30f, .25f }, RedColor }, 
-				Vertex{ { .80f, .25f }, GreenColor }, 
-				Vertex{ { .25f, .75f }, BlueColor }, 
-				Vertex{ { .75f, .75f }, BlackColor } 
-			},
-			.indices = { 
-				0, 1, 2, 
-				1, 3, 2 
-			},
-			.vertexShader = VertexShader{}
-		};
+			return DrawInputInfo
+			{
+				// (0,0) point is in upper left corner
+				.drawMode = DrawMode::Points,
+				.antialiasing = false,
+				.vertices = std::vector<Vertex>{
+					Vertex{ { .30f, .25f }, RedColor },
+					Vertex{ { .80f, .25f }, GreenColor },
+					Vertex{ { .25f, .75f }, BlueColor },
+					Vertex{ { .75f, .75f }, BlackColor }
+				},
+				.indices = {
+					0, 1, 2,
+					1, 3, 2
+				},
+				.vertexShader = VertexShader{}
+			};
+		}
 
-		void createRenderTarget(RenderTarget& renderTarget)
+		void createRenderTarget(RenderTarget& renderTarget, Color fillColor = WhiteColor)
 		{
 			const Vector2ui size = { 1920, 1080 };
 			const ColorFormat colorFormat = ColorFormat::R8G8B8A8_SRGB;
 			bool renderTargetCreateResult = renderTarget.createEmpty(size, colorFormat);
 			ASSERT_TRUE(renderTargetCreateResult);
-			renderTarget.fill(WhiteColor);
+			renderTarget.fill(fillColor);
 		}
 	};
 
@@ -65,7 +68,7 @@ namespace zt::software_renderer::tests
 		RenderTarget renderTarget;
 		createRenderTarget(renderTarget);
 
-		softwareRenderer.draw(drawInputInfo, renderTarget);
+		softwareRenderer.draw(getInputDrawInfoRect(), renderTarget);
 
 		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_points_result.png";
 		const bool saveResult = renderTarget.saveToFilePNG(path);
@@ -77,18 +80,14 @@ namespace zt::software_renderer::tests
 		RenderTarget renderTarget;
 		createRenderTarget(renderTarget);
 
-		drawInputInfo.drawMode = DrawMode::Lines;
-		drawInputInfo.antialiasing = false;
-		softwareRenderer.draw(drawInputInfo, renderTarget);
+		auto drawInfo = getInputDrawInfoRect();
+		drawInfo.drawMode = DrawMode::Lines;
+		drawInfo.antialiasing = false;
+		softwareRenderer.draw(drawInfo, renderTarget);
 
 		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_lines_result.png";
 		const bool saveResult = renderTarget.saveToFilePNG(path);
 		ASSERT_TRUE(saveResult);
-	}
-
-	TEST_F(SoftwareRendererTests, DrawLinesTestAntialiasing)
-	{
-		// TODO Draw with Antialiasing
 	}
 
 	TEST_F(SoftwareRendererTests, DrawTrianglesTest)
@@ -96,9 +95,10 @@ namespace zt::software_renderer::tests
 		RenderTarget renderTarget;
 		createRenderTarget(renderTarget);
 
-		drawInputInfo.drawMode = DrawMode::Triangles;
-		drawInputInfo.antialiasing = false;
-		softwareRenderer.draw(drawInputInfo, renderTarget);
+		auto drawInfo = getInputDrawInfoRect();
+		drawInfo.drawMode = DrawMode::Triangles;
+		drawInfo.antialiasing = false;
+		softwareRenderer.draw(drawInfo, renderTarget);
 
 		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_triangles_result.png";
 		const bool saveResult = renderTarget.saveToFilePNG(path);

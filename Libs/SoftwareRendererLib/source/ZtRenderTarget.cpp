@@ -112,10 +112,21 @@ namespace zt::software_renderer
 		return result;
 	}
 
+	Color* RenderTarget::getPixelColorAddr(size_t index) const
+	{
+		return reinterpret_cast<Color*>(&buffer[index]);
+	}
+
 	Color RenderTarget::getPixelColor(const Vector2ui& pixelCoords) const
 	{
 		const Color result = getPixelColor(pixelCoordsToPixelIndex(pixelCoords));
 		return result;
+	}
+
+	Color* RenderTarget::getPixelColorAddr(const Vector2ui& pixelCoords)
+	{
+		const size_t pixelIndex = pixelCoordsToPixelIndex(pixelCoords);
+		return getPixelColorAddr(pixelIndex);
 	}
 
 	void RenderTarget::clear()
@@ -192,7 +203,7 @@ namespace zt::software_renderer
 
 	size_t RenderTarget::pixelCoordsToPixelIndex(const Vector2ui& pixelCoords) const
 	{
-		const size_t pixelIndex = pixelCoords.y * resolution.x + pixelCoords.x;
+		const size_t pixelIndex = (pixelCoords.y * resolution.x + pixelCoords.x) * channels;
 		return pixelIndex;
 	}
 

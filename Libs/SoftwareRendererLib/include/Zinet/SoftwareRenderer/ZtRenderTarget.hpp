@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/SoftwareRenderer/ZtSoftwareRendererConfig.hpp"
+#include "Zinet/SoftwareRenderer/ZtTypes.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
@@ -13,17 +14,6 @@
 
 namespace zt::software_renderer
 {
-	struct ZINET_SOFTWARE_RENDERER_API Pixel
-	{
-		Vector2ui coords;
-		Color color;
-	};
-
-	enum class ColorFormat
-	{
-		R8G8B8A8_SRGB
-	};
-
 	int ColorFormatToChannels(ColorFormat colorFormat);
 
 	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_OPERATORS)
@@ -50,7 +40,11 @@ namespace zt::software_renderer
 
 		Color getPixelColor(size_t index) const;
 
+		Color* getPixelColorAddr(size_t index) const;
+
 		Color getPixelColor(const Vector2ui& pixelCoords) const;
+
+		Color* getPixelColorAddr(const Vector2ui& pixelCoords);
 
 		void clear();
 

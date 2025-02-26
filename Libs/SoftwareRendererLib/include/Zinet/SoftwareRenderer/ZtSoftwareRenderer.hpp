@@ -1,36 +1,13 @@
 #pragma once
 
 #include "Zinet/SoftwareRenderer/ZtSoftwareRendererConfig.hpp"
+#include "Zinet/SoftwareRenderer/ZtTypes.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
-
-#include "Zinet/Math/ZtVecTypes.hpp"
 
 namespace zt::software_renderer
 {
 	class RenderTarget;
-	struct Pixel;
-
-	enum class DrawMode
-	{
-		Points,
-		Lines,
-		Triangles
-	};
-
-	struct ZINET_SOFTWARE_RENDERER_API Vertex
-	{
-		Vector2f position;
-		Vector4f color;
-	};
-
-	class ZINET_SOFTWARE_RENDERER_API VertexShader
-	{
-	public:
-
-		void processVertex(Vertex& vertex) const { }
-
-	};
 
 	struct ZINET_SOFTWARE_RENDERER_API DrawInputInfo
 	{
@@ -39,6 +16,7 @@ namespace zt::software_renderer
 		std::vector<Vertex> vertices;
 		std::vector<size_t> indices;
 		VertexShader vertexShader;
+		FragmentShader fragmentShader;
 	};
 
 	class ZINET_SOFTWARE_RENDERER_API SoftwareRenderer
@@ -62,14 +40,16 @@ namespace zt::software_renderer
 
 	protected:
 
-		void rasterization(DrawInputInfo& drawInputInfo, RenderTarget& renderTarget);
+		std::vector<Pixel> rasterization(DrawInputInfo& drawInputInfo, RenderTarget& renderTarget);
 
 		void rasterizeVertexAsPoint(const Vertex& vertex, Pixel& pixel, const RenderTarget& renderTarget) const;
 		std::vector<Pixel> rasterizeLine(const Vertex& firstVertex, const Vertex& secondVertex, const RenderTarget& renderTarget) const;
 		std::vector<Pixel> rasterizeLineAntialiasing(const Vertex& firstVertex, const Vertex& secondVertex, const RenderTarget& renderTarget) const;
 
 		// The outputs are pixels filling the triangle
-		std::vector<Pixel> barycentricFillTriangle(const Vertex& vertex1, const Vertex& vertex2, const Vertex& vertex3, const RenderTarget& renderTarget);
+		std::vector<Pixel> barycentricFillTriangle(const Triangle& triangle, const RenderTarget& renderTarget);
+
+		void writePixels(const DrawInputInfo& drawInputInfo, std::vector<Pixel>& pixels, RenderTarget& renderTarget);
 
 	};
 }
