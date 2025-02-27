@@ -3,7 +3,9 @@
 #include "Zinet/SoftwareRenderer/ZtSoftwareRendererConfig.hpp"
 
 #include "Zinet/Math/ZtVecTypes.hpp"
+
 #include <algorithm>
+#include <functional>
 
 namespace zt::software_renderer
 {
@@ -42,10 +44,11 @@ namespace zt::software_renderer
 	{
 	public:
 
-		// The vertex param is the input and the output
-		void processVertex(Vertex& vertex) const { }
+		using ProcessVertexCallableT = std::function<void(const VertexShader&, Vertex& vertex)>;
 
-		operator bool() const { return true; }
+		ProcessVertexCallableT processVertex = nullptr;
+
+		operator bool() const { return processVertex.operator bool(); }
 
 	};
 
@@ -55,10 +58,11 @@ namespace zt::software_renderer
 
 		const Color* sourceColor = nullptr;
 
-		// The fragment param is the input and the output
-		void processFragment(Pixel& fragment) const {}
+		using ProcessFragmentCallableT = std::function<void(const FragmentShader&, Pixel& fragment)>;
 
-		operator bool() const { return true; }
+		ProcessFragmentCallableT processFragment = nullptr;
+
+		operator bool() const { return processFragment.operator bool(); }
 
 	};
 }

@@ -11,65 +11,92 @@
 
 namespace zt::software_renderer
 {
-	void SoftwareRenderer::draw(DrawInfo drawInputInfo, RenderTarget& renderTarget)
+	void SoftwareRenderer::draw(DrawInfo drawInfo, RenderTarget& renderTarget)
 	{
 #if ZINET_DEBUG
-		if ((drawInputInfo.drawMode == DrawMode::Triangles || drawInputInfo.drawMode == DrawMode::TrianglesLines) &&
-			 drawInputInfo.indices.size() % 3 != 0)
-		{
-			Logger->error("Indices has invalid number of elements: {}", drawInputInfo.indices.size());
+		if (!validateDrawInfo(drawInfo))
 			return;
-		}
 #endif
 
 		// Input Assembler
+		// ?
 
-		// Vertex Shader
-		if (drawInputInfo.shaderProgram.vertexShader)
-		{
-			for (auto& vertex : drawInputInfo.vertices)
-			{
-				drawInputInfo.shaderProgram.vertexShader.processVertex(vertex);
-			}
-		}
+		vertexShader(drawInfo.vertices, drawInfo.shaderProgram);
 
 		// Tessellation
+		// ?
 
 		// Geometry Shader
+		// ?
 
-		// Rasterization
-		std::vector<Pixel> pixels = rasterization(drawInputInfo, renderTarget);
+		std::vector<Pixel> pixels = rasterization(drawInfo, renderTarget);
 
 		// Color Blending
+		// ?
 
 		// Fragment shader and write to render target
-		writePixels(drawInputInfo, pixels, renderTarget);
+		writePixels(drawInfo, pixels, renderTarget);
 	}
 
-	std::vector<Pixel> SoftwareRenderer::rasterization(DrawInfo& drawInputInfo, RenderTarget& renderTarget)
+	bool SoftwareRenderer::validateDrawInfo(const DrawInfo& drawInfo) const
+	{
+		if ((drawInfo.drawMode == DrawMode::Triangles || drawInfo.drawMode == DrawMode::TrianglesLines) &&
+			drawInfo.indices.size() % 3 != 0)
+		{
+			Logger->error("Indices has invalid number of elements: {}", drawInfo.indices.size());
+			return false;
+		}
+
+		if (drawInfo.vertices.empty())
+		{
+			Logger->error("Vertices is empty");
+			return false;
+		}
+
+		if (drawInfo.indices.empty())
+		{
+			Logger->error("Indices is empty");
+		}
+
+		return true;
+	}
+
+	void SoftwareRenderer::vertexShader(std::vector<Vertex>& vertices, const ShaderProgram& shaderProgram) const
+	{
+		auto& vertexShader = shaderProgram.vertexShader;
+		if (vertexShader)
+		{
+			for (auto& vertex : vertices)
+			{
+				vertexShader.processVertex(vertexShader, vertex);
+			}
+		}
+	}
+
+	std::vector<Pixel> SoftwareRenderer::rasterization(DrawInfo& drawInfo, RenderTarget& renderTarget)
 	{
 		std::vector<Pixel> result;
 
-		if (drawInputInfo.drawMode == DrawMode::Points)
+		if (drawInfo.drawMode == DrawMode::Points)
 		{
-			result.reserve(drawInputInfo.vertices.size());
-			for (const auto& vertex : drawInputInfo.vertices)
+			result.reserve(drawInfo.vertices.size());
+			for (const auto& vertex : drawInfo.vertices)
 			{
 				Pixel& pixel = result.emplace_back();
 				rasterizeVertexAsPoint(vertex, pixel, renderTarget);
 			}
 		}
-		else if (drawInputInfo.drawMode == DrawMode::TrianglesLines)
+		else if (drawInfo.drawMode == DrawMode::TrianglesLines)
 		{
-			for (size_t index = 0; index < drawInputInfo.indices.size(); index += 3)
+			for (size_t index = 0; index < drawInfo.indices.size(); index += 3)
 			{
-				const size_t firstIndex = drawInputInfo.indices[index];
-				const size_t secondIndex = drawInputInfo.indices[index + 1];
-				const size_t thirdIndex = drawInputInfo.indices[index + 2];
+				const size_t firstIndex = drawInfo.indices[index];
+				const size_t secondIndex = drawInfo.indices[index + 1];
+				const size_t thirdIndex = drawInfo.indices[index + 2];
 
-				const std::vector<Pixel> firstLinePixels = rasterizeLine(drawInputInfo.vertices[firstIndex], drawInputInfo.vertices[secondIndex], renderTarget);
-				const std::vector<Pixel> secondLinePixels = rasterizeLine(drawInputInfo.vertices[secondIndex], drawInputInfo.vertices[thirdIndex], renderTarget);
-				const std::vector<Pixel> thirdLinePixels = rasterizeLine(drawInputInfo.vertices[thirdIndex], drawInputInfo.vertices[firstIndex], renderTarget);
+				const std::vector<Pixel> firstLinePixels = rasterizeLine(drawInfo.vertices[firstIndex], drawInfo.vertices[secondIndex], renderTarget);
+				const std::vector<Pixel> secondLinePixels = rasterizeLine(drawInfo.vertices[secondIndex], drawInfo.vertices[thirdIndex], renderTarget);
+				const std::vector<Pixel> thirdLinePixels = rasterizeLine(drawInfo.vertices[thirdIndex], drawInfo.vertices[firstIndex], renderTarget);
 
 				result.reserve(result.size() + firstLinePixels.size() + secondLinePixels.size() + thirdLinePixels.size());
 				result.insert(result.end(), firstLinePixels.begin(), firstLinePixels.end());
@@ -77,19 +104,19 @@ namespace zt::software_renderer
 				result.insert(result.end(), thirdLinePixels.begin(), thirdLinePixels.end());
 			}
 		}
-		else if (drawInputInfo.drawMode == DrawMode::Triangles)
+		else if (drawInfo.drawMode == DrawMode::Triangles)
 		{
-			for (size_t index = 0; index < drawInputInfo.indices.size(); index += 3)
+			for (size_t index = 0; index < drawInfo.indices.size(); index += 3)
 			{
-				const size_t firstIndex = drawInputInfo.indices[index];
-				const size_t secondIndex = drawInputInfo.indices[index + 1];
-				const size_t thirdIndex = drawInputInfo.indices[index + 2];
+				const size_t firstIndex = drawInfo.indices[index];
+				const size_t secondIndex = drawInfo.indices[index + 1];
+				const size_t thirdIndex = drawInfo.indices[index + 2];
 
 				const Triangle triangle
 				{
-					.v1 = drawInputInfo.vertices[firstIndex],
-					.v2 = drawInputInfo.vertices[secondIndex],
-					.v3 = drawInputInfo.vertices[thirdIndex]
+					.v1 = drawInfo.vertices[firstIndex],
+					.v2 = drawInfo.vertices[secondIndex],
+					.v3 = drawInfo.vertices[thirdIndex]
 				};
 				const std::vector<Pixel> pixels = barycentricFillTriangle(triangle, renderTarget);
 				result.reserve(result.size() + pixels.size());
@@ -297,9 +324,9 @@ namespace zt::software_renderer
 				const float beta = ((p3.x - px) * diffP1YPY - diffP3YPY * (p1.x - px)) * invArea;
 				const float gamma = 1.f - alpha - beta;
 
-				const float nearlyZero = 1e-6f;
+				const float nearlyZero = -1e-6f;
 
-				if (alpha >= 0 && beta >= 0 && gamma >= nearlyZero)
+				if (alpha >= 0.f && beta >= 0.f && gamma >= nearlyZero)
 				{
 					const Color color { 
 						static_cast<std::uint8_t>(alpha * c1.r + beta * c2.r + gamma * c3.r),
@@ -321,16 +348,19 @@ namespace zt::software_renderer
 		return result;
 	}
 
-	void SoftwareRenderer::writePixels(const DrawInfo& drawInputInfo, std::vector<Pixel>& pixels, RenderTarget& renderTarget)
+	void SoftwareRenderer::writePixels(const DrawInfo& drawInfo, std::vector<Pixel>& pixels, RenderTarget& renderTarget)
 	{
-		auto fragmentShader = drawInputInfo.shaderProgram.fragmentShader;
+		auto fragmentShader = drawInfo.shaderProgram.fragmentShader;
 		if (fragmentShader)
 		{
 			for (Pixel& pixel : pixels)
 			{
+				if (!renderTarget.areCoordsValid(pixel.coords))
+					continue;
+
 				Color* sourceColor = renderTarget.getPixelColorAddr(pixel.coords);
 				fragmentShader.sourceColor = sourceColor;
-				fragmentShader.processFragment(pixel);
+				fragmentShader.processFragment(fragmentShader, pixel);
 				*sourceColor = pixel.color;
 			}
 		}
@@ -338,6 +368,9 @@ namespace zt::software_renderer
 		{
 			for (Pixel& pixel : pixels)
 			{
+				if (!renderTarget.areCoordsValid(pixel.coords))
+					continue;
+
 				Color* sourceColor = renderTarget.getPixelColorAddr(pixel.coords);
 				*sourceColor = pixel.color;
 			}

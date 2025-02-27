@@ -197,7 +197,12 @@ namespace zt::software_renderer
 
 	Vector2ui RenderTarget::normalizedCoordsToPixelCoords(const Vector2f& normalized) const
 	{
-		const Vector2ui pixelCoords = { normalized.x * resolution.x, normalized.y * resolution.y };
+		const Vector2ui pixelCoords = 
+		{ 
+			normalized.x < 0.f ? 0u : normalized.x * resolution.x, 
+			normalized.y < 0.f ? 0u : normalized.y * resolution.y 
+		};
+
 		return pixelCoords;
 	}
 
@@ -205,6 +210,14 @@ namespace zt::software_renderer
 	{
 		const size_t pixelIndex = (pixelCoords.y * resolution.x + pixelCoords.x) * channels;
 		return pixelIndex;
+	}
+
+	bool RenderTarget::areCoordsValid(const Vector2ui& coords) const
+	{
+		if (std::cmp_less_equal(resolution.x, coords.x) || std::cmp_less_equal(resolution.y, coords.y))
+			return false;
+
+		return true;
 	}
 
 }

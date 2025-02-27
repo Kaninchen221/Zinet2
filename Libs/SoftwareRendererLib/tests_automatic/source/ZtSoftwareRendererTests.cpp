@@ -60,9 +60,9 @@ namespace zt::software_renderer::tests
 				.drawMode = DrawMode::Triangles,
 				.antialiasing = false,
 				.vertices = std::vector<Vertex>{
-					Vertex{ { .25f, .25f }, RedColor },
+					Vertex{ { -1.25f, .25f }, RedColor },
 					Vertex{ { .75f, .25f }, GreenColor },
-					Vertex{ { .25f, .75f }, BlueColor }
+					Vertex{ { .25f, 1.75f }, BlueColor }
 				},
 				.indices = {
 					0, 1, 2
@@ -123,20 +123,25 @@ namespace zt::software_renderer::tests
 
 	TEST_F(SoftwareRendererTests, DrawTriangleWithCustomShadersTest)
 	{
-		class CustomVertexShader
+		VertexShader::ProcessVertexCallableT vertexShaderProcess =
+		[](const VertexShader&, Vertex& vertex)
 		{
-			void processVertex(Vertex& vertex) const { vertex.position.x += 0.5f; }
+			vertex.position.x += 0.5f;
 		};
 
-		class CustomFragmentShader : public FragmentShader
+		FragmentShader::ProcessFragmentCallableT fragmentShaderProcess =
+		[](const FragmentShader&, Pixel& fragment)
 		{
-
+			fragment.color = BlackColor;
 		};
 
 		RenderTarget renderTarget;
 		createRenderTarget(renderTarget, WhiteColor, { 200, 200 });
 
-		softwareRenderer.draw(getInputDrawInfoTriangle(), renderTarget);
+		auto drawInfo = getInputDrawInfoTriangle();
+		drawInfo.shaderProgram.vertexShader.processVertex = vertexShaderProcess;
+		drawInfo.shaderProgram.fragmentShader.processFragment = fragmentShaderProcess;
+		softwareRenderer.draw(drawInfo, renderTarget);
 
 		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_triangle_with_custom_shaders_result.png";
 		const bool saveResult = renderTarget.saveToFilePNG(path);

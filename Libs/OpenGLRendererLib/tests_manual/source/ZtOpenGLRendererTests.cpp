@@ -68,7 +68,7 @@ namespace zt::opengl_renderer::tests
 		static float direction = 1.f;
 		auto& vertex = drawInputInfo.vertices[0];
 
-		const float min = 0.1f;
+		const float min = -0.1f;
 		const float max = 0.30f;
 		if (vertex.position.x <= min || vertex.position.x >= max)
 		{

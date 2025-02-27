@@ -28,7 +28,7 @@ namespace zt::software_renderer
 	{
 	protected:
 
-		inline static zt::core::ConsoleLogger Logger = zt::core::ConsoleLogger::Create("SoftwareRenderer");
+		inline static auto Logger = core::ConsoleLogger::Create("SoftwareRenderer");
 
 	public:
 
@@ -41,13 +41,18 @@ namespace zt::software_renderer
 
 		~SoftwareRenderer() noexcept = default;
 
-		void draw(DrawInfo drawInputInfo, RenderTarget& renderTarget);
+		void draw(DrawInfo drawInfo, RenderTarget& renderTarget);
 
+		// TODO: Add draw mode "Lines"
 		// TODO: draw render target in render target
 
 	protected:
 
-		std::vector<Pixel> rasterization(DrawInfo& drawInputInfo, RenderTarget& renderTarget);
+		bool validateDrawInfo(const DrawInfo& drawInfo) const;
+
+		void vertexShader(std::vector<Vertex>& vertices, const ShaderProgram& shaderProgram) const;
+
+		std::vector<Pixel> rasterization(DrawInfo& drawInfo, RenderTarget& renderTarget);
 
 		void rasterizeVertexAsPoint(const Vertex& vertex, Pixel& pixel, const RenderTarget& renderTarget) const;
 		std::vector<Pixel> rasterizeLine(const Vertex& firstVertex, const Vertex& secondVertex, const RenderTarget& renderTarget) const;
@@ -56,7 +61,7 @@ namespace zt::software_renderer
 		// The outputs are pixels filling the triangle
 		std::vector<Pixel> barycentricFillTriangle(const Triangle& triangle, const RenderTarget& renderTarget);
 
-		void writePixels(const DrawInfo& drawInputInfo, std::vector<Pixel>& pixels, RenderTarget& renderTarget);
+		void writePixels(const DrawInfo& drawInfo, std::vector<Pixel>& pixels, RenderTarget& renderTarget);
 
 	};
 }

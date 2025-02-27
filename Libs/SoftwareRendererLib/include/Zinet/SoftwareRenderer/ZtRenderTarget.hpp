@@ -70,6 +70,8 @@ namespace zt::software_renderer
 
 		stbi_uc* get() { return buffer; }
 
+		bool areCoordsValid(const Vector2ui& coords) const;
+
 	protected:
 
 		ZT_REFLECT_MEMBER(ReadOnly)
