@@ -15,22 +15,22 @@ namespace zt
 	using Vector2 = glm::vec<2, T, glm::defaultp>;
 	using Vector2f = glm::vec<2, float, glm::defaultp>;
 	using Vector2d = glm::vec<2, double, glm::defaultp>;
-	using Vector2i = glm::vec<2, int, glm::defaultp>;
-	using Vector2ui = glm::vec<2, unsigned int, glm::defaultp>;
+	using Vector2i = glm::vec<2, std::int32_t, glm::defaultp>;
+	using Vector2ui = glm::vec<2, std::uint32_t, glm::defaultp>;
 
 	template<typename T>
 	using Vector3 = glm::vec<3, T, glm::defaultp>;
 	using Vector3f = glm::vec<3, float, glm::defaultp>;
 	using Vector3d = glm::vec<3, double, glm::defaultp>;
-	using Vector3i = glm::vec<3, int, glm::defaultp>;
-	using Vector3ui = glm::vec<3, unsigned int, glm::defaultp>;
+	using Vector3i = glm::vec<3, std::int32_t, glm::defaultp>;
+	using Vector3ui = glm::vec<3, std::uint32_t, glm::defaultp>;
 
 	template<typename T>
 	using Vector4 = glm::vec<4, T, glm::defaultp>;
 	using Vector4f = glm::vec<4, float, glm::defaultp>;
 	using Vector4d = glm::vec<4, double, glm::defaultp>;
-	using Vector4i = glm::vec<4, int, glm::defaultp>;
-	using Vector4ui = glm::vec<4, unsigned int, glm::defaultp>;
+	using Vector4i = glm::vec<4, std::int32_t, glm::defaultp>;
+	using Vector4ui = glm::vec<4, std::uint32_t, glm::defaultp>;
 
 	using Matrix4f = glm::mat4;
 

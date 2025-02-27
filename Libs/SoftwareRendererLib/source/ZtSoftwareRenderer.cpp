@@ -129,7 +129,7 @@ namespace zt::software_renderer
 
 	void SoftwareRenderer::rasterizeVertexAsPoint(const Vertex& vertex, Pixel& pixel, const RenderTarget& renderTarget) const
 	{
-		const Vector2ui pixelCoords = renderTarget.normalizedCoordsToPixelCoords(vertex.position);
+		const Vector2i pixelCoords = renderTarget.normalizedCoordsToPixelCoords(vertex.position);
 		pixel.coords = pixelCoords;
 		pixel.color = vertex.color;
 	}
@@ -145,7 +145,7 @@ namespace zt::software_renderer
 
 		const float distanceBetweenPoints = Math::Distance(firstPoint, secondPoint);
 
-		auto plot = [&](const Vector2ui& coords)
+		auto plot = [&](const Vector2i& coords)
 		{
 			const float firstWeight = 1.f - Math::Distance(coords, firstPoint) / distanceBetweenPoints;
 			const float secondWeight = 1.0f - firstWeight;
@@ -205,7 +205,7 @@ namespace zt::software_renderer
 
 		auto plot = [&](int x, int y, float brightess) {
 			Pixel& pixel = result.emplace_back();
-			pixel.coords = Vector2ui(x, y);
+			pixel.coords = Vector2i(x, y);
 
 			const float firstWeight = 1.f - Math::Distance({ x, y }, firstPoint) / distanceBetweenPoints;
 			const float secondWeight = 1.0f - firstWeight;
@@ -295,30 +295,30 @@ namespace zt::software_renderer
 
 		std::vector<Pixel> result;
 
-		const Vector2ui p1 = renderTarget.normalizedCoordsToPixelCoords(triangle.v1.position);
-		const Vector2ui p2 = renderTarget.normalizedCoordsToPixelCoords(triangle.v2.position);
-		const Vector2ui p3 = renderTarget.normalizedCoordsToPixelCoords(triangle.v3.position);
+		const Vector2i p1 = renderTarget.normalizedCoordsToPixelCoords(triangle.v1.position);
+		const Vector2i p2 = renderTarget.normalizedCoordsToPixelCoords(triangle.v2.position);
+		const Vector2i p3 = renderTarget.normalizedCoordsToPixelCoords(triangle.v3.position);
 
 		const Color& c1 = triangle.v1.color;
 		const Color& c2 = triangle.v2.color;
 		const Color& c3 = triangle.v3.color;
 
-		const std::uint32_t minX = std::min({ p1.x, p2.x, p3.x });
-		const std::uint32_t maxX = std::max({ p1.x, p2.x, p3.x });
-		const std::uint32_t minY = std::min({ p1.y, p2.y, p3.y });
-		const std::uint32_t maxY = std::max({ p1.y, p2.y, p3.y });
+		const std::int32_t minX = std::min({ p1.x, p2.x, p3.x });
+		const std::int32_t maxX = std::max({ p1.x, p2.x, p3.x });
+		const std::int32_t minY = std::min({ p1.y, p2.y, p3.y });
+		const std::int32_t maxY = std::max({ p1.y, p2.y, p3.y });
 
 		result.reserve(maxX * maxY);
 
 		const float invArea = 1.f / float((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x));
 
-		for (std::uint32_t py = minY; py <= maxY; py++)
+		for (std::int32_t py = minY; py <= maxY; py++)
 		{
-			const std::uint32_t diffP3YPY = p3.y - py;
-			const std::uint32_t diffP2YPY = p2.y - py;
-			const std::uint32_t diffP1YPY = p1.y - py;
+			const std::int32_t diffP3YPY = p3.y - py;
+			const std::int32_t diffP2YPY = p2.y - py;
+			const std::int32_t diffP1YPY = p1.y - py;
 
-			for (std::uint32_t px = minX; px <= maxX; px++)
+			for (std::int32_t px = minX; px <= maxX; px++)
 			{
 				const float alpha = ((p2.x - px) * diffP3YPY - diffP2YPY * (p3.x - px)) * invArea;
 				const float beta = ((p3.x - px) * diffP1YPY - diffP3YPY * (p1.x - px)) * invArea;

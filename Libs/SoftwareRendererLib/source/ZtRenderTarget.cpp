@@ -4,11 +4,11 @@
 
 namespace zt::software_renderer
 {
-	inline int ColorFormatToChannels(ColorFormat colorFormat)
+	inline std::int32_t ColorFormatToChannels(ColorFormat colorFormat)
 	{
 		if (colorFormat == ColorFormat::R8G8B8A8_SRGB)
 		{
-			return 4u;
+			return 4;
 		}
 		else
 		{
@@ -32,7 +32,7 @@ namespace zt::software_renderer
 		clear();
 	}
 
-	bool RenderTarget::createEmpty(const Vector2ui& newResolution, const ColorFormat newColorFormat)
+	bool RenderTarget::createEmpty(const Vector2i& newResolution, const ColorFormat newColorFormat)
 	{
 #if ZINET_TIME_TRACE
 		core::Clock clock;
@@ -45,7 +45,7 @@ namespace zt::software_renderer
 			return false;
 		}
 
-		if (newResolution.x <= 0u || newResolution.y <= 0u)
+		if (newResolution.x <= 0 || newResolution.y <= 0)
 		{
 			Logger->error("Size x and y must be greater than 0");
 			return false;
@@ -82,8 +82,8 @@ namespace zt::software_renderer
 			return false;
 		}
 
-		const size_t bytes = getBytes();
-		for (size_t index = 0u; index < bytes; index += channels)
+		const std::int32_t bytes = getBytes();
+		for (std::int32_t index = 0; index < bytes; index += channels)
 		{
 			std::memcpy(&buffer[index], &color, channels);
 		}
@@ -96,14 +96,12 @@ namespace zt::software_renderer
 		return true;
 	}
 
-	Color RenderTarget::getPixelColor(size_t index) const
+	Color RenderTarget::getPixelColor(std::int32_t index) const
 	{
-		const size_t pixelsCount = getPixelsCount();
-		if (index >= pixelsCount)
-		{
-			Logger->error("Pixel index is out of the render target bounds Resolution: {}, {} PixelIndex: {}", resolution.x, resolution.y, index);
-			return {};
-		}
+#if ZINET_DEBUG
+		if (!core::Ensure(isPixelIndexValid(index)))
+			return Color{};
+#endif
 		index *= channels;
 
 		Color result;
@@ -112,20 +110,20 @@ namespace zt::software_renderer
 		return result;
 	}
 
-	Color* RenderTarget::getPixelColorAddr(size_t index) const
+	Color* RenderTarget::getPixelColorAddr(std::int32_t index) const
 	{
 		return reinterpret_cast<Color*>(&buffer[index]);
 	}
 
-	Color RenderTarget::getPixelColor(const Vector2ui& pixelCoords) const
+	Color RenderTarget::getPixelColor(const Vector2i& pixelCoords) const
 	{
 		const Color result = getPixelColor(pixelCoordsToPixelIndex(pixelCoords));
 		return result;
 	}
 
-	Color* RenderTarget::getPixelColorAddr(const Vector2ui& pixelCoords)
+	Color* RenderTarget::getPixelColorAddr(const Vector2i& pixelCoords)
 	{
-		const size_t pixelIndex = pixelCoordsToPixelIndex(pixelCoords);
+		const std::int32_t pixelIndex = pixelCoordsToPixelIndex(pixelCoords);
 		return getPixelColorAddr(pixelIndex);
 	}
 
@@ -135,7 +133,7 @@ namespace zt::software_renderer
 		{
 			stbi_image_free(buffer);
 			buffer = nullptr;
-			resolution = Vector2ui{};
+			resolution = Vector2i{};
 			channels = 0u;
 		}
 	}
@@ -166,15 +164,12 @@ namespace zt::software_renderer
 		return true;
 	}
 
-	bool RenderTarget::writePixelColor(size_t pixelIndex, const Color& color)
+	bool RenderTarget::writePixelColor(std::int32_t pixelIndex, const Color& color)
 	{
-		const size_t pixelsCount = getPixelsCount();
-		if (pixelIndex >= pixelsCount)
-		{
-			Logger->error("Pixel index is out of the render target bounds Resolution: {}, {} PixelIndex: {}", resolution.x, resolution.y, pixelIndex);
+#if ZINET_DEBUG
+		if (!core::Ensure(isPixelIndexValid(pixelIndex)))
 			return false;
-		}
-
+#endif
 		pixelIndex *= channels;
 
 		std::memcpy(&buffer[pixelIndex], &color, channels);
@@ -184,35 +179,40 @@ namespace zt::software_renderer
 
 	void RenderTarget::writePixel(const Pixel& pixel)
 	{
-		const size_t pixelIndex = pixelCoordsToPixelIndex(pixel.coords);
+		const std::int32_t pixelIndex = pixelCoordsToPixelIndex(pixel.coords);
 		writePixelColor(pixelIndex, pixel.color);
 	}
 
-	size_t RenderTarget::normalizedCoordsToPixelIndex(const Vector2f& normalized) const
+	std::int32_t RenderTarget::normalizedCoordsToPixelIndex(const Vector2f& normalized) const
 	{
-		const Vector2ui pixelCoords = normalizedCoordsToPixelCoords(normalized);
-		const size_t pixelIndex = pixelCoordsToPixelIndex(pixelCoords);
+		const Vector2i pixelCoords = normalizedCoordsToPixelCoords(normalized);
+		const std::int32_t pixelIndex = pixelCoordsToPixelIndex(pixelCoords);
 		return pixelIndex;
 	}
 
-	Vector2ui RenderTarget::normalizedCoordsToPixelCoords(const Vector2f& normalized) const
+	Vector2i RenderTarget::normalizedCoordsToPixelCoords(const Vector2f& normalized) const
 	{
-		const Vector2ui pixelCoords = 
+		const Vector2i pixelCoords = 
 		{ 
-			normalized.x < 0.f ? 0u : normalized.x * resolution.x, 
-			normalized.y < 0.f ? 0u : normalized.y * resolution.y 
+			normalized.x * resolution.x,
+			normalized.y * resolution.y
 		};
 
 		return pixelCoords;
 	}
 
-	size_t RenderTarget::pixelCoordsToPixelIndex(const Vector2ui& pixelCoords) const
+	std::int32_t RenderTarget::pixelCoordsToPixelIndex(const Vector2i& pixelCoords) const
 	{
-		const size_t pixelIndex = (pixelCoords.y * resolution.x + pixelCoords.x) * channels;
+		const std::int32_t pixelIndex = (pixelCoords.y * resolution.x + pixelCoords.x) * channels;
 		return pixelIndex;
 	}
 
-	bool RenderTarget::areCoordsValid(const Vector2ui& coords) const
+	bool RenderTarget::isPixelIndexValid(std::int32_t pixelIndex) const
+	{
+		return pixelIndex >= 0 && pixelIndex < getPixelsCount();
+	}
+
+	bool RenderTarget::areCoordsValid(const Vector2i& coords) const
 	{
 		if (std::cmp_less_equal(resolution.x, coords.x) || std::cmp_less_equal(resolution.y, coords.y))
 			return false;

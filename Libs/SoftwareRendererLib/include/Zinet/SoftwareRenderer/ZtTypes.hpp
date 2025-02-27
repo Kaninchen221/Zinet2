@@ -24,7 +24,7 @@ namespace zt::software_renderer
 
 	struct ZINET_SOFTWARE_RENDERER_API Pixel
 	{
-		Vector2ui coords;
+		Vector2i coords;
 		Color color;
 	};
 

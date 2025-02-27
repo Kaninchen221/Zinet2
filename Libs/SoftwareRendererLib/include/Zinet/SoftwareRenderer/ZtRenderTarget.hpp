@@ -34,17 +34,17 @@ namespace zt::software_renderer
 		RenderTarget& operator = (const RenderTarget& other);
 		RenderTarget& operator = (RenderTarget&& other) = default;
 
-		bool createEmpty(const Vector2ui& newSize, const ColorFormat newColorFormat);
+		bool createEmpty(const Vector2i& newSize, const ColorFormat newColorFormat);
 
 		bool fill(const Color& color);
 
-		Color getPixelColor(size_t index) const;
+		Color getPixelColor(std::int32_t index) const;
 
-		Color* getPixelColorAddr(size_t index) const;
+		Color* getPixelColorAddr(std::int32_t index) const;
 
-		Color getPixelColor(const Vector2ui& pixelCoords) const;
+		Color getPixelColor(const Vector2i& pixelCoords) const;
 
-		Color* getPixelColorAddr(const Vector2ui& pixelCoords);
+		Color* getPixelColorAddr(const Vector2i& pixelCoords);
 
 		void clear();
 
@@ -52,25 +52,27 @@ namespace zt::software_renderer
 
 		bool loadFromFilePNG(const std::filesystem::path& path);
 
-		bool writePixelColor(size_t pixelIndex, const Color& color);
+		bool writePixelColor(std::int32_t pixelIndex, const Color& color);
 
 		void writePixel(const Pixel& pixel);
 
 		void writePixels(const auto& pixels);
 
-		size_t normalizedCoordsToPixelIndex(const Vector2f& normalized) const;
+		std::int32_t normalizedCoordsToPixelIndex(const Vector2f& normalized) const;
 
-		Vector2ui normalizedCoordsToPixelCoords(const Vector2f& normalized) const;
+		Vector2i normalizedCoordsToPixelCoords(const Vector2f& normalized) const;
 
-		size_t pixelCoordsToPixelIndex(const Vector2ui& pixelCoords) const;
+		std::int32_t pixelCoordsToPixelIndex(const Vector2i& pixelCoords) const;
 
-		size_t getBytes() const { return channels * resolution.x * resolution.y; }
+		std::int32_t getBytes() const { return channels * resolution.x * resolution.y; }
 
-		size_t getPixelsCount() const { return resolution.x * resolution.y; }
+		std::int32_t getPixelsCount() const { return resolution.x * resolution.y; }
 
 		stbi_uc* get() { return buffer; }
 
-		bool areCoordsValid(const Vector2ui& coords) const;
+		bool isPixelIndexValid(std::int32_t pixelIndex) const;
+
+		bool areCoordsValid(const Vector2i& coords) const;
 
 	protected:
 
@@ -120,7 +122,7 @@ namespace zt::software_renderer
 
 		for (const auto& pixel : pixels)
 		{
-			const size_t pixelIndex = pixelCoordsToPixelIndex(pixel.coords);
+			const std::int32_t pixelIndex = pixelCoordsToPixelIndex(pixel.coords);
 			writePixelColor(pixelIndex, pixel.color);
 		}
 

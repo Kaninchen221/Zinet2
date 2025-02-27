@@ -60,7 +60,7 @@ namespace zt::software_renderer::tests
 				.drawMode = DrawMode::Triangles,
 				.antialiasing = false,
 				.vertices = std::vector<Vertex>{
-					Vertex{ { -1.25f, .25f }, RedColor },
+					Vertex{ { -0.75f, .25f }, RedColor },
 					Vertex{ { .75f, .25f }, GreenColor },
 					Vertex{ { .25f, 1.75f }, BlueColor }
 				},
@@ -70,7 +70,7 @@ namespace zt::software_renderer::tests
 			};
 		}
 
-		void createRenderTarget(RenderTarget& renderTarget, Color fillColor = WhiteColor, Vector2ui size = Vector2ui{ 1920, 1080 })
+		void createRenderTarget(RenderTarget& renderTarget, Color fillColor = WhiteColor, Vector2i size = Vector2i{ 1920, 1080 })
 		{
 			const ColorFormat colorFormat = ColorFormat::R8G8B8A8_SRGB;
 			bool renderTargetCreateResult = renderTarget.createEmpty(size, colorFormat);

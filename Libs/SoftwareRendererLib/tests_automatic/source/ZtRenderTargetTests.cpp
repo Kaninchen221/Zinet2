@@ -51,7 +51,7 @@ namespace zt::software_renderer::tests
 		ASSERT_TRUE(fillResult);
 
 		// Test the last pixel
-		const size_t lastPixelIndex = expectedResolution.x * expectedResolution.y - 1u;
+		const std::int32_t lastPixelIndex = expectedResolution.x * expectedResolution.y - 1;
 		const Color pixelColor = renderTarget.getPixelColor(lastPixelIndex);
 		ASSERT_EQ(pixelColor, fillColor);
 
@@ -62,8 +62,8 @@ namespace zt::software_renderer::tests
 
 		// Clear, so we can test load result
 		renderTarget.clear();
-		EXPECT_EQ(renderTarget.getResolution(), Vector2i( 0u, 0u ));
-		EXPECT_EQ(renderTarget.getChannels(), 0u);
+		EXPECT_EQ(renderTarget.getResolution(), Vector2i( 0, 0 ));
+		EXPECT_EQ(renderTarget.getChannels(), 0);
 
 		// Load from file
 		const bool loadFromPNGResult = renderTarget.loadFromFilePNG(path);
@@ -74,7 +74,7 @@ namespace zt::software_renderer::tests
 		ASSERT_EQ(pixelColorAfterLoad, fillColor);
 
 		// Change color of one pixel
-		const size_t writePixelIndex = 1u;
+		const std::int32_t writePixelIndex = 1;
 		const Color writeColor = { 10u, 12u, 255u, 200u };
 		renderTarget.writePixelColor(writePixelIndex, writeColor);
 
