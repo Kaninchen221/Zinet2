@@ -134,7 +134,7 @@ namespace zt::software_renderer
 			stbi_image_free(buffer);
 			buffer = nullptr;
 			resolution = Vector2i{};
-			channels = 0u;
+			channels = 0;
 		}
 	}
 

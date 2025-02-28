@@ -77,13 +77,13 @@ namespace zt::software_renderer
 	protected:
 
 		ZT_REFLECT_MEMBER(ReadOnly)
-		Vector2i resolution = { 0u, 0u };
+		Vector2i resolution = { 0, 0 };
 
 		ZT_REFLECT_MEMBER(ReadOnly)
 		ColorFormat colorFormat;
 
 		ZT_REFLECT_MEMBER(ReadOnly)
-		int channels = 0u;
+		int channels = 0;
 
 		stbi_uc* buffer = nullptr;
 
