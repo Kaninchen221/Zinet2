@@ -214,7 +214,7 @@ namespace zt::software_renderer
 
 	bool RenderTarget::areCoordsValid(const Vector2i& coords) const
 	{
-		if (std::cmp_less_equal(resolution.x, coords.x) || std::cmp_less_equal(resolution.y, coords.y))
+		if (resolution.x <= coords.x || resolution.y <= coords.y || coords.x < 0 || coords.y < 0)
 			return false;
 
 		return true;

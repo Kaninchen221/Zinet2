@@ -16,6 +16,7 @@ namespace zt::software_renderer
 {
 	int ColorFormatToChannels(ColorFormat colorFormat);
 
+	// Some methods lack validation due to optimization
 	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_OPERATORS)
 	class ZINET_SOFTWARE_RENDERER_API RenderTarget : public core::Object
 	{

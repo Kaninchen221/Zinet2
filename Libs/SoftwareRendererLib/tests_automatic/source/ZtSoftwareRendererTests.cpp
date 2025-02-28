@@ -91,7 +91,7 @@ namespace zt::software_renderer::tests
 		ASSERT_TRUE(saveResult);
 	}
 
-	TEST_F(SoftwareRendererTests, DrawLinesTest)
+	TEST_F(SoftwareRendererTests, DrawTrianglesLinesTest)
 	{
 		RenderTarget renderTarget;
 		createRenderTarget(renderTarget);
