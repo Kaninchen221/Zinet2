@@ -70,7 +70,27 @@ namespace zt::software_renderer::tests
 			};
 		}
 
-		void createRenderTarget(RenderTarget& renderTarget, Color fillColor = WhiteColor, Vector2i size = Vector2i{ 1920, 1080 })
+		DrawInfo getInputDrawInfoLines() const
+		{
+			return DrawInfo
+			{
+				// (0,0) point is in upper left corner
+				.drawMode = DrawMode::Lines,
+				.antialiasing = false,
+				.vertices = std::vector<Vertex>{
+					Vertex{ { .30f, .25f }, RedColor },
+					Vertex{ { .80f, .25f }, GreenColor },
+					Vertex{ { .25f, .75f }, BlueColor },
+					Vertex{ { .75f, .75f }, BlackColor }
+				},
+				.indices = {
+					0, 2, 
+					1, 3
+				}
+			};
+		}
+
+		void createRenderTarget(RenderTarget& renderTarget, Color fillColor = WhiteColor, Vector2i size = Vector2i{ 512, 512 })
 		{
 			const ColorFormat colorFormat = ColorFormat::R8G8B8A8_SRGB;
 			bool renderTargetCreateResult = renderTarget.createEmpty(size, colorFormat);
@@ -101,7 +121,7 @@ namespace zt::software_renderer::tests
 		drawInfo.antialiasing = false;
 		softwareRenderer.draw(drawInfo, renderTarget);
 
-		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_lines_result.png";
+		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_triangles_lines_result.png";
 		const bool saveResult = renderTarget.saveToFilePNG(path);
 		ASSERT_TRUE(saveResult);
 	}
@@ -109,7 +129,7 @@ namespace zt::software_renderer::tests
 	TEST_F(SoftwareRendererTests, DrawTrianglesTest)
 	{
 		RenderTarget renderTarget;
-		createRenderTarget(renderTarget);
+		createRenderTarget(renderTarget, WhiteColor, Vector2i{ 1920, 1080 });
 
 		auto drawInfo = getInputDrawInfoRect();
 		drawInfo.drawMode = DrawMode::Triangles;
@@ -136,7 +156,7 @@ namespace zt::software_renderer::tests
 		};
 
 		RenderTarget renderTarget;
-		createRenderTarget(renderTarget, WhiteColor, { 200, 200 });
+		createRenderTarget(renderTarget);
 
 		auto drawInfo = getInputDrawInfoTriangle();
 		drawInfo.shaderProgram.vertexShader.processVertex = vertexShaderProcess;
@@ -144,6 +164,18 @@ namespace zt::software_renderer::tests
 		softwareRenderer.draw(drawInfo, renderTarget);
 
 		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_triangle_with_custom_shaders_result.png";
+		const bool saveResult = renderTarget.saveToFilePNG(path);
+		ASSERT_TRUE(saveResult);
+	}
+
+	TEST_F(SoftwareRendererTests, DrawLinesTest)
+	{
+		RenderTarget renderTarget;
+		createRenderTarget(renderTarget);
+
+		softwareRenderer.draw(getInputDrawInfoLines(), renderTarget);
+
+		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_lines_result.png";
 		const bool saveResult = renderTarget.saveToFilePNG(path);
 		ASSERT_TRUE(saveResult);
 	}

@@ -37,7 +37,8 @@ namespace zt::software_renderer
 	{
 		Points,
 		TrianglesLines,
-		Triangles
+		Triangles,
+		Lines
 	};
 
 	class ZINET_SOFTWARE_RENDERER_API VertexShader

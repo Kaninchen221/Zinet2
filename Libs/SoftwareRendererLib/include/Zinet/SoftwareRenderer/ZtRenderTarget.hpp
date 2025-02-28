@@ -34,7 +34,8 @@ namespace zt::software_renderer
 
 		RenderTarget& operator = (const RenderTarget& other);
 		RenderTarget& operator = (RenderTarget&& other) = default;
-
+		
+		// TODO: Change name to "create"
 		bool createEmpty(const Vector2i& newSize, const ColorFormat newColorFormat);
 
 		bool fill(const Color& color);

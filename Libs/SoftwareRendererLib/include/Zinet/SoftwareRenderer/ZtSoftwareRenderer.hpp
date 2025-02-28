@@ -43,7 +43,6 @@ namespace zt::software_renderer
 
 		void draw(DrawInfo drawInfo, RenderTarget& renderTarget);
 
-		// TODO: Add draw mode "Lines"
 		// TODO: draw render target in render target
 
 	protected:

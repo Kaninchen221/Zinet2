@@ -47,6 +47,12 @@ namespace zt::software_renderer
 			return false;
 		}
 
+		if (drawInfo.drawMode == DrawMode::Lines && drawInfo.indices.size() % 2 != 0)
+		{
+			Logger->error("Indices has invalid number of elements: {}", drawInfo.indices.size());
+			return false;
+		}
+
 		if (drawInfo.vertices.empty())
 		{
 			Logger->error("Vertices is empty");
@@ -119,6 +125,19 @@ namespace zt::software_renderer
 					.v3 = drawInfo.vertices[thirdIndex]
 				};
 				const std::vector<Pixel> pixels = barycentricFillTriangle(triangle, renderTarget);
+				result.reserve(result.size() + pixels.size());
+				result.insert(result.end(), pixels.begin(), pixels.end());
+			}
+		}
+		else if (drawInfo.drawMode == DrawMode::Lines)
+		{
+			for (size_t index = 0; index < drawInfo.indices.size(); index += 2)
+			{
+				const size_t firstIndex = drawInfo.indices[index];
+				const size_t secondIndex = drawInfo.indices[index + 1];
+
+				const std::vector<Pixel> pixels = rasterizeLine(drawInfo.vertices[firstIndex], drawInfo.vertices[secondIndex], renderTarget);
+
 				result.reserve(result.size() + pixels.size());
 				result.insert(result.end(), pixels.begin(), pixels.end());
 			}
