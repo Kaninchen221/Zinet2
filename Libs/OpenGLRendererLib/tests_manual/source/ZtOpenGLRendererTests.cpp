@@ -47,10 +47,10 @@ namespace zt::opengl_renderer::tests
 			.drawMode = sf::DrawMode::Triangles,
 			.antialiasing = false,
 			.vertices = std::vector<sf::Vertex>{
-				sf::Vertex{ { .30f, .25f }, RedColor },
-				sf::Vertex{ { .80f, .25f }, GreenColor },
-				sf::Vertex{ { .25f, .75f }, BlueColor },
-				sf::Vertex{ { .75f, .75f }, BlackColor }
+				sf::Vertex{ { .30f, .25f }, sf::RedColor },
+				sf::Vertex{ { .80f, .25f }, sf::GreenColor },
+				sf::Vertex{ { .25f, .75f }, sf::BlueColor },
+				sf::Vertex{ { .75f, .75f }, sf::BlackColor }
 			},
 			.indices = {
 				0, 1, 2,
@@ -99,7 +99,7 @@ namespace zt::opengl_renderer::tests
 
 			changeVertices();
 
-			renderTarget.fill(WhiteColor);
+			renderTarget.fill(sf::WhiteColor);
 			softwareRenderer.draw(drawInputInfo, renderTarget);
 
 			openGLRenderer.setupTexture(renderTarget.getResolution(), renderTarget.get());
