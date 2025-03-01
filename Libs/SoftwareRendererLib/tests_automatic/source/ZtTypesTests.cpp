@@ -57,5 +57,6 @@ namespace zt::software_renderer::tests
 		constexpr const auto expectedSize = 4;
 		static_assert(size == expectedSize);
 		Logger->info("Color Size: {}", size);
+		Logger->info("Address size of Color: {}", sizeof(Color*));
 	}
 }

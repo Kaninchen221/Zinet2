@@ -322,6 +322,10 @@ namespace zt::software_renderer
 		const Color& c2 = triangle.v2.color;
 		const Color& c3 = triangle.v3.color;
 
+		const Vector2f& uv1 = triangle.v1.uv;
+		const Vector2f& uv2 = triangle.v2.uv;
+		const Vector2f& uv3 = triangle.v3.uv;
+
 		const std::int32_t minX = std::min({ p1.x, p2.x, p3.x });
 		const std::int32_t maxX = std::max({ p1.x, p2.x, p3.x });
 		const std::int32_t minY = std::min({ p1.y, p2.y, p3.y });
@@ -347,14 +351,21 @@ namespace zt::software_renderer
 
 				if (alpha >= 0.f && beta >= 0.f && gamma >= nearlyZero)
 				{
-					const Color color { 
-						static_cast<std::uint8_t>(alpha * c1.r + beta * c2.r + gamma * c3.r),
-						static_cast<std::uint8_t>(alpha * c1.g + beta * c2.g + gamma * c3.g),
-						static_cast<std::uint8_t>(alpha * c1.b + beta * c2.b + gamma * c3.b),
-						static_cast<std::uint8_t>(alpha * c1.a + beta * c2.a + gamma * c3.a)
-					};
-
-					result.push_back(Pixel{ .coords = { px, py }, .color = color });
+					result.push_back(
+						Pixel { 
+							.coords = { px, py }, 
+							.color = {
+								static_cast<std::uint8_t>(alpha * c1.r + beta * c2.r + gamma * c3.r),
+								static_cast<std::uint8_t>(alpha * c1.g + beta * c2.g + gamma * c3.g),
+								static_cast<std::uint8_t>(alpha * c1.b + beta * c2.b + gamma * c3.b),
+								static_cast<std::uint8_t>(alpha * c1.a + beta * c2.a + gamma * c3.a)
+							},
+							.uv = {
+								alpha * uv1.x + beta * uv2.x + gamma * uv3.x,
+								alpha * uv1.y + beta * uv2.y + gamma * uv3.y,
+							} 
+						}
+					);
 				}
 			}
 		}
@@ -378,7 +389,7 @@ namespace zt::software_renderer
 					continue;
 
 				Color* sourceColor = renderTarget.getPixelColorAddr(pixel.coords);
-				fragmentShader.sourceColor = sourceColor;
+				fragmentShader.sourceColor = *sourceColor;
 				fragmentShader.processFragment(fragmentShader, pixel);
 				*sourceColor = pixel.color;
 			}

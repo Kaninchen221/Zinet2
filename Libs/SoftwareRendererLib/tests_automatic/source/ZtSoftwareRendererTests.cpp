@@ -102,7 +102,7 @@ namespace zt::software_renderer::tests
 	TEST_F(SoftwareRendererTests, DrawPointsTest)
 	{
 		RenderTarget renderTarget;
-		createRenderTarget(renderTarget);
+		createRenderTarget(renderTarget, WhiteColor, { 20, 20 });
 
 		softwareRenderer.draw(getInputDrawInfoRect(), renderTarget);
 
@@ -177,6 +177,44 @@ namespace zt::software_renderer::tests
 
 		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_lines_result.png";
 		const bool saveResult = renderTarget.saveToFilePNG(path);
+		ASSERT_TRUE(saveResult);
+	}
+
+	TEST_F(SoftwareRendererTests, DrawTexturedRectTest)
+	{
+		RenderTarget renderTarget;
+		createRenderTarget(renderTarget, WhiteColor, { 1024, 1024 });
+
+		FragmentShader::ProcessFragmentCallableT fragmentShaderProcess =
+			[](const FragmentShader& fragmentShader, Pixel& fragment)
+		{
+			fragment.color = sampleTexture(fragmentShader.textures[0], fragment.uv);
+		};
+
+		RenderTarget sourceRenderTarget;
+		const std::filesystem::path savePath = core::Paths::CurrentProjectRootPath() / "test_files" / "uv_texture.png";
+		const auto loadResult = sourceRenderTarget.loadFromFilePNG(savePath);
+		ASSERT_TRUE(loadResult);
+
+		auto drawInfo = getInputDrawInfoRect();
+
+		drawInfo.vertices[0].position = Vector2f{ .1f, .05f };
+		drawInfo.vertices[1].position = Vector2f{ .95f, .05f };
+		drawInfo.vertices[2].position = Vector2f{ .05f, .95f };
+		drawInfo.vertices[3].position = Vector2f{ .90f, .95f };
+
+		drawInfo.vertices[0].uv = Vector2f{ 0.f, 0.f };
+		drawInfo.vertices[1].uv = Vector2f{ 1.f, 0.f };
+		drawInfo.vertices[2].uv = Vector2f{ 0.f, 1.f };
+		drawInfo.vertices[3].uv = Vector2f{ 1.f, 1.f };
+
+		drawInfo.drawMode = DrawMode::Triangles;
+		drawInfo.shaderProgram.fragmentShader.textures.push_back(sourceRenderTarget);
+		drawInfo.shaderProgram.fragmentShader.processFragment = fragmentShaderProcess;
+		softwareRenderer.draw(drawInfo, renderTarget);
+
+		const std::filesystem::path loadPath = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_texture_result.png";
+		const bool saveResult = renderTarget.saveToFilePNG(loadPath);
 		ASSERT_TRUE(saveResult);
 	}
 }

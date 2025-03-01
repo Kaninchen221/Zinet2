@@ -2,19 +2,12 @@
 
 #include "Zinet/SoftwareRenderer/ZtSoftwareRendererConfig.hpp"
 #include "Zinet/SoftwareRenderer/ZtTypes.hpp"
+#include "Zinet/SoftwareRenderer/ZtShaders.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
 namespace zt::software_renderer
 {
-	class RenderTarget;
-
-	struct ZINET_SOFTWARE_RENDERER_API ShaderProgram
-	{
-		VertexShader vertexShader;
-		FragmentShader fragmentShader;
-	};
-
 	struct ZINET_SOFTWARE_RENDERER_API DrawInfo
 	{
 		DrawMode drawMode = DrawMode::Points;
@@ -42,8 +35,6 @@ namespace zt::software_renderer
 		~SoftwareRenderer() noexcept = default;
 
 		void draw(DrawInfo drawInfo, RenderTarget& renderTarget);
-
-		// TODO: draw render target in render target
 
 	protected:
 

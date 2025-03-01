@@ -87,6 +87,21 @@ namespace zt::software_renderer::tests
 		ASSERT_TRUE(saveToPNGResultAfterWritePixel);
 	}
 
+	TEST_F(RenderTargetTests, CopyOperatorTest)
+	{
+		const Vector2i expectedResolution = { 4, 3 };
+		const ColorFormat expectedColorFormat = ColorFormat::R8G8B8A8_SRGB;
+		const bool renderTargetCreateResult = renderTarget.createEmpty(expectedResolution, expectedColorFormat);
+		renderTarget.fill(WhiteColor);
+		ASSERT_TRUE(renderTargetCreateResult);
+
+		auto copyByOperator = renderTarget;
+		ASSERT_EQ(copyByOperator.get(), renderTarget.get());
+		ASSERT_EQ(copyByOperator.getResolution(), renderTarget.getResolution());
+		ASSERT_EQ(copyByOperator.getColorFormat(), renderTarget.getColorFormat());
+		ASSERT_EQ(copyByOperator.getChannels(), renderTarget.getChannels());
+	}
+
 	TEST_F(RenderTargetTests, CopyTest)
 	{
 		const Vector2i expectedResolution = { 4, 3 };
@@ -94,11 +109,11 @@ namespace zt::software_renderer::tests
 		const bool renderTargetCreateResult = renderTarget.createEmpty(expectedResolution, expectedColorFormat);
 		renderTarget.fill(WhiteColor);
 		ASSERT_TRUE(renderTargetCreateResult);
-		
+
 		const Pixel expectedPixel = Pixel{ .coords{ 1, 0 }, .color = BlackColor };
 		renderTarget.writePixel(expectedPixel);
 
-		const RenderTarget renderTargetCopy = renderTarget;
+		const RenderTarget renderTargetCopy = renderTarget.copy();
 		const Color actualColor = renderTargetCopy.getPixelColor(expectedPixel.coords);
 		ASSERT_EQ(expectedPixel.color, actualColor);
 

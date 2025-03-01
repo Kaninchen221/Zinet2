@@ -35,6 +35,7 @@ namespace zt::software_renderer
 	{
 		Vector2i coords;
 		Color color;
+		Vector2f uv;
 	};
 
 	enum class ColorFormat
@@ -48,31 +49,5 @@ namespace zt::software_renderer
 		TrianglesLines,
 		Triangles,
 		Lines
-	};
-
-	class ZINET_SOFTWARE_RENDERER_API VertexShader
-	{
-	public:
-
-		using ProcessVertexCallableT = std::function<void(const VertexShader&, Vertex& vertex)>;
-
-		ProcessVertexCallableT processVertex = nullptr;
-
-		operator bool() const { return processVertex.operator bool(); }
-
-	};
-
-	class ZINET_SOFTWARE_RENDERER_API FragmentShader
-	{
-	public:
-
-		const Color* sourceColor = nullptr;
-
-		using ProcessFragmentCallableT = std::function<void(const FragmentShader&, Pixel& fragment)>;
-
-		ProcessFragmentCallableT processFragment = nullptr;
-
-		operator bool() const { return processFragment.operator bool(); }
-
 	};
 }

@@ -11,6 +11,7 @@
 #include "Zinet/Math/ZtVecTypes.hpp"
 
 #include <filesystem>
+#include <memory>
 
 namespace zt::software_renderer
 {
@@ -30,11 +31,13 @@ namespace zt::software_renderer
 		RenderTarget(const RenderTarget& other) { *this = other; };
 		RenderTarget(RenderTarget&& other) = default;
 
-		~RenderTarget() noexcept;
+		~RenderTarget() noexcept = default;
 
-		RenderTarget& operator = (const RenderTarget& other);
+		RenderTarget& operator = (const RenderTarget& other) = default;
 		RenderTarget& operator = (RenderTarget&& other) = default;
 		
+		RenderTarget copy() const;
+
 		// TODO: Change name to "create"
 		bool createEmpty(const Vector2i& newSize, const ColorFormat newColorFormat);
 
@@ -70,7 +73,9 @@ namespace zt::software_renderer
 
 		std::int32_t getPixelsCount() const { return resolution.x * resolution.y; }
 
-		stbi_uc* get() { return buffer; }
+		stbi_uc* get() { return buffer.get(); }
+
+		bool isValid() const { return buffer.operator bool(); }
 
 		bool isPixelIndexValid(std::int32_t pixelIndex) const;
 
@@ -87,7 +92,7 @@ namespace zt::software_renderer
 		ZT_REFLECT_MEMBER(ReadOnly)
 		int channels = 0;
 
-		stbi_uc* buffer = nullptr;
+		std::shared_ptr<stbi_uc> buffer;
 
 	public:
 /*GENERATED_CODE_START*/
