@@ -89,7 +89,7 @@ namespace zt::software_renderer
 		}
 	}
 
-	std::vector<Pixel> SoftwareRenderer::rasterization(DrawInfo& drawInfo, RenderTarget& renderTarget)
+	std::vector<Pixel> SoftwareRenderer::rasterization(const DrawInfo& drawInfo, RenderTarget& renderTarget)
 	{
 #if ZINET_TIME_TRACE
 		core::Clock clock;

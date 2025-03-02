@@ -41,7 +41,7 @@ namespace zt::software_renderer
 
 		void vertexShader(std::vector<Vertex>& vertices, const ShaderProgram& shaderProgram) const;
 
-		std::vector<Pixel> rasterization(DrawInfo& drawInfo, RenderTarget& renderTarget);
+		std::vector<Pixel> rasterization(const DrawInfo& drawInfo, RenderTarget& renderTarget);
 
 		void rasterizeVertexAsPoint(const Vertex& vertex, Pixel& pixel, const RenderTarget& renderTarget) const;
 		std::vector<Pixel> rasterizeLine(const Vertex& firstVertex, const Vertex& secondVertex, const RenderTarget& renderTarget) const;
