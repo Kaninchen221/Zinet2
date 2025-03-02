@@ -11,6 +11,41 @@
 
 namespace zt::software_renderer
 {
+	void SoftwareRenderer::drawRenderTarget(const DrawRenderTargetInfo& drawInfo, RenderTarget& renderTarget)
+	{
+#if ZINET_TIME_TRACE
+		core::Clock clock;
+		clock.start();
+#endif
+		const Vector2i firstDestPixelCoords = {
+			std::max(0, std::min(drawInfo.position.x, renderTarget.getResolution().x)),
+			std::max(0, std::min(drawInfo.position.y, renderTarget.getResolution().y))
+		};
+
+		const Vector2i lastPixel = {
+			std::clamp(drawInfo.srcRenderTarget.getResolution().x + drawInfo.position.x, 0, std::min(renderTarget.getResolution().x - drawInfo.position.x, drawInfo.srcRenderTarget.getResolution().x)),
+			std::clamp(drawInfo.srcRenderTarget.getResolution().y + drawInfo.position.y, 0, std::min(renderTarget.getResolution().y - drawInfo.position.y, drawInfo.srcRenderTarget.getResolution().y))
+		};
+
+		// TODO: Optimize it
+		for (std::int32_t x = 0; x < lastPixel.x; x++)
+		{
+			for (std::int32_t y = 0; y < lastPixel.y; y++)
+			{
+				const Vector2i srcPixelCoords = { x, y };
+				const Vector2i destPixelCoords = firstDestPixelCoords + srcPixelCoords;
+
+				const Color& srcColor = drawInfo.srcRenderTarget.getPixelColor(srcPixelCoords);
+				renderTarget.writePixel({ .coords = destPixelCoords, .color = srcColor });
+			}
+		}
+
+#if ZINET_TIME_TRACE
+		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
+		Logger->info("Draw (renderTarget) took: {} milliseconds", elapsedTime);
+#endif
+	}
+
 	void SoftwareRenderer::draw(DrawInfo drawInfo, RenderTarget& renderTarget)
 	{
 #if ZINET_TIME_TRACE
@@ -44,7 +79,7 @@ namespace zt::software_renderer
 
 #if ZINET_TIME_TRACE
 		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
-		Logger->info("Draw took: {} milliseconds", elapsedTime);
+		Logger->info("Draw (drawInfo) took: {} milliseconds", elapsedTime);
 #endif
 	}
 

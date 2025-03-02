@@ -14,6 +14,8 @@ namespace zt::software_renderer::tests
 	{
 	protected:
 
+		inline static auto Logger = core::ConsoleLogger::Create("SoftwareRendererTests");
+
 		SoftwareRendererTests()
 		{
 		}
@@ -208,8 +210,77 @@ namespace zt::software_renderer::tests
 		drawInfo.shaderProgram.fragmentShader.processFragment = fragmentShaderProcess;
 		softwareRenderer.draw(drawInfo, renderTarget);
 
-		const std::filesystem::path loadPath = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_texture_result.png";
-		const bool saveResult = renderTarget.saveToFilePNG(loadPath);
+		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_texture_result.png";
+		const bool saveResult = renderTarget.saveToFilePNG(path);
 		ASSERT_TRUE(saveResult);
+	}
+
+	TEST_F(SoftwareRendererTests, DrawRenderTargetInRenderTargetTest)
+	{
+		RenderTarget destRenderTarget;
+		createRenderTarget(destRenderTarget, WhiteColor, { 64, 64 });
+
+		RenderTarget srcRenderTarget;
+		createRenderTarget(srcRenderTarget, RedColor, { 64, 64 });
+
+		{
+			Logger->info("Draw first rect");
+			DrawRenderTargetInfo drawInfo {
+				.srcRenderTarget = srcRenderTarget,
+				.position = { 32, 32 }
+			};
+
+			softwareRenderer.drawRenderTarget(drawInfo, destRenderTarget);
+			const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_render_target_result_00.png";
+			const bool saveResult = destRenderTarget.saveToFilePNG(path);
+			ASSERT_TRUE(saveResult);
+		}
+
+		{
+			Logger->info("Draw second rect");
+			DrawRenderTargetInfo drawInfo {
+				.srcRenderTarget = srcRenderTarget,
+				.position = { -32, -32 }
+			};
+			srcRenderTarget.fill(BlueColor);
+			softwareRenderer.drawRenderTarget(drawInfo, destRenderTarget);
+
+
+			const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_render_target_result_01.png";
+			const bool saveResult = destRenderTarget.saveToFilePNG(path);
+			ASSERT_TRUE(saveResult);
+		}
+
+		{
+			Logger->info("Draw third rect");
+			RenderTarget greenRect;
+			createRenderTarget(greenRect, GreenColor, { 32, 32 });
+
+			DrawRenderTargetInfo drawInfo{
+				.srcRenderTarget = greenRect,
+				.position = { 16, 16 }
+			};
+			softwareRenderer.drawRenderTarget(drawInfo, destRenderTarget);
+
+			const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_render_target_result_02.png";
+			const bool saveResult = destRenderTarget.saveToFilePNG(path);
+			ASSERT_TRUE(saveResult);
+		}
+
+		{
+			Logger->info("Draw fourth rect");
+			RenderTarget blackRect;
+			createRenderTarget(blackRect, BlackColor, { 16, 16 });
+
+			DrawRenderTargetInfo drawInfo{
+				.srcRenderTarget = blackRect,
+				.position = { 24, 24 }
+			};
+			softwareRenderer.drawRenderTarget(drawInfo, destRenderTarget);
+
+			const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_render_target_result_03.png";
+			const bool saveResult = destRenderTarget.saveToFilePNG(path);
+			ASSERT_TRUE(saveResult);
+		}
 	}
 }

@@ -8,6 +8,12 @@
 
 namespace zt::software_renderer
 {
+	struct ZINET_SOFTWARE_RENDERER_API DrawRenderTargetInfo
+	{
+		const RenderTarget& srcRenderTarget;
+		Vector2i position;
+	};
+
 	struct ZINET_SOFTWARE_RENDERER_API DrawInfo
 	{
 		DrawMode drawMode = DrawMode::Points;
@@ -32,6 +38,8 @@ namespace zt::software_renderer
 		SoftwareRenderer& operator = (SoftwareRenderer&& other) = default;
 
 		~SoftwareRenderer() noexcept = default;
+
+		void drawRenderTarget(const DrawRenderTargetInfo& drawInfo, RenderTarget& renderTarget);
 
 		void draw(DrawInfo drawInfo, RenderTarget& renderTarget);
 
