@@ -11,7 +11,6 @@ namespace zt::software_renderer
 	struct ZINET_SOFTWARE_RENDERER_API DrawInfo
 	{
 		DrawMode drawMode = DrawMode::Points;
-		bool antialiasing = false;
 		std::vector<Vertex> vertices;
 		std::vector<size_t> indices;
 		ShaderProgram shaderProgram;

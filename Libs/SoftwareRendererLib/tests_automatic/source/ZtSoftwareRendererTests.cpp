@@ -38,7 +38,6 @@ namespace zt::software_renderer::tests
 			{
 				// (0,0) point is in upper left corner
 				.drawMode = DrawMode::Points,
-				.antialiasing = false,
 				.vertices = std::vector<Vertex>{
 					Vertex{ { .30f, .25f }, RedColor },
 					Vertex{ { .80f, .25f }, GreenColor },
@@ -58,7 +57,6 @@ namespace zt::software_renderer::tests
 			{
 				// (0,0) point is in upper left corner
 				.drawMode = DrawMode::Triangles,
-				.antialiasing = false,
 				.vertices = std::vector<Vertex>{
 					Vertex{ { -0.75f, .25f }, RedColor },
 					Vertex{ { .75f, .25f }, GreenColor },
@@ -76,7 +74,6 @@ namespace zt::software_renderer::tests
 			{
 				// (0,0) point is in upper left corner
 				.drawMode = DrawMode::Lines,
-				.antialiasing = false,
 				.vertices = std::vector<Vertex>{
 					Vertex{ { .30f, .25f }, RedColor },
 					Vertex{ { .80f, .25f }, GreenColor },
@@ -118,7 +115,6 @@ namespace zt::software_renderer::tests
 
 		auto drawInfo = getInputDrawInfoRect();
 		drawInfo.drawMode = DrawMode::TrianglesLines;
-		drawInfo.antialiasing = false;
 		softwareRenderer.draw(drawInfo, renderTarget);
 
 		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_triangles_lines_result.png";
@@ -133,7 +129,6 @@ namespace zt::software_renderer::tests
 
 		auto drawInfo = getInputDrawInfoRect();
 		drawInfo.drawMode = DrawMode::Triangles;
-		drawInfo.antialiasing = false;
 		softwareRenderer.draw(drawInfo, renderTarget);
 
 		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_triangles_result.png";
@@ -203,10 +198,10 @@ namespace zt::software_renderer::tests
 		drawInfo.vertices[2].position = Vector2f{ .05f, .95f };
 		drawInfo.vertices[3].position = Vector2f{ .90f, .95f };
 
-		drawInfo.vertices[0].uv = Vector2f{ 0.f, 0.f };
-		drawInfo.vertices[1].uv = Vector2f{ 1.f, 0.f };
-		drawInfo.vertices[2].uv = Vector2f{ 0.f, 1.f };
-		drawInfo.vertices[3].uv = Vector2f{ 1.f, 1.f };
+		drawInfo.vertices[0].uv = Vector2f{ 0.50f, 0.25f };
+		drawInfo.vertices[1].uv = Vector2f{ 0.25f, 0.25f };
+		drawInfo.vertices[2].uv = Vector2f{ 0.50f, 0.50f };
+		drawInfo.vertices[3].uv = Vector2f{ 0.25f, 0.50f };
 
 		drawInfo.drawMode = DrawMode::Triangles;
 		drawInfo.shaderProgram.fragmentShader.textures.push_back(sourceRenderTarget);

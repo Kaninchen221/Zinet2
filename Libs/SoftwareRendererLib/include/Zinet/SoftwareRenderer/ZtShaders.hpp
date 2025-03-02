@@ -45,8 +45,8 @@ namespace zt::software_renderer
 		const auto resolution = texture.getResolution();
 
 		const Vector2i texturePixelCoords{
-			std::min(std::max(int(uv.x * resolution.x), 0), resolution.x - 1),
-			std::min(std::max(int(uv.y * resolution.y), 0), resolution.y - 1)
+			std::min(std::max(std::int32_t(std::round(uv.x * resolution.x)), 0), resolution.x - 1),
+			std::min(std::max(std::int32_t(std::round(uv.y * resolution.y)), 0), resolution.y - 1)
 		};
 
 		return texture.getPixelColor(texturePixelCoords);
