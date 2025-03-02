@@ -13,6 +13,11 @@ namespace zt::software_renderer
 {
 	void SoftwareRenderer::draw(DrawInfo drawInfo, RenderTarget& renderTarget)
 	{
+#if ZINET_TIME_TRACE
+		core::Clock clock;
+		clock.start();
+#endif
+
 #if ZINET_DEBUG
 		if (!validateDrawInfo(drawInfo))
 			return;
@@ -36,6 +41,11 @@ namespace zt::software_renderer
 
 		// Fragment shader and write to render target
 		writePixels(drawInfo, pixels, renderTarget);
+
+#if ZINET_TIME_TRACE
+		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
+		Logger->info("Draw took: {} milliseconds", elapsedTime);
+#endif
 	}
 
 	bool SoftwareRenderer::validateDrawInfo(const DrawInfo& drawInfo) const
@@ -81,6 +91,11 @@ namespace zt::software_renderer
 
 	std::vector<Pixel> SoftwareRenderer::rasterization(DrawInfo& drawInfo, RenderTarget& renderTarget)
 	{
+#if ZINET_TIME_TRACE
+		core::Clock clock;
+		clock.start();
+#endif
+
 		std::vector<Pixel> result;
 
 		if (drawInfo.drawMode == DrawMode::Points)
@@ -124,9 +139,7 @@ namespace zt::software_renderer
 					.v2 = drawInfo.vertices[secondIndex],
 					.v3 = drawInfo.vertices[thirdIndex]
 				};
-				const std::vector<Pixel> pixels = barycentricFillTriangle(triangle, renderTarget);
-				result.reserve(result.size() + pixels.size());
-				result.insert(result.end(), pixels.begin(), pixels.end());
+				barycentricFillTriangle(triangle, renderTarget, result);
 			}
 		}
 		else if (drawInfo.drawMode == DrawMode::Lines)
@@ -142,6 +155,11 @@ namespace zt::software_renderer
 				result.insert(result.end(), pixels.begin(), pixels.end());
 			}
 		}
+
+#if ZINET_TIME_TRACE
+		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
+		Logger->info("Rasterization took: {} milliseconds", elapsedTime);
+#endif
 
 		return result;
 	}
@@ -305,14 +323,12 @@ namespace zt::software_renderer
 		return result;
 	}
 
-	std::vector<Pixel> SoftwareRenderer::barycentricFillTriangle(const Triangle& triangle, const RenderTarget& renderTarget)
+	void SoftwareRenderer::barycentricFillTriangle(const Triangle& triangle, const RenderTarget& renderTarget, std::vector<Pixel>& result)
 	{
 #if ZINET_TIME_TRACE
 		core::Clock clock;
 		clock.start();
 #endif
-
-		std::vector<Pixel> result;
 
 		const Vector2i p1 = renderTarget.normalizedCoordsToPixelCoords(triangle.v1.position);
 		const Vector2i p2 = renderTarget.normalizedCoordsToPixelCoords(triangle.v2.position);
@@ -331,7 +347,7 @@ namespace zt::software_renderer
 		const std::int32_t minY = std::min({ p1.y, p2.y, p3.y });
 		const std::int32_t maxY = std::max({ p1.y, p2.y, p3.y });
 
-		result.reserve(maxX * maxY);
+		result.reserve(result.size() + maxX * maxY);
 
 		const float invArea = 1.f / float((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x));
 
@@ -374,12 +390,15 @@ namespace zt::software_renderer
 		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
 		Logger->info("Barycentric fill triangle took: {} milliseconds", elapsedTime);
 #endif
-
-		return result;
 	}
 
 	void SoftwareRenderer::writePixels(const DrawInfo& drawInfo, std::vector<Pixel>& pixels, RenderTarget& renderTarget)
 	{
+#if ZINET_TIME_TRACE
+		core::Clock clock;
+		clock.start();
+#endif
+
 		auto fragmentShader = drawInfo.shaderProgram.fragmentShader;
 		if (fragmentShader)
 		{
@@ -405,6 +424,10 @@ namespace zt::software_renderer
 				*sourceColor = pixel.color;
 			}
 		}
-	}
 
+#if ZINET_TIME_TRACE
+		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
+		Logger->info("Write pixels took: {} milliseconds", elapsedTime);
+#endif
+	}
 }

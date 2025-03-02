@@ -49,7 +49,7 @@ namespace zt::software_renderer
 		std::vector<Pixel> rasterizeLineAntialiasing(const Vertex& firstVertex, const Vertex& secondVertex, const RenderTarget& renderTarget) const;
 
 		// The outputs are pixels filling the triangle
-		std::vector<Pixel> barycentricFillTriangle(const Triangle& triangle, const RenderTarget& renderTarget);
+		void barycentricFillTriangle(const Triangle& triangle, const RenderTarget& renderTarget, std::vector<Pixel>& result);
 
 		void writePixels(const DrawInfo& drawInfo, std::vector<Pixel>& pixels, RenderTarget& renderTarget);
 
