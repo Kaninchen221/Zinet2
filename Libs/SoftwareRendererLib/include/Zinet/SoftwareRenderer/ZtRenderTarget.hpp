@@ -90,7 +90,7 @@ namespace zt::software_renderer
 		ColorFormat colorFormat;
 
 		ZT_REFLECT_MEMBER(ReadOnly)
-		int channels = 0;
+		std::int32_t channels = 0;
 
 		std::shared_ptr<stbi_uc> buffer;
 

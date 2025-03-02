@@ -13,6 +13,8 @@ namespace zt::software_renderer::tests
 	{
 	protected:
 
+		inline static auto Logger = core::ConsoleLogger::Create("RenderTargetTests");
+
 		RenderTargetTests()
 		{
 		}
@@ -34,6 +36,9 @@ namespace zt::software_renderer::tests
 
 	TEST_F(RenderTargetTests, Test)
 	{
+		constexpr const auto renderTargetSize = sizeof(RenderTarget);
+		Logger->info("Render target size: {}", renderTargetSize);
+
 		// Create render target (It contains random data from memory)
 		const Vector2i expectedResolution = { 8, 12 };
 		const ColorFormat expectedColorFormat = ColorFormat::R8G8B8A8_SRGB;

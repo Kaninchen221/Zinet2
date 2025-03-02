@@ -98,12 +98,19 @@ namespace zt::software_renderer::tests
 		}
 	};
 
+	TEST_F(SoftwareRendererTests, InfoTest)
+	{
+		constexpr const auto drawInfoSize = sizeof(DrawInfo);
+		Logger->info("DrawInfo size: {}", drawInfoSize);
+	}
+
 	TEST_F(SoftwareRendererTests, DrawPointsTest)
 	{
 		RenderTarget renderTarget;
 		createRenderTarget(renderTarget, WhiteColor, { 20, 20 });
 
-		softwareRenderer.draw(getInputDrawInfoRect(), renderTarget);
+		auto drawInfo = getInputDrawInfoRect();
+		softwareRenderer.draw(drawInfo, renderTarget);
 
 		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_points_result.png";
 		const bool saveResult = renderTarget.saveToFilePNG(path);
@@ -170,7 +177,8 @@ namespace zt::software_renderer::tests
 		RenderTarget renderTarget;
 		createRenderTarget(renderTarget);
 
-		softwareRenderer.draw(getInputDrawInfoLines(), renderTarget);
+		auto drawInfo = getInputDrawInfoLines();
+		softwareRenderer.draw(drawInfo, renderTarget);
 
 		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_lines_result.png";
 		const bool saveResult = renderTarget.saveToFilePNG(path);

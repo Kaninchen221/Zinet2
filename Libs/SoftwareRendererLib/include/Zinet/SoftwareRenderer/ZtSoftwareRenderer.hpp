@@ -20,6 +20,8 @@ namespace zt::software_renderer
 		std::vector<Vertex> vertices;
 		std::vector<size_t> indices;
 		ShaderProgram shaderProgram;
+		bool isDirty = true;
+		std::vector<Pixel> cachedPixels;
 	};
 
 	class ZINET_SOFTWARE_RENDERER_API SoftwareRenderer
@@ -41,7 +43,8 @@ namespace zt::software_renderer
 
 		void drawRenderTarget(const DrawRenderTargetInfo& drawInfo, RenderTarget& renderTarget);
 
-		void draw(DrawInfo drawInfo, RenderTarget& renderTarget);
+		// TODO: Cache draw
+		void draw(DrawInfo& drawInfo, RenderTarget& renderTarget);
 
 	protected:
 
@@ -49,7 +52,7 @@ namespace zt::software_renderer
 
 		void vertexShader(std::vector<Vertex>& vertices, const ShaderProgram& shaderProgram) const;
 
-		std::vector<Pixel> rasterization(const DrawInfo& drawInfo, RenderTarget& renderTarget);
+		void rasterization(DrawInfo& drawInfo, RenderTarget& renderTarget);
 
 		void rasterizeVertexAsPoint(const Vertex& vertex, Pixel& pixel, const RenderTarget& renderTarget) const;
 		std::vector<Pixel> rasterizeLine(const Vertex& firstVertex, const Vertex& secondVertex, const RenderTarget& renderTarget) const;
@@ -57,6 +60,8 @@ namespace zt::software_renderer
 
 		// The outputs are pixels filling the triangle
 		void barycentricFillTriangle(const Triangle& triangle, const RenderTarget& renderTarget, std::vector<Pixel>& result);
+
+		void fragmentShader(DrawInfo& drawInfo, RenderTarget& renderTarget);
 
 		void writePixels(const DrawInfo& drawInfo, std::vector<Pixel>& pixels, RenderTarget& renderTarget);
 

@@ -109,14 +109,16 @@ namespace zt::opengl_renderer::tests
 		const std::filesystem::path groundTexturePath = core::Paths::CurrentProjectRootPath() / "test_files" / "ground.png";
 		groundTexture.loadFromFilePNG(groundTexturePath);
 
+		const float min = .42f;
+		const float max = .68f;
 		sf::DrawInfo groundDrawInfo
 		{
 			.drawMode = sf::DrawMode::Triangles,
 			.vertices = std::vector<sf::Vertex>{
-				sf::Vertex{ { .30f, .30f }, sf::RedColor, Vector2f{ 0.f, 0.f } },
-				sf::Vertex{ { .80f, .30f }, sf::GreenColor, Vector2f{ 1.f, 0.f } },
-				sf::Vertex{ { .30f, .80f }, sf::BlueColor, Vector2f{ 0.f, 1.f } },
-				sf::Vertex{ { .80f, .80f }, sf::BlackColor, Vector2f{ 1.f, 1.f } }
+				sf::Vertex{ { min, min }, sf::RedColor, Vector2f{ 0.f, 0.f } },
+				sf::Vertex{ { max, min }, sf::GreenColor, Vector2f{ 1.f, 0.f } },
+				sf::Vertex{ { min, max }, sf::BlueColor, Vector2f{ 0.f, 1.f } },
+				sf::Vertex{ { max, max }, sf::BlackColor, Vector2f{ 1.f, 1.f } }
 			},
 			.indices = {
 				0, 1, 2,
@@ -142,16 +144,26 @@ namespace zt::opengl_renderer::tests
 		openGLRenderer.preRender();
 		while (!window.shouldBeClosed())
 		{
+#if ZINET_TIME_TRACE
+			core::Clock clock;
+			clock.start();
+#endif
 			event.pollEvents();
 
 			renderTarget.fill(sf::WhiteColor);
+			Logger->info("Ground 'Sprite'");
 			softwareRenderer.draw(groundDrawInfo, renderTarget);
+			Logger->info("Character 'Sprite'");
 			softwareRenderer.draw(characterDrawInfo, renderTarget);
 
 			openGLRenderer.setupTexture(renderTarget.getResolution(), renderTarget.get());
 			openGLRenderer.render();
 
 			window.swapBuffers();
+#if ZINET_TIME_TRACE
+			const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
+			Logger->info("Frame took: {} milliseconds", elapsedTime);
+#endif
 		}
 		openGLRenderer.postRender();
 
