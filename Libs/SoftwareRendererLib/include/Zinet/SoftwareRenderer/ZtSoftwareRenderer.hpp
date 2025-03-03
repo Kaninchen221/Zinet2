@@ -43,7 +43,6 @@ namespace zt::software_renderer
 
 		void drawRenderTarget(const DrawRenderTargetInfo& drawInfo, RenderTarget& renderTarget);
 
-		// TODO: Cache draw
 		void draw(DrawInfo& drawInfo, RenderTarget& renderTarget);
 
 	protected:
@@ -58,7 +57,6 @@ namespace zt::software_renderer
 		std::vector<Pixel> rasterizeLine(const Vertex& firstVertex, const Vertex& secondVertex, const RenderTarget& renderTarget) const;
 		std::vector<Pixel> rasterizeLineAntialiasing(const Vertex& firstVertex, const Vertex& secondVertex, const RenderTarget& renderTarget) const;
 
-		// The outputs are pixels filling the triangle
 		void barycentricFillTriangle(const Triangle& triangle, const RenderTarget& renderTarget, std::vector<Pixel>& result);
 
 		void fragmentShader(DrawInfo& drawInfo, RenderTarget& renderTarget);
