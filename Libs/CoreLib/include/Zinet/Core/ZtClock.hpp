@@ -34,7 +34,6 @@ namespace zt::core
 		Clock() = default;
 		Clock(const Clock& other) = default;
 		Clock(Clock&& other) = default;
-		
 		~Clock() noexcept = default;
 		
 		Clock& operator = (const Clock& other) = default;

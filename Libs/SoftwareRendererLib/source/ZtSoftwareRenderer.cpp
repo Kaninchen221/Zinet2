@@ -87,7 +87,7 @@ namespace zt::software_renderer
 
 #if ZINET_TIME_TRACE
 		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
-		Logger->info("Draw (drawInfo) took: {} milliseconds. Cached: {}", elapsedTime, cachedDraw);
+		Logger->info("Draw (drawInfo) took: {} milliseconds. Cached draw: {}", elapsedTime, cachedDraw);
 #endif
 	}
 

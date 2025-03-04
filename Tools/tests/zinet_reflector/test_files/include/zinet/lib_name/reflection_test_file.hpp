@@ -69,6 +69,7 @@ namespace zt::engine
 		
 		~TextureAsset() noexcept = default;
 		
+		
 		TextureAsset& operator = (const TextureAsset& other) = default;
 		TextureAsset& operator = (TextureAsset&& other) = default;
 		

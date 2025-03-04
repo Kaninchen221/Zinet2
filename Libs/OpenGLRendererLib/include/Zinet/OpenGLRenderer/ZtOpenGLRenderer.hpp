@@ -28,10 +28,8 @@ namespace zt::opengl_renderer
 		bool init(wd::Window& window);
 
 		void preRender();
-
-		void render();
-
 		void postRender();
+		void render();
 
 		void setupTexture(const Vector2<GLsizei>& size, const void* data);
 
@@ -39,6 +37,8 @@ namespace zt::opengl_renderer
 		const char* getFragmentShaderSource() const;
 
 		GLuint compileShader(GLenum type, const char* source) const;
+
+	protected:
 
 		const std::array<float, 16> vertices = std::array {
 			// Positions  // TexCoords
@@ -67,7 +67,6 @@ namespace zt::opengl_renderer
 		OpenGLRenderer() = default;
 		OpenGLRenderer(const OpenGLRenderer& other) = default;
 		OpenGLRenderer(OpenGLRenderer&& other) = default;
-		
 		~OpenGLRenderer() noexcept = default;
 		
 		OpenGLRenderer& operator = (const OpenGLRenderer& other) = default;

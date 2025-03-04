@@ -29,7 +29,6 @@ namespace zt::core::assets
 		TextAsset() = default;
 		TextAsset(const TextAsset& other) = default;
 		TextAsset(TextAsset&& other) = default;
-		
 		~TextAsset() noexcept = default;
 		
 		TextAsset& operator = (const TextAsset& other) = default;

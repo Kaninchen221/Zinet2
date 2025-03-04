@@ -31,8 +31,6 @@ namespace zt::software_renderer
 		RenderTarget(const RenderTarget& other) { *this = other; };
 		RenderTarget(RenderTarget&& other) = default;
 
-		~RenderTarget() noexcept = default;
-
 		RenderTarget& operator = (const RenderTarget& other) = default;
 		RenderTarget& operator = (RenderTarget&& other) = default;
 		
@@ -99,6 +97,8 @@ namespace zt::software_renderer
 		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
 		const inline static bool RegisterClassResult = RegisterClass<RenderTarget>();
 		std::unique_ptr<ObjectBase> createCopy() const override { std::unique_ptr<ObjectBase> result = createCopyInternal<RenderTarget>(); *result = *this; return result; }
+		
+		~RenderTarget() noexcept = default;
 		
 		class ClassInfo : public zt::core::ClassInfoBase
 		{
