@@ -54,19 +54,19 @@ namespace zt::gameplay_lib::tests
 		ASSERT_EQ(frames.size(), 2);
 	}
 
-	TEST_F(FlipbookTests, UpdateTest)
+	TEST_F(FlipbookTests, TickTest)
 	{
 		testCurrentFrame(0u);
 
-		flipbook.update(500.f);
+		flipbook.tick(500.f);
 
 		testCurrentFrame(0u);
 
-		flipbook.update(1000.f);
+		flipbook.tick(1000.f);
 
 		testCurrentFrame(1u);
 
-		flipbook.update(1000.f);
+		flipbook.tick(1000.f);
 
 		testCurrentFrame(0u);
 	}
