@@ -1,13 +1,21 @@
 #pragma once
 
 #include "Zinet/GameplayLib/ZtGameplayLibConfig.hpp"
+#include "Zinet/GameplayLib/ZtDrawable.hpp"
+#include "Zinet/GameplayLib/ZtTickable.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
-
 #include "Zinet/Core/ZtLogger.hpp"
+
+#include "Zinet/OpenGLRenderer/ZtOpenGLRenderer.hpp"
+
+#include "Zinet/SoftwareRenderer/ZtSoftwareRenderer.hpp"
 
 namespace zt::gameplay_lib
 {
+	namespace oglr = opengl_renderer;
+	namespace sf = software_renderer;
+
 	ZT_REFLECT_CLASS()
 	class ZINET_GAMEPLAY_LIB_API GameplayLoop : public core::Object
 	{
@@ -17,7 +25,20 @@ namespace zt::gameplay_lib
 
 	public:
 
+		void start();
+
+		void addTickable(const std::weak_ptr<Tickable>& tickable);
+		void addDrawable(const std::weak_ptr<Drawable>& drawable);
+
 	protected:
+
+		oglr::OpenGLRenderer openGLRenderer;
+		sf::RenderTarget finalRenderTarget;
+		sf::SoftwareRenderer softwareRenderer;
+
+		// TODO: Refactor this to something like systems
+		std::vector<std::weak_ptr<Tickable>> tickableObjects;
+		std::vector<std::weak_ptr<Drawable>> drawableObjects;
 
 	public:
 /*GENERATED_CODE_START*/

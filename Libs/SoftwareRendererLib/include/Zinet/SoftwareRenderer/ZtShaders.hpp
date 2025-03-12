@@ -41,12 +41,12 @@ namespace zt::software_renderer
 		FragmentShader fragmentShader;
 	};
 
-	Color sampleTexture(const RenderTarget& texture, Vector2f uv) {
+	inline Color sampleTexture(const RenderTarget& texture, Vector2f uv) {
 		const auto resolution = texture.getResolution();
 
-		const Vector2i texturePixelCoords{
-			std::min(std::max(std::int32_t(std::round(uv.x * resolution.x)), 0), resolution.x - 1),
-			std::min(std::max(std::int32_t(std::round(uv.y * resolution.y)), 0), resolution.y - 1)
+		const Vector2i texturePixelCoords {
+			std::min<float>(std::max<float>(std::floor(uv.x * resolution.x), 0.f), resolution.x - 1.f),
+			std::min<float>(std::max<float>(std::floor(uv.y * resolution.y), 0.f), resolution.y - 1.f)
 		};
 
 		return texture.getPixelColor(texturePixelCoords);

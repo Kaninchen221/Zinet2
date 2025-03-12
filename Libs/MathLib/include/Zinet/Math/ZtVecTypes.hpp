@@ -33,4 +33,16 @@ namespace zt
 	using Vector4ui = glm::vec<4, std::uint32_t, glm::defaultp>;
 
 	using Matrix4f = glm::mat4;
+
+	template<class T>
+	struct Rect
+	{
+		Vector2<T> offset;
+		Vector2<T> size;
+	};
+
+	using RectF = Rect<float>;
+	using RectD = Rect<double>;
+	using RectI = Rect<std::int32_t>;
+	using RectUI = Rect<std::uint32_t>;
 }

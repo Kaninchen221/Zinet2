@@ -381,17 +381,17 @@ namespace zt::software_renderer
 		clock.start();
 #endif
 
-		const Vector2i p1 = renderTarget.normalizedCoordsToPixelCoords(triangle.v1.position);
-		const Vector2i p2 = renderTarget.normalizedCoordsToPixelCoords(triangle.v2.position);
-		const Vector2i p3 = renderTarget.normalizedCoordsToPixelCoords(triangle.v3.position);
+		const auto p1 = renderTarget.normalizedCoordsToPixelCoords(triangle.v1.position);
+		const auto p2 = renderTarget.normalizedCoordsToPixelCoords(triangle.v2.position);
+		const auto p3 = renderTarget.normalizedCoordsToPixelCoords(triangle.v3.position);
 
-		const Color& c1 = triangle.v1.color;
-		const Color& c2 = triangle.v2.color;
-		const Color& c3 = triangle.v3.color;
+		const auto& c1 = triangle.v1.color;
+		const auto& c2 = triangle.v2.color;
+		const auto& c3 = triangle.v3.color;
 
-		const Vector2f& uv1 = triangle.v1.uv;
-		const Vector2f& uv2 = triangle.v2.uv;
-		const Vector2f& uv3 = triangle.v3.uv;
+		const auto& uv1 = triangle.v1.uv;
+		const auto& uv2 = triangle.v2.uv;
+		const auto& uv3 = triangle.v3.uv;
 
 		const std::int32_t minX = std::min({ p1.x, p2.x, p3.x });
 		const std::int32_t maxX = std::max({ p1.x, p2.x, p3.x });
@@ -400,7 +400,7 @@ namespace zt::software_renderer
 
 		result.reserve(result.size() + maxX * maxY);
 
-		const float invArea = 1.f / float((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x));
+		const double invArea = 1.f / float((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x));
 
 		for (std::int32_t py = minY; py <= maxY; py++)
 		{
@@ -410,9 +410,9 @@ namespace zt::software_renderer
 
 			for (std::int32_t px = minX; px <= maxX; px++)
 			{
-				const float alpha = ((p2.x - px) * diffP3YPY - diffP2YPY * (p3.x - px)) * invArea;
-				const float beta = ((p3.x - px) * diffP1YPY - diffP3YPY * (p1.x - px)) * invArea;
-				const float gamma = 1.f - alpha - beta;
+				const double alpha = ((p2.x - px) * diffP3YPY - diffP2YPY * (p3.x - px)) * invArea;
+				const double beta = ((p3.x - px) * diffP1YPY - diffP3YPY * (p1.x - px)) * invArea;
+				const double gamma = 1.f - alpha - beta;
 
 				const float nearlyZero = -1e-6f;
 
@@ -429,7 +429,7 @@ namespace zt::software_renderer
 							},
 							.uv = {
 								alpha * uv1.x + beta * uv2.x + gamma * uv3.x,
-								alpha * uv1.y + beta * uv2.y + gamma * uv3.y,
+								alpha * uv1.y + beta * uv2.y + gamma * uv3.y
 							} 
 						}
 					);
