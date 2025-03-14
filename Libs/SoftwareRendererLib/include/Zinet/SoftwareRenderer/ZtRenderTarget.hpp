@@ -105,7 +105,6 @@ namespace zt::software_renderer
 		public:
 		
 			std::string_view getClassName() const override { return "RenderTarget"; }
-			constexpr static auto GetParentsClassInfo() { return std::vector{core::Object::ClassInfo{}}; }
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		

@@ -1,21 +1,17 @@
 #pragma once
 
 #include "Zinet/GameplayLib/ZtGameplayLibConfig.hpp"
-#include "Zinet/GameplayLib/ZtDrawable.hpp"
-#include "Zinet/GameplayLib/ZtTickable.hpp"
+#include "Zinet/GameplayLib/ZtNode.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
 
 #include "Zinet/SoftwareRenderer/ZtRenderTarget.hpp"
-#include "Zinet/SoftwareRenderer/ZtSoftwareRenderer.hpp"
 
 #include "Zinet/Math/ZtVecTypes.hpp"
 
 namespace zt::gameplay_lib
 {
-	namespace sf = software_renderer;
-
 	struct ZINET_GAMEPLAY_LIB_API FlipbookFrame
 	{
 		sf::RenderTarget texture;
@@ -28,7 +24,7 @@ namespace zt::gameplay_lib
 	};
 
 	ZT_REFLECT_CLASS()
-	class ZINET_GAMEPLAY_LIB_API Flipbook : public core::Object, public Drawable, public Tickable
+	class ZINET_GAMEPLAY_LIB_API Flipbook : public Node
 	{
 	protected:
 
@@ -73,7 +69,6 @@ namespace zt::gameplay_lib
 		public:
 		
 			std::string_view getClassName() const override { return "Flipbook"; }
-			constexpr static auto GetParentsClassInfo() { return std::vector{core::Object::ClassInfo{}}; }
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		

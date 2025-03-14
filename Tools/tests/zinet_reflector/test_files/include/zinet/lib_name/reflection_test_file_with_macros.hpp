@@ -74,9 +74,7 @@ namespace zt::engine
 		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)() = default;
 		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)(const (unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)& other) = default;
 		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)((unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)&& other) = default;
-		
 		~(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)() noexcept = default;
-		
 		
 		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)& operator = (const (unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)& other) = default;
 		(unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)& operator = ((unnamed class at C:\Users\Kaninchen\Desktop\Zinet2\Tools\tests\zinet_reflector\test_files\include\zinet\lib_name\reflection_test_file_with_macros.hpp:21:25)&& other) = default;

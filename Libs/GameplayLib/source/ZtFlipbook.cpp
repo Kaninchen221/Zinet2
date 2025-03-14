@@ -40,14 +40,7 @@ namespace zt::gameplay_lib
 		};
 
 		drawInfo.shaderProgram.fragmentShader.textures.push_back(currentFrame.texture);
-
-		sf::FragmentShader::ProcessFragmentCallableT fragmentShaderProcess =
-		[&](const sf::FragmentShader& fragmentShader, sf::Pixel& fragment)
-		{
-			const auto& uv = fragment.uv;
-			fragment.color = sampleTexture(fragmentShader.textures[0], uv);
-		};
-		drawInfo.shaderProgram.fragmentShader.processFragment = fragmentShaderProcess;
+		drawInfo.shaderProgram.fragmentShader.processFragment = sf::FragmentShaderSampleTextureProcess;
 
 		return drawInfo;
 	}

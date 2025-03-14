@@ -190,12 +190,6 @@ namespace zt::software_renderer::tests
 		RenderTarget renderTarget;
 		createRenderTarget(renderTarget, WhiteColor, { 1024, 1024 });
 
-		FragmentShader::ProcessFragmentCallableT fragmentShaderProcess =
-			[](const FragmentShader& fragmentShader, Pixel& fragment)
-		{
-			fragment.color = sampleTexture(fragmentShader.textures[0], fragment.uv);
-		};
-
 		RenderTarget sourceRenderTarget;
 		const std::filesystem::path savePath = core::Paths::CurrentProjectRootPath() / "test_files" / "uv_texture.png";
 		const auto loadResult = sourceRenderTarget.loadFromFilePNG(savePath);
@@ -215,7 +209,7 @@ namespace zt::software_renderer::tests
 
 		drawInfo.drawMode = DrawMode::Triangles;
 		drawInfo.shaderProgram.fragmentShader.textures.push_back(sourceRenderTarget);
-		drawInfo.shaderProgram.fragmentShader.processFragment = fragmentShaderProcess;
+		drawInfo.shaderProgram.fragmentShader.processFragment = FragmentShaderSampleTextureProcess;
 		softwareRenderer.draw(drawInfo, renderTarget);
 
 		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "software_renderer_draw_texture_result.png";

@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Zinet/GameplayLib/ZtGameplayLibConfig.hpp"
-#include "Zinet/GameplayLib/ZtDrawable.hpp"
-#include "Zinet/GameplayLib/ZtTickable.hpp"
+#include "Zinet/GameplayLib/ZtNode.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
@@ -27,8 +26,8 @@ namespace zt::gameplay_lib
 
 		void start();
 
-		void addTickable(const std::weak_ptr<Tickable>& tickable);
-		void addDrawable(const std::weak_ptr<Drawable>& drawable);
+		void addTickable(const std::weak_ptr<Node>& node);
+		void addDrawable(const std::weak_ptr<Node>& node);
 
 	protected:
 
@@ -37,8 +36,8 @@ namespace zt::gameplay_lib
 		sf::SoftwareRenderer softwareRenderer;
 
 		// TODO: Refactor this to something like systems
-		std::vector<std::weak_ptr<Tickable>> tickableObjects;
-		std::vector<std::weak_ptr<Drawable>> drawableObjects;
+		std::vector<std::weak_ptr<Node>> tickableObjects;
+		std::vector<std::weak_ptr<Node>> drawableObjects;
 
 	public:
 /*GENERATED_CODE_START*/
@@ -59,7 +58,6 @@ namespace zt::gameplay_lib
 		public:
 		
 			std::string_view getClassName() const override { return "GameplayLoop"; }
-			constexpr static auto GetParentsClassInfo() { return std::vector{core::Object::ClassInfo{}}; }
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		

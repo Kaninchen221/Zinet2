@@ -67,12 +67,12 @@ namespace zt::gameplay_lib
 		openGLRenderer.postRender();
 	}
 
-	void GameplayLoop::addTickable(const std::weak_ptr<Tickable>& tickable)
+	void GameplayLoop::addTickable(const std::weak_ptr<Node>& tickable)
 	{
 		tickableObjects.push_back(tickable);
 	}
 
-	void GameplayLoop::addDrawable(const std::weak_ptr<Drawable>& drawable)
+	void GameplayLoop::addDrawable(const std::weak_ptr<Node>& drawable)
 	{
 		drawableObjects.push_back(drawable);
 	}

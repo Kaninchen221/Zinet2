@@ -34,8 +34,10 @@ class CodeGeneratorClassInfo(CodeGeneratorInstructionBase):
         if get_class_name_function := self.get_class_name_function(parser_result):
             inside += get_class_name_function
 
-        if parents_children_info := self.class_info_parents_children.generate_code_post():
-            inside += parents_children_info
+        # TODO: Commented because it could generate code that doesn't have some or all parents
+        #  I muted it so We will not use it until it's fixed
+        #if parents_children_info := self.class_info_parents_children.generate_code_post():
+        #    inside += parents_children_info
 
         if "NO_GET_CLASS_INFO" not in parser_result.tokens:
             if get_class_info_function := self.get_class_info_function():

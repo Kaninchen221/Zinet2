@@ -52,4 +52,11 @@ namespace zt::software_renderer
 		return texture.getPixelColor(texturePixelCoords);
 	}
 
+	inline const auto FragmentShaderSampleTextureProcess = 
+	[](const FragmentShader& fragmentShader, Pixel& fragment)
+	{
+		const auto& uv = fragment.uv;
+		fragment.color = sampleTexture(fragmentShader.textures[0], uv);
+	};
+
 }

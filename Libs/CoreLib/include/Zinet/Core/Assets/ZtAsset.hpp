@@ -47,7 +47,6 @@ namespace zt::core::assets
 		public:
 		
 			std::string_view getClassName() const override { return "Asset"; }
-			constexpr static auto GetParentsClassInfo() { return std::vector{Object::ClassInfo{}}; }
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		

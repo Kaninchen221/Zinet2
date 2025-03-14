@@ -77,7 +77,6 @@ namespace zt::opengl_renderer
 		public:
 		
 			std::string_view getClassName() const override { return "OpenGLRenderer"; }
-			constexpr static auto GetParentsClassInfo() { return std::vector{core::Object::ClassInfo{}}; }
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		
