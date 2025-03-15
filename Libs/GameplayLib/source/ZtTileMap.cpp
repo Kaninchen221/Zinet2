@@ -12,11 +12,17 @@ namespace zt::gameplay_lib
 			return drawInfo;
 		}
 
+		const Vector2f resoultion = texture.getResolution();
+		if (!texture.isValid())
+		{
+			Logger->error("Texture is invalid");
+			return drawInfo;
+		}
+
 		drawInfo.drawMode = software_renderer::DrawMode::Triangles,
 		drawInfo.shaderProgram.fragmentShader.textures.push_back(texture);
 		drawInfo.shaderProgram.fragmentShader.processFragment = sf::FragmentShaderSampleTextureProcess;
 
-		const Vector2f resoultion = texture.getResolution();
 		drawInfo.vertices.reserve(tiles.size() * 4);
 		drawInfo.indices.reserve(tiles.size() * 6);
 		const Vector2f vertexOffset{ 1.f / size.x, 1.f / size.y };

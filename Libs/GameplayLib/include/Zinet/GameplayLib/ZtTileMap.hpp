@@ -31,10 +31,10 @@ namespace zt::gameplay_lib
 		std::vector<Vector2ui> tiles;
 
 		ZT_REFLECT_MEMBER(ReadWrite)
-		Vector2ui size;
+		Vector2ui size = { 0, 0 };
 
 		ZT_REFLECT_MEMBER(ReadWrite)
-		Vector2ui tileSizeInTexture;
+		Vector2ui tileSizeInTexture = { 0, 0 };
 
 		ZT_REFLECT_MEMBER(ReadWrite)
 		sf::RenderTarget texture;
