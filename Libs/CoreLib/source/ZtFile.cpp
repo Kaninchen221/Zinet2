@@ -56,7 +56,7 @@ namespace zt::core
 				return std::ios_base::in | std::ios_base::out;
 
 			default:
-				Logger->error("Invalid openMode: {}", openMode);
+				Logger->error("Invalid openMode: {}", static_cast<int>(openMode));
 				return std::ios_base::out;
 		}
 	}

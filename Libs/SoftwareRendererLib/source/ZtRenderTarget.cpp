@@ -14,7 +14,7 @@ namespace zt::software_renderer
 		else
 		{
 			auto Logger = core::ConsoleLogger::Create("ColorFormatToChannels");
-			Logger->error("Invalid ColorFormat: {}", colorFormat);
+			Logger->error("Invalid ColorFormat: {}", static_cast<int>(colorFormat));
 			return -1;
 		}
 	}

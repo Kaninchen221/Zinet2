@@ -20,12 +20,15 @@ namespace zt::gameplay_lib::tests
 
 		void SetUp() override 
 		{
+			renderTarget.createEmpty({ 1, 1 }, software_renderer::ColorFormat::R8G8B8A8_SRGB);
+			tileMap.setTexture(renderTarget);
 		}
 
 		void TearDown() override {
 		}
 
 		TileMap tileMap;
+		sf::RenderTarget renderTarget;
 	};
 
 	TEST_F(TileMapTests, GetDrawInfoTest)

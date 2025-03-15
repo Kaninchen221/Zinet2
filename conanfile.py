@@ -9,7 +9,7 @@ class ZinetConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     requires = [
         "gtest/1.15.0@",
-        "spdlog/1.9.2@",
+        "spdlog/1.14.1@",
         "plf_colony/7.06@",
         "glfw/3.4@",
         "stb/cci.20240531@",

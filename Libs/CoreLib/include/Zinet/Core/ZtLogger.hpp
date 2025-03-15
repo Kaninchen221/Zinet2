@@ -6,22 +6,22 @@
 #include <spdlog/sinks/stdout_color_sinks-inl.h>
 #include <spdlog/sinks/base_sink.h>
 
+#include <iostream>
+
 namespace zt::core
 {
-	template<typename Mutex = std::mutex>
-	class CustomSink : public spdlog::sinks::base_sink<Mutex>
+	class ZINET_CORE_API CustomSink : public spdlog::sinks::base_sink<std::mutex>
 	{
-		typedef void(*FailTestCallback)();
-		inline static FailTestCallback Callback = nullptr;
+		inline static std::function<void()> Callback;
 
 	public:
 
-		static void SetFailTestCallback(FailTestCallback newCallback)
+		static void SetFailTestCallback(std::function<void()> newCallback)
 		{
 			Callback = newCallback;
 		}
 
-		static bool GetCanFailTest() { return Callback != nullptr; }
+		static bool GetCanFailTest() { return Callback.operator bool(); }
 
 	protected:
 
@@ -81,7 +81,7 @@ namespace zt::core
 		ConsoleLogger logger;
 		logger.internal = spdlog::stdout_color_mt(name);
 
-		auto sink = std::make_shared<CustomSink<>>();
+		auto sink = std::make_shared<CustomSink>();
 		auto& sinks = logger.internal->sinks();
 		sinks.push_back(sink);
 		

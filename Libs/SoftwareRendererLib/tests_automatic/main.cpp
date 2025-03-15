@@ -5,10 +5,8 @@
 int main(int argc, char* argv[]) 
 {
     auto callback = []() { FAIL() << "Some logger log error, warning or critical"; };
-    zt::core::CustomSink<>::SetFailTestCallback(callback);
+    zt::core::CustomSink::SetFailTestCallback(callback);
 
     ::testing::InitGoogleTest(&argc, argv);
-    auto runAllTestsResult = RUN_ALL_TESTS();
-
-    return runAllTestsResult;
+    return RUN_ALL_TESTS();
 }
