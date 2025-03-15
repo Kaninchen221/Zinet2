@@ -33,7 +33,7 @@ namespace zt::software_renderer
 
 	struct ZINET_SOFTWARE_RENDERER_API Pixel
 	{
-		Vector2i coords;
+		Vector2<std::int16_t> coords;
 		Color color;
 		Vector2f uv;
 	};

@@ -186,6 +186,14 @@ namespace zt::software_renderer
 				const size_t secondIndex = drawInfo.indices[index + 1];
 				const size_t thirdIndex = drawInfo.indices[index + 2];
 
+				const auto verticesSize = drawInfo.vertices.size();
+				if (firstIndex >= verticesSize || secondIndex >= verticesSize || thirdIndex >= verticesSize)
+				{
+					Logger->error("Skip triangle with incdices: {}, {} and {}. Vertices size: {}",
+						firstIndex, secondIndex, thirdIndex, verticesSize);
+					continue;
+				}
+
 				const Triangle triangle
 				{
 					.v1 = drawInfo.vertices[firstIndex],
@@ -419,8 +427,8 @@ namespace zt::software_renderer
 				if (alpha >= 0.f && beta >= 0.f && gamma >= nearlyZero)
 				{
 					result.push_back(
-						Pixel { 
-							.coords = { px, py }, 
+						Pixel {
+							.coords = { px, py },
 							.color = {
 								static_cast<std::uint8_t>(alpha * c1.r + beta * c2.r + gamma * c3.r),
 								static_cast<std::uint8_t>(alpha * c1.g + beta * c2.g + gamma * c3.g),
@@ -430,7 +438,7 @@ namespace zt::software_renderer
 							.uv = {
 								alpha * uv1.x + beta * uv2.x + gamma * uv3.x,
 								alpha * uv1.y + beta * uv2.y + gamma * uv3.y
-							} 
+							}
 						}
 					);
 				}

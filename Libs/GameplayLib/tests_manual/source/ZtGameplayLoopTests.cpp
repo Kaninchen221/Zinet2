@@ -3,6 +3,7 @@
 #include "Zinet/GameplayLib/ZtGameplayLoop.hpp"
 #include "Zinet/GameplayLib/ZtFlipbook.hpp"
 #include "Zinet/GameplayLib/ZtSprite.hpp"
+#include "Zinet/GameplayLib/ZtTileMap.hpp"
 
 #include <gtest/gtest.h>
 
@@ -31,9 +32,11 @@ namespace zt::gameplay_lib::tests
 		GameplayLoop gameplayLoop;
 
 		sf::RenderTarget flipbookTexture;
-		const float flipbookFrameTime = 1000.f; // ms
+		const float flipbookFrameTime = 20.f; // ms
 
 		sf::RenderTarget spriteTexture;
+
+		sf::RenderTarget tileSetTexture;
 	};
 
 	TEST_F(GameplayLoopTests, Test)
@@ -73,7 +76,26 @@ namespace zt::gameplay_lib::tests
 			sprite->setTextureRegion(RectF{ { 0.f, 0.f }, { 1.f, 1.f } });
 		}
 
+		auto tileMap = std::make_shared<TileMap>();
+		{
+			const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "tile_set.png";
+			if (!tileSetTexture.loadFromFilePNG(path))
+				FAIL() << "Can't load texture from file";
+
+			tileMap->setTexture(tileSetTexture);
+			tileMap->setTileSizeInTexture(Vector2ui{ 16u, 16u });
+			tileMap->setSize(Vector2ui{ 3u, 3u });
+			tileMap->setTiles(
+			{
+				{ 0, 0 }, { 1, 0 }, { 2, 0 },
+				{ 0, 1 }, { 1, 1 }, { 2, 1 },
+				{ 0, 2 }, { 1, 2 }, { 2, 2 }
+			});
+		}
+
 		gameplayLoop.addTickable(flipbook);
+
+		gameplayLoop.addDrawable(tileMap);
 		gameplayLoop.addDrawable(flipbook);
 		gameplayLoop.addDrawable(sprite);
 		gameplayLoop.start();

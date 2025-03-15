@@ -15,10 +15,10 @@ namespace zt::gameplay_lib
 		{
 			.drawMode = software_renderer::DrawMode::Triangles,
 			.vertices = std::vector<sf::Vertex>{
-				sf::Vertex{ { .4f, .0f }, sf::WhiteColor, { uvMin.x, uvMin.y } },
-				sf::Vertex{ { .6f, .0f }, sf::WhiteColor, { uvMax.x, uvMin.y } },
-				sf::Vertex{ { .6f, .2f }, sf::WhiteColor, { uvMax.x, uvMax.y } },
-				sf::Vertex{ { .4f, .2f }, sf::WhiteColor, { uvMin.x, uvMax.y } }
+				sf::Vertex{ { .4f, .2f }, sf::WhiteColor, { uvMin.x, uvMin.y } },
+				sf::Vertex{ { .6f, .2f }, sf::WhiteColor, { uvMax.x, uvMin.y } },
+				sf::Vertex{ { .6f, .4f }, sf::WhiteColor, { uvMax.x, uvMax.y } },
+				sf::Vertex{ { .4f, .4f }, sf::WhiteColor, { uvMin.x, uvMax.y } }
 			},
 			.indices = { 0, 1, 3, 1, 2, 3 }
 		};

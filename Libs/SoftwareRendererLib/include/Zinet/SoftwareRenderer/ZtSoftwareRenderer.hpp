@@ -18,7 +18,7 @@ namespace zt::software_renderer
 	{
 		DrawMode drawMode = DrawMode::Points;
 		std::vector<Vertex> vertices;
-		std::vector<size_t> indices;
+		std::vector<std::uint32_t> indices;
 		ShaderProgram shaderProgram;
 		bool isDirty = true;
 		std::vector<Pixel> cachedPixels;

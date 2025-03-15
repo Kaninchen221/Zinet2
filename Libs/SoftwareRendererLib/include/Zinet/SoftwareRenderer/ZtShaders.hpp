@@ -57,6 +57,8 @@ namespace zt::software_renderer
 	{
 		const auto& uv = fragment.uv;
 		fragment.color = sampleTexture(fragmentShader.textures[0], uv);
+		if (fragment.color == ZeroColor)
+			fragment.color = fragmentShader.sourceColor;
 	};
 
 }

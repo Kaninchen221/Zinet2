@@ -96,14 +96,6 @@ namespace zt::opengl_renderer::tests
 		if (!openGLRenderer.init(window))
 			FAIL() << "OpenGL renderer failed init";
 
-		sf::FragmentShader::ProcessFragmentCallableT fragmentShaderProcess =
-			[](const sf::FragmentShader& fragmentShader, sf::Pixel& fragment)
-		{
-			fragment.color = sampleTexture(fragmentShader.textures[0], fragment.uv);
-			if (fragment.color == sf::ZeroColor)
-				fragment.color = fragmentShader.sourceColor;
-		};
-
 		// Ground
 		sf::RenderTarget groundTexture;
 		const std::filesystem::path groundTexturePath = core::Paths::CurrentProjectRootPath() / "test_files" / "ground.png";
@@ -125,7 +117,7 @@ namespace zt::opengl_renderer::tests
 				1, 3, 2
 			}
 		};
-		groundDrawInfo.shaderProgram.fragmentShader.processFragment = fragmentShaderProcess;
+		groundDrawInfo.shaderProgram.fragmentShader.processFragment = sf::FragmentShaderSampleTextureProcess;
 		groundDrawInfo.shaderProgram.fragmentShader.textures.push_back(groundTexture);
 
 		// Character

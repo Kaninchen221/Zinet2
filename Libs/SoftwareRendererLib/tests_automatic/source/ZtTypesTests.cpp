@@ -49,6 +49,10 @@ namespace zt::software_renderer::tests
 	{
 		constexpr const auto size = sizeof(Pixel);
 		Logger->info("Pixel Size: {}", size);
+		Logger->info("Pixel Align: {}", alignof(Pixel));
+		Logger->info("Pixel Coords Size: {}", sizeof(decltype(Pixel{}.coords)));
+		Logger->info("Pixel Color Size: {}", sizeof(decltype(Pixel{}.color)));
+		Logger->info("Pixel UV Size: {}", sizeof(decltype(Pixel{}.uv)));
 	}
 
 	TEST_F(TypesTests, Colors)
