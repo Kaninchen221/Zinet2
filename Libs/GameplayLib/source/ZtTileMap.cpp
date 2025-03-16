@@ -6,7 +6,7 @@ namespace zt::gameplay_lib
 	{
 		sf::DrawInfo drawInfo;
 
-		if (size.x * size.y != tiles.size())
+		if (tilesCount.x * tilesCount.y != tiles.size())
 		{
 			Logger->error("You didn't pass enough tiles IDs for entire tile map");
 			return drawInfo;
@@ -25,13 +25,13 @@ namespace zt::gameplay_lib
 
 		drawInfo.vertices.reserve(tiles.size() * 4);
 		drawInfo.indices.reserve(tiles.size() * 6);
-		const Vector2f vertexOffset{ 1.f / size.x, 1.f / size.y };
+		const Vector2f vertexOffset{ 1.f / tilesCount.x, 1.f / tilesCount.y };
 
 		Vector2ui tileIndex = { 0.f, 0.f };
 		auto tileSetTileCoordsIt = tiles.begin();
-		for (tileIndex.y = 0; tileIndex.y < size.y; tileIndex.y++)
+		for (tileIndex.y = 0; tileIndex.y < tilesCount.y; tileIndex.y++)
 		{
-			for (tileIndex.x = 0; tileIndex.x < size.x; tileIndex.x++)
+			for (tileIndex.x = 0; tileIndex.x < tilesCount.x; tileIndex.x++)
 			{
 				const std::uint32_t indicesOffset = static_cast<std::uint32_t>(drawInfo.vertices.size());
 				std::vector<std::uint32_t> newIndices
@@ -57,6 +57,10 @@ namespace zt::gameplay_lib
 				++tileSetTileCoordsIt;
 			}
 		}
+
+		drawInfo.shaderProgram.vertexShader.size = size;
+		drawInfo.shaderProgram.vertexShader.position = position;
+		drawInfo.shaderProgram.vertexShader.processVertex = sf::VertexShaderVerticesToWorldProcess;
 
 		return drawInfo;
 	}

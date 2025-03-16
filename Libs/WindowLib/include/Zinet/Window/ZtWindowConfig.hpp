@@ -7,7 +7,6 @@
 #include <GLFW/glfw3.h>
 
 #ifndef ZINET_STATIC
-
 #	if ZINET_WINDOWS
 #		define ZINET_API_EXPORT __declspec(dllexport)
 #		define ZINET_API_IMPORT __declspec(dllimport)
@@ -21,13 +20,11 @@
 #		define ZINET_API_IMPORT
 #	endif // ZINET_WINDOWS
 
-#ifdef ZINET_LIB
-#	define ZINET_WINDOW_LAYER_API ZINET_API_EXPORT
-#else
-#	define ZINET_WINDOW_LAYER_API ZINET_API_IMPORT
-#endif // ZINET_LIB
-
-
+#	ifdef ZINET_LIB
+#		define ZINET_WINDOW_LAYER_API ZINET_API_EXPORT
+#	else
+#		define ZINET_WINDOW_LAYER_API ZINET_API_IMPORT
+#	endif // ZINET_LIB
 #else
 
 #define ZINET_WINDOW_LAYER_API

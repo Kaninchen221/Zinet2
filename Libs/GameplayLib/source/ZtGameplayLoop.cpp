@@ -15,6 +15,7 @@ namespace zt::gameplay_lib
 		wd::Window window;
 		wd::Event event{ window };
 
+		//window.create(Vector2i{ 1024, 1024 });
 		window.create();
 
 		if (!openGLRenderer.init(window))
@@ -23,9 +24,8 @@ namespace zt::gameplay_lib
 			return;
 		}
 
-		finalRenderTarget.createEmpty({ 1920, 1080 }, sf::ColorFormat::R8G8B8A8_SRGB);
-
 		openGLRenderer.preRender();
+		loopClock.start();
 		while (!window.shouldBeClosed())
 		{
 #if ZINET_TIME_TRACE
@@ -34,15 +34,23 @@ namespace zt::gameplay_lib
 #endif
 			event.pollEvents();
 
-			finalRenderTarget.fill(sf::BlackColor);
+			if (!currentCamera)
+			{
+				Logger->error("Camera is invalid");
+				continue;
+			}
 
+			auto& viewportRenderTarget = currentCamera->getViewportRenderTarget();
+			viewportRenderTarget.fill(sf::BlackColor);
+
+			const auto deltaTimeMs = loopClock.restart().getAsMilliseconds();
 			for (const auto& object : tickableObjects)
 			{
 				if (object.expired())
 					continue;
 
 				auto asShared = object.lock();
-				asShared->tick(20.f);
+				asShared->tick(deltaTimeMs);
 			}
 
 			for (const auto& object : drawableObjects)
@@ -52,10 +60,13 @@ namespace zt::gameplay_lib
 
 				auto asShared = object.lock();
 				auto drawInfo = asShared->getDrawInfo();
-				softwareRenderer.draw(drawInfo, finalRenderTarget);
+				auto& vertexShader = drawInfo.shaderProgram.vertexShader;
+				vertexShader.cameraPosition = currentCamera->getPosition();
+				vertexShader.cameraSize = currentCamera->getViewportRenderTarget().getResolution();
+				softwareRenderer.draw(drawInfo, viewportRenderTarget);
 			}
 
-			openGLRenderer.setupTexture(finalRenderTarget.getResolution(), finalRenderTarget.get());
+			openGLRenderer.setupTexture(viewportRenderTarget.getResolution(), viewportRenderTarget.get());
 			openGLRenderer.render();
 
 			window.swapBuffers();

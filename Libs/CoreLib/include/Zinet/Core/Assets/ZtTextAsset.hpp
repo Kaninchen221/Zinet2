@@ -44,6 +44,7 @@ namespace zt::core::assets
 		
 		
 		const decltype(text)& getText() const { return text; }
+		decltype(text)& getText() { return text; }
 		void setText(const decltype(text)& newValue) { text = newValue; }
 		
 /*GENERATED_CODE_END*/

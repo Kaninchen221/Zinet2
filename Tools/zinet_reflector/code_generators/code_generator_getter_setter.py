@@ -27,8 +27,13 @@ class CodeGeneratorGetterSetter(CodeGeneratorInstructionBase):
             if self.token in parser_result.tokens:
                 setter_name = parser_result.get_member_setter_name()
 
-                return (f"const {member_type_name}& {getter_name}() const {{ return {member_name}; }}\n"
+                return (f"{CodeGeneratorGetterSetter.create_getters(member_type_name, getter_name, member_name)}\n"
                         f"void {setter_name}(const {member_type_name}& newValue) {{ {member_name} = newValue; }}")
 
             elif self.token_only_getter in parser_result.tokens:
                 return f"const {member_type_name}& {getter_name}() const {{ return {member_name}; }}"
+
+    @staticmethod
+    def create_getters(member_type_name, getter_name, member_name):
+        return (f"const {member_type_name}& {getter_name}() const {{ return {member_name}; }}\n"
+                f"{member_type_name}& {getter_name}() {{ return {member_name}; }}")

@@ -22,7 +22,7 @@ namespace zt::wd
 	{
 		Logger->info(std::source_location::current().function_name());
 
-        internalWindow = glfwCreateWindow(800, 600, "Zinet", NULL, NULL);
+        internalWindow = glfwCreateWindow(1024, 1024, "Zinet", NULL, NULL);
         if (internalWindow == nullptr)
         {
             Logger->error("Can't create window");

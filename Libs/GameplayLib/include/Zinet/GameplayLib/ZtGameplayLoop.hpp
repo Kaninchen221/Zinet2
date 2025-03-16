@@ -2,9 +2,11 @@
 
 #include "Zinet/GameplayLib/ZtGameplayLibConfig.hpp"
 #include "Zinet/GameplayLib/ZtNode.hpp"
+#include "Zinet/GameplayLib/ZtCamera.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtClock.hpp"
 
 #include "Zinet/OpenGLRenderer/ZtOpenGLRenderer.hpp"
 
@@ -20,7 +22,7 @@ namespace zt::gameplay_lib
 	{
 	protected:
 
-		inline static zt::core::ConsoleLogger Logger = zt::core::ConsoleLogger::Create("GameplayLoop");
+		inline static auto Logger = core::ConsoleLogger::Create("GameplayLoop");
 
 	public:
 
@@ -32,8 +34,12 @@ namespace zt::gameplay_lib
 	protected:
 
 		oglr::OpenGLRenderer openGLRenderer;
-		sf::RenderTarget finalRenderTarget;
 		sf::SoftwareRenderer softwareRenderer;
+
+		core::Clock loopClock;
+
+		ZT_REFLECT_MEMBER(ReadWrite)
+		std::shared_ptr<Camera> currentCamera;
 
 		// TODO: Refactor this to something like systems
 		std::vector<std::weak_ptr<Node>> tickableObjects;
@@ -61,6 +67,10 @@ namespace zt::gameplay_lib
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		
+		
+		const decltype(currentCamera)& getCurrentCamera() const { return currentCamera; }
+		decltype(currentCamera)& getCurrentCamera() { return currentCamera; }
+		void setCurrentCamera(const decltype(currentCamera)& newValue) { currentCamera = newValue; }
 		
 /*GENERATED_CODE_END*/
 	};

@@ -115,6 +115,7 @@ namespace zt::software_renderer
 		if (drawInfo.indices.empty())
 		{
 			Logger->error("Indices is empty");
+			return false;
 		}
 
 		return true;

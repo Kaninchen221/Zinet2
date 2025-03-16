@@ -24,6 +24,11 @@ namespace zt::gameplay_lib
 
 		virtual sf::DrawInfo getDrawInfo() const { return {}; }
 
+	protected:
+
+		ZT_REFLECT_MEMBER(ReadWrite)
+		Vector2f position{ 0, 0 };
+
 	public:
 
 /*GENERATED_CODE_START*/
@@ -47,6 +52,10 @@ namespace zt::gameplay_lib
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		
+		
+		const decltype(position)& getPosition() const { return position; }
+		decltype(position)& getPosition() { return position; }
+		void setPosition(const decltype(position)& newValue) { position = newValue; }
 		
 /*GENERATED_CODE_END*/
 	};

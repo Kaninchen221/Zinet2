@@ -89,6 +89,7 @@ namespace zt::core::assets
 		
 		
 		const decltype(rootFolder)& getRootFolder() const { return rootFolder; }
+		decltype(rootFolder)& getRootFolder() { return rootFolder; }
 		void setRootFolder(const decltype(rootFolder)& newValue) { rootFolder = newValue; }
 		
 		const decltype(contentFolderName)& getContentFolderName() const { return contentFolderName; }

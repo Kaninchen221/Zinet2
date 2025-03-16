@@ -32,7 +32,7 @@ namespace zt::gameplay_lib::tests
 		GameplayLoop gameplayLoop;
 
 		sf::RenderTarget flipbookTexture;
-		const float flipbookFrameTime = 20.f; // ms
+		const float flipbookFrameTimeMs = 1000.f;
 
 		sf::RenderTarget spriteTexture;
 
@@ -51,7 +51,7 @@ namespace zt::gameplay_lib::tests
 			{
 				.texture = flipbookTexture,
 				.textureRegion = { { 0.f, 0.f }, { 0.25f, 1.f } },
-				.time = flipbookFrameTime
+				.time = flipbookFrameTimeMs
 			};
 
 			FlipbookFrame frame1 = frame0;
@@ -64,6 +64,8 @@ namespace zt::gameplay_lib::tests
 			flipbook->addFrame(frame2);
 			flipbook->addFrame(frame1);
 			flipbook->addFrame(frame0);
+			flipbook->setSize({ 32, 32 });
+			flipbook->setPosition(flipbook->getSize() / -2.f); // Center it, the pivot is in the upper left corner
 		}
 
 		auto sprite = std::make_shared<Sprite>();
@@ -74,6 +76,8 @@ namespace zt::gameplay_lib::tests
 
 			sprite->setTexture(spriteTexture);
 			sprite->setTextureRegion(RectF{ { 0.f, 0.f }, { 1.f, 1.f } });
+			sprite->setSize({ 48, 48 });
+			sprite->setPosition(sprite->getSize() / -2.f - Vector2f{ 0.f, 100.f });
 		}
 
 		auto tileMap = std::make_shared<TileMap>();
@@ -84,20 +88,31 @@ namespace zt::gameplay_lib::tests
 
 			tileMap->setTexture(tileSetTexture);
 			tileMap->setTileSizeInTexture(Vector2ui{ 16u, 16u });
-			tileMap->setSize(Vector2ui{ 3u, 3u });
+			tileMap->setTilesCount(Vector2ui{ 3u, 3u });
 			tileMap->setTiles(
 			{
 				{ 0, 0 }, { 1, 0 }, { 2, 0 },
 				{ 0, 1 }, { 1, 1 }, { 2, 1 },
 				{ 0, 2 }, { 1, 2 }, { 2, 2 }
 			});
+
+			tileMap->setSize({ 128, 128 });
+			tileMap->setPosition(tileMap->getSize() / -2.f); // Center it, the pivot is in the upper left corner
 		}
+
+		auto camera = std::make_shared<Camera>();
+		{
+			camera->create();
+			//camera->setPosition({ -100, -100 });
+		}
+		gameplayLoop.setCurrentCamera(camera);
 
 		gameplayLoop.addTickable(flipbook);
 
 		gameplayLoop.addDrawable(tileMap);
 		gameplayLoop.addDrawable(flipbook);
 		gameplayLoop.addDrawable(sprite);
+
 		gameplayLoop.start();
 	}
 }

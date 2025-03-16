@@ -11,6 +11,12 @@ namespace zt::software_renderer
 	{
 	public:
 
+		Vector2f cameraPosition;
+		Vector2f cameraSize;
+
+		Vector2f position;
+		Vector2f size;
+
 		using ProcessVertexCallableT = std::function<void(const VertexShader&, Vertex& vertex)>;
 
 		ProcessVertexCallableT processVertex = nullptr;
@@ -18,6 +24,9 @@ namespace zt::software_renderer
 		operator bool() const { return processVertex.operator bool(); }
 
 	};
+
+	ZINET_SOFTWARE_RENDERER_API 
+	void VertexShaderVerticesToWorldProcess(const VertexShader& vertexShader, Vertex& vertex);
 
 	class ZINET_SOFTWARE_RENDERER_API FragmentShader
 	{
@@ -52,13 +61,6 @@ namespace zt::software_renderer
 		return texture.getPixelColor(texturePixelCoords);
 	}
 
-	inline const auto FragmentShaderSampleTextureProcess = 
-	[](const FragmentShader& fragmentShader, Pixel& fragment)
-	{
-		const auto& uv = fragment.uv;
-		fragment.color = sampleTexture(fragmentShader.textures[0], uv);
-		if (fragment.color == ZeroColor)
-			fragment.color = fragmentShader.sourceColor;
-	};
-
+	ZINET_SOFTWARE_RENDERER_API
+	void FragmentShaderSampleTextureProcess(const FragmentShader& fragmentShader, Pixel& fragment);
 }

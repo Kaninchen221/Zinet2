@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Zinet/GameplayLib/ZtGameplayLibConfig.hpp"
-#include "Zinet/GameplayLib/ZtNode.hpp"
+#include "Zinet/GameplayLib/ZtDrawableNode.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
@@ -24,7 +24,7 @@ namespace zt::gameplay_lib
 	};
 
 	ZT_REFLECT_CLASS()
-	class ZINET_GAMEPLAY_LIB_API Flipbook : public Node
+	class ZINET_GAMEPLAY_LIB_API Flipbook : public DrawableNode
 	{
 	protected:
 

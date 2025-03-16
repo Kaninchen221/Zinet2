@@ -87,6 +87,7 @@ namespace zt::engine
 		const decltype(texture)& getTexture() const { return texture; }
 		
 		const decltype(backupTexture)& getBackupTexture() const { return backupTexture; }
+		decltype(backupTexture)& getBackupTexture() { return backupTexture; }
 		void setBackupTexture(const decltype(backupTexture)& newValue) { backupTexture = newValue; }
 		
 /*GENERATED_CODE_END*/

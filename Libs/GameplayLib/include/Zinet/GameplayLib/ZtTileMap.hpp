@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Zinet/GameplayLib/ZtGameplayLibConfig.hpp"
-#include "Zinet/GameplayLib/ZtNode.hpp"
+#include "Zinet/GameplayLib/ZtDrawableNode.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
@@ -15,7 +15,7 @@ namespace zt::gameplay_lib
 	namespace sf = software_renderer;
 
 	ZT_REFLECT_CLASS()
-		class ZINET_GAMEPLAY_LIB_API TileMap : public Node
+		class ZINET_GAMEPLAY_LIB_API TileMap : public DrawableNode
 	{
 	protected:
 
@@ -31,7 +31,7 @@ namespace zt::gameplay_lib
 		std::vector<Vector2ui> tiles;
 
 		ZT_REFLECT_MEMBER(ReadWrite)
-		Vector2ui size = { 0, 0 };
+		Vector2ui tilesCount = { 0, 0 };
 
 		ZT_REFLECT_MEMBER(ReadWrite)
 		Vector2ui tileSizeInTexture = { 0, 0 };
@@ -64,15 +64,19 @@ namespace zt::gameplay_lib
 		
 		
 		const decltype(tiles)& getTiles() const { return tiles; }
+		decltype(tiles)& getTiles() { return tiles; }
 		void setTiles(const decltype(tiles)& newValue) { tiles = newValue; }
 		
-		const decltype(size)& getSize() const { return size; }
-		void setSize(const decltype(size)& newValue) { size = newValue; }
+		const decltype(tilesCount)& getTilesCount() const { return tilesCount; }
+		decltype(tilesCount)& getTilesCount() { return tilesCount; }
+		void setTilesCount(const decltype(tilesCount)& newValue) { tilesCount = newValue; }
 		
 		const decltype(tileSizeInTexture)& getTileSizeInTexture() const { return tileSizeInTexture; }
+		decltype(tileSizeInTexture)& getTileSizeInTexture() { return tileSizeInTexture; }
 		void setTileSizeInTexture(const decltype(tileSizeInTexture)& newValue) { tileSizeInTexture = newValue; }
 		
 		const decltype(texture)& getTexture() const { return texture; }
+		decltype(texture)& getTexture() { return texture; }
 		void setTexture(const decltype(texture)& newValue) { texture = newValue; }
 		
 /*GENERATED_CODE_END*/

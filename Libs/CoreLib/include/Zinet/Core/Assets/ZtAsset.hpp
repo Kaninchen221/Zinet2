@@ -52,6 +52,7 @@ namespace zt::core::assets
 		
 		
 		const decltype(metaData)& getMetaData() const { return metaData; }
+		decltype(metaData)& getMetaData() { return metaData; }
 		void setMetaData(const decltype(metaData)& newValue) { metaData = newValue; }
 		
 /*GENERATED_CODE_END*/
