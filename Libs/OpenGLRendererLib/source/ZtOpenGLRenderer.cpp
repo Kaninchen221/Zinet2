@@ -24,6 +24,8 @@ namespace zt::opengl_renderer
 
 	void OpenGLRenderer::preRender()
 	{
+		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+
 		vertexShader = compileShader(GL_VERTEX_SHADER, getVertexShaderSource());
 		fragmentShader = compileShader(GL_FRAGMENT_SHADER, getFragmentShaderSource());
 
@@ -123,6 +125,11 @@ namespace zt::opengl_renderer
 		// Load the image into the texture
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		//glGenerateMipmap(GL_TEXTURE_2D);
+	}
+
+	void OpenGLRenderer::setViewportSize(Vector2i size)
+	{
+		glViewport(0, 0, size.x, size.x);
 	}
 
 }
