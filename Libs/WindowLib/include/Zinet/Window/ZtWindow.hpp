@@ -34,7 +34,7 @@ namespace zt::wd
 
 		~Window() noexcept;
 
-		void create();
+		void create(int width = 1024, int height = 1024);
 
 		GLFWwindow* getInternal();
 
@@ -51,8 +51,6 @@ namespace zt::wd
 		const Event& getEvent() const { return event; }
 		Event& getEvent() { return event; }
 
-		Vector2ui getSize() const;
-
 		bool isMinimized() const;
 
 		void requestCloseWindow();
@@ -65,6 +63,16 @@ namespace zt::wd
 
 		void swapBuffers();
 
+		static void SetTransparentFramebuffer(bool value);
+
+		void setShowWindowBar(bool value);
+
+		void setPosition(const Vector2i& position);
+		Vector2i getPosition() const;
+
+		void setSize(const Vector2i& size);
+		Vector2i getSize() const;
+
 	protected:
 
 		GLFWwindow* internalWindow{};
@@ -72,6 +80,42 @@ namespace zt::wd
 
 		void bindFramebufferSizeCallback();
 	};
+
+	inline void Window::setPosition(const Vector2i& position)
+	{
+		if (!internalWindow)
+			return;
+
+		glfwSetWindowPos(internalWindow, position.x, position.y);
+	}
+
+	inline Vector2i Window::getPosition() const
+	{
+		if (!internalWindow)
+			return {};
+
+		Vector2i position;
+		glfwGetWindowPos(internalWindow, &position.x, &position.y);
+		return position;
+	}
+
+	inline void Window::setSize(const Vector2i& size)
+	{
+		if (!internalWindow)
+			return;
+
+		glfwSetWindowSize(internalWindow, size.x, size.y);
+	}
+
+	inline Vector2i Window::getSize() const
+	{
+		if (!internalWindow)
+			return {};
+
+		Vector2i size;
+		glfwGetWindowSize(internalWindow, &size.x, &size.y);
+		return size;
+	}
 
 	inline void Window::setWindowResizedCallback(void* userPointer, WindowResizedCallback callback)
 	{

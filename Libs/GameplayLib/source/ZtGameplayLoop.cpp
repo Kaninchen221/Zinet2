@@ -15,7 +15,17 @@ namespace zt::gameplay_lib
 		wd::Window window;
 		wd::Event event{ window };
 
-		//window.create(Vector2i{ 1024, 1024 });
+		wd::Window::SetTransparentFramebuffer(true);
+
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+		if (!monitor)
+			return;
+
+		const GLFWvidmode* vidMode = glfwGetVideoMode(monitor);
+		if (!vidMode)
+			return;
+
+		//window.create(vidMode->width, vidMode->height);
 		window.create();
 
 		if (!openGLRenderer.init(window))
@@ -41,7 +51,7 @@ namespace zt::gameplay_lib
 			}
 
 			auto& viewportRenderTarget = currentCamera->getViewportRenderTarget();
-			viewportRenderTarget.fill(sf::BlackColor);
+			viewportRenderTarget.fill(sf::ZeroColor);
 
 			const auto deltaTimeMs = loopClock.restart().getAsMilliseconds();
 			for (const auto& object : tickableObjects)

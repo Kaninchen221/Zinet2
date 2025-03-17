@@ -18,11 +18,11 @@ namespace zt::wd
         }
     }
 
-    void Window::create()
+    void Window::create(int width, int height)
 	{
 		Logger->info(std::source_location::current().function_name());
 
-        internalWindow = glfwCreateWindow(1024, 1024, "Zinet", NULL, NULL);
+		internalWindow = glfwCreateWindow(width, height, "Zinet", NULL, NULL);
         if (internalWindow == nullptr)
         {
             Logger->error("Can't create window");
@@ -87,14 +87,6 @@ namespace zt::wd
 		}
     }
 
-    Vector2ui Window::getSize() const
-	{
-        int width = 0;
-        int height = 0;
-		glfwGetFramebufferSize(internalWindow, &width, &height);
-        return { width, height };
-	}
-
 	bool Window::isMinimized() const
 	{
         Vector2i windowSize = getSize();
@@ -103,12 +95,31 @@ namespace zt::wd
 
 	void Window::requestCloseWindow()
 	{
+		if (!internalWindow)
+			return;
+
         glfwSetWindowShouldClose(internalWindow, true);
 	}
 
 	void Window::swapBuffers()
 	{
+		if (!internalWindow)
+			return;
+
         glfwSwapBuffers(internalWindow);
+	}
+
+	void Window::SetTransparentFramebuffer(bool value)
+	{
+		glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, value ? GLFW_TRUE : GLFW_FALSE);
+	}
+
+	void Window::setShowWindowBar(bool value)
+	{
+		if (!internalWindow)
+			return;
+
+		glfwSetWindowAttrib(internalWindow, GLFW_DECORATED, value ? GLFW_TRUE : GLFW_FALSE);
 	}
 
 	void Window::bindFramebufferSizeCallback()
@@ -118,4 +129,5 @@ namespace zt::wd
 
 		glfwSetFramebufferSizeCallback(internalWindow, &Window::FramebufferSizeCallback);
 	}
+
 }

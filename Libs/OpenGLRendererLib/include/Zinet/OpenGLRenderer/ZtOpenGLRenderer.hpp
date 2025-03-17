@@ -38,7 +38,12 @@ namespace zt::opengl_renderer
 
 		GLuint compileShader(GLenum type, const char* source) const;
 
+		void setViewportSize(Vector2i size);
+
 	protected:
+
+		ZT_REFLECT_MEMBER(ReadWrite)
+		Vector4f clearColor = Vector4f{ 0.f, 0.f, 0.f, 1.f };
 
 		const std::array<float, 16> vertices = std::array {
 			// Positions  // TexCoords
@@ -80,6 +85,10 @@ namespace zt::opengl_renderer
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		
+		
+		const decltype(clearColor)& getClearColor() const { return clearColor; }
+		decltype(clearColor)& getClearColor() { return clearColor; }
+		void setClearColor(const decltype(clearColor)& newValue) { clearColor = newValue; }
 		
 /*GENERATED_CODE_END*/
 	};

@@ -109,7 +109,7 @@ namespace zt::wd::tests
 
 	TEST_F(WindowTests, GetWindowSize)
 	{
-		typedef Vector2ui(Window::* ExpectedFunctionDeclaration)() const;
+		typedef Vector2i(Window::* ExpectedFunctionDeclaration)() const;
 		using FunctionDeclaration = decltype(&Window::getSize);
 
 		static_assert(std::is_same_v<ExpectedFunctionDeclaration, FunctionDeclaration>);
