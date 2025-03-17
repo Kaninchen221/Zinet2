@@ -14,7 +14,7 @@ namespace zt::software_renderer
 	void FragmentShaderSampleTextureProcess(const FragmentShader& fragmentShader, Pixel& fragment)
 	{
 		const auto& uv = fragment.uv;
-		fragment.color = sampleTexture(fragmentShader.textures[0], uv);
+		fragment.color = SampleTexture(fragmentShader.textures[0], uv);
 		if (fragment.color == ZeroColor)
 			fragment.color = fragmentShader.sourceColor;
 	};

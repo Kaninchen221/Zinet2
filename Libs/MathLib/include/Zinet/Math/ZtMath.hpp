@@ -17,6 +17,9 @@ namespace zt
 
 		inline static zt::core::ConsoleLogger Logger = zt::core::ConsoleLogger::Create("Math");
 
+		inline static const constexpr auto EpsilonF = std::numeric_limits<float>::epsilon();
+		inline static const constexpr auto EpsilonD = std::numeric_limits<double>::epsilon();
+
 		Math() = delete;
 		Math(const Math& other) = delete;
 		Math(Math&& other) = delete;

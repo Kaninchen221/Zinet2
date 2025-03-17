@@ -50,7 +50,7 @@ namespace zt::software_renderer
 		FragmentShader fragmentShader;
 	};
 
-	inline Color sampleTexture(const RenderTarget& texture, Vector2f uv) {
+	inline Color SampleTexture(const RenderTarget& texture, Vector2f uv) {
 		const auto resolution = texture.getResolution();
 
 		const Vector2i texturePixelCoords {
