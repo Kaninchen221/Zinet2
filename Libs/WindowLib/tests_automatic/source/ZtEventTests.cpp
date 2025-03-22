@@ -38,7 +38,22 @@ namespace zt::wd::tests
 
 	TEST_F(EventTests, PollEvents)
 	{
+		auto& keyboard = event.getKeyboard();
+		auto& mouse = event.getMouse();
+
+		keyboard.pushEvent(KeyboardKey{}, 0, KeyboardEventType{}, KeyboardMods{});
+		EXPECT_EQ(keyboard.getEvents().size(), 1);
+
+		mouse.pushButtonEvent(0, 0, 0);
+		EXPECT_EQ(mouse.getButtonsEvents().size(), 1);
+
+		mouse.pushPositionEvent(0, 0);
+		EXPECT_EQ(mouse.getPositionEvents().size(), 1);
+
 		event.pollEvents();
+
+		EXPECT_EQ(keyboard.getEvents().size(), 0);
+		EXPECT_EQ(mouse.getButtonsEvents().size(), 0);
 	}
 
 	TEST_F(EventTests, GetKeyboard)

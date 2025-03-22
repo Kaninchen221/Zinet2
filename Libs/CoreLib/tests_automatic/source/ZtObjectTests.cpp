@@ -42,6 +42,8 @@ namespace zt::core::tests
 
 			std::string_view getAssetExtension() const override { return Object::getAssetExtension(); }
 
+			std::string asString() const override { return ""; };
+
 			int value = 0;
 
 		};

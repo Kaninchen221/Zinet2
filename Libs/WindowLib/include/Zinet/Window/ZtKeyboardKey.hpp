@@ -7,6 +7,7 @@ namespace zt::wd
 
 	enum class KeyboardKey
 	{
+		Ignore = 0,
 		UNKNOWN = GLFW_KEY_UNKNOWN,
 
 		SPACE = GLFW_KEY_SPACE,

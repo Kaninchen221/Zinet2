@@ -8,8 +8,10 @@ namespace zt::wd
 {
 	class Window;
 
-	class ZINET_WINDOW_LAYER_API Event
+	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_DESTRUCTOR, NO_OPERATORS)
+	class ZINET_WINDOW_LAYER_API Event : public core::Object
 	{
+		inline static auto Logger = core::ConsoleLogger::Create("Logger");
 
 	public:
 
@@ -25,7 +27,7 @@ namespace zt::wd
 
 		const Window* getWindow() const;
 
-		void pollEvents() { glfwPollEvents(); }
+		void pollEvents();
 
 		Keyboard& getKeyboard() { return keyboard; }
 		const Keyboard& getKeyboard() const { return keyboard; }
@@ -34,6 +36,8 @@ namespace zt::wd
 		const Mouse& getMouse() const { return mouse; }
 
 		void bindCallbacks();
+
+		std::string asString() const override;
 
 	protected:
 

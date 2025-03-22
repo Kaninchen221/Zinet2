@@ -18,7 +18,6 @@ namespace zt::wd::tests
 	{
 	protected:
 
-		GLFW glfw;
 		Window window;
 		Mouse mouse{ window };
 
@@ -31,80 +30,36 @@ namespace zt::wd::tests
 		}
 	};
 
-	TEST_F(MouseTests, GetWindow)
+	TEST_F(MouseTests, GetWindowTest)
 	{
 		const Window* actualWindow = mouse.getWindow();
 		ASSERT_EQ(actualWindow, &window);
 	}
 
-	TEST_F(MouseTests, GetButtonsEvents)
+	TEST_F(MouseTests, PushButtonEventTest)
 	{
-		[[maybe_unused]] const std::vector<MouseButtonEvent>& buttonsEvents = mouse.getButtonsEvents();
-	}
-
-	TEST_F(MouseTests, SetMaxRememberedButtonsEvents)
-	{
-		size_t expectedMaxRememberedButtonsEvents = 4u;
-		mouse.setMaxRememberedButtonsEvents(expectedMaxRememberedButtonsEvents);
-		size_t actualMaxRememberedButtonsEvents = mouse.getMaxRememberedButtonsEvents();
-
-		ASSERT_EQ(expectedMaxRememberedButtonsEvents, actualMaxRememberedButtonsEvents);
-
-		actualMaxRememberedButtonsEvents = mouse.getButtonsEvents().size();
-
-		ASSERT_EQ(expectedMaxRememberedButtonsEvents, actualMaxRememberedButtonsEvents);
-	}
-
-	TEST_F(MouseTests, ButtonCallback)
-	{
-		window.create();
 		MouseButtonEvent expectedButtonEvent{};
-		Mouse::ButtonCallback(window.getInternal(), static_cast<int>(expectedButtonEvent.button), static_cast<int>(expectedButtonEvent.type), 0);
+		mouse.pushButtonEvent(static_cast<int>(expectedButtonEvent.button), static_cast<int>(expectedButtonEvent.type), 0);
 		const std::vector<MouseButtonEvent>& buttonsEvents = mouse.getButtonsEvents();
 		size_t actualButtonsEventsCount = buttonsEvents.size();
-		size_t expectedButtonsEventsCount = 1u;
+		ASSERT_EQ(actualButtonsEventsCount, 1);
 
-		ASSERT_EQ(actualButtonsEventsCount, expectedButtonsEventsCount);
-
-		MouseButtonEvent actualButtonEvent = buttonsEvents[0];
+		const MouseButtonEvent& actualButtonEvent = buttonsEvents.front();
 		ASSERT_EQ(expectedButtonEvent, actualButtonEvent);
 	}
 
-	TEST(Mouse, PositionCallback)
+	TEST_F(MouseTests, PushPositionEventTest)
 	{
-		GLFW glfw;
-
-		Window window;
-		window.create();
 		Vector2d expectedPosition{ 34.0, 2.0 };
-		Mouse::PositionCallback(window.getInternal(), expectedPosition.x, expectedPosition.y);
+		mouse.pushPositionEvent(expectedPosition.x, expectedPosition.y);
 
-		Event& event = window.getEvent();
-		Mouse& mouse = event.getMouse();
 		const std::vector<MousePositionEvent>& positions = mouse.getPositionEvents();
-		MousePositionEvent positionEvent = positions[0];
-		Vector2d actualPosition = positionEvent.position;
+		Vector2d actualPosition = positions.front().position;
 		ASSERT_EQ(expectedPosition, actualPosition);
 
-		mouse.setMaxRememberedPositionEvents(2u);
 		Vector2d expectedSecondPosition{ 67.0, 27.0 };
-		Mouse::PositionCallback(window.getInternal(), expectedSecondPosition.x, expectedSecondPosition.y);
-		Vector2d actualSecondPosition = positions[0].position;
+		mouse.pushPositionEvent(expectedSecondPosition.x, expectedSecondPosition.y);
+		Vector2d actualSecondPosition = positions.front().position;
 		ASSERT_EQ(expectedSecondPosition, actualSecondPosition);
 	}
-
-	TEST_F(MouseTests, GetPositionEvents)
-	{
-		[[maybe_unused]] const std::vector<MousePositionEvent>& positions = mouse.getPositionEvents();
-	}
-
-	TEST_F(MouseTests, SetMaxRememberedPositionEvents)
-	{
-		size_t expectedMaxRememberedPositionEvents = 3u;
-		mouse.setMaxRememberedPositionEvents(expectedMaxRememberedPositionEvents);
-		size_t actualMaxRememberedPositionEvents = mouse.getMaxRememberedPositionEvents();
-
-		ASSERT_EQ(actualMaxRememberedPositionEvents, expectedMaxRememberedPositionEvents);
-	}
-
 }

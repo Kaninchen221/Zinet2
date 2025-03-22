@@ -28,6 +28,8 @@ namespace zt::core
 
 		std::unique_ptr<ObjectBase> createCopy() const override { return nullptr; }
 
+		virtual std::string asString() const { return {}; }
+
 	protected:
 
 		inline static constexpr bool IsObjectClassInherited = true;

@@ -48,19 +48,26 @@ namespace zt::wd::tests
 		ASSERT_TRUE(isReleased);
 	}
 
-	TEST_F(KeyboardTests, SetMaximumRememberedEvents)
+	TEST_F(KeyboardTests, PushEventAndClearTest)
 	{
-		size_t expectedMaximumRememberedEvents = 9u;
-		keyboard.setMaximumRememberedEvents(expectedMaximumRememberedEvents);
-		size_t actualMaximumRememberedEvents = keyboard.getMaximumRememberedEvents();
+		auto expectedKey = KeyboardKey::F14;
+		int expectedScanCode = 34232;
+		auto expectedType = KeyboardEventType::Released;
+		auto expectedMods = KeyboardMods::NumLock;
+		keyboard.pushEvent(expectedKey, expectedScanCode, expectedType, expectedMods);
 
-		ASSERT_EQ(expectedMaximumRememberedEvents, actualMaximumRememberedEvents);
+		auto& events = keyboard.getEvents();
 
-		const std::vector<KeyboardEvent>& events = keyboard.getEvents();
-		size_t actualEventsCount = events.size();
-		size_t expectedEventsCount = expectedMaximumRememberedEvents;
+		auto& lastEvent = events.front();
+		EXPECT_EQ(lastEvent.key, expectedKey);
+		EXPECT_EQ(lastEvent.type, expectedType);
+		EXPECT_EQ(lastEvent.mods, expectedMods);
 
-		ASSERT_EQ(actualEventsCount, expectedEventsCount);
+		keyboard.clearEvents();
+		EXPECT_TRUE(events.empty());
+
+		keyboard.pushEvent(expectedKey, expectedScanCode, expectedType, expectedMods);
+		keyboard.pushEvent(expectedKey, expectedScanCode, expectedType, expectedMods);
+		EXPECT_EQ(events.size(), 2);
 	}
-
 }

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtObject.hpp"
+
 #include "Zinet/Window/ZtWindowConfig.hpp"
 #include "Zinet/Window/ZtKeyboardEvent.hpp"
 
@@ -11,7 +14,8 @@ namespace zt::wd
 {
 	class Window;
 
-	class ZINET_WINDOW_LAYER_API Keyboard
+	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_DESTRUCTOR, NO_OPERATORS)
+	class ZINET_WINDOW_LAYER_API Keyboard : core::Object
 	{
 		inline static zt::core::ConsoleLogger Logger = zt::core::ConsoleLogger::Create("Keyboard");
 
@@ -35,15 +39,21 @@ namespace zt::wd
 
 		bool isReleased(KeyboardKey key) const;
 
-		void setMaximumRememberedEvents(size_t value);
-
-		size_t getMaximumRememberedEvents() const;
-
 		void bindCallbacks();
+
+		void pushEvent(KeyboardKey key, std::int32_t scanCode, KeyboardEventType type, KeyboardMods mods);
+
+		void clearEvents() { events.clear(); }
+
+		std::string asString() const override;
+
+	public:
+/*GENERATED_CODE_START*/
+/*GENERATED_CODE_END*/
 
 	protected:
 
-		static void KeyCallback(GLFWwindow* internalWindow, int key, int scanCode, int action, int mods);
+		static void KeyCallback(GLFWwindow* internalWindow, std::int32_t key, std::int32_t scanCode, std::int32_t type, std::int32_t mods);
 
 		Window* window = nullptr;
 		std::vector<KeyboardEvent> events;

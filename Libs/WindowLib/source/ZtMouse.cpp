@@ -12,39 +12,13 @@ namespace zt::wd
 
 	}
 
-	const Window* Mouse::getWindow() const
-	{
-		return window;
-	}
-
-	const std::vector<MouseButtonEvent>& Mouse::getButtonsEvents() const
-	{
-		return buttonsEvents;
-	}
-
-	void Mouse::setMaxRememberedButtonsEvents(size_t size)
-	{
-		buttonsEvents.resize(size);
-	}
-
-	size_t Mouse::getMaxRememberedButtonsEvents() const
-	{
-		return buttonsEvents.size();
-	}
-
 	void Mouse::ButtonCallback(GLFWwindow* glfwWindow, int button, int action, int mods)
 	{
 		void* windowUserPointer = glfwGetWindowUserPointer(glfwWindow);
 		Window* window = static_cast<Window*>(windowUserPointer);
 		Event& event = window->getEvent();
 		Mouse& mouse = event.getMouse();
-
-		mouse.buttonsEvents.pop_back();
-
-		MouseButtonEvent buttonEvent;
-		buttonEvent.type = static_cast<MouseButtonEventType>(action);
-		buttonEvent.button = static_cast<MouseButton>(button);
-		mouse.buttonsEvents.insert(mouse.buttonsEvents.begin(), buttonEvent);
+		mouse.pushButtonEvent(button, action, mods);
 	}
 
 	void Mouse::bindCallbacks()
@@ -58,27 +32,50 @@ namespace zt::wd
 		Window* windowUserPointer = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
 		Event& event = windowUserPointer->getEvent();
 		Mouse& mouse = event.getMouse();
+		mouse.pushPositionEvent(positionX, positionY);
+	}
 
-		mouse.positionEvents.pop_back();
-
+	void Mouse::pushPositionEvent(double positionX, double positionY)
+	{
 		MousePositionEvent positionEvent{};
 		positionEvent.position = Vector2d(positionX, positionY);
-		mouse.positionEvents.insert(mouse.positionEvents.begin(), positionEvent);
+		positionEvents.insert(positionEvents.begin(), positionEvent);
 	}
 
-	const std::vector<MousePositionEvent>& Mouse::getPositionEvents() const
+	void Mouse::pushButtonEvent(int button, int action, int mods)
 	{
-		return positionEvents;
+		MouseButtonEvent buttonEvent;
+		buttonEvent.type = static_cast<MouseButtonEventType>(action);
+		buttonEvent.button = static_cast<MouseButton>(button);
+		buttonsEvents.insert(buttonsEvents.begin(), buttonEvent);
 	}
 
-	void Mouse::setMaxRememberedPositionEvents(size_t size)
+	void Mouse::clearEvents()
 	{
-		positionEvents.resize(size);
+		buttonsEvents.clear();
+		positionEvents.clear();
 	}
 
-	size_t Mouse::getMaxRememberedPositionEvents() const
+	std::string Mouse::asString() const
 	{
-		return positionEvents.size();
+		std::string result = "Mouse events:\n";
+		result += "Button events:\n";
+		for (const auto& buttonEvent : buttonsEvents)
+		{
+			result += fmt::format("Event type: {}, key: {}\n",
+				static_cast<std::int32_t>(buttonEvent.type),
+				static_cast<std::int32_t>(buttonEvent.button));
+		}
+
+		result += "\nMouse events:\n";
+		for (const auto& positionEvent : positionEvents)
+		{
+			result += fmt::format("Position event x: {}, y: {}\n",
+				positionEvent.position.x,
+				positionEvent.position.y);
+		}
+
+		return result;
 	}
 
 }

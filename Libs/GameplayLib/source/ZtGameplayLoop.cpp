@@ -13,7 +13,7 @@ namespace zt::gameplay_lib
 		wd::GLFW::UnhideWindow();
 
 		wd::Window window;
-		wd::Event event{ window };
+		auto& event = window.getEvent();
 
 		wd::Window::SetTransparentFramebuffer(true);
 
@@ -27,6 +27,7 @@ namespace zt::gameplay_lib
 
 		//window.create(vidMode->width, vidMode->height);
 		window.create();
+		window.bindCallbacks();
 
 		if (!openGLRenderer.init(window))
 		{
