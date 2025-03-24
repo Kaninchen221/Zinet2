@@ -8,10 +8,10 @@ generator.compileDefinitions = """
     ZINET_LIB
     """
 generator.includeDirectories = """
-    ${CONAN_INCLUDE_DIRS_GLM}
+    ${glm_INCLUDE_DIRS}
     """
 generator.linkLibraries = """
     ZinetCore
-    ${CONAN_LIBS_GLM}
+    ${glm_LIBRARIES}
     """
 project_generator.add_generator(generator)

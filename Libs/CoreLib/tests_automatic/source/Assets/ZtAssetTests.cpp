@@ -3,7 +3,6 @@
 #include "Zinet/Core/Assets/ZtAsset.hpp"
 #include "Zinet/Core/ZtPaths.hpp"
 #include "Zinet/Core/ZtFile.hpp"
-#include "Zinet/Core/ZtPointersUtilities.hpp"
 #include "Zinet/Core/Assets/ZtTextAsset.hpp"
 
 #include <gtest/gtest.h>
@@ -59,7 +58,7 @@ namespace zt::core::assets::tests
 		auto object = asset.createObject(contentFolderPath);
 		ASSERT_TRUE(object);
 
-		auto textAsset = PointersUtilities::DynamicCastUniquePtr<Asset, TextAsset>(object);
+		auto textAsset = dynamic_cast<TextAsset*>(object.get());
 		ASSERT_TRUE(textAsset);
 
 		const bool loadContentResult = textAsset->loadContentUsingMetaData(contentFolderPath);

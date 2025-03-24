@@ -3,6 +3,7 @@
 #include "Zinet/Window/ZtWindowConfig.hpp"
 #include "Zinet/Window/ZtMousePositionEvent.hpp"
 #include "Zinet/Window/ZtMouseButtonEvent.hpp"
+#include "Zinet/Window/ZtWindow.hpp"
 
 #include <vector>
 
@@ -10,9 +11,7 @@
 
 namespace zt::wd
 {
-	class Window;
-
-	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_DESTRUCTOR, NO_OPERATORS)
+	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_DESTRUCTOR, NO_OPERATORS, NO_CREATE_COPY, NO_REGISTER_CLASS)
 	class ZINET_WINDOW_LAYER_API Mouse : public core::Object
 	{
 
@@ -29,6 +28,15 @@ namespace zt::wd
 		~Mouse() noexcept = default;
 
 		const Window* getWindow() const { return window; }
+		Window* getWindow() { return window; }
+
+		bool isPressed(MouseButton mouseButton) const;
+
+		bool isReleased(MouseButton mouseButton) const;
+
+		Vector2d getMousePosition() const;
+
+		Vector2d getMousePositionNorm() const;
 
 		const std::vector<MouseButtonEvent>& getButtonsEvents() const { return buttonsEvents; }
 
@@ -50,6 +58,17 @@ namespace zt::wd
 
 	public:
 /*GENERATED_CODE_START*/
+		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
+		
+		class ClassInfo : public zt::core::ClassInfoBase
+		{
+		public:
+		
+			std::string_view getClassName() const override { return "Mouse"; }
+		};
+		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
+		
+		
 /*GENERATED_CODE_END*/
 
 	protected:
@@ -60,4 +79,21 @@ namespace zt::wd
 
 	};
 
+	inline Vector2d Mouse::getMousePosition() const
+	{
+		Vector2d position;
+		glfwGetCursorPos(window->getInternal(), &position.x, &position.y);
+		return position;
+	}
+
+	inline Vector2d Mouse::getMousePositionNorm() const
+	{
+		const auto mousePosition = getMousePosition();
+		const auto windowSize = window->getSize();
+		return
+		{
+			mousePosition.x / windowSize.x,
+			mousePosition.y / windowSize.y
+		};
+	}
 }

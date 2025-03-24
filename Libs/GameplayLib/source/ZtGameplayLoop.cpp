@@ -1,9 +1,9 @@
 #include "Zinet/GameplayLib/ZtGameplayLoop.hpp"
+#include "Zinet/GameplayLib/ZtFlipbook.hpp"
 
 #include "Zinet/Window/ZtGLFW.hpp"
 #include "Zinet/Window/ZtWindow.hpp"
-
-#include "Zinet/GameplayLib/ZtFlipbook.hpp"
+#include "Zinet/Window/ZtEvent.hpp"
 
 namespace zt::gameplay_lib
 {
@@ -13,7 +13,8 @@ namespace zt::gameplay_lib
 		wd::GLFW::UnhideWindow();
 
 		wd::Window window;
-		auto& event = window.getEvent();
+		wd::Event event{ window };
+		window.setEvent(&event);
 
 		wd::Window::SetTransparentFramebuffer(true);
 
@@ -27,7 +28,7 @@ namespace zt::gameplay_lib
 
 		//window.create(vidMode->width, vidMode->height);
 		window.create();
-		window.bindCallbacks();
+		event.bindCallbacks();
 
 		if (!openGLRenderer.init(window))
 		{
@@ -55,26 +56,66 @@ namespace zt::gameplay_lib
 			viewportRenderTarget.fill(sf::ZeroColor);
 
 			const auto deltaTimeMs = loopClock.restart().getAsMilliseconds();
-			for (const auto& object : tickableObjects)
+			for (const auto& node : tickableNodes)
 			{
-				if (object.expired())
+				if (node.expired())
 					continue;
 
-				auto asShared = object.lock();
+				auto asShared = node.lock();
 				asShared->tick(deltaTimeMs);
 			}
 
-			for (const auto& object : drawableObjects)
+			for (const auto& node : drawableNodes)
 			{
-				if (object.expired())
+				if (node.expired())
 					continue;
 
-				auto asShared = object.lock();
+				auto asShared = node.lock();
 				auto drawInfo = asShared->getDrawInfo();
 				auto& vertexShader = drawInfo.shaderProgram.vertexShader;
 				vertexShader.cameraPosition = currentCamera->getPosition();
 				vertexShader.cameraSize = currentCamera->getViewportRenderTarget().getResolution();
 				softwareRenderer.draw(drawInfo, viewportRenderTarget);
+			}
+
+			for (auto& node : dragableNodes)
+			{
+				if (node.expired())
+					continue;
+
+				auto& mouse = event.getMouse();
+
+				const bool isPressed = mouse.isPressed(wd::MouseButton::LEFT);
+				if (isPressed)
+				{
+					const auto mousePositionNorm = mouse.getMousePositionNorm();
+					Logger->info("Mouse pos norm: {}, {}", mousePositionNorm.x, mousePositionNorm.y);
+
+					if (node.expired())
+						continue;
+
+					const auto viewportSize = currentCamera->getViewportRenderTarget().getResolution();
+					const auto lookAt = currentCamera->getLookAt();
+
+					const Vector2f mousePosInWorld = { (mousePositionNorm.x * viewportSize.x) - (viewportSize.x / 2.f) + lookAt.x, (mousePositionNorm.y * viewportSize.y ) - (viewportSize.y / 2.f) + lookAt.y };
+
+					auto asShared = node.lock();
+
+					bool isHoveredByMouse = false;
+					{
+						auto nodePos = asShared->getPosition();
+						auto nodeMin = nodePos;
+						auto nodeMax = nodePos + asShared->getSize();
+						if (mousePosInWorld.x > nodeMin.x && mousePosInWorld.x < nodeMax.x && mousePosInWorld.y > nodeMin.y && mousePosInWorld.y < nodeMax.y)
+							isHoveredByMouse = true;
+					}
+
+					if (isHoveredByMouse)
+					{
+						const Vector2f newPosition = mousePosInWorld - asShared->getSize() / 2.f;
+						asShared->setPosition(newPosition);
+					}
+				}
 			}
 
 			openGLRenderer.setupTexture(viewportRenderTarget.getResolution(), viewportRenderTarget.get());
@@ -89,14 +130,19 @@ namespace zt::gameplay_lib
 		openGLRenderer.postRender();
 	}
 
-	void GameplayLoop::addTickable(const std::weak_ptr<Node>& tickable)
+	void GameplayLoop::addTickable(const std::weak_ptr<Node>& node)
 	{
-		tickableObjects.push_back(tickable);
+		tickableNodes.push_back(node);
 	}
 
-	void GameplayLoop::addDrawable(const std::weak_ptr<Node>& drawable)
+	void GameplayLoop::addDrawable(const std::weak_ptr<Node>& node)
 	{
-		drawableObjects.push_back(drawable);
+		drawableNodes.push_back(node);
+	}
+
+	void GameplayLoop::addDragable(const std::weak_ptr<Node>& node)
+	{
+		dragableNodes.push_back(node);
 	}
 
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Zinet/Window/ZtWindowConfig.hpp"
-#include "Zinet/Window/ZtEvent.hpp"
 #include "Zinet/Window/ZtGLFW.hpp"
 
 #include "Zinet/Math/ZtVecTypes.hpp"
@@ -10,6 +9,8 @@
 
 namespace zt::wd
 {
+	class Event;
+
 	class ZINET_WINDOW_LAYER_API Window
 	{
 	public:
@@ -25,7 +26,7 @@ namespace zt::wd
 
 	public:
 
-		Window() : event{ *this } {}
+		Window() = default;
 		Window(const Window& other) = default;
 		Window(Window&& other) = default;
 
@@ -36,11 +37,8 @@ namespace zt::wd
 
 		void create(int width = 1024, int height = 1024);
 
-		GLFWwindow* getInternal();
-
-		const GLFWwindow* getInternal() const;
-
-		void bindCallbacks();
+		GLFWwindow* getInternal() { return internalWindow; }
+		const GLFWwindow* getInternal() const { return internalWindow; }
 
 		bool isOpen() const;
 
@@ -48,8 +46,10 @@ namespace zt::wd
 
 		static void FramebufferSizeCallback(GLFWwindow* internalWindow, int width, int height);
 
-		const Event& getEvent() const { return event; }
-		Event& getEvent() { return event; }
+		void setEvent(Event* newEvent) { event = newEvent; }
+
+		const Event& getEvent() const { return *event; }
+		Event& getEvent() { return *event; }
 
 		bool isMinimized() const;
 
@@ -76,7 +76,7 @@ namespace zt::wd
 	protected:
 
 		GLFWwindow* internalWindow{};
-		Event event;
+		Event* event{};
 
 		void bindFramebufferSizeCallback();
 	};

@@ -3,6 +3,7 @@
 #include "Zinet/Window/ZtMouseButtonEventType.hpp"
 #include "Zinet/Window/ZtMouseButton.hpp"
 #include "Zinet/Window/ZtMouseButtonEvent.hpp"
+#include "Zinet/Window/ZtEvent.hpp"
 
 namespace zt::wd
 {
@@ -10,6 +11,16 @@ namespace zt::wd
 		: window{ &newWindow }
 	{
 
+	}
+
+	bool Mouse::isPressed(MouseButton mouseButton) const
+	{
+		return glfwGetMouseButton(window->getInternal(), static_cast<int>(mouseButton)) == static_cast<int>(MouseButtonEventType::Pressed);
+	}
+
+	bool Mouse::isReleased(MouseButton mouseButton) const
+	{
+		return glfwGetMouseButton(window->getInternal(), static_cast<int>(mouseButton)) == static_cast<int>(MouseButtonEventType::Released);
 	}
 
 	void Mouse::ButtonCallback(GLFWwindow* glfwWindow, int button, int action, int mods)
@@ -38,7 +49,8 @@ namespace zt::wd
 	void Mouse::pushPositionEvent(double positionX, double positionY)
 	{
 		MousePositionEvent positionEvent{};
-		positionEvent.position = Vector2d(positionX, positionY);
+		positionEvent.position.x = positionX;
+		positionEvent.position.y = positionY;
 		positionEvents.insert(positionEvents.begin(), positionEvent);
 	}
 

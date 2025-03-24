@@ -8,6 +8,6 @@ namespace zt::wd
 {
 	struct ZINET_WINDOW_LAYER_API MousePositionEvent
 	{
-		Vector2f position;
+		Vector2d position;
 	};
 }

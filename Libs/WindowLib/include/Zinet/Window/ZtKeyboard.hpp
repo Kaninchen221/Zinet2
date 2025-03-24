@@ -14,7 +14,7 @@ namespace zt::wd
 {
 	class Window;
 
-	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_DESTRUCTOR, NO_OPERATORS)
+	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_DESTRUCTOR, NO_OPERATORS, NO_CREATE_COPY, NO_REGISTER_CLASS)
 	class ZINET_WINDOW_LAYER_API Keyboard : core::Object
 	{
 		inline static zt::core::ConsoleLogger Logger = zt::core::ConsoleLogger::Create("Keyboard");
@@ -49,6 +49,17 @@ namespace zt::wd
 
 	public:
 /*GENERATED_CODE_START*/
+		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
+		
+		class ClassInfo : public zt::core::ClassInfoBase
+		{
+		public:
+		
+			std::string_view getClassName() const override { return "Keyboard"; }
+		};
+		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
+		
+		
 /*GENERATED_CODE_END*/
 
 	protected:

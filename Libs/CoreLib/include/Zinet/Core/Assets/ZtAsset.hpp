@@ -19,7 +19,7 @@ namespace zt::core::assets
 
 	public:
 
-		std::unique_ptr<Asset> createObject(const std::filesystem::path& contentRootFolder) const;
+		std::unique_ptr<ObjectBase> createObject(const std::filesystem::path& contentRootFolder) const;
 
 		virtual bool loadContentUsingMetaData(const std::filesystem::path& contentRootFolder) { return false; }
 

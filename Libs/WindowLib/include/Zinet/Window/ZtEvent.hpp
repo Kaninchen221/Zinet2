@@ -25,7 +25,8 @@ namespace zt::wd
 
 		~Event() noexcept = default;
 
-		const Window* getWindow() const;
+		const Window* getWindow() const { return window; }
+		Window* getWindow() { return window; }
 
 		void pollEvents();
 
