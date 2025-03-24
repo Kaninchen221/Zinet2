@@ -1,5 +1,6 @@
 #include "Zinet/Window/ZtKeyboard.hpp"
 #include "Zinet/Window/ZtWindow.hpp"
+#include "Zinet/Window/ZtEvent.hpp"
 
 namespace zt::wd
 {

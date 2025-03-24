@@ -30,6 +30,7 @@ namespace zt::gameplay_lib
 
 		void addTickable(const std::weak_ptr<Node>& node);
 		void addDrawable(const std::weak_ptr<Node>& node);
+		void addDragable(const std::weak_ptr<Node>& node);
 
 	protected:
 
@@ -42,8 +43,9 @@ namespace zt::gameplay_lib
 		std::shared_ptr<Camera> currentCamera;
 
 		// TODO: Refactor this to something like systems
-		std::vector<std::weak_ptr<Node>> tickableObjects;
-		std::vector<std::weak_ptr<Node>> drawableObjects;
+		std::vector<std::weak_ptr<Node>> tickableNodes;
+		std::vector<std::weak_ptr<Node>> drawableNodes;
+		std::vector<std::weak_ptr<Node>> dragableNodes;
 
 	public:
 /*GENERATED_CODE_START*/

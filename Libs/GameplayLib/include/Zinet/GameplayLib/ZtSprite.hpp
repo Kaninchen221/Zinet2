@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Zinet/GameplayLib/ZtGameplayLibConfig.hpp"
-#include "Zinet/GameplayLib/ZtDrawableNode.hpp"
+#include "Zinet/GameplayLib/ZtNode.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
@@ -15,7 +15,7 @@ namespace zt::gameplay_lib
 	namespace sf = software_renderer;
 
 	ZT_REFLECT_CLASS()
-	class ZINET_GAMEPLAY_LIB_API Sprite : public DrawableNode
+	class ZINET_GAMEPLAY_LIB_API Sprite : public Node
 	{
 	protected:
 

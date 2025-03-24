@@ -21,7 +21,7 @@ namespace zt::gameplay_lib
 
 	public:
 
-		void create(const Vector2i& size = { 512, 512 });
+		void create(const Vector2i& newSize = { 512, 512 });
 
 		// The lookAt value is the position member
 		// The pivot of the camera should be always considered in the midle of the camera

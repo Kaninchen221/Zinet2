@@ -6,6 +6,7 @@
 
 #include "Zinet/Window/ZtGLFW.hpp"
 #include "Zinet/Window/ZtWindow.hpp"
+#include "Zinet/Window/ZtEvent.hpp"
 
 #include "Zinet/SoftwareRenderer/ZtSoftwareRenderer.hpp"
 #include "Zinet/SoftwareRenderer/ZtRenderTarget.hpp"
@@ -90,8 +91,10 @@ namespace zt::opengl_renderer::tests
 
 		wd::Window window;
 		wd::Event event{ window };
+		window.setEvent(&event);
 
 		window.create();
+		event.bindCallbacks();
 
 		if (!openGLRenderer.init(window))
 			FAIL() << "OpenGL renderer failed init";

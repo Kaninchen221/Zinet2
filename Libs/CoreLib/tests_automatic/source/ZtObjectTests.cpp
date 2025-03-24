@@ -2,7 +2,6 @@
 
 #include "Zinet/Core/ZtObject.hpp"
 #include "Zinet/Core/ZtClassDefaultObjectRegistry.hpp"
-#include "Zinet/Core/ZtPointersUtilities.hpp"
 
 #include <gtest/gtest.h>
 
@@ -77,10 +76,8 @@ namespace zt::core::tests
 		std::unique_ptr<ObjectBase> copy = object.createCopy();
 		ASSERT_NE(copy, nullptr);
 		
-		const ObjectBase* copyRawPointer = copy.get();
-		std::unique_ptr<ObjectChild> copyCasted = PointersUtilities::DynamicCastUniquePtr<ObjectBase, ObjectChild>(copy);
+		auto copyCasted = dynamic_cast<ObjectChild*>(copy.get());
 		ASSERT_NE(copyCasted, nullptr);
-		ASSERT_EQ(copyCasted.get(), copyRawPointer);
 
 		ASSERT_EQ(object.value, copyCasted->value);
 	}

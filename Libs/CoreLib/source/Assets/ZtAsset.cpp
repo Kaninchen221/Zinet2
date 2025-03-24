@@ -1,10 +1,9 @@
 #include "Zinet/Core/Assets/ZtAsset.hpp"
-#include "Zinet/Core/ZtPointersUtilities.hpp"
 
 namespace zt::core::assets
 {
 
-	std::unique_ptr<Asset> Asset::createObject(const std::filesystem::path& contentRootFolder) const
+	std::unique_ptr<ObjectBase> Asset::createObject(const std::filesystem::path& contentRootFolder) const
 	{
 		if (metaData.is_null())
 		{
@@ -38,9 +37,9 @@ namespace zt::core::assets
 				return {};
 			}
 			
-			auto asset = PointersUtilities::StaticCastUniquePtr<ObjectBase, Asset>(createdCopy);
+			auto asset = dynamic_cast<Asset*>(createdCopy.get());
 			asset->metaData = metaData;
-			return asset;
+			return createdCopy;
 		}
 
 		Logger->error("Couldn't find a CDO that has wanted extension: {}", file_extension);

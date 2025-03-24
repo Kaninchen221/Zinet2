@@ -3,8 +3,9 @@
 namespace zt::gameplay_lib
 {
 
-	void Camera::create(const Vector2i& size)
+	void Camera::create(const Vector2i& newSize)
 	{
+		size = newSize;
 		viewportRenderTarget.createEmpty(size, sf::ColorFormat::R8G8B8A8_SRGB);
 	}
 

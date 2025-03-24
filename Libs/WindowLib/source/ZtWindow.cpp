@@ -39,21 +39,6 @@ namespace zt::wd
 		bindFramebufferSizeCallback();
     }
 
-    GLFWwindow* Window::getInternal()
-    {
-        return internalWindow;
-    }
-
-    const GLFWwindow* Window::getInternal() const
-    {
-        return internalWindow;
-    }
-
-    void Window::bindCallbacks()
-    {
-        event.bindCallbacks();
-    }
-
     bool Window::isOpen() const
     {
         if (!internalWindow)

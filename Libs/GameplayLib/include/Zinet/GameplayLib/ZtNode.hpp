@@ -29,6 +29,9 @@ namespace zt::gameplay_lib
 		ZT_REFLECT_MEMBER(ReadWrite)
 		Vector2f position{ 0, 0 };
 
+		ZT_REFLECT_MEMBER(ReadWrite)
+		Vector2f size{ 32, 32 };
+
 	public:
 
 /*GENERATED_CODE_START*/
@@ -56,6 +59,10 @@ namespace zt::gameplay_lib
 		const decltype(position)& getPosition() const { return position; }
 		decltype(position)& getPosition() { return position; }
 		void setPosition(const decltype(position)& newValue) { position = newValue; }
+		
+		const decltype(size)& getSize() const { return size; }
+		decltype(size)& getSize() { return size; }
+		void setSize(const decltype(size)& newValue) { size = newValue; }
 		
 /*GENERATED_CODE_END*/
 	};

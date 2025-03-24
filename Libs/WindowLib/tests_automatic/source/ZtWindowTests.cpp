@@ -75,12 +75,6 @@ namespace zt::wd::tests
 
 		[[maybe_unused]] Event& event = window.getEvent();
 	}
-	
-	TEST_F(WindowTests, BindCallbacksTest)
-	{
-		window.create();
-		window.bindCallbacks();
-	}
 
 	TEST_F(WindowTests, GetWindowResizedCallback)
 	{
