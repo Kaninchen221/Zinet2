@@ -45,6 +45,8 @@ namespace zt::gameplay_lib
 		// TODO: Refactor this to something like systems
 		std::vector<std::weak_ptr<Node>> tickableNodes;
 		std::vector<std::weak_ptr<Node>> drawableNodes;
+
+		std::weak_ptr<Node> dragedNode;
 		std::vector<std::weak_ptr<Node>> dragableNodes;
 
 	public:

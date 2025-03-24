@@ -5,6 +5,8 @@
 #include "Zinet/Window/ZtWindow.hpp"
 #include "Zinet/Window/ZtEvent.hpp"
 
+#include <ranges>
+
 namespace zt::gameplay_lib
 {
 	void GameplayLoop::start()
@@ -78,7 +80,7 @@ namespace zt::gameplay_lib
 				softwareRenderer.draw(drawInfo, viewportRenderTarget);
 			}
 
-			for (auto& node : dragableNodes)
+			for (auto& node : dragableNodes | std::views::reverse)
 			{
 				if (node.expired())
 					continue;
@@ -89,7 +91,7 @@ namespace zt::gameplay_lib
 				if (isPressed)
 				{
 					const auto mousePositionNorm = mouse.getMousePositionNorm();
-					Logger->info("Mouse pos norm: {}, {}", mousePositionNorm.x, mousePositionNorm.y);
+					//Logger->info("Mouse pos norm: {}, {}", mousePositionNorm.x, mousePositionNorm.y);
 
 					if (node.expired())
 						continue;
@@ -110,11 +112,19 @@ namespace zt::gameplay_lib
 							isHoveredByMouse = true;
 					}
 
-					if (isHoveredByMouse)
+					if (dragedNode.expired() && isHoveredByMouse)
+						dragedNode = node;
+
+					auto dragedNodeAsShared = dragedNode.lock();
+					if (dragedNodeAsShared == asShared)
 					{
 						const Vector2f newPosition = mousePosInWorld - asShared->getSize() / 2.f;
 						asShared->setPosition(newPosition);
 					}
+				}
+				else
+				{
+					dragedNode.reset();
 				}
 			}
 
