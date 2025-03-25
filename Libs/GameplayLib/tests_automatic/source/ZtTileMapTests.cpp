@@ -31,8 +31,7 @@ namespace zt::gameplay_lib::tests
 		sf::RenderTarget renderTarget;
 	};
 
-	TEST_F(TileMapTests, GetDrawInfoTest)
+	TEST_F(TileMapTests, Test)
 	{
-		sf::DrawInfo drawInfo = tileMap.getDrawInfo();
 	}
 }

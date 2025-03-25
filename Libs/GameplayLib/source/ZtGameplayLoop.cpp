@@ -91,7 +91,6 @@ namespace zt::gameplay_lib
 				if (isPressed)
 				{
 					const auto mousePositionNorm = mouse.getMousePositionNorm();
-					//Logger->info("Mouse pos norm: {}, {}", mousePositionNorm.x, mousePositionNorm.y);
 
 					if (node.expired())
 						continue;
@@ -105,7 +104,7 @@ namespace zt::gameplay_lib
 
 					bool isHoveredByMouse = false;
 					{
-						auto nodePos = asShared->getPosition();
+						auto nodePos = asShared->getAbsolutePosition();
 						auto nodeMin = nodePos;
 						auto nodeMax = nodePos + asShared->getSize();
 						if (mousePosInWorld.x > nodeMin.x && mousePosInWorld.x < nodeMax.x && mousePosInWorld.y > nodeMin.y && mousePosInWorld.y < nodeMax.y)
@@ -113,12 +112,15 @@ namespace zt::gameplay_lib
 					}
 
 					if (dragedNode.expired() && isHoveredByMouse)
+					{
 						dragedNode = node;
+						offset = mousePosInWorld - asShared->getPosition();
+					}
 
 					auto dragedNodeAsShared = dragedNode.lock();
 					if (dragedNodeAsShared == asShared)
 					{
-						const Vector2f newPosition = mousePosInWorld - asShared->getSize() / 2.f;
+						const Vector2f newPosition = mousePosInWorld - offset;
 						asShared->setPosition(newPosition);
 					}
 				}

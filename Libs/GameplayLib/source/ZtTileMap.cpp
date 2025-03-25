@@ -59,7 +59,7 @@ namespace zt::gameplay_lib
 		}
 
 		drawInfo.shaderProgram.vertexShader.size = size;
-		drawInfo.shaderProgram.vertexShader.position = position;
+		drawInfo.shaderProgram.vertexShader.position = getAbsolutePosition();
 		drawInfo.shaderProgram.vertexShader.processVertex = sf::VertexShaderVerticesToWorldProcess;
 
 		return drawInfo;

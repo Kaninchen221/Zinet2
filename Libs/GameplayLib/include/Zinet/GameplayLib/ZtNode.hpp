@@ -24,7 +24,12 @@ namespace zt::gameplay_lib
 
 		virtual sf::DrawInfo getDrawInfo() const { return {}; }
 
+		Vector2f getAbsolutePosition() const;
+
 	protected:
+
+		ZT_REFLECT_MEMBER(ReadWrite)
+		std::weak_ptr<Node> parentNode;
 
 		ZT_REFLECT_MEMBER(ReadWrite)
 		Vector2f position{ 0, 0 };
@@ -55,6 +60,10 @@ namespace zt::gameplay_lib
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		
+		
+		const decltype(parentNode)& getParentNode() const { return parentNode; }
+		decltype(parentNode)& getParentNode() { return parentNode; }
+		void setParentNode(const decltype(parentNode)& newValue) { parentNode = newValue; }
 		
 		const decltype(position)& getPosition() const { return position; }
 		decltype(position)& getPosition() { return position; }

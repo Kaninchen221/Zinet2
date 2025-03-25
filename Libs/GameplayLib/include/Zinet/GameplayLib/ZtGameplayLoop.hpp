@@ -47,6 +47,7 @@ namespace zt::gameplay_lib
 		std::vector<std::weak_ptr<Node>> drawableNodes;
 
 		std::weak_ptr<Node> dragedNode;
+		Vector2f offset;
 		std::vector<std::weak_ptr<Node>> dragableNodes;
 
 	public:

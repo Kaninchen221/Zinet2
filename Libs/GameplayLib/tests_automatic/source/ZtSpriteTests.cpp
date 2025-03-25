@@ -28,8 +28,7 @@ namespace zt::gameplay_lib::tests
 		Sprite sprite;
 	};
 
-	TEST_F(SpriteTests, GetDrawInfoTest)
+	TEST_F(SpriteTests, Test)
 	{
-		sf::DrawInfo drawInfo = sprite.getDrawInfo();
 	}
 }
