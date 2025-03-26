@@ -80,7 +80,8 @@ namespace zt::wd
             return;
 
 		Logger->info("Terminate GLFW");
-        glfwTerminate();
+        
+		glfwTerminate();
         Initialized = false;
     }
 

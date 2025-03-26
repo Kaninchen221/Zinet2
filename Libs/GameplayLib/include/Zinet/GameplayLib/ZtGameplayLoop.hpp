@@ -3,6 +3,7 @@
 #include "Zinet/GameplayLib/ZtGameplayLibConfig.hpp"
 #include "Zinet/GameplayLib/ZtNode.hpp"
 #include "Zinet/GameplayLib/ZtCamera.hpp"
+#include "Zinet/GameplayLib/ZtSystem.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
@@ -11,6 +12,8 @@
 #include "Zinet/OpenGLRenderer/ZtOpenGLRenderer.hpp"
 
 #include "Zinet/SoftwareRenderer/ZtSoftwareRenderer.hpp"
+
+#include "Zinet/Window/ZtEvent.hpp"
 
 namespace zt::gameplay_lib
 {
@@ -28,27 +31,20 @@ namespace zt::gameplay_lib
 
 		void start();
 
-		void addTickable(const std::weak_ptr<Node>& node);
-		void addDrawable(const std::weak_ptr<Node>& node);
-		void addDragable(const std::weak_ptr<Node>& node);
+		TickableSystem tickableSystem;
+		DrawableSystem drawableSystem;
+		DragableSystem dragableSystem;
+
+		void setCurrentCamera(const std::shared_ptr<Camera>& camera) { drawableSystem.setCurrentCamera(camera); dragableSystem.setCurrentCamera(camera); }
 
 	protected:
 
 		oglr::OpenGLRenderer openGLRenderer;
-		sf::SoftwareRenderer softwareRenderer;
 
 		core::Clock loopClock;
-
-		ZT_REFLECT_MEMBER(ReadWrite)
-		std::shared_ptr<Camera> currentCamera;
-
-		// TODO: Refactor this to something like systems
-		std::vector<std::weak_ptr<Node>> tickableNodes;
-		std::vector<std::weak_ptr<Node>> drawableNodes;
-
-		std::weak_ptr<Node> dragedNode;
-		Vector2f offset;
-		std::vector<std::weak_ptr<Node>> dragableNodes;
+		
+		wd::Window window;
+		std::shared_ptr<wd::Event> event = std::make_shared<wd::Event>(window);
 
 	public:
 /*GENERATED_CODE_START*/
@@ -72,10 +68,6 @@ namespace zt::gameplay_lib
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		
-		
-		const decltype(currentCamera)& getCurrentCamera() const { return currentCamera; }
-		decltype(currentCamera)& getCurrentCamera() { return currentCamera; }
-		void setCurrentCamera(const decltype(currentCamera)& newValue) { currentCamera = newValue; }
 		
 /*GENERATED_CODE_END*/
 	};

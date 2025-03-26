@@ -125,15 +125,15 @@ namespace zt::gameplay_lib::tests
 			}
 			gameplayLoop.setCurrentCamera(camera);
 
-			gameplayLoop.addTickable(flipbook);
+			gameplayLoop.tickableSystem.addNode(flipbook);
 
-			gameplayLoop.addDrawable(tileMap);
-			gameplayLoop.addDrawable(flipbook);
-			gameplayLoop.addDrawable(sprite);
-			gameplayLoop.addDrawable(dragSprite);
+			gameplayLoop.drawableSystem.addNode(tileMap);
+			gameplayLoop.drawableSystem.addNode(flipbook);
+			gameplayLoop.drawableSystem.addNode(sprite);
+			gameplayLoop.drawableSystem.addNode(dragSprite);
 
-			gameplayLoop.addDragable(sprite);
-			gameplayLoop.addDragable(dragSprite);
+			gameplayLoop.dragableSystem.addNode(sprite);
+			gameplayLoop.dragableSystem.addNode(dragSprite);
 
 			gameplayLoop.start();
 		}

@@ -10,12 +10,7 @@ namespace zt::wd
 
     Window::~Window() noexcept
     {
-		Logger->info(std::source_location::current().function_name());
-
-        if (internalWindow != nullptr)
-        {
-            glfwDestroyWindow(internalWindow);
-        }
+		destroyWindow();
     }
 
     void Window::create(int width, int height)
@@ -113,6 +108,15 @@ namespace zt::wd
 			return;
 
 		glfwSetFramebufferSizeCallback(internalWindow, &Window::FramebufferSizeCallback);
+	}
+
+	void Window::destroyWindow()
+	{
+		if (internalWindow)
+		{
+			glfwDestroyWindow(internalWindow);
+			internalWindow = nullptr;
+		}
 	}
 
 }
