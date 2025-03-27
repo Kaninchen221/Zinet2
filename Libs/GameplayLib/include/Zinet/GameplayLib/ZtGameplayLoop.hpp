@@ -3,7 +3,10 @@
 #include "Zinet/GameplayLib/ZtGameplayLibConfig.hpp"
 #include "Zinet/GameplayLib/ZtNode.hpp"
 #include "Zinet/GameplayLib/ZtCamera.hpp"
-#include "Zinet/GameplayLib/ZtSystem.hpp"
+
+#include "Zinet/GameplayLib/Systems/ZtTickableSystem.hpp"
+#include "Zinet/GameplayLib/Systems/ZtDrawableSystem.hpp"
+#include "Zinet/GameplayLib/Systems/ZtWindowEventsSystem.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
@@ -33,9 +36,11 @@ namespace zt::gameplay_lib
 
 		TickableSystem tickableSystem;
 		DrawableSystem drawableSystem;
-		DragableSystem dragableSystem;
+		WindowEventsSystem windowEventsSystem;
 
-		void setCurrentCamera(const std::shared_ptr<Camera>& camera) { drawableSystem.setCurrentCamera(camera); dragableSystem.setCurrentCamera(camera); }
+		wd::Window window;
+
+		void setCurrentCamera(const std::shared_ptr<Camera>& camera) { drawableSystem.setCurrentCamera(camera); windowEventsSystem.setCurrentCamera(camera); }
 
 	protected:
 
@@ -43,7 +48,6 @@ namespace zt::gameplay_lib
 
 		core::Clock loopClock;
 		
-		wd::Window window;
 		std::shared_ptr<wd::Event> event = std::make_shared<wd::Event>(window);
 
 	public:

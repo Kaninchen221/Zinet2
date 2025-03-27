@@ -29,6 +29,8 @@ namespace zt::gameplay_lib::tests
 		void TearDown() override {
 		}
 
+		inline static auto Logger = core::ConsoleLogger::Create("GameplayLoopTests");
+
 		GameplayLoop gameplayLoop;
 
 		sf::RenderTarget flipbookTexture;
@@ -36,6 +38,7 @@ namespace zt::gameplay_lib::tests
 
 		sf::RenderTarget spriteTexture;
 		sf::RenderTarget dragSpriteTexture;
+		sf::RenderTarget closeIconTexture;
 
 		sf::RenderTarget tileSetTexture;
 	};
@@ -90,6 +93,19 @@ namespace zt::gameplay_lib::tests
 				sprite->setParentNode(tileMap);
 			}
 
+			auto closeIcon = std::make_shared<Sprite>();
+			{
+				const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "close_icon.png";
+				if (!closeIconTexture.loadFromFilePNG(path))
+					FAIL() << "Can't load texture from file";
+
+				closeIcon->setTexture(closeIconTexture);
+				closeIcon->setTextureRegion(RectF{ { 0.f, 0.f }, { 1.f, 1.f } });
+				closeIcon->setSize({ 16, 16 });
+				closeIcon->setPosition(Vector2f{ 300.f, 0.f });
+				closeIcon->setParentNode(dragSprite);
+			}
+
 			auto flipbook = std::make_shared<Flipbook>();
 			{
 				const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "player.png";
@@ -131,9 +147,13 @@ namespace zt::gameplay_lib::tests
 			gameplayLoop.drawableSystem.addNode(flipbook);
 			gameplayLoop.drawableSystem.addNode(sprite);
 			gameplayLoop.drawableSystem.addNode(dragSprite);
+			gameplayLoop.drawableSystem.addNode(closeIcon);
 
-			gameplayLoop.dragableSystem.addNode(sprite);
-			gameplayLoop.dragableSystem.addNode(dragSprite);
+			gameplayLoop.windowEventsSystem.addDragableNode(sprite);
+			gameplayLoop.windowEventsSystem.addDragableNode(dragSprite);
+
+			wd::Window& window = gameplayLoop.window;
+			gameplayLoop.windowEventsSystem.addClickableNode(closeIcon, [&window](const std::weak_ptr<Node>& node) { window.requestCloseWindow(); });
 
 			gameplayLoop.start();
 		}

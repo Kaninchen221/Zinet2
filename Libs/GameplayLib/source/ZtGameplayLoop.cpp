@@ -28,7 +28,7 @@ namespace zt::gameplay_lib
 		//window.create(vidMode->width, vidMode->height);
 		window.create();
 		event->bindCallbacks();
-		dragableSystem.setEvent(event);
+		windowEventsSystem.setEvent(event);
 
 		if (!openGLRenderer.init(window))
 		{
@@ -55,7 +55,7 @@ namespace zt::gameplay_lib
 			const auto deltaTimeMs = loopClock.restart().getAsMilliseconds();
 			tickableSystem.tick(deltaTimeMs);
 			drawableSystem.tick(deltaTimeMs);
-			dragableSystem.tick(deltaTimeMs);
+			windowEventsSystem.tick(deltaTimeMs);
 
 			auto currentCamera = drawableSystem.getCurrentCamera();
 			auto viewportRenderTarget = currentCamera->getViewportRenderTarget();

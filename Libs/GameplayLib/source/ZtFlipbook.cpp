@@ -25,8 +25,8 @@ namespace zt::gameplay_lib
 		const Vector2f uvMin = { currentFrame.textureRegion.offset.x, currentFrame.textureRegion.offset.y };
 		const Vector2f uvMax =
 		{ 
-			uvMin.x + currentFrame.textureRegion.size.x - Math::EpsilonF,
-			uvMin.y + currentFrame.textureRegion.size.y - Math::EpsilonF
+			uvMin.x + currentFrame.textureRegion.size.x,
+			uvMin.y + currentFrame.textureRegion.size.y
 		};
 
 		sf::DrawInfo drawInfo
