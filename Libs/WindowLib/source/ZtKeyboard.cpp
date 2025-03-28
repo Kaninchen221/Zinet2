@@ -1,6 +1,6 @@
 #include "Zinet/Window/ZtKeyboard.hpp"
 #include "Zinet/Window/ZtWindow.hpp"
-#include "Zinet/Window/ZtEvent.hpp"
+#include "Zinet/Window/ZtWindowEvents.hpp"
 
 namespace zt::wd
 {
@@ -68,8 +68,8 @@ namespace zt::wd
 	{
 		void* windowUserPointer = glfwGetWindowUserPointer(internalWindow);
 		Window* window = static_cast<Window*>(windowUserPointer);
-		Event& event = window->getEvent();
-		Keyboard& keyboard = event.getKeyboard();
+		WindowEvents& windowEvents = window->getWindowEvents();
+		Keyboard& keyboard = windowEvents.getKeyboard();
 		keyboard.pushEvent(
 			static_cast<KeyboardKey>(key), 
 			scanCode, 

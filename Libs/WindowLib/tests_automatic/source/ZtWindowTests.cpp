@@ -70,10 +70,10 @@ namespace zt::wd::tests
 	
 	TEST_F(WindowTests, GetEventTest)
 	{
-		auto testGetters = core::TestGetters<Event, Window>(&Window::getEvent, &Window::getEvent, window);
+		auto testGetters = core::TestGetters<WindowEvents, Window>(&Window::getWindowEvents, &Window::getWindowEvents, window);
 		EXPECT_TRUE(testGetters);
 
-		[[maybe_unused]] Event& event = window.getEvent();
+		[[maybe_unused]] WindowEvents& windowEvents = window.getWindowEvents();
 	}
 
 	TEST_F(WindowTests, GetWindowResizedCallback)

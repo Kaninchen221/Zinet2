@@ -1,21 +1,21 @@
-#include "Zinet/Window/ZtEvent.hpp"
+#include "Zinet/Window/ZtWindowEvents.hpp"
 
 namespace zt::wd
 {
-	void Event::bindCallbacks()
+	void WindowEvents::bindCallbacks()
 	{
 		keyboard.bindCallbacks();
 		mouse.bindCallbacks();
 	}
 
-	void Event::pollEvents()
+	void WindowEvents::pollEvents()
 	{
 		keyboard.clearEvents();
 		mouse.clearEvents();
 		glfwPollEvents();
 	}
 
-	std::string Event::asString() const
+	std::string WindowEvents::asString() const
 	{
 		return fmt::format("Window events:\n{}{}", keyboard.asString(), mouse.asString());
 	}

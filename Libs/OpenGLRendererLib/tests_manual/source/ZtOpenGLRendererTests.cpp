@@ -6,7 +6,7 @@
 
 #include "Zinet/Window/ZtGLFW.hpp"
 #include "Zinet/Window/ZtWindow.hpp"
-#include "Zinet/Window/ZtEvent.hpp"
+#include "Zinet/Window/ZtWindowEvents.hpp"
 
 #include "Zinet/SoftwareRenderer/ZtSoftwareRenderer.hpp"
 #include "Zinet/SoftwareRenderer/ZtRenderTarget.hpp"
@@ -90,11 +90,11 @@ namespace zt::opengl_renderer::tests
 		wd::GLFW::UnhideWindow();
 
 		wd::Window window;
-		wd::Event event{ window };
-		window.setEvent(&event);
+		wd::WindowEvents windowEvents{ window };
+		window.setWindowEvents(&windowEvents);
 
 		window.create();
-		event.bindCallbacks();
+		windowEvents.bindCallbacks();
 
 		if (!openGLRenderer.init(window))
 			FAIL() << "OpenGL renderer failed init";
@@ -143,7 +143,7 @@ namespace zt::opengl_renderer::tests
 			core::Clock clock;
 			clock.start();
 #endif
-			event.pollEvents();
+			windowEvents.pollEvents();
 
 			renderTarget.fill(sf::WhiteColor);
 			Logger->info("Ground 'Sprite'");

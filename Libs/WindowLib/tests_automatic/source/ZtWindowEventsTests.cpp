@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Zinet/Window/ZtEvent.hpp"
+#include "Zinet/Window/ZtWindowEvents.hpp"
 #include "Zinet/Window/ZtWindow.hpp"
 
 #include "Zinet/Core/ZtTypeTraits.hpp"
@@ -15,9 +15,9 @@ namespace zt::wd::tests
 	protected:
 
 		Window window;
-		Event event{ window };
+		WindowEvents windowEvents{ window };
 
-		static_assert(!std::is_default_constructible_v<Event>);
+		static_assert(!std::is_default_constructible_v<WindowEvents>);
 
 		void SetUp() override
 		{
@@ -32,14 +32,14 @@ namespace zt::wd::tests
 
 	TEST_F(EventTests, GetWindow)
 	{
-		const Window* actualWindow = event.getWindow();
+		const Window* actualWindow = windowEvents.getWindow();
 		EXPECT_EQ(actualWindow, &window);
 	}
 
 	TEST_F(EventTests, PollEvents)
 	{
-		auto& keyboard = event.getKeyboard();
-		auto& mouse = event.getMouse();
+		auto& keyboard = windowEvents.getKeyboard();
+		auto& mouse = windowEvents.getMouse();
 
 		keyboard.pushEvent(KeyboardKey{}, 0, KeyboardEventType{}, KeyboardMods{});
 		EXPECT_EQ(keyboard.getEvents().size(), 1);
@@ -50,7 +50,7 @@ namespace zt::wd::tests
 		mouse.pushPositionEvent(0, 0);
 		EXPECT_EQ(mouse.getPositionEvents().size(), 1);
 
-		event.pollEvents();
+		windowEvents.pollEvents();
 
 		EXPECT_EQ(keyboard.getEvents().size(), 0);
 		EXPECT_EQ(mouse.getButtonsEvents().size(), 0);
@@ -58,18 +58,18 @@ namespace zt::wd::tests
 
 	TEST_F(EventTests, GetKeyboard)
 	{
-		auto testGetters = core::TestGetters<Keyboard, Event>(&Event::getKeyboard, &Event::getKeyboard, event);
+		auto testGetters = core::TestGetters<Keyboard, WindowEvents>(&WindowEvents::getKeyboard, &WindowEvents::getKeyboard, windowEvents);
 		EXPECT_TRUE(testGetters);
 
-		[[maybe_unused]] Keyboard& keyboard = event.getKeyboard();
+		[[maybe_unused]] Keyboard& keyboard = windowEvents.getKeyboard();
 	}
 
 	TEST_F(EventTests, GetMouse)
 	{
-		auto testGetters = core::TestGetters<Mouse, Event>(&Event::getMouse, &Event::getMouse, event);
+		auto testGetters = core::TestGetters<Mouse, WindowEvents>(&WindowEvents::getMouse, &WindowEvents::getMouse, windowEvents);
 		EXPECT_TRUE(testGetters);
 
-		[[maybe_unused]] Mouse& mouse = event.getMouse();
+		[[maybe_unused]] Mouse& mouse = windowEvents.getMouse();
 	}
 
 }

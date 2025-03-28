@@ -9,21 +9,21 @@ namespace zt::wd
 	class Window;
 
 	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_DESTRUCTOR, NO_OPERATORS)
-	class ZINET_WINDOW_LAYER_API Event : public core::Object
+	class ZINET_WINDOW_LAYER_API WindowEvents : public core::Object
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("Logger");
 
 	public:
 
-		Event() = delete;
-		Event(Window& newWindow) : window{ &newWindow }, keyboard{ newWindow }, mouse{ newWindow } {}
-		Event(const Event& other) = default;
-		Event(Event&& other) = default;
+		WindowEvents() = delete;
+		WindowEvents(Window& newWindow) : window{ &newWindow }, keyboard{ newWindow }, mouse{ newWindow } {}
+		WindowEvents(const WindowEvents& other) = default;
+		WindowEvents(WindowEvents&& other) = default;
 
-		Event& operator = (const Event& other) = default;
-		Event& operator = (Event&& other) = default;
+		WindowEvents& operator = (const WindowEvents& other) = default;
+		WindowEvents& operator = (WindowEvents&& other) = default;
 
-		~Event() noexcept = default;
+		~WindowEvents() noexcept = default;
 
 		const Window* getWindow() const { return window; }
 		Window* getWindow() { return window; }

@@ -3,7 +3,7 @@
 
 #include "Zinet/Window/ZtGLFW.hpp"
 #include "Zinet/Window/ZtWindow.hpp"
-#include "Zinet/Window/ZtEvent.hpp"
+#include "Zinet/Window/ZtWindowEvents.hpp"
 
 #include <ranges>
 
@@ -13,7 +13,7 @@ namespace zt::gameplay_lib
 	{
 		wd::GLFW::Init(false);
 
-		window.setEvent(event.get());
+		window.setWindowEvents(windowEvents.get());
 
 		wd::Window::SetTransparentFramebuffer(true);
 
@@ -27,8 +27,8 @@ namespace zt::gameplay_lib
 
 		//window.create(vidMode->width, vidMode->height);
 		window.create();
-		event->bindCallbacks();
-		windowEventsSystem.setEvent(event);
+		windowEvents->bindCallbacks();
+		windowEventsSystem.setWindowEvents(windowEvents);
 
 		if (!openGLRenderer.init(window))
 		{
@@ -44,7 +44,7 @@ namespace zt::gameplay_lib
 			core::Clock clock;
 			clock.start();
 #endif
-			event->pollEvents();
+			windowEvents->pollEvents();
 
 			if (!drawableSystem.getCurrentCamera())
 			{

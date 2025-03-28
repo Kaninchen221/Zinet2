@@ -6,7 +6,8 @@
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
-#include "Zinet/Window/ZtEvent.hpp"
+
+#include "Zinet/Window/ZtWindowEvents.hpp"
 
 
 namespace zt::gameplay_lib

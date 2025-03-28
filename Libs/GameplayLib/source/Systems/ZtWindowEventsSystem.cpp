@@ -12,9 +12,9 @@ namespace zt::gameplay_lib
 
 	void WindowEventsSystem::tickDragable(float deltaTime)
 	{
-		if (!event)
+		if (!windowEvents)
 		{
-			Logger->error("Event is invalid");
+			Logger->error("WindowEvents is invalid");
 			return;
 		}
 
@@ -23,7 +23,7 @@ namespace zt::gameplay_lib
 			if (node.expired())
 				continue;
 
-			auto& mouse = event->getMouse();
+			auto& mouse = windowEvents->getMouse();
 			const auto mousePositionNorm = mouse.getMousePositionNorm();
 
 			const auto viewportSize = currentCamera->getViewportRenderTarget().getResolution();
@@ -69,13 +69,13 @@ namespace zt::gameplay_lib
 
 	void WindowEventsSystem::tickClickable(float deltaTime)
 	{
-		if (!event)
+		if (!windowEvents)
 		{
-			Logger->error("Event is invalid");
+			Logger->error("WindowEvents is invalid");
 			return;
 		}
 
-		auto& mouse = event->getMouse();
+		auto& mouse = windowEvents->getMouse();
 		const auto mousePositionNorm = mouse.getMousePositionNorm();
 
 		const auto viewportSize = currentCamera->getViewportRenderTarget().getResolution();

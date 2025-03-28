@@ -3,7 +3,7 @@
 #include "Zinet/Window/ZtMouseButtonEventType.hpp"
 #include "Zinet/Window/ZtMouseButton.hpp"
 #include "Zinet/Window/ZtMouseButtonEvent.hpp"
-#include "Zinet/Window/ZtEvent.hpp"
+#include "Zinet/Window/ZtWindowEvents.hpp"
 
 namespace zt::wd
 {
@@ -27,8 +27,8 @@ namespace zt::wd
 	{
 		void* windowUserPointer = glfwGetWindowUserPointer(glfwWindow);
 		Window* window = static_cast<Window*>(windowUserPointer);
-		Event& event = window->getEvent();
-		Mouse& mouse = event.getMouse();
+		WindowEvents& windowEvents = window->getWindowEvents();
+		Mouse& mouse = windowEvents.getMouse();
 		mouse.pushButtonEvent(button, action, mods);
 	}
 
@@ -41,8 +41,8 @@ namespace zt::wd
 	void Mouse::PositionCallback(GLFWwindow* glfwWindow, double positionX, double positionY)
 	{
 		Window* windowUserPointer = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-		Event& event = windowUserPointer->getEvent();
-		Mouse& mouse = event.getMouse();
+		WindowEvents& windowEvents = windowUserPointer->getWindowEvents();
+		Mouse& mouse = windowEvents.getMouse();
 		mouse.pushPositionEvent(positionX, positionY);
 	}
 

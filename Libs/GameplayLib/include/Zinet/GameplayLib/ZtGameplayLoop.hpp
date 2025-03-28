@@ -16,7 +16,7 @@
 
 #include "Zinet/SoftwareRenderer/ZtSoftwareRenderer.hpp"
 
-#include "Zinet/Window/ZtEvent.hpp"
+#include "Zinet/Window/ZtWindowEvents.hpp"
 
 namespace zt::gameplay_lib
 {
@@ -48,7 +48,7 @@ namespace zt::gameplay_lib
 
 		core::Clock loopClock;
 		
-		std::shared_ptr<wd::Event> event = std::make_shared<wd::Event>(window);
+		std::shared_ptr<wd::WindowEvents> windowEvents = std::make_shared<wd::WindowEvents>(window);
 
 	public:
 /*GENERATED_CODE_START*/

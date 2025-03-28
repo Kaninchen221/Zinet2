@@ -9,7 +9,7 @@
 
 namespace zt::wd
 {
-	class Event;
+	class WindowEvents;
 
 	class ZINET_WINDOW_LAYER_API Window
 	{
@@ -46,10 +46,10 @@ namespace zt::wd
 
 		static void FramebufferSizeCallback(GLFWwindow* internalWindow, int width, int height);
 
-		void setEvent(Event* newEvent) { event = newEvent; }
+		void setWindowEvents(WindowEvents* newEvent) { windowEvents = newEvent; }
 
-		const Event& getEvent() const { return *event; }
-		Event& getEvent() { return *event; }
+		const WindowEvents& getWindowEvents() const { return *windowEvents; }
+		WindowEvents& getWindowEvents() { return *windowEvents; }
 
 		bool isMinimized() const;
 
@@ -78,7 +78,7 @@ namespace zt::wd
 	protected:
 
 		GLFWwindow* internalWindow{};
-		Event* event{};
+		WindowEvents* windowEvents{};
 
 		void bindFramebufferSizeCallback();
 	};

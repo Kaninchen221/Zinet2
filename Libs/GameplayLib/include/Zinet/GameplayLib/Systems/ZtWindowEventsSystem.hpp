@@ -8,7 +8,7 @@
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
 
-#include "Zinet/Window/ZtEvent.hpp"
+#include "Zinet/Window/ZtWindowEvents.hpp"
 
 namespace zt::gameplay_lib
 {
@@ -38,7 +38,7 @@ namespace zt::gameplay_lib
 		std::shared_ptr<Camera> currentCamera;
 
 		ZT_REFLECT_MEMBER(ReadWrite)
-		std::shared_ptr<wd::Event> event;
+		std::shared_ptr<wd::WindowEvents> windowEvents;
 
 		ZT_REFLECT_MEMBER(ReadOnly)
 		std::vector<std::weak_ptr<Node>> dragableNodes;
@@ -80,9 +80,9 @@ namespace zt::gameplay_lib
 		decltype(currentCamera)& getCurrentCamera() { return currentCamera; }
 		void setCurrentCamera(const decltype(currentCamera)& newValue) { currentCamera = newValue; }
 		
-		const decltype(event)& getEvent() const { return event; }
-		decltype(event)& getEvent() { return event; }
-		void setEvent(const decltype(event)& newValue) { event = newValue; }
+		const decltype(windowEvents)& getWindowEvents() const { return windowEvents; }
+		decltype(windowEvents)& getWindowEvents() { return windowEvents; }
+		void setWindowEvents(const decltype(windowEvents)& newValue) { windowEvents = newValue; }
 		
 		const decltype(dragableNodes)& getDragableNodes() const { return dragableNodes; }
 		
