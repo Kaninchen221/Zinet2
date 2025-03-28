@@ -404,13 +404,13 @@ namespace zt::software_renderer
 
 		const double invArea = 1.f / float((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x));
 
-		for (std::int32_t py = minY; py <= maxY; py++)
+		for (std::int32_t py = minY; py < maxY; py++)
 		{
 			const std::int32_t diffP3YPY = p3.y - py;
 			const std::int32_t diffP2YPY = p2.y - py;
 			const std::int32_t diffP1YPY = p1.y - py;
 
-			for (std::int32_t px = minX; px <= maxX; px++)
+			for (std::int32_t px = minX; px < maxX; px++)
 			{
 				const double alpha = ((p2.x - px) * diffP3YPY - diffP2YPY * (p3.x - px)) * invArea;
 				const double beta = ((p3.x - px) * diffP1YPY - diffP3YPY * (p1.x - px)) * invArea;
