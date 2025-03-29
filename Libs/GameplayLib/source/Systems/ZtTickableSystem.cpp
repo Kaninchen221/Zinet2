@@ -6,7 +6,7 @@ namespace zt::gameplay_lib
 {
 	void TickableSystem::tick(float deltaTime)
 	{
-		for (const auto& node : nodes)
+		for (const auto& node : nodes | std::views::reverse)
 		{
 			if (node.expired())
 				continue;

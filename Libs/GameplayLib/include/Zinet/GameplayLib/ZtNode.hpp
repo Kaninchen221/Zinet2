@@ -29,6 +29,9 @@ namespace zt::gameplay_lib
 	protected:
 
 		ZT_REFLECT_MEMBER(ReadWrite)
+		bool useAbsolutePosition = true;
+
+		ZT_REFLECT_MEMBER(ReadWrite)
 		std::weak_ptr<Node> parentNode;
 
 		ZT_REFLECT_MEMBER(ReadWrite)
@@ -60,6 +63,10 @@ namespace zt::gameplay_lib
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		
+		
+		const decltype(useAbsolutePosition)& getUseAbsolutePosition() const { return useAbsolutePosition; }
+		decltype(useAbsolutePosition)& getUseAbsolutePosition() { return useAbsolutePosition; }
+		void setUseAbsolutePosition(const decltype(useAbsolutePosition)& newValue) { useAbsolutePosition = newValue; }
 		
 		const decltype(parentNode)& getParentNode() const { return parentNode; }
 		decltype(parentNode)& getParentNode() { return parentNode; }

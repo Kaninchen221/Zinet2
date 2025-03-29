@@ -39,7 +39,7 @@ namespace zt::gameplay_lib
 
 				bool isHoveredByMouse = false;
 				{
-					const auto nodePos = asShared->getAbsolutePosition();
+					const auto nodePos = asShared->getUseAbsolutePosition() ? asShared->getAbsolutePosition() : asShared->getPosition();
 					const auto nodeMin = nodePos;
 					const auto nodeMax = nodePos + asShared->getSize();
 					// TODO: Refactor this to AABB func
@@ -99,7 +99,7 @@ namespace zt::gameplay_lib
 			auto asShared = node.lock();
 			bool isHoveredByMouse = false;
 			{
-				const auto nodePos = asShared->getAbsolutePosition();
+				const auto nodePos = asShared->getUseAbsolutePosition() ? asShared->getAbsolutePosition() : asShared->getPosition();
 				const auto nodeMin = nodePos;
 				const auto nodeMax = nodePos + asShared->getSize();
 				// TODO: Refactor this to AABB func

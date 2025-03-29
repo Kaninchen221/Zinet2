@@ -42,7 +42,7 @@ namespace zt::gameplay_lib
 		};
 
 		drawInfo.shaderProgram.vertexShader.size = size;
-		drawInfo.shaderProgram.vertexShader.position = getAbsolutePosition();
+		drawInfo.shaderProgram.vertexShader.position = useAbsolutePosition ? getAbsolutePosition() : position;
 		drawInfo.shaderProgram.vertexShader.processVertex = sf::VertexShaderVerticesToWorldProcess;
 
 		drawInfo.shaderProgram.fragmentShader.textures.push_back(currentFrame.texture);

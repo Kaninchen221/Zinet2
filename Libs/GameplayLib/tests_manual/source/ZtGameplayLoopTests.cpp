@@ -4,6 +4,7 @@
 #include "Zinet/GameplayLib/ZtFlipbook.hpp"
 #include "Zinet/GameplayLib/ZtSprite.hpp"
 #include "Zinet/GameplayLib/ZtTileMap.hpp"
+#include "Zinet/GameplayLib/ZtHorizontalSlidingWorld.hpp"
 
 #include <gtest/gtest.h>
 
@@ -39,7 +40,6 @@ namespace zt::gameplay_lib::tests
 		sf::RenderTarget spriteTexture;
 		sf::RenderTarget dragSpriteTexture;
 		sf::RenderTarget closeIconTexture;
-
 		sf::RenderTarget tileSetTexture;
 	};
 
@@ -47,6 +47,13 @@ namespace zt::gameplay_lib::tests
 	{
 		try
 		{
+			auto camera = std::make_shared<Camera>();
+			{
+				camera->create();
+				camera->setPosition({ 0, 0 });
+			}
+			gameplayLoop.setCurrentCamera(camera);
+
 			auto dragSprite = std::make_shared<Sprite>();
 			{
 				const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "drag_icon.png";
@@ -59,38 +66,12 @@ namespace zt::gameplay_lib::tests
 				dragSprite->setPosition(dragSprite->getSize() / -2.f - Vector2f{ 200.f, 200.f });
 			}
 
-			auto tileMap = std::make_shared<TileMap>();
+			auto horizontalSlidingWorld = std::make_shared<HorizontalSlidingWorld>();
 			{
-				const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "tile_set.png";
-				if (!tileSetTexture.loadFromFilePNG(path))
-					FAIL() << "Can't load texture from file";
-
-				tileMap->setTexture(tileSetTexture);
-				tileMap->setTileSizeInTexture(Vector2ui{ 16u, 16u });
-				tileMap->setTilesCount(Vector2ui{ 3u, 3u });
-				tileMap->setTiles(
-					{
-						{ 0, 0 }, { 1, 0 }, { 2, 0 },
-						{ 0, 1 }, { 1, 1 }, { 2, 1 },
-						{ 0, 2 }, { 1, 2 }, { 2, 2 }
-					});
-
-				tileMap->setSize({ 128, 128 });
-				tileMap->setPosition(tileMap->getSize() / 2.f); // Center it, the pivot is in the upper left corner
-				tileMap->setParentNode(dragSprite);
-			}
-
-			auto sprite = std::make_shared<Sprite>();
-			{
-				const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "cloud.png";
-				if (!spriteTexture.loadFromFilePNG(path))
-					FAIL() << "Can't load texture from file";
-
-				sprite->setTexture(spriteTexture);
-				sprite->setTextureRegion(RectF{ { 0.f, 0.f }, { 1.f, 1.f } });
-				sprite->setSize({ 48, 48 });
-				sprite->setPosition(tileMap->getSize() / 2.f - sprite->getSize() / 2.f + Vector2f{ 0.f, -100.f });
-				sprite->setParentNode(tileMap);
+				horizontalSlidingWorld->init(core::Paths::CurrentProjectRootPath() / "test_files", horizontalSlidingWorld);
+				horizontalSlidingWorld->setParentNode(dragSprite);
+				horizontalSlidingWorld->setPosition(Vector2f{ -48.f, 100.f });
+				horizontalSlidingWorld->setDeadEndX(camera->getSize().x / -2.f - horizontalSlidingWorld->getSliceSize().x);
 			}
 
 			auto closeIcon = std::make_shared<Sprite>();
@@ -130,24 +111,37 @@ namespace zt::gameplay_lib::tests
 				flipbook->addFrame(frame1);
 				flipbook->addFrame(frame0);
 				flipbook->setSize({ 32, 32 });
-				flipbook->setPosition(tileMap->getSize() / 2.f - flipbook->getSize() / 2.f); // Center it, the pivot is in the upper left corner
-				flipbook->setParentNode(tileMap);
+				flipbook->setParentNode(horizontalSlidingWorld);
+				flipbook->setPosition(Vector2f{ -flipbook->getSize().x, -60.f });
+				flipbook->setUseAbsolutePosition(false);
 			}
 
-			auto camera = std::make_shared<Camera>();
+			auto sprite = std::make_shared<Sprite>();
 			{
-				camera->create();
-				//camera->setPosition({ -100, -100 });
-			}
-			gameplayLoop.setCurrentCamera(camera);
+				const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "cloud.png";
+				if (!spriteTexture.loadFromFilePNG(path))
+					FAIL() << "Can't load texture from file";
 
+				sprite->setTexture(spriteTexture);
+				sprite->setTextureRegion(RectF{ { 0.f, 0.f }, { 1.f, 1.f } });
+				sprite->setSize({ 48, 48 });
+				sprite->setPosition(flipbook->getPosition() - Vector2f{ 0.f, 100.f });
+				sprite->setUseAbsolutePosition(false);
+				sprite->setParentNode(flipbook);
+			}
+			
 			gameplayLoop.tickableSystem.addNode(flipbook);
 
-			gameplayLoop.drawableSystem.addNode(tileMap);
-			gameplayLoop.drawableSystem.addNode(flipbook);
 			gameplayLoop.drawableSystem.addNode(sprite);
 			gameplayLoop.drawableSystem.addNode(dragSprite);
 			gameplayLoop.drawableSystem.addNode(closeIcon);
+			gameplayLoop.drawableSystem.addNode(flipbook);
+
+			gameplayLoop.tickableSystem.addNode(horizontalSlidingWorld);
+			for (const auto& drawableNode : horizontalSlidingWorld->getGroundSlicesNodes())
+			{
+				gameplayLoop.drawableSystem.addNode(drawableNode);
+			}
 
 			gameplayLoop.windowEventsSystem.addDragableNode(sprite);
 			gameplayLoop.windowEventsSystem.addDragableNode(dragSprite);

@@ -9,7 +9,7 @@ namespace zt::gameplay_lib
 		auto& viewportRenderTarget = currentCamera->getViewportRenderTarget();
 		viewportRenderTarget.fill(sf::ZeroColor);
 
-		for (const auto& node : nodes)
+		for (const auto& node : nodes | std::views::reverse)
 		{
 			if (node.expired())
 				continue;

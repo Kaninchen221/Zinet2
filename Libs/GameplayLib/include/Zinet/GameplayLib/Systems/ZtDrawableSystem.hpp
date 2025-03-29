@@ -10,6 +10,8 @@
 
 namespace zt::gameplay_lib
 {
+	// TODO: Optimize sf::DrawInfo
+	// Draw info should be stored in objects that want to be draw and they should decide if they need update
 	ZT_REFLECT_CLASS()
 	class ZINET_GAMEPLAY_LIB_API DrawableSystem : public System
 	{

@@ -29,10 +29,13 @@ namespace zt::gameplay_lib
 	protected:
 
 		inline static auto Logger = core::ConsoleLogger::Create("GameplayLoop");
+		inline static std::shared_ptr<GameplayLoop> ActiveGameplayLoop;
 
 	public:
 
 		void start();
+
+		static auto& Get() { return ActiveGameplayLoop; }
 
 		TickableSystem tickableSystem;
 		DrawableSystem drawableSystem;

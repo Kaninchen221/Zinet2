@@ -11,6 +11,8 @@ namespace zt::gameplay_lib
 {
 	void GameplayLoop::start()
 	{
+		ActiveGameplayLoop = std::shared_ptr<GameplayLoop>(this, [](auto*) {});
+
 		wd::GLFW::Init(false);
 
 		window.setWindowEvents(windowEvents.get());

@@ -28,6 +28,8 @@ namespace zt::gameplay_lib
 		void setLookAt(const Vector2f& lookAtPosition) { position = lookAtPosition; }
 		const Vector2f& getLookAt() const { return position; }
 
+		Vector2f getSize() const { return viewportRenderTarget.getResolution(); }
+
 	protected:
 
 		ZT_REFLECT_MEMBER(ReadWrite)
