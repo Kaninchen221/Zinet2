@@ -35,7 +35,7 @@ namespace zt::opengl_renderer::tests
 
 		void SetUp() override
 		{
-			renderTarget.createEmpty({ 1920, 1080 }, sf::ColorFormat::R8G8B8A8_SRGB);
+			renderTarget.create({ 1920, 1080 }, sf::ColorFormat::R8G8B8A8_SRGB);
 		}
 
 		void TearDown() override

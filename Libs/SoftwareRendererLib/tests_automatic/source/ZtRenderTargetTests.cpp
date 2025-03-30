@@ -42,7 +42,7 @@ namespace zt::software_renderer::tests
 		// Create render target (It contains random data from memory)
 		const Vector2i expectedResolution = { 8, 12 };
 		const ColorFormat expectedColorFormat = ColorFormat::R8G8B8A8_SRGB;
-		const bool renderTargetCreateResult = renderTarget.createEmpty(expectedResolution, expectedColorFormat);
+		const bool renderTargetCreateResult = renderTarget.create(expectedResolution, expectedColorFormat);
 
 		// Test properties
 		ASSERT_TRUE(renderTargetCreateResult);
@@ -96,7 +96,7 @@ namespace zt::software_renderer::tests
 	{
 		const Vector2i expectedResolution = { 4, 3 };
 		const ColorFormat expectedColorFormat = ColorFormat::R8G8B8A8_SRGB;
-		const bool renderTargetCreateResult = renderTarget.createEmpty(expectedResolution, expectedColorFormat);
+		const bool renderTargetCreateResult = renderTarget.create(expectedResolution, expectedColorFormat);
 		renderTarget.fill(WhiteColor);
 		ASSERT_TRUE(renderTargetCreateResult);
 
@@ -111,7 +111,7 @@ namespace zt::software_renderer::tests
 	{
 		const Vector2i expectedResolution = { 4, 3 };
 		const ColorFormat expectedColorFormat = ColorFormat::R8G8B8A8_SRGB;
-		const bool renderTargetCreateResult = renderTarget.createEmpty(expectedResolution, expectedColorFormat);
+		const bool renderTargetCreateResult = renderTarget.create(expectedResolution, expectedColorFormat);
 		renderTarget.fill(WhiteColor);
 		ASSERT_TRUE(renderTargetCreateResult);
 

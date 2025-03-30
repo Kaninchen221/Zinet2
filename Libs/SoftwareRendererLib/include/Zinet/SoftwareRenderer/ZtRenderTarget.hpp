@@ -36,8 +36,8 @@ namespace zt::software_renderer
 		
 		RenderTarget copy() const;
 
-		// TODO: Change name to "create"
-		bool createEmpty(const Vector2i& newSize, const ColorFormat newColorFormat);
+		// Will be filled with random data
+		bool create(const Vector2i& newSize, const ColorFormat newColorFormat);
 
 		bool fill(const Color& color);
 

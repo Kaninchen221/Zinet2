@@ -92,7 +92,7 @@ namespace zt::software_renderer::tests
 		void createRenderTarget(RenderTarget& renderTarget, Color fillColor = WhiteColor, Vector2i size = Vector2i{ 512, 512 })
 		{
 			const ColorFormat colorFormat = ColorFormat::R8G8B8A8_SRGB;
-			bool renderTargetCreateResult = renderTarget.createEmpty(size, colorFormat);
+			bool renderTargetCreateResult = renderTarget.create(size, colorFormat);
 			ASSERT_TRUE(renderTargetCreateResult);
 			renderTarget.fill(fillColor);
 		}

@@ -22,14 +22,14 @@ namespace zt::software_renderer
 	RenderTarget RenderTarget::copy() const
 	{
 		RenderTarget result;
-		result.createEmpty(resolution, colorFormat);
+		result.create(resolution, colorFormat);
 
 		std::memcpy(result.buffer.get(), buffer.get(), getBytes());
 
 		return *this;
 	}
 
-	bool RenderTarget::createEmpty(const Vector2i& newResolution, const ColorFormat newColorFormat)
+	bool RenderTarget::create(const Vector2i& newResolution, const ColorFormat newColorFormat)
 	{
 #if ZINET_TIME_TRACE
 		core::Clock clock;
