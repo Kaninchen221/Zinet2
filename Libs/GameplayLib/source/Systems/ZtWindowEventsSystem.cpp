@@ -75,6 +75,9 @@ namespace zt::gameplay_lib
 			return;
 		}
 
+		if (!dragedNode.expired())
+			return;
+
 		auto& mouse = windowEvents->getMouse();
 		const auto mousePositionNorm = mouse.getMousePositionNorm();
 

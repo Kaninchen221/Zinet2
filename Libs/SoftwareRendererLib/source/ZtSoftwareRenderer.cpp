@@ -81,6 +81,7 @@ namespace zt::software_renderer
 			// ?
 
 			drawInfo.isDirty = false;
+			drawInfo.cachedPixels.shrink_to_fit();
 		}
 
 		writePixels(drawInfo, drawInfo.cachedPixels, renderTarget);
