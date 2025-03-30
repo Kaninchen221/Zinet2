@@ -53,4 +53,16 @@ namespace zt::math::tests
 		vec3d = Math::FromArrayToVector(array3d);
 		compareValues(vec3d, array3d);
 	}
+
+	TEST_F(MathTests, AABBTest)
+	{
+		RectF rect
+		{
+			.offset = { 100.f, 100.f },
+			.size = { 200.f, 200.f }
+		};
+		Vector2f position = { 150.f, 200.f };
+		bool result = Math::IsInsideRect(rect, position);
+		ASSERT_TRUE(result);
+	}
 }

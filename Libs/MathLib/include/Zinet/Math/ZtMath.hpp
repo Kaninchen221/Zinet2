@@ -59,6 +59,8 @@ namespace zt
 
 		static float Distance(const Vector2f& vector1, const Vector2f& vector2);
 
+		static bool IsInsideRect(const RectF& rect, const Vector2f& position);
+
 		void INeedGeneratedLib() const;
 	};
 
@@ -71,5 +73,13 @@ namespace zt
 	inline float Math::Distance(const Vector2f& vector1, const Vector2f& vector2)
 	{
 		return static_cast<float>(std::sqrt(std::pow(vector2.x - vector1.x, 2) + std::pow(vector2.y - vector1.y, 2)));
+	}
+
+	inline bool Math::IsInsideRect(const RectF& rect, const Vector2f& position)
+	{
+		const auto& min = rect.offset;
+		const auto max = min + rect.size;
+
+		return position.x > min.x && position.x < max.x && position.y > min.y && position.y < max.y;
 	}
 }

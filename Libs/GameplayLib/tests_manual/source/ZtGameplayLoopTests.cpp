@@ -50,7 +50,7 @@ namespace zt::gameplay_lib::tests
 			auto camera = std::make_shared<Camera>();
 			{
 				camera->create();
-				camera->setPosition({ 0, 0 });
+				camera->setLookAt({ 0, 0 });
 			}
 			gameplayLoop.setCurrentCamera(camera);
 

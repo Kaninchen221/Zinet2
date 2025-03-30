@@ -39,4 +39,15 @@ namespace zt::gameplay_lib::tests
 		auto& position = camera.getPosition();
 		EXPECT_EQ(lookAtExpected, position);
 	}
+
+	TEST_F(CameraTests, MousePositionToWorldTest)
+	{
+		camera.create({ 512, 512 });
+		camera.setLookAt({ 100.f, 200.f });
+		const auto mousePositionNorm = Vector2f{ .5f, .5f };
+
+		const Vector2f mousePositionWorld = camera.mousePositionNormToWorld(mousePositionNorm);
+		const Vector2f expected = { 100.f, 200.f };
+		ASSERT_EQ(mousePositionWorld, expected);
+	}
 }

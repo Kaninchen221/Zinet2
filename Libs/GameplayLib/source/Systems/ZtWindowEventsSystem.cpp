@@ -1,5 +1,7 @@
 #include "Zinet/GameplayLib/Systems/ZtWindowEventsSystem.hpp"
 
+#include "Zinet/Math/ZtMath.hpp"
+
 #include <ranges>
 
 namespace zt::gameplay_lib
@@ -26,11 +28,7 @@ namespace zt::gameplay_lib
 			auto& mouse = windowEvents->getMouse();
 			const auto mousePositionNorm = mouse.getMousePositionNorm();
 
-			const auto viewportSize = currentCamera->getViewportRenderTarget().getResolution();
-			const auto lookAt = currentCamera->getLookAt();
-
-			// TODO: Refactor this and put it into Camera class
-			const Vector2f mousePosInWorld = { (mousePositionNorm.x * viewportSize.x) - (viewportSize.x / 2.f) + lookAt.x, (mousePositionNorm.y * viewportSize.y) - (viewportSize.y / 2.f) + lookAt.y };
+			const Vector2f mousePosInWorld = currentCamera->mousePositionNormToWorld(mousePositionNorm);
 
 			const bool isPressed = mouse.isPressed(wd::MouseButton::LEFT);
 			if (isPressed)
@@ -40,11 +38,7 @@ namespace zt::gameplay_lib
 				bool isHoveredByMouse = false;
 				{
 					const auto nodePos = asShared->getUseAbsolutePosition() ? asShared->getAbsolutePosition() : asShared->getPosition();
-					const auto nodeMin = nodePos;
-					const auto nodeMax = nodePos + asShared->getSize();
-					// TODO: Refactor this to AABB func
-					if (mousePosInWorld.x > nodeMin.x && mousePosInWorld.x < nodeMax.x && mousePosInWorld.y > nodeMin.y && mousePosInWorld.y < nodeMax.y)
-						isHoveredByMouse = true;
+					isHoveredByMouse = Math::IsInsideRect({ nodePos, asShared->getSize() }, mousePosInWorld);
 				}
 
 				if (dragedNode.expired() && isHoveredByMouse)
@@ -81,11 +75,7 @@ namespace zt::gameplay_lib
 		auto& mouse = windowEvents->getMouse();
 		const auto mousePositionNorm = mouse.getMousePositionNorm();
 
-		const auto viewportSize = currentCamera->getViewportRenderTarget().getResolution();
-		const auto lookAt = currentCamera->getLookAt();
-
-		// TODO: Refactor this and put it into Camera class
-		const Vector2f mousePosInWorld = { (mousePositionNorm.x * viewportSize.x) - (viewportSize.x / 2.f) + lookAt.x, (mousePositionNorm.y * viewportSize.y) - (viewportSize.y / 2.f) + lookAt.y };
+		const Vector2f mousePosInWorld = currentCamera->mousePositionNormToWorld(mousePositionNorm);
 
 		const bool isPressed = mouse.isPressed(wd::MouseButton::LEFT);
 		if (!isPressed)
@@ -103,11 +93,7 @@ namespace zt::gameplay_lib
 			bool isHoveredByMouse = false;
 			{
 				const auto nodePos = asShared->getUseAbsolutePosition() ? asShared->getAbsolutePosition() : asShared->getPosition();
-				const auto nodeMin = nodePos;
-				const auto nodeMax = nodePos + asShared->getSize();
-				// TODO: Refactor this to AABB func
-				if (mousePosInWorld.x > nodeMin.x && mousePosInWorld.x < nodeMax.x && mousePosInWorld.y > nodeMin.y && mousePosInWorld.y < nodeMax.y)
-					isHoveredByMouse = true;
+				isHoveredByMouse = Math::IsInsideRect({ nodePos, asShared->getSize() }, mousePosInWorld);
 			}
 
 			if (isHoveredByMouse)

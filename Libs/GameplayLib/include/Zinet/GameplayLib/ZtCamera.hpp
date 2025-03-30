@@ -30,6 +30,8 @@ namespace zt::gameplay_lib
 
 		Vector2f getSize() const { return viewportRenderTarget.getResolution(); }
 
+		Vector2f mousePositionNormToWorld(const Vector2f& mousePositionNorm) const;
+
 	protected:
 
 		ZT_REFLECT_MEMBER(ReadWrite)
