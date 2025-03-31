@@ -111,9 +111,8 @@ namespace zt::gameplay_lib::tests
 				flipbook->addFrame(frame1);
 				flipbook->addFrame(frame0);
 				flipbook->setSize({ 32, 32 });
-				flipbook->setParentNode(horizontalSlidingWorld);
-				flipbook->setPosition(Vector2f{ -flipbook->getSize().x, -60.f });
-				flipbook->setUseAbsolutePosition(false);
+				flipbook->setParentNode(dragSprite);
+				flipbook->setPosition(Vector2f{ 150.f, 150.f });
 			}
 
 			auto sprite = std::make_shared<Sprite>();
@@ -125,8 +124,7 @@ namespace zt::gameplay_lib::tests
 				sprite->setTexture(spriteTexture);
 				sprite->setTextureRegion(RectF{ { 0.f, 0.f }, { 1.f, 1.f } });
 				sprite->setSize({ 48, 48 });
-				sprite->setPosition(flipbook->getPosition() - Vector2f{ 0.f, 100.f });
-				sprite->setUseAbsolutePosition(false);
+				sprite->setPosition(-Vector2f{ 0.f, 100.f });
 				sprite->setParentNode(flipbook);
 			}
 			

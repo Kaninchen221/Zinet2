@@ -401,8 +401,6 @@ namespace zt::software_renderer
 		const std::int32_t minY = std::min({ p1.y, p2.y, p3.y });
 		const std::int32_t maxY = std::max({ p1.y, p2.y, p3.y });
 
-		result.reserve(result.size() + std::abs(maxX) * std::abs(maxY));
-
 		const double invArea = 1.f / float((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x));
 
 		for (std::int32_t py = minY; py < maxY; py++)

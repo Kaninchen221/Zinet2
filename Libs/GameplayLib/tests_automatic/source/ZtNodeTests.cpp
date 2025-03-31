@@ -34,6 +34,7 @@ namespace zt::gameplay_lib::tests
 	{
 		node.tick(1.f);
 		sf::DrawInfo drawInfo = node.getDrawInfo();
+		ASSERT_TRUE(node.isDrawInfoDirty());
 	}
 
 	TEST_F(NodeTests, GetAbsolutePositionTest)

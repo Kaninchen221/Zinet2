@@ -37,7 +37,7 @@ namespace zt::gameplay_lib
 
 				bool isHoveredByMouse = false;
 				{
-					const auto nodePos = asShared->getUseAbsolutePosition() ? asShared->getAbsolutePosition() : asShared->getPosition();
+					const auto nodePos = asShared->getAbsolutePosition();
 					isHoveredByMouse = Math::IsInsideRect({ nodePos, asShared->getSize() }, mousePosInWorld);
 				}
 
@@ -92,7 +92,7 @@ namespace zt::gameplay_lib
 			auto asShared = node.lock();
 			bool isHoveredByMouse = false;
 			{
-				const auto nodePos = asShared->getUseAbsolutePosition() ? asShared->getAbsolutePosition() : asShared->getPosition();
+				const auto nodePos = asShared->getAbsolutePosition();
 				isHoveredByMouse = Math::IsInsideRect({ nodePos, asShared->getSize() }, mousePosInWorld);
 			}
 

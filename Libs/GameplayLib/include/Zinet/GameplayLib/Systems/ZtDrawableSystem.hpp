@@ -23,7 +23,7 @@ namespace zt::gameplay_lib
 
 		void tick(float deltaTime) override;
 
-		void addNode(const std::weak_ptr<Node>& node) { nodes.push_back(node); }
+		void addNode(const std::weak_ptr<Node>& node);
 
 	protected:
 
@@ -32,6 +32,9 @@ namespace zt::gameplay_lib
 
 		ZT_REFLECT_MEMBER(ReadOnly)
 		std::vector<std::weak_ptr<Node>> nodes;
+
+		ZT_REFLECT_MEMBER(ReadOnly)
+		std::vector<sf::DrawInfo> nodesDrawInfos;
 
 		sf::SoftwareRenderer softwareRenderer;
 

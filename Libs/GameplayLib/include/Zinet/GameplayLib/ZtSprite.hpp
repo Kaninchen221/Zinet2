@@ -25,6 +25,8 @@ namespace zt::gameplay_lib
 
 		sf::DrawInfo getDrawInfo() const override;
 
+		bool isDrawInfoDirty() const override { return true; }
+
 	protected:
 
 		ZT_REFLECT_MEMBER(ReadWrite)

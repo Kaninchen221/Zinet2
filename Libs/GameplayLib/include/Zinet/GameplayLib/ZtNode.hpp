@@ -22,14 +22,13 @@ namespace zt::gameplay_lib
 
 		virtual void tick(float deltaTime /*ms*/) {}
 
+		virtual bool isDrawInfoDirty() const { return true; }
+
 		virtual sf::DrawInfo getDrawInfo() const { return {}; }
 
 		Vector2f getAbsolutePosition() const;
 
 	protected:
-
-		ZT_REFLECT_MEMBER(ReadWrite)
-		bool useAbsolutePosition = true;
 
 		ZT_REFLECT_MEMBER(ReadWrite)
 		std::weak_ptr<Node> parentNode;
@@ -62,11 +61,6 @@ namespace zt::gameplay_lib
 			std::string_view getClassName() const override { return "Node"; }
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
-		
-		
-		const decltype(useAbsolutePosition)& getUseAbsolutePosition() const { return useAbsolutePosition; }
-		decltype(useAbsolutePosition)& getUseAbsolutePosition() { return useAbsolutePosition; }
-		void setUseAbsolutePosition(const decltype(useAbsolutePosition)& newValue) { useAbsolutePosition = newValue; }
 		
 		const decltype(parentNode)& getParentNode() const { return parentNode; }
 		decltype(parentNode)& getParentNode() { return parentNode; }
