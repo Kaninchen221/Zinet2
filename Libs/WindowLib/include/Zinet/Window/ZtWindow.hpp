@@ -73,6 +73,8 @@ namespace zt::wd
 		void setSize(const Vector2i& size);
 		Vector2i getSize() const;
 
+		void setTitle(const std::string& title);
+
 		void destroyWindow();
 
 	protected:

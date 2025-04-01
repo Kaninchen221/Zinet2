@@ -110,6 +110,11 @@ namespace zt::wd
 		glfwSetFramebufferSizeCallback(internalWindow, &Window::FramebufferSizeCallback);
 	}
 
+	void Window::setTitle(const std::string& title)
+	{
+		glfwSetWindowTitle(internalWindow, title.c_str());
+	}
+
 	void Window::destroyWindow()
 	{
 		if (internalWindow)
