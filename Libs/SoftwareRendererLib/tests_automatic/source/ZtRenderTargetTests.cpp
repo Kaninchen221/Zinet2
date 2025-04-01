@@ -129,4 +129,28 @@ namespace zt::software_renderer::tests
 		const bool saveToPNGResult = renderTargetCopy.saveToFilePNG(path);
 		ASSERT_TRUE(saveToPNGResult);
 	}
+
+	TEST_F(RenderTargetTests, CreateCopyFromPartTest)
+	{
+		renderTarget.create({ 4, 4 }, ColorFormat::R8G8B8A8_SRGB);
+		renderTarget.fill(ZeroColor);
+		renderTarget.writePixel(Pixel{ { 1, 1 }, GreenColor });
+		renderTarget.writePixel(Pixel{ { 2, 1 }, RedColor });
+		renderTarget.writePixel(Pixel{ { 1, 2 }, RedColor });
+		renderTarget.writePixel(Pixel{ { 2, 2 }, GreenColor });
+	
+		Vector2i position = { 1, 1 };
+		Vector2i size = { 2, 2 };
+		const RenderTarget copiedPart = renderTarget.createCopyFromPart(position, size);
+
+		const std::filesystem::path path = core::Paths::CurrentProjectRootPath() / "test_files" / "create_copy_from_part_test.png";
+		const bool saveToPNGResult = copiedPart.saveToFilePNG(path);
+		ASSERT_TRUE(saveToPNGResult);
+
+		ASSERT_EQ(copiedPart.getResolution(), size);
+		ASSERT_EQ(copiedPart.getPixelColor({ 0, 0 }), GreenColor);
+		ASSERT_EQ(copiedPart.getPixelColor({ 1, 0 }), RedColor);
+		ASSERT_EQ(copiedPart.getPixelColor({ 0, 1 }), RedColor);
+		ASSERT_EQ(copiedPart.getPixelColor({ 1, 1 }), GreenColor);
+	}
 }

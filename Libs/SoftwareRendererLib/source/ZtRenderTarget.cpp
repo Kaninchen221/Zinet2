@@ -69,6 +69,33 @@ namespace zt::software_renderer
 		return true;
 	}
 
+	RenderTarget RenderTarget::createCopyFromPart(const Vector2<std::int16_t>& position, const Vector2<std::int16_t>& size) const
+	{
+		if (position.x < 0 || position.y < 0 || size.x <= 0 || size.y <= 0)
+			return {};
+
+		if (position.x + size.x > resolution.x || position.y + size.y > resolution.y)
+			return {};
+
+		RenderTarget result;
+		result.create(size, colorFormat);
+
+		Vector2i sourcePixelCoords;
+		Vector2i destinyPixelCoords = { 0, 0 };
+		for (sourcePixelCoords.y = position.y; sourcePixelCoords.y < position.y + size.y; ++sourcePixelCoords.y)
+		{
+			for (sourcePixelCoords.x = position.x; sourcePixelCoords.x < position.x + size.x; ++sourcePixelCoords.x)
+			{
+				result.writePixelColor(result.pixelCoordsToPixelIndex(destinyPixelCoords), getPixelColor(sourcePixelCoords));
+				++destinyPixelCoords.x;
+			}
+			++destinyPixelCoords.y;
+			destinyPixelCoords.x = 0;
+		}
+
+		return result;
+	}
+
 	bool RenderTarget::fill(const Color& color)
 	{
 #if ZINET_TIME_TRACE

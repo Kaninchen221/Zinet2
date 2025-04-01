@@ -39,6 +39,8 @@ namespace zt::software_renderer
 		// Will be filled with random data
 		bool create(const Vector2i& newSize, const ColorFormat newColorFormat);
 
+		RenderTarget createCopyFromPart(const Vector2<std::int16_t>& position, const Vector2<std::int16_t>& size) const;
+
 		bool fill(const Color& color);
 
 		Color getPixelColor(std::int32_t index) const;
