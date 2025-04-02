@@ -40,6 +40,7 @@ namespace zt::gameplay_lib
 
 		openGLRenderer.preRender();
 		loopClock.start();
+		fpsCounterClock.start();
 		while (!window.shouldBeClosed())
 		{
 #if ZINET_TIME_TRACE
@@ -65,6 +66,16 @@ namespace zt::gameplay_lib
 			openGLRenderer.render();
 
 			window.swapBuffers();
+
+			++fpsCounter;
+			if (fpsCounterClock.getElapsedTime().getAsSeconds() >= 1.f)
+			{
+				fpsCounterClock.restart();
+				windowTitle = fmt::format("Zinet FPS: {}", fpsCounter);
+				window.setTitle(windowTitle);
+				fpsCounter = 0u;
+			}
+
 #if ZINET_TIME_TRACE
 			const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
 			Logger->info("Frame took: {} milliseconds", elapsedTime);

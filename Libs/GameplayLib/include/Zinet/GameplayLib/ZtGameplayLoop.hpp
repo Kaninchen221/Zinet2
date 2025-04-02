@@ -53,6 +53,10 @@ namespace zt::gameplay_lib
 		
 		std::shared_ptr<wd::WindowEvents> windowEvents = std::make_shared<wd::WindowEvents>(window);
 
+		core::Clock fpsCounterClock;
+		std::uint32_t fpsCounter = 0u;
+		std::string windowTitle;
+
 	public:
 /*GENERATED_CODE_START*/
 		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
