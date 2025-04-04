@@ -24,7 +24,8 @@ namespace zt::wd
             return;
         }
 
-        glfwMakeContextCurrent(internalWindow);
+		// OpenGL only
+        //glfwMakeContextCurrent(internalWindow);
 
         glfwSetWindowUserPointer(internalWindow, this);
 

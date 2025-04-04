@@ -48,14 +48,9 @@ namespace zt::wd
 
             glfwSetErrorCallback(GLFW::ErrorCallback);
 
-
-#ifdef ZINET_USE_OPENGL
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#else
-	        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Don't create OpenGL context
-#endif // ZINET_USE_OPENGL
+			// Vulkan window hints
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+			glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
             glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
