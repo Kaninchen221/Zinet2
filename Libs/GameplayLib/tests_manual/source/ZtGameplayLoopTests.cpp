@@ -70,7 +70,7 @@ namespace zt::gameplay_lib::tests
 			{
 				horizontalSlidingWorld->init(core::Paths::CurrentProjectRootPath() / "test_files", horizontalSlidingWorld);
 				horizontalSlidingWorld->setParentNode(dragSprite);
-				horizontalSlidingWorld->setPosition(Vector2f{ -48.f, 100.f });
+				horizontalSlidingWorld->setPosition(Vector2f{ -50.f, 100.f });
 				horizontalSlidingWorld->setDeadEndX(camera->getSize().x / -2.f - horizontalSlidingWorld->getSliceSize().x);
 			}
 
@@ -136,10 +136,6 @@ namespace zt::gameplay_lib::tests
 			gameplayLoop.drawableSystem.addNode(flipbook);
 
 			gameplayLoop.tickableSystem.addNode(horizontalSlidingWorld);
-			for (const auto& drawableNode : horizontalSlidingWorld->getGroundSlicesNodes())
-			{
-				gameplayLoop.drawableSystem.addNode(drawableNode);
-			}
 
 			gameplayLoop.windowEventsSystem.addDragableNode(sprite);
 			gameplayLoop.windowEventsSystem.addDragableNode(dragSprite);

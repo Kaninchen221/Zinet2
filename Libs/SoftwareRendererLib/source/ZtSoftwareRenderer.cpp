@@ -54,37 +54,38 @@ namespace zt::software_renderer
 		const bool cachedDraw = !drawInfo.isDirty;
 #endif
 
-		if (drawInfo.isDirty)
-		{
 #if ZINET_DEBUG
-			if (!validateDrawInfo(drawInfo))
-				return;
+		if (!validateDrawInfo(drawInfo))
+			return;
 #endif
-			drawInfo.cachedPixels.clear();
+		drawInfo.result.clear();
 
-			// Input Assembler
-			// ?
+		// Input Assembler
+		// ?
 
-			vertexShader(drawInfo.vertices, drawInfo.shaderProgram);
+		vertexShader(drawInfo.vertices, drawInfo.shaderProgram);
 
-			// Tessellation
-			// ?
+		// Tessellation
+		// ?
 
-			// Geometry Shader
-			// ?
+		// Geometry Shader
+		// ?
 
-			rasterization(drawInfo, renderTarget);
+		rasterization(drawInfo, renderTarget);
 
-			fragmentShader(drawInfo, renderTarget);
+		fragmentShaderWithWrite(drawInfo, renderTarget);
 
-			// Color Blending
-			// ?
+		// Color Blending
+		// ?
 
-			drawInfo.isDirty = false;
-			drawInfo.cachedPixels.shrink_to_fit();
-		}
+		drawInfo.isDirty = false;
+		drawInfo.result.shrink_to_fit();
 
-		writePixels(drawInfo, drawInfo.cachedPixels, renderTarget);
+		//if (drawInfo.cacheDrawing && !drawInfo.isDirty)
+		//{
+		//	//drawInfo.cachedDrawing.clear();
+		//	drawInfo.cachedDrawing = renderTarget.createCopyFromPart(drawInfo.result.front().coords, drawInfo.result.back().coords - drawInfo.result.front().coords);
+		//}
 
 #if ZINET_TIME_TRACE
 		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
@@ -145,7 +146,7 @@ namespace zt::software_renderer
 		clock.start();
 #endif
 
-		std::vector<Pixel>& result = drawInfo.cachedPixels;
+		std::vector<Pixel>& result = drawInfo.result;
 
 		if (drawInfo.drawMode == DrawMode::Points)
 		{
@@ -444,7 +445,7 @@ namespace zt::software_renderer
 #endif
 	}
 
-	void SoftwareRenderer::fragmentShader(DrawInfo& drawInfo, RenderTarget& renderTarget)
+	void SoftwareRenderer::fragmentShaderWithWrite(DrawInfo& drawInfo, RenderTarget& renderTarget)
 	{
 #if ZINET_TIME_TRACE
 		core::Clock clock;
@@ -455,13 +456,13 @@ namespace zt::software_renderer
 		if (!fragmentShader)
 			return;
 		
-		for (Pixel& pixel : drawInfo.cachedPixels)
+		for (Pixel& pixel : drawInfo.result)
 		{
-			if (!renderTarget.areCoordsValid(pixel.coords))
-				continue;
+			//if (!renderTarget.areCoordsValid(pixel.coords))
+				//continue;
 
 			Color* sourceColor = renderTarget.getPixelColorAddr(pixel.coords);
-			fragmentShader.sourceColor = *sourceColor;
+			fragmentShader.sourceColor = sourceColor;
 			fragmentShader.processFragment(fragmentShader, pixel);
 			*sourceColor = pixel.color;
 		}
@@ -471,27 +472,4 @@ namespace zt::software_renderer
 		Logger->info("Fragment shader step took: {} milliseconds", elapsedTime);
 #endif
 	}
-
-	void SoftwareRenderer::writePixels(const DrawInfo& drawInfo, std::vector<Pixel>& pixels, RenderTarget& renderTarget)
-	{
-#if ZINET_TIME_TRACE
-		core::Clock clock;
-		clock.start();
-#endif
-
-		for (const Pixel& pixel : drawInfo.cachedPixels)
-		{
-			if (!renderTarget.areCoordsValid(pixel.coords))
-				continue;
-
-			Color* sourceColor = renderTarget.getPixelColorAddr(pixel.coords);
-			*sourceColor = pixel.color;
-		}
-
-#if ZINET_TIME_TRACE
-		const auto elapsedTime = clock.getElapsedTime().getAsMilliseconds();
-		Logger->info("Write pixels took: {} milliseconds", elapsedTime);
-#endif
-	}
-
 }

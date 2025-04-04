@@ -27,6 +27,8 @@ namespace zt::gameplay_lib
 
 	protected:
 
+		void draw();
+
 		ZT_REFLECT_MEMBER(ReadWrite)
 		std::shared_ptr<Camera> currentCamera;
 

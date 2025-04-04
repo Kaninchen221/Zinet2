@@ -11,6 +11,8 @@
 
 #include "Zinet/Math/ZtVecTypes.hpp"
 
+#include <xutility>
+
 namespace zt::gameplay_lib
 {
 	namespace sf = software_renderer;
@@ -29,22 +31,25 @@ namespace zt::gameplay_lib
 
 		void tick(float deltaTime) override;
 
-		const std::vector<std::shared_ptr<TileMap>>& getGroundSlicesNodes() { return groundSlicesNodes; }
-
 	protected:
-
-		void addGroundSlice();
 
 		std::weak_ptr<HorizontalSlidingWorld> selfWeakPtr;
 
 		ZT_REFLECT_MEMBER(ReadWrite)
 		Vector2f sliceSize = Vector2f{ 48, 144 };
 
+		void addGroundSlice();
+
 		std::vector<std::shared_ptr<TileMap>> groundSlicesNodes;
 		sf::RenderTarget groundSliceTexture;
 
+		void addUndergroundSlice();
+
+		std::vector<std::shared_ptr<TileMap>> undergroundSlicesNodes;
+		sf::RenderTarget undergroundSliceTexture;
+
 		ZT_REFLECT_MEMBER(ReadWrite)
-		std::int32_t slicesCount = 13;
+		std::int32_t slicesCount = 3;
 
 		ZT_REFLECT_MEMBER(ReadWrite)
 		float slidingSpeed = .04f;

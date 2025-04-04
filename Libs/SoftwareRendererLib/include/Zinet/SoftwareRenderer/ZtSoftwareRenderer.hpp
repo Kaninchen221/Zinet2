@@ -21,7 +21,7 @@ namespace zt::software_renderer
 		std::vector<std::uint32_t> indices;
 		ShaderProgram shaderProgram;
 		bool isDirty = true;
-		std::vector<Pixel> cachedPixels;
+		std::vector<Pixel> result;
 	};
 
 	class ZINET_SOFTWARE_RENDERER_API SoftwareRenderer
@@ -59,9 +59,8 @@ namespace zt::software_renderer
 
 		void barycentricFillTriangle(const Triangle& triangle, const RenderTarget& renderTarget, std::vector<Pixel>& result);
 
-		void fragmentShader(DrawInfo& drawInfo, RenderTarget& renderTarget);
-
-		void writePixels(const DrawInfo& drawInfo, std::vector<Pixel>& pixels, RenderTarget& renderTarget);
+		// Process every pixel with fragment shader and write the pixel to the render target because of the optimization
+		void fragmentShaderWithWrite(DrawInfo& drawInfo, RenderTarget& renderTarget);
 
 	};
 }

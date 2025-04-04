@@ -34,7 +34,7 @@ namespace zt::software_renderer
 
 		std::vector<RenderTarget> textures;
 
-		Color sourceColor;
+		Color* sourceColor;
 
 		using ProcessFragmentCallableT = std::function<void(const FragmentShader&, Pixel& fragment)>;
 
@@ -50,12 +50,23 @@ namespace zt::software_renderer
 		FragmentShader fragmentShader;
 	};
 
-	inline Color SampleTexture(const RenderTarget& texture, Vector2f uv) {
-		const auto resolution = texture.getResolution();
+	inline Color SampleTexture(const RenderTarget& texture, const Vector2f& uv) {
+		const auto& resolution = texture.getResolution();
 
 		const Vector2i texturePixelCoords {
 			std::min<float>(std::max<float>(std::floor(uv.x * resolution.x), 0.f), resolution.x - 1.f),
 			std::min<float>(std::max<float>(std::floor(uv.y * resolution.y), 0.f), resolution.y - 1.f)
+		};
+
+		return texture.getPixelColor(texturePixelCoords);
+	}
+
+	inline Color SampleTextureUnsafe(const RenderTarget& texture, const Vector2f& uv) {
+		const auto& resolution = texture.getResolution();
+
+		const Vector2i texturePixelCoords{
+			uv.x * resolution.x,
+			uv.y * resolution.y
 		};
 
 		return texture.getPixelColor(texturePixelCoords);
