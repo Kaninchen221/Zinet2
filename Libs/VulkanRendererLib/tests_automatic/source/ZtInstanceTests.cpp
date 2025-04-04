@@ -70,7 +70,14 @@ namespace zt::vulkan_renderer::tests
 
 		std::vector<const char*> extensions = Instance::GetGlfwRequiredInstanceExtensions();
 		const std::string_view khr_surface = "VK_KHR_surface"; // We need it for the VkSurface
+
+		// https://github.com/shadps4-emu/shadPS4/issues/799#issuecomment-2391126439
+		// "gcc 13 with full C++23 support won't be included until Debian Trixie is released."
+#if ZINET_LINUX
+		ASSERT_NE(std::find(extensions.begin(), extensions.end(), khr_surface), extensions.end());
+#else
 		ASSERT_NE(std::ranges::find(extensions, khr_surface), extensions.cend());
+#endif
 
 		wd::GLFW::Deinit();
 	}
