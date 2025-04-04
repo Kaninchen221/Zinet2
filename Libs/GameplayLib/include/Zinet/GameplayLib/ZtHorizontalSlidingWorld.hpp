@@ -11,8 +11,6 @@
 
 #include "Zinet/Math/ZtVecTypes.hpp"
 
-#include <xutility>
-
 namespace zt::gameplay_lib
 {
 	namespace sf = software_renderer;
