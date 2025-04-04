@@ -84,6 +84,10 @@ namespace zt::gameplay_lib
 		decltype(sliceSize)& getSliceSize() { return sliceSize; }
 		void setSliceSize(const decltype(sliceSize)& newValue) { sliceSize = newValue; }
 		
+		const decltype(slicesCount)& getSlicesCount() const { return slicesCount; }
+		decltype(slicesCount)& getSlicesCount() { return slicesCount; }
+		void setSlicesCount(const decltype(slicesCount)& newValue) { slicesCount = newValue; }
+		
 		const decltype(slidingSpeed)& getSlidingSpeed() const { return slidingSpeed; }
 		decltype(slidingSpeed)& getSlidingSpeed() { return slidingSpeed; }
 		void setSlidingSpeed(const decltype(slidingSpeed)& newValue) { slidingSpeed = newValue; }

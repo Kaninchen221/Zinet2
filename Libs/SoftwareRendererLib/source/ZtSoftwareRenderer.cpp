@@ -458,8 +458,8 @@ namespace zt::software_renderer
 		
 		for (Pixel& pixel : drawInfo.result)
 		{
-			//if (!renderTarget.areCoordsValid(pixel.coords))
-				//continue;
+			if (!renderTarget.areCoordsValid(pixel.coords))
+				continue;
 
 			Color* sourceColor = renderTarget.getPixelColorAddr(pixel.coords);
 			fragmentShader.sourceColor = sourceColor;

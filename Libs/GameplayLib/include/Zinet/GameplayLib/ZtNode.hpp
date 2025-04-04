@@ -62,6 +62,7 @@ namespace zt::gameplay_lib
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		
+		
 		const decltype(parentNode)& getParentNode() const { return parentNode; }
 		decltype(parentNode)& getParentNode() { return parentNode; }
 		void setParentNode(const decltype(parentNode)& newValue) { parentNode = newValue; }

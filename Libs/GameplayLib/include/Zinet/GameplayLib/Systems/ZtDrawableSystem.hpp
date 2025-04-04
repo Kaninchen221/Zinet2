@@ -70,6 +70,8 @@ namespace zt::gameplay_lib
 		
 		const decltype(nodes)& getNodes() const { return nodes; }
 		
+		const decltype(nodesDrawInfos)& getNodesDrawInfos() const { return nodesDrawInfos; }
+		
 /*GENERATED_CODE_END*/
 	};
 }
