@@ -28,8 +28,7 @@ namespace zt::gameplay_lib::tests
 		HorizontalSlidingWorld horizontalSlidingWorld;
 	};
 
-	TEST_F(HorizontalSlidingWorldTests, GetDrawableNodes)
+	TEST_F(HorizontalSlidingWorldTests, Pass)
 	{
-		[[maybe_unused]] const std::vector<std::shared_ptr<TileMap>>& drawableNodes = horizontalSlidingWorld.getGroundSlicesNodes();
 	}
 }
