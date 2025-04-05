@@ -65,4 +65,5 @@ namespace zt::vulkan_renderer::tests
 		const VkDebugUtilsMessengerEXT invalidDebugUtilsMessengerAfterInvalidate = debugUtilsMessenger.get();
 		ASSERT_FALSE(invalidDebugUtilsMessengerAfterInvalidate);
 	}
+
 }
