@@ -2,7 +2,7 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
-#include <numeric>
+#include <algorithm>
 
 namespace zt::core
 {
