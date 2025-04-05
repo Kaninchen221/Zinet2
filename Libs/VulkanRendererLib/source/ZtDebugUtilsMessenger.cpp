@@ -16,7 +16,15 @@ namespace zt::vulkan_renderer
 		if (createFunc != nullptr)
 		{
 			VkResult result = std::invoke(createFunc, instance.get(), &createInfo, nullptr, &debugUtilsMessenger);
+			
+			if (result != VK_SUCCESS)
+				Logger->error("Couldn't create DebugUtilsMessenger");
+
 			return result == VK_SUCCESS;
+		}
+		else
+		{
+			Logger->error("Couldn't get vkCreateDebugUtilsMessengerEXT from vkGetInstanceProcAddr");
 		}
 
 		return false;
