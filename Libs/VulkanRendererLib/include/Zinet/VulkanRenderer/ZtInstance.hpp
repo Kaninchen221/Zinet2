@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
+#include "Zinet/VulkanRenderer/ZtVulkanObject.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -8,7 +9,7 @@
 
 namespace zt::vulkan_renderer
 {
-	class ZINET_VULKAN_RENDERER_API Instance
+	class ZINET_VULKAN_RENDERER_API Instance : public VulkanObject<VkInstance>
 	{
 	protected:
 
@@ -17,23 +18,16 @@ namespace zt::vulkan_renderer
 	public:
 
 		Instance() noexcept = default;
-		Instance(const Instance& other) = delete;
+		Instance(const Instance& other) noexcept = delete;
 		Instance(Instance&& other) noexcept = default;
-		~Instance() noexcept;
+		~Instance() noexcept = default;
 
-		Instance& operator = (const Instance& other) = delete;
+		Instance& operator = (const Instance& other) noexcept = delete;
 		Instance& operator = (Instance&& other) noexcept = default;
-		
-		static auto GetGlfwRequiredInstanceExtensions();
 
-		bool create();
-
-		bool isValid() const noexcept { return instance; }
+		bool create() noexcept;
 
 		void destroy() noexcept;
-
-		const auto get() const noexcept { return instance; }
-		auto get() noexcept { return instance; }
 
 		void setEnableValidationLayers(bool value) noexcept { enableValidationLayers = value; }
 		bool getEnableValidationLayers() const noexcept { return enableValidationLayers; }
@@ -42,16 +36,17 @@ namespace zt::vulkan_renderer
 
 		bool areEnabledLayersSupported() const noexcept;
 
+		static auto GetGlfwRequiredInstanceExtensions() noexcept;
+
 		std::vector<const char*> getRequiredExtensions() const noexcept;
 
 	protected:
 
-		VkInstance instance = nullptr;
 		bool enableValidationLayers = false;
 
 	};
 
-	inline auto Instance::GetGlfwRequiredInstanceExtensions()
+	inline auto Instance::GetGlfwRequiredInstanceExtensions() noexcept
 	{
 		std::uint32_t glfwExtensionCount = 0;
 		const char** glfwExtensions;

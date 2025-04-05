@@ -3,7 +3,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool DebugUtilsMessenger::create(Instance& instance)
+	bool DebugUtilsMessenger::create(Instance& instance) noexcept
 	{
 		VkDebugUtilsMessengerCreateInfoEXT createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -15,7 +15,7 @@ namespace zt::vulkan_renderer
 		auto createFunc = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance.get(), "vkCreateDebugUtilsMessengerEXT");
 		if (createFunc != nullptr)
 		{
-			VkResult result = std::invoke(createFunc, instance.get(), &createInfo, nullptr, &debugUtilsMessenger);
+			VkResult result = std::invoke(createFunc, instance.get(), &createInfo, nullptr, &objectHandle);
 			
 			if (result != VK_SUCCESS)
 				Logger->error("Couldn't create DebugUtilsMessenger");
@@ -30,23 +30,17 @@ namespace zt::vulkan_renderer
 		return false;
 	}
 
-	DebugUtilsMessenger::~DebugUtilsMessenger() noexcept
-	{
-		if (isValid())
-			Logger->error("Object should be manualy invalidated");
-	}
-
 	void DebugUtilsMessenger::destroy(Instance& instance) noexcept
 	{
-		if (debugUtilsMessenger)
+		if (isValid())
 		{
 			auto destroyFunc = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance.get(), "vkDestroyDebugUtilsMessengerEXT");
 			if (destroyFunc != nullptr)
 			{
-				std::invoke(destroyFunc, instance.get(), debugUtilsMessenger, nullptr);
+				std::invoke(destroyFunc, instance.get(), objectHandle, nullptr);
 			}
 
-			debugUtilsMessenger = nullptr;
+			objectHandle = nullptr;
 		}
 	}
 }

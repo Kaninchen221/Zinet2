@@ -4,7 +4,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool Instance::create()
+	bool Instance::create() noexcept
 	{
 		VkApplicationInfo appInfo{};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -26,21 +26,16 @@ namespace zt::vulkan_renderer
 		createInfo.enabledExtensionCount = static_cast<std::uint32_t>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
 
-		VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
+		VkResult result = vkCreateInstance(&createInfo, nullptr, &objectHandle);
 		return result == VK_SUCCESS;
-	}
-
-	Instance::~Instance() noexcept
-	{
-		destroy();
 	}
 
 	void Instance::destroy() noexcept
 	{
-		if (instance)
+		if (isValid())
 		{
-			vkDestroyInstance(instance, nullptr);
-			instance = nullptr;
+			vkDestroyInstance(objectHandle, nullptr);
+			objectHandle = nullptr;
 		}
 	}
 
@@ -54,6 +49,7 @@ namespace zt::vulkan_renderer
 
 	bool Instance::areEnabledLayersSupported() const noexcept
 	{
+		// TODO: Refactor this
 		std::uint32_t layerCount;
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 

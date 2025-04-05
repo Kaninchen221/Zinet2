@@ -11,6 +11,8 @@
 
 #include "Zinet/Window/ZtGLFW.hpp"
 
+#include "ZtVulkanObjectTestsUtils.hpp"
+
 namespace zt::vulkan_renderer::tests
 {
 	class DebugUtilsMessengerTests : public ::testing::Test
@@ -35,11 +37,14 @@ namespace zt::vulkan_renderer::tests
 
 		void TearDown() override
 		{
+			instance.destroy();
 			wd::GLFW::Deinit();
 		}
 
 		Instance instance;
 		DebugUtilsMessenger debugUtilsMessenger;
+
+		static_assert(std::is_base_of_v<VulkanObject<VkDebugUtilsMessengerEXT>, DebugUtilsMessenger>);
 
 		static_assert(std::is_default_constructible_v<DebugUtilsMessenger>);
 		static_assert(!std::is_copy_constructible_v<DebugUtilsMessenger>);
@@ -49,21 +54,12 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_destructible_v<DebugUtilsMessenger>);
 	};
 
-	TEST_F(DebugUtilsMessengerTests, Test)
+	TEST_F(DebugUtilsMessengerTests, CreateDestroyTest)
 	{
-		const VkDebugUtilsMessengerEXT invalidDebugUtilsMessenger = debugUtilsMessenger.get();
-		ASSERT_FALSE(invalidDebugUtilsMessenger);
-		ASSERT_FALSE(debugUtilsMessenger.isValid());
+		const auto createFunc = [&]() -> bool { return debugUtilsMessenger.create(instance); };
+		const auto destroyFunc = [&]() { debugUtilsMessenger.destroy(instance); };
 
-		ASSERT_TRUE(debugUtilsMessenger.create(instance));
-
-		const VkDebugUtilsMessengerEXT validDebugUtilsMessenger = debugUtilsMessenger.get();
-		ASSERT_TRUE(validDebugUtilsMessenger);
-		ASSERT_TRUE(debugUtilsMessenger.isValid());
-
-		debugUtilsMessenger.destroy(instance);
-		const VkDebugUtilsMessengerEXT invalidDebugUtilsMessengerAfterInvalidate = debugUtilsMessenger.get();
-		ASSERT_FALSE(invalidDebugUtilsMessengerAfterInvalidate);
+		VulkanObjectTestsUtils::TestCreationDestruction(debugUtilsMessenger, createFunc, destroyFunc);
 	}
 
 }

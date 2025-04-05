@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
+#include "Zinet/VulkanRenderer/ZtVulkanObject.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -10,7 +11,7 @@ namespace zt::vulkan_renderer
 {
 	class Instance;
 
-	class ZINET_VULKAN_RENDERER_API DebugUtilsMessenger
+	class ZINET_VULKAN_RENDERER_API DebugUtilsMessenger : public VulkanObject<VkDebugUtilsMessengerEXT>
 	{
 	protected:
 
@@ -19,36 +20,27 @@ namespace zt::vulkan_renderer
 	public:
 
 		DebugUtilsMessenger() noexcept = default;
-		DebugUtilsMessenger(const DebugUtilsMessenger& other) = delete;
+		DebugUtilsMessenger(const DebugUtilsMessenger& other) noexcept = delete;
 		DebugUtilsMessenger(DebugUtilsMessenger&& other) noexcept = default;
-		~DebugUtilsMessenger() noexcept;
+		~DebugUtilsMessenger() noexcept = default;
 
-		DebugUtilsMessenger& operator = (const DebugUtilsMessenger& other) = delete;
+		DebugUtilsMessenger& operator = (const DebugUtilsMessenger& other) noexcept = delete;
 		DebugUtilsMessenger& operator = (DebugUtilsMessenger&& other) noexcept = default;
 
-		bool create(Instance& instance);
-
-		bool isValid() const noexcept { return debugUtilsMessenger; }
+		bool create(Instance& instance) noexcept;
 
 		void destroy(Instance& instance) noexcept;
-
-		const auto get() const noexcept { return debugUtilsMessenger; }
-		auto get() noexcept { return debugUtilsMessenger; }
 
 		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
 			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
 			VkDebugUtilsMessageTypeFlagsEXT messageType,
-			const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-			void* pUserData) {
-
-			Logger->error(pCallbackData->pMessage);
+			const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
+			void* userData) 
+		{
+			Logger->error(callbackData->pMessage);
 
 			return VK_FALSE;
 		}
-
-	protected:
-
-		VkDebugUtilsMessengerEXT debugUtilsMessenger = nullptr;
 
 	};
 

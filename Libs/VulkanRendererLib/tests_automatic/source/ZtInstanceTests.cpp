@@ -3,6 +3,7 @@
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 
 #include "Zinet/Core/ZtPaths.hpp"
+#include "Zinet/Core/ZtUtils.hpp"
 
 #include <gtest/gtest.h>
 
@@ -10,7 +11,9 @@
 
 #include "Zinet/Window/ZtGLFW.hpp"
 
-#include "Zinet/Core/ZtUtils.hpp"
+#include <type_traits>
+
+#include "ZtVulkanObjectTestsUtils.hpp"
 
 namespace zt::vulkan_renderer::tests
 {
@@ -38,6 +41,8 @@ namespace zt::vulkan_renderer::tests
 
 		Instance instance;
 
+		static_assert(std::is_base_of_v<VulkanObject<VkInstance>, Instance>);
+
 		static_assert(std::is_default_constructible_v<Instance>);
 		static_assert(!std::is_copy_constructible_v<Instance>);
 		static_assert(!std::is_copy_assignable_v<Instance>);
@@ -46,21 +51,12 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_destructible_v<Instance>);
 	};
 
-	TEST_F(InstanceTests, Test)
+	TEST_F(InstanceTests, CreateDestroyTest)
 	{
-		const VkInstance invalidInstance = instance.get();
-		ASSERT_FALSE(invalidInstance);
-		ASSERT_FALSE(instance.isValid());
+		const auto createFunc = [&]() -> bool { return instance.create(); };
+		const auto destroyFunc = [&]() { instance.destroy(); };
 
-		ASSERT_TRUE(instance.create());
-
-		const VkInstance validInstance = instance.get();
-		ASSERT_TRUE(validInstance);
-		ASSERT_TRUE(instance.isValid());
-
-		instance.destroy();
-		const VkInstance invalidInstanceAfterInvalidate = instance.get();
-		ASSERT_FALSE(invalidInstanceAfterInvalidate);
+		VulkanObjectTestsUtils::TestCreationDestruction(instance, createFunc, destroyFunc);
 	}
 
 	TEST_F(InstanceTests, GetRequiredExtensionsTest)
