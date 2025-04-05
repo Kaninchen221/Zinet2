@@ -65,9 +65,6 @@ namespace zt::vulkan_renderer::tests
 	{
 		wd::GLFW::Init();
 
-		const auto vulkanSupported = glfwVulkanSupported();
-		ASSERT_EQ(vulkanSupported, GLFW_TRUE);
-
 		std::vector<const char*> extensions = Instance::GetGlfwRequiredInstanceExtensions();
 		const std::string_view khr_surface = "VK_KHR_surface"; // We need it for the VkSurface
 

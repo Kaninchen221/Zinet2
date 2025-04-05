@@ -32,6 +32,8 @@ namespace zt::wd
 		static void HideWindow();
 		static void UnhideWindow();
 
+		static bool IsVulkanSupported();
+
 	private:
 
 		static void ErrorCallback(int errorCode, const char* errorDescription);

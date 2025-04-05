@@ -90,6 +90,11 @@ namespace zt::wd
         glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
 	}
 
+	bool GLFW::IsVulkanSupported()
+	{
+		return glfwVulkanSupported() == GLFW_TRUE;
+	}
+
 	void GLFW::ErrorCallback(int errorCode, const char* errorDescription)
 	{
         Logger->error("GLFW Error. Code: {}, Description: {}", errorCode, errorDescription);

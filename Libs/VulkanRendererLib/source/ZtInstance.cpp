@@ -16,6 +16,7 @@ namespace zt::vulkan_renderer
 		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 		createInfo.pApplicationInfo = &appInfo;
 		createInfo.enabledLayerCount = 0;
+		createInfo.ppEnabledLayerNames = nullptr;
 
 		const auto glfwExtensions = GetGlfwRequiredInstanceExtensions();
 
