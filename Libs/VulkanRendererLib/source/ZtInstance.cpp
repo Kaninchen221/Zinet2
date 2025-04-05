@@ -1,5 +1,7 @@
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 
+#include "Zinet/Core/ZtUtils.hpp"
+
 namespace zt::vulkan_renderer
 {
 	bool Instance::create()
@@ -15,13 +17,14 @@ namespace zt::vulkan_renderer
 		VkInstanceCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 		createInfo.pApplicationInfo = &appInfo;
-		createInfo.enabledLayerCount = 0;
-		createInfo.ppEnabledLayerNames = nullptr;
 
-		const auto glfwExtensions = GetGlfwRequiredInstanceExtensions();
+		const auto enabledLayerNames = getEnabledLayerNames();
+		createInfo.enabledLayerCount = static_cast<std::uint32_t>(enabledLayerNames.size());
+		createInfo.ppEnabledLayerNames = enabledLayerNames.data();;
 
-		createInfo.enabledExtensionCount = static_cast<std::uint32_t>(glfwExtensions.size());
-		createInfo.ppEnabledExtensionNames = glfwExtensions.data();
+		const auto extensions = getRequiredExtensions();
+		createInfo.enabledExtensionCount = static_cast<std::uint32_t>(extensions.size());
+		createInfo.ppEnabledExtensionNames = extensions.data();
 
 		VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
 		return result == VK_SUCCESS;
@@ -29,10 +32,10 @@ namespace zt::vulkan_renderer
 
 	Instance::~Instance() noexcept
 	{
-		invalidate();
+		destroy();
 	}
 
-	void Instance::invalidate() noexcept
+	void Instance::destroy() noexcept
 	{
 		if (instance)
 		{
@@ -40,4 +43,57 @@ namespace zt::vulkan_renderer
 			instance = nullptr;
 		}
 	}
+
+	std::vector<const char*> Instance::getEnabledLayerNames() const noexcept
+	{
+		if (enableValidationLayers)
+			return { "VK_LAYER_KHRONOS_validation" };
+		else
+			return {};
+	}
+
+	bool Instance::areEnabledLayersSupported() const noexcept
+	{
+		std::uint32_t layerCount;
+		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+		std::vector<VkLayerProperties> availableLayers(layerCount);
+		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+		bool areAllLayersSupported = true;
+
+		const auto enabledLayerNames = getEnabledLayerNames();
+		for (auto enabledLayerName : enabledLayerNames)
+		{
+			bool found = false;
+
+			for (const auto& availableLayer : availableLayers)
+			{
+				if (std::string_view(availableLayer.layerName) == std::string_view(enabledLayerName))
+				{
+					found = true;
+					break;
+				}
+			}
+			
+			if (!found)
+			{
+				Logger->error("Layer: {} is not available", enabledLayerName);
+				areAllLayersSupported = false;
+			}
+		}
+
+		return areAllLayersSupported;
+	}
+
+	std::vector<const char*> Instance::getRequiredExtensions() const noexcept
+	{
+		auto extensions = GetGlfwRequiredInstanceExtensions();
+
+		if (enableValidationLayers)
+			extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+
+		return extensions;
+	}
+
 }

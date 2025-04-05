@@ -30,14 +30,24 @@ namespace zt::vulkan_renderer
 
 		bool isValid() const noexcept { return instance; }
 
-		void invalidate() noexcept;
+		void destroy() noexcept;
 
 		const auto get() const noexcept { return instance; }
 		auto get() noexcept { return instance; }
 
+		void setEnableValidationLayers(bool value) noexcept { enableValidationLayers = value; }
+		bool getEnableValidationLayers() const noexcept { return enableValidationLayers; }
+
+		std::vector<const char*> getEnabledLayerNames() const noexcept;
+
+		bool areEnabledLayersSupported() const noexcept;
+
+		std::vector<const char*> getRequiredExtensions() const noexcept;
+
 	protected:
 
 		VkInstance instance = nullptr;
+		bool enableValidationLayers = false;
 
 	};
 
