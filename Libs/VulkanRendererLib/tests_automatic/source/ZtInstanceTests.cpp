@@ -10,6 +10,8 @@
 
 #include "Zinet/Window/ZtGLFW.hpp"
 
+#include "Zinet/Core/ZtUtils.hpp"
+
 namespace zt::vulkan_renderer::tests
 {
 	class InstanceTests : public ::testing::Test
@@ -56,26 +58,47 @@ namespace zt::vulkan_renderer::tests
 		ASSERT_TRUE(validInstance);
 		ASSERT_TRUE(instance.isValid());
 
-		instance.invalidate();
+		instance.destroy();
 		const VkInstance invalidInstanceAfterInvalidate = instance.get();
 		ASSERT_FALSE(invalidInstanceAfterInvalidate);
 	}
 
-	TEST(Instance, GetGlfwRequiredInstanceExtensions)
+	TEST_F(InstanceTests, GetRequiredExtensionsTest)
+	{
+		std::vector<const char*> requiredExtensions = instance.getRequiredExtensions();
+		ASSERT_TRUE(core::Contains(requiredExtensions, std::string_view(VK_KHR_SURFACE_EXTENSION_NAME)));
+		ASSERT_FALSE(core::Contains(requiredExtensions, std::string_view(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)));
+
+		instance.setEnableValidationLayers(true);
+		ASSERT_TRUE(instance.getEnableValidationLayers());
+
+		requiredExtensions = instance.getRequiredExtensions();
+		ASSERT_TRUE(core::Contains(requiredExtensions, std::string_view(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)));
+	}
+
+	TEST(Instance, GetGlfwRequiredInstanceExtensionsTest)
 	{
 		wd::GLFW::Init();
 
 		std::vector<const char*> extensions = Instance::GetGlfwRequiredInstanceExtensions();
-		const std::string_view khr_surface = "VK_KHR_surface"; // We need it for the VkSurface
+		const std::string_view khr_surface = VK_KHR_SURFACE_EXTENSION_NAME; // We need it for the VkSurface
 
-		// https://github.com/shadps4-emu/shadPS4/issues/799#issuecomment-2391126439
-		// "gcc 13 with full C++23 support won't be included until Debian Trixie is released."
-#if ZINET_LINUX
-		ASSERT_NE(std::find(extensions.begin(), extensions.end(), khr_surface), extensions.end());
-#else
-		ASSERT_NE(std::ranges::find(extensions, khr_surface), extensions.cend());
-#endif
+		core::Contains(extensions, khr_surface);
 
 		wd::GLFW::Deinit();
+	}
+
+	TEST(Instance, GetEnabledLayerNamesTest)
+	{
+		Instance instance;
+
+		ASSERT_TRUE(instance.getEnabledLayerNames().empty());
+
+		instance.setEnableValidationLayers(true);
+		std::vector<const char*> enabledLayerNames = instance.getEnabledLayerNames();
+		ASSERT_TRUE(core::Contains(enabledLayerNames, std::string_view("VK_LAYER_KHRONOS_validation")));
+
+		ASSERT_TRUE(instance.areEnabledLayersSupported());
+
 	}
 }
