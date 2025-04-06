@@ -49,16 +49,22 @@ namespace zt::vulkan_renderer
 		{
 			if (!physicalDevice.isValid())
 				continue;
-
+		
 			auto properties = physicalDevice.getVkPhysicalDeviceProperties();
 			auto features = physicalDevice.getVkPhysicalDeviceFeatures();
-
+		
 			Logger->info("Physical device: {} with device type: {}", properties.deviceName, static_cast<std::int32_t>(properties.deviceType));
-
+		
 			if (properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
 				return std::move(physicalDevice);
 		}
 
-		return PhysicalDevice{ nullptr };
+		for (auto& physicalDevice : physicalDevices)
+		{
+			if (physicalDevice.isValid())
+				return std::move(physicalDevice);
+		}
+
+		return PhysicalDevice(nullptr);
 	}
 }
