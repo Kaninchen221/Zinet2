@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
+#include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
 
 #include "Zinet/Core/ZtPaths.hpp"
 #include "Zinet/Core/ZtUtils.hpp"
@@ -32,10 +33,12 @@ namespace zt::vulkan_renderer::tests
 		void SetUp() override
 		{
 			wd::GLFW::Init();
+			instance.create();
 		}
 
 		void TearDown() override
 		{
+			instance.destroy();
 			wd::GLFW::Deinit();
 		}
 
@@ -51,12 +54,17 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_destructible_v<Instance>);
 	};
 
-	TEST_F(InstanceTests, CreateDestroyTest)
+	TEST(Instance, CreateDestroyTest)
 	{
+		wd::GLFW::Init();
+
+		Instance instance;
 		const auto createFunc = [&]() -> bool { return instance.create(); };
 		const auto destroyFunc = [&]() { instance.destroy(); };
 
 		VulkanObjectTestsUtils::TestCreationDestruction(instance, createFunc, destroyFunc);
+
+		wd::GLFW::Deinit();
 	}
 
 	TEST_F(InstanceTests, GetRequiredExtensionsTest)
@@ -96,5 +104,10 @@ namespace zt::vulkan_renderer::tests
 
 		ASSERT_TRUE(instance.areEnabledLayersSupported());
 
+	}
+
+	TEST_F(InstanceTests, CreatePhysicalDevicesTest)
+	{
+		[[maybe_unused]] std::vector<PhysicalDevice> physicalDevices = instance.createPhysicalDevices();
 	}
 }

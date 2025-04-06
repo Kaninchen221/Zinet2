@@ -2,6 +2,7 @@
 
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
 #include "Zinet/VulkanRenderer/ZtVulkanObject.hpp"
+#include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -36,28 +37,15 @@ namespace zt::vulkan_renderer
 
 		bool areEnabledLayersSupported() const noexcept;
 
-		static auto GetGlfwRequiredInstanceExtensions() noexcept;
+		static std::vector<const char*> GetGlfwRequiredInstanceExtensions() noexcept;
 
 		std::vector<const char*> getRequiredExtensions() const noexcept;
+
+		std::vector<PhysicalDevice> createPhysicalDevices() const noexcept;
 
 	protected:
 
 		bool enableValidationLayers = false;
 
 	};
-
-	inline auto Instance::GetGlfwRequiredInstanceExtensions() noexcept
-	{
-		std::uint32_t glfwExtensionCount = 0;
-		const char** glfwExtensions;
-
-		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-		std::vector<const char*> result;
-		for (std::uint32_t extensionIndex = 0; extensionIndex < glfwExtensionCount; ++extensionIndex)
-		{
-			result.push_back(glfwExtensions[extensionIndex]);
-		}
-		return result;
-	}
 }

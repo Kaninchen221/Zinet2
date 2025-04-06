@@ -8,12 +8,15 @@
 
 namespace zt::vulkan_renderer
 {
-	template<class HandleT>
+	template<class HandleT, bool CheckObjectHandleInDestructor = true>
 	class VulkanObject
 	{
 	public:
 
 		using HandleType = HandleT;
+
+		VulkanObject(HandleType newObjectHandle)
+			: objectHandle(newObjectHandle) {}
 
 		VulkanObject() noexcept = default;
 		VulkanObject(const VulkanObject& other) = delete;
@@ -34,13 +37,16 @@ namespace zt::vulkan_renderer
 
 	};
 
-	template<class HandleT>
-	VulkanObject<HandleT>::~VulkanObject() noexcept
+	template<class HandleT, bool CheckObjectHandleInDestructor>
+	VulkanObject<HandleT, CheckObjectHandleInDestructor>::~VulkanObject() noexcept
 	{
-		if (isValid())
+		if constexpr (CheckObjectHandleInDestructor)
 		{
-			auto Logger = core::ConsoleLogger::Create("VulkanObject");
-			Logger->error("Object must be manually destroyed before destructor call");
+			if (isValid())
+			{
+				auto Logger = core::ConsoleLogger::Create("VulkanObject");
+				Logger->error("Object must be manually destroyed before destructor call");
+			}
 		}
 	}
 

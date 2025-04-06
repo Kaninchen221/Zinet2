@@ -82,6 +82,21 @@ namespace zt::vulkan_renderer
 		return areAllLayersSupported;
 	}
 
+	std::vector<const char*> Instance::GetGlfwRequiredInstanceExtensions() noexcept
+	{
+		std::uint32_t glfwExtensionCount = 0;
+		const char** glfwExtensions;
+
+		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+		std::vector<const char*> result;
+		for (std::uint32_t extensionIndex = 0; extensionIndex < glfwExtensionCount; ++extensionIndex)
+		{
+			result.push_back(glfwExtensions[extensionIndex]);
+		}
+		return result;
+	}
+
 	std::vector<const char*> Instance::getRequiredExtensions() const noexcept
 	{
 		auto extensions = GetGlfwRequiredInstanceExtensions();
@@ -90,6 +105,23 @@ namespace zt::vulkan_renderer
 			extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
 		return extensions;
+	}
+
+	std::vector<PhysicalDevice> Instance::createPhysicalDevices() const noexcept
+	{
+		std::uint32_t deviceCount = 0;
+		vkEnumeratePhysicalDevices(objectHandle, &deviceCount, nullptr);
+
+		std::vector<VkPhysicalDevice> rawDevices(deviceCount);
+		vkEnumeratePhysicalDevices(objectHandle, &deviceCount, rawDevices.data());
+
+		std::vector<PhysicalDevice> result;
+		result.reserve(deviceCount);
+		for (auto rawDevice : rawDevices)
+		{
+			result.emplace_back(rawDevice);
+		}
+		return result;
 	}
 
 }

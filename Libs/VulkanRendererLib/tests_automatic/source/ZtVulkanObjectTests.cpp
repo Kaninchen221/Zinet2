@@ -38,6 +38,7 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_same_v<HandleType, VulkanObjectType::HandleType>);
 
 		static_assert(std::is_default_constructible_v<VulkanObjectType>);
+		static_assert(std::is_constructible_v<VulkanObjectType, HandleType>);
 		static_assert(!std::is_copy_constructible_v<VulkanObjectType>);
 		static_assert(!std::is_copy_assignable_v<VulkanObjectType>);
 		static_assert(std::is_move_constructible_v<VulkanObjectType>);
