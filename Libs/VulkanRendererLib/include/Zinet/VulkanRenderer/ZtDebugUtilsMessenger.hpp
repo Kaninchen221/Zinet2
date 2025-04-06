@@ -15,7 +15,7 @@ namespace zt::vulkan_renderer
 	{
 	protected:
 
-		inline static auto Logger = core::ConsoleLogger::Create("VrDebugUtilsMessenger");
+		inline static auto Logger = core::ConsoleLogger::Create("VRDebugUtilsMessenger");
 
 	public:
 

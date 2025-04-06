@@ -13,7 +13,7 @@ namespace zt::vulkan_renderer
 	{
 	protected:
 
-		inline static auto Logger = core::ConsoleLogger::Create("VrPhysicalDevice");
+		inline static auto Logger = core::ConsoleLogger::Create("VRPhysicalDevice");
 
 	public:
 
@@ -43,6 +43,8 @@ namespace zt::vulkan_renderer
 
 	inline PhysicalDevice PhysicalDevice::GetBestDevice(auto& physicalDevices) noexcept
 	{
+		Logger->info("Get best physical device");
+
 		for (auto& physicalDevice : physicalDevices)
 		{
 			if (!physicalDevice.isValid())
@@ -50,6 +52,8 @@ namespace zt::vulkan_renderer
 
 			auto properties = physicalDevice.getVkPhysicalDeviceProperties();
 			auto features = physicalDevice.getVkPhysicalDeviceFeatures();
+
+			Logger->info("Physical device: {} with device type: {}", properties.deviceName, static_cast<std::int32_t>(properties.deviceType));
 
 			if (properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
 				return std::move(physicalDevice);
