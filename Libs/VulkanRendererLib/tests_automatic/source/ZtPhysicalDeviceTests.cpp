@@ -35,10 +35,6 @@ namespace zt::vulkan_renderer::tests
 			wd::GLFW::Init();
 			instance.create();
 
-			auto physicalDevices = instance.createPhysicalDevices();
-			ASSERT_FALSE(physicalDevices.empty());
-
-			physicalDevice = std::move(physicalDevices.front());
 		}
 
 		void TearDown() override
@@ -49,6 +45,13 @@ namespace zt::vulkan_renderer::tests
 
 		Instance instance;
 		PhysicalDevice physicalDevice{ nullptr };
+
+		void createPhysicalDevice() 
+		{  
+			auto physicalDevices = instance.createPhysicalDevices();
+			ASSERT_FALSE(physicalDevices.empty());
+			physicalDevice = std::move(physicalDevices.front());
+		}
 
 		static_assert(std::is_base_of_v<VulkanObject<VkPhysicalDevice, false>, PhysicalDevice>);
 
@@ -63,11 +66,13 @@ namespace zt::vulkan_renderer::tests
 
 	TEST_F(PhysicalDeviceTests, GetVkPhysicalDevicePropertiesTest)
 	{
+		createPhysicalDevice();
 		const VkPhysicalDeviceProperties properties = physicalDevice.getVkPhysicalDeviceProperties();
 	}
 
 	TEST_F(PhysicalDeviceTests, GetVkPhysicalDeviceFeaturesTest)
 	{
+		createPhysicalDevice();
 		const VkPhysicalDeviceFeatures features = physicalDevice.getVkPhysicalDeviceFeatures();
 	}
 
@@ -81,11 +86,13 @@ namespace zt::vulkan_renderer::tests
 
 	TEST_F(PhysicalDeviceTests, GetVkQueueFamiliesPropertiesTest)
 	{
+		createPhysicalDevice();
 		const std::vector<VkQueueFamilyProperties> queueFamiliesProperties = physicalDevice.getVkQueueFamiliesProperties();
 	}
 
 	TEST_F(PhysicalDeviceTests, GetQueueFamilyForPresentIndexTest)
 	{
+		createPhysicalDevice();
 		const std::int32_t queueFamilyForPresentIndex = physicalDevice.getQueueFamilyIndexForPresent();
 		ASSERT_NE(queueFamilyForPresentIndex, PhysicalDevice::InvalidIndex);
 	}
