@@ -20,11 +20,16 @@ namespace zt::vulkan_renderer
 
 		VulkanObject() noexcept = default;
 		VulkanObject(const VulkanObject& other) = delete;
-		VulkanObject(VulkanObject&& other) noexcept = default;
+		VulkanObject(VulkanObject&& other) noexcept { *this = std::move(other); }
 		~VulkanObject() noexcept;
 
 		VulkanObject& operator = (const VulkanObject& other) = delete;
-		VulkanObject& operator = (VulkanObject&& other) noexcept = default;
+		VulkanObject& operator = (VulkanObject&& other) noexcept
+		{
+			objectHandle = std::move(other.objectHandle); 
+			other.objectHandle = nullptr; 
+			return *this;
+		}
 
 		const HandleType get() const noexcept { return objectHandle; }
 		HandleType get() noexcept { return objectHandle; }

@@ -35,13 +35,34 @@ namespace zt::vulkan_renderer
 			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
 			VkDebugUtilsMessageTypeFlagsEXT messageType,
 			const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
-			void* userData) 
-		{
-			Logger->error(callbackData->pMessage);
-
-			return VK_FALSE;
-		}
+			void* userData);
 
 	};
 
+	inline VkBool32 DebugUtilsMessenger::DebugCallback(
+		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+		VkDebugUtilsMessageTypeFlagsEXT messageType,
+		const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
+		void* userData)
+	{
+		switch (messageSeverity)
+		{
+		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+			Logger->trace(callbackData->pMessage);
+			break;
+		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+			Logger->info(callbackData->pMessage);
+			break;
+		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+			Logger->warn(callbackData->pMessage);
+			break;
+		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+			Logger->error(callbackData->pMessage);
+			break;
+		default:
+			break;
+		}
+
+		return VK_FALSE;
+	}
 }

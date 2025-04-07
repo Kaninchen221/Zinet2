@@ -2,6 +2,7 @@
 
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
 #include "Zinet/VulkanRenderer/ZtVulkanObject.hpp"
+#include "Zinet/VulkanRenderer/ZtDevice.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -39,6 +40,8 @@ namespace zt::vulkan_renderer
 		std::vector<VkQueueFamilyProperties> getVkQueueFamiliesProperties() const noexcept;
 
 		std::int32_t getQueueFamilyIndexForPresent() const noexcept;
+
+		Device createDeviceForPresent() noexcept;
 	};
 
 	inline PhysicalDevice PhysicalDevice::GetBestDevice(auto& physicalDevices) noexcept

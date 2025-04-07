@@ -96,4 +96,13 @@ namespace zt::vulkan_renderer::tests
 		const std::int32_t queueFamilyForPresentIndex = physicalDevice.getQueueFamilyIndexForPresent();
 		ASSERT_NE(queueFamilyForPresentIndex, PhysicalDevice::InvalidIndex);
 	}
+
+	TEST_F(PhysicalDeviceTests, CreateDeviceForPresentTest)
+	{
+		createPhysicalDevice();
+		Device device = physicalDevice.createDeviceForPresent();
+		ASSERT_TRUE(device.isValid());
+
+		device.destroy();
+	}
 }
