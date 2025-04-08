@@ -27,6 +27,7 @@ namespace zt::vulkan_renderer::tests
 		void SetUp() override
 		{
 			wd::GLFW::Init();
+
 			instance.setEnableValidationLayers(true);
 			ASSERT_TRUE(instance.create());
 			
@@ -43,8 +44,14 @@ namespace zt::vulkan_renderer::tests
 		void TearDown() override
 		{
 			device.destroy();
+			ASSERT_FALSE(device.isValid());
+
 			debugUtilsMessenger.destroy(instance);
+			ASSERT_FALSE(debugUtilsMessenger.isValid());
+
 			instance.destroy();
+			ASSERT_FALSE(instance.isValid());
+
 			wd::GLFW::Deinit();
 		}
 

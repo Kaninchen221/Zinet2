@@ -30,39 +30,12 @@ namespace zt::vulkan_renderer
 		bool create(Instance& instance) noexcept;
 
 		void destroy(Instance& instance) noexcept;
-
-		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
-			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-			VkDebugUtilsMessageTypeFlagsEXT messageType,
-			const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
-			void* userData);
-
 	};
 
-	inline VkBool32 DebugUtilsMessenger::DebugCallback(
+	VKAPI_ATTR VkBool32 VKAPI_CALL DebugUtilsMessenger_DebugCallback(
 		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
 		VkDebugUtilsMessageTypeFlagsEXT messageType,
 		const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
-		void* userData)
-	{
-		switch (messageSeverity)
-		{
-		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-			Logger->trace(callbackData->pMessage);
-			break;
-		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-			Logger->info(callbackData->pMessage);
-			break;
-		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-			Logger->warn(callbackData->pMessage);
-			break;
-		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-			Logger->error(callbackData->pMessage);
-			break;
-		default:
-			break;
-		}
+		void* userData);
 
-		return VK_FALSE;
-	}
 }

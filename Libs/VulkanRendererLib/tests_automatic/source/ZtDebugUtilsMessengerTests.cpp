@@ -33,11 +33,20 @@ namespace zt::vulkan_renderer::tests
 
 			instance.setEnableValidationLayers(true);
 			instance.create();
+			ASSERT_TRUE(instance.isValid());
+
+			debugUtilsMessenger.create(instance);
+			ASSERT_TRUE(debugUtilsMessenger.isValid());
 		}
 
 		void TearDown() override
 		{
+			debugUtilsMessenger.destroy(instance);
+			ASSERT_FALSE(debugUtilsMessenger.isValid());
+
 			instance.destroy();
+			ASSERT_FALSE(instance.isValid());
+
 			wd::GLFW::Deinit();
 		}
 
@@ -54,12 +63,8 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_destructible_v<DebugUtilsMessenger>);
 	};
 
-	TEST_F(DebugUtilsMessengerTests, CreateDestroyTest)
+	TEST_F(DebugUtilsMessengerTests, Test)
 	{
-		const auto createFunc = [&]() -> bool { return debugUtilsMessenger.create(instance); };
-		const auto destroyFunc = [&]() { debugUtilsMessenger.destroy(instance); };
-
-		VulkanObjectTestsUtils::TestCreationDestruction(debugUtilsMessenger, createFunc, destroyFunc);
 	}
 
 }

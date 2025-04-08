@@ -33,13 +33,16 @@ namespace zt::vulkan_renderer::tests
 		void SetUp() override
 		{
 			wd::GLFW::Init();
-			instance.create();
 
+			instance.create();
+			ASSERT_TRUE(instance.isValid());
 		}
 
 		void TearDown() override
 		{
 			instance.destroy();
+			ASSERT_FALSE(instance.isValid());
+
 			wd::GLFW::Deinit();
 		}
 
@@ -50,7 +53,9 @@ namespace zt::vulkan_renderer::tests
 		{  
 			auto physicalDevices = instance.createPhysicalDevices();
 			ASSERT_FALSE(physicalDevices.empty());
+
 			physicalDevice = std::move(physicalDevices.front());
+			ASSERT_TRUE(physicalDevice.isValid());
 		}
 
 		static_assert(std::is_base_of_v<VulkanObject<VkPhysicalDevice, false>, PhysicalDevice>);

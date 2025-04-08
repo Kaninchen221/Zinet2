@@ -33,12 +33,16 @@ namespace zt::vulkan_renderer::tests
 		void SetUp() override
 		{
 			wd::GLFW::Init();
+
 			instance.create();
+			ASSERT_TRUE(instance.isValid());
 		}
 
 		void TearDown() override
 		{
 			instance.destroy();
+			ASSERT_FALSE(instance.isValid());
+
 			wd::GLFW::Deinit();
 		}
 
@@ -53,19 +57,6 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_move_assignable_v<Instance>);
 		static_assert(std::is_destructible_v<Instance>);
 	};
-
-	TEST(Instance, CreateDestroyTest)
-	{
-		wd::GLFW::Init();
-
-		Instance instance;
-		const auto createFunc = [&]() -> bool { return instance.create(); };
-		const auto destroyFunc = [&]() { instance.destroy(); };
-
-		VulkanObjectTestsUtils::TestCreationDestruction(instance, createFunc, destroyFunc);
-
-		wd::GLFW::Deinit();
-	}
 
 	TEST_F(InstanceTests, GetRequiredExtensionsTest)
 	{
