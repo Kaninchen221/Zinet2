@@ -8,7 +8,7 @@
 
 namespace zt::vulkan_renderer
 {
-	template<class HandleT, bool CheckObjectHandleInDestructor = true>
+	template<class HandleT, bool CheckObjectHandle = true>
 	class VulkanObject
 	{
 	public:
@@ -24,12 +24,7 @@ namespace zt::vulkan_renderer
 		~VulkanObject() noexcept;
 
 		VulkanObject& operator = (const VulkanObject& other) = delete;
-		VulkanObject& operator = (VulkanObject&& other) noexcept
-		{
-			objectHandle = std::move(other.objectHandle); 
-			other.objectHandle = nullptr; 
-			return *this;
-		}
+		VulkanObject& operator = (VulkanObject&& other) noexcept;
 
 		const HandleType get() const noexcept { return objectHandle; }
 		HandleType get() noexcept { return objectHandle; }
@@ -42,10 +37,27 @@ namespace zt::vulkan_renderer
 
 	};
 
-	template<class HandleT, bool CheckObjectHandleInDestructor>
-	VulkanObject<HandleT, CheckObjectHandleInDestructor>::~VulkanObject() noexcept
+	template<class HandleT, bool CheckObjectHandle>
+	VulkanObject<HandleT, CheckObjectHandle>& VulkanObject<HandleT, CheckObjectHandle>::operator=(VulkanObject&& other) noexcept
 	{
-		if constexpr (CheckObjectHandleInDestructor)
+		if constexpr (CheckObjectHandle)
+		{
+			if (isValid())
+			{
+				auto Logger = core::ConsoleLogger::Create("VulkanObject");
+				Logger->error("Object must be manually destroyed before move call");
+			}
+		}
+
+		objectHandle = other.objectHandle;
+		other.objectHandle = nullptr;
+		return *this;
+	}
+
+	template<class HandleT, bool CheckObjectHandle>
+	VulkanObject<HandleT, CheckObjectHandle>::~VulkanObject() noexcept
+	{
+		if constexpr (CheckObjectHandle)
 		{
 			if (isValid())
 			{
