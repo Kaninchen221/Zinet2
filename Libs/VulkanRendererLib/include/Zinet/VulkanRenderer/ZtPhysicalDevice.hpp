@@ -35,7 +35,7 @@ namespace zt::vulkan_renderer
 
 		VkPhysicalDeviceFeatures getVkPhysicalDeviceFeatures() const noexcept;
 
-		static PhysicalDevice GetBestDevice(auto& physicalDevices) noexcept;
+		static PhysicalDevice TakeBestPhysicalDevice(auto& physicalDevices) noexcept;
 
 		std::vector<VkQueueFamilyProperties> getVkQueueFamiliesProperties() const noexcept;
 
@@ -44,7 +44,7 @@ namespace zt::vulkan_renderer
 		Device createDeviceForPresent() noexcept;
 	};
 
-	inline PhysicalDevice PhysicalDevice::GetBestDevice(auto& physicalDevices) noexcept
+	inline PhysicalDevice PhysicalDevice::TakeBestPhysicalDevice(auto& physicalDevices) noexcept
 	{
 		Logger->info("Get best physical device");
 

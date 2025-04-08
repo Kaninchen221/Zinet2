@@ -41,7 +41,7 @@ namespace zt::vulkan_renderer
 
 		std::vector<const char*> getRequiredExtensions() const noexcept;
 
-		std::vector<PhysicalDevice> createPhysicalDevices() const noexcept;
+		std::vector<PhysicalDevice> getPhysicalDevices() const noexcept;
 
 	protected:
 

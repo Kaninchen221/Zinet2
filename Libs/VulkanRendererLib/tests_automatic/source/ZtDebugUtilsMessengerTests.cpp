@@ -11,8 +11,6 @@
 
 #include "Zinet/Window/ZtGLFW.hpp"
 
-#include "ZtVulkanObjectTestsUtils.hpp"
-
 namespace zt::vulkan_renderer::tests
 {
 	class DebugUtilsMessengerTests : public ::testing::Test

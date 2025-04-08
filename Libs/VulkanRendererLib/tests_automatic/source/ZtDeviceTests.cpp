@@ -16,8 +16,6 @@
 
 #include <type_traits>
 
-#include "ZtVulkanObjectTestsUtils.hpp"
-
 namespace zt::vulkan_renderer::tests
 {
 	class DeviceTests : public ::testing::Test
@@ -33,8 +31,8 @@ namespace zt::vulkan_renderer::tests
 			
 			ASSERT_TRUE(debugUtilsMessenger.create(instance));
 
-			auto physicalDevices = instance.createPhysicalDevices();
-			physicalDevice = PhysicalDevice::GetBestDevice(physicalDevices);
+			auto physicalDevices = instance.getPhysicalDevices();
+			physicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
 			ASSERT_TRUE(physicalDevice.isValid());
 
 			device = physicalDevice.createDeviceForPresent();

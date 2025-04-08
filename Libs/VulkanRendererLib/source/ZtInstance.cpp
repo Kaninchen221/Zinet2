@@ -107,7 +107,7 @@ namespace zt::vulkan_renderer
 		return extensions;
 	}
 
-	std::vector<PhysicalDevice> Instance::createPhysicalDevices() const noexcept
+	std::vector<PhysicalDevice> Instance::getPhysicalDevices() const noexcept
 	{
 		std::uint32_t deviceCount = 0;
 		vkEnumeratePhysicalDevices(objectHandle, &deviceCount, nullptr);

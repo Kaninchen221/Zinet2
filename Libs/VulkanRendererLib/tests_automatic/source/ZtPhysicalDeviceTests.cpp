@@ -14,8 +14,6 @@
 
 #include <type_traits>
 
-#include "ZtVulkanObjectTestsUtils.hpp"
-
 namespace zt::vulkan_renderer::tests
 {
 	class PhysicalDeviceTests : public ::testing::Test
@@ -51,7 +49,7 @@ namespace zt::vulkan_renderer::tests
 
 		void createPhysicalDevice() 
 		{  
-			auto physicalDevices = instance.createPhysicalDevices();
+			auto physicalDevices = instance.getPhysicalDevices();
 			ASSERT_FALSE(physicalDevices.empty());
 
 			physicalDevice = std::move(physicalDevices.front());
@@ -81,12 +79,12 @@ namespace zt::vulkan_renderer::tests
 		const VkPhysicalDeviceFeatures features = physicalDevice.getVkPhysicalDeviceFeatures();
 	}
 
-	TEST_F(PhysicalDeviceTests, GetBestDeviceTest)
+	TEST_F(PhysicalDeviceTests, TakeBestDeviceTest)
 	{
-		auto physicalDevices = instance.createPhysicalDevices();
-		PhysicalDevice bestDevice = PhysicalDevice::GetBestDevice(physicalDevices);
+		auto physicalDevices = instance.getPhysicalDevices();
+		PhysicalDevice bestPhysicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
 
-		ASSERT_TRUE(bestDevice.isValid());
+		ASSERT_TRUE(bestPhysicalDevice.isValid());
 	}
 
 	TEST_F(PhysicalDeviceTests, GetVkQueueFamiliesPropertiesTest)

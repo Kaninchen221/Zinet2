@@ -14,8 +14,6 @@
 
 #include <type_traits>
 
-#include "ZtVulkanObjectTestsUtils.hpp"
-
 namespace zt::vulkan_renderer::tests
 {
 	class InstanceTests : public ::testing::Test
@@ -97,8 +95,8 @@ namespace zt::vulkan_renderer::tests
 
 	}
 
-	TEST_F(InstanceTests, CreatePhysicalDevicesTest)
+	TEST_F(InstanceTests, GetPhysicalDevicesTest)
 	{
-		[[maybe_unused]] std::vector<PhysicalDevice> physicalDevices = instance.createPhysicalDevices();
+		[[maybe_unused]] std::vector<PhysicalDevice> physicalDevices = instance.getPhysicalDevices();
 	}
 }
