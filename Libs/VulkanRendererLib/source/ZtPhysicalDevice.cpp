@@ -79,7 +79,7 @@ namespace zt::vulkan_renderer
 
 		if (createResult == VK_SUCCESS)
 		{
-			return Device{ device };
+			return Device{ device, queueFamilyIndex };
 		}
 		else
 		{

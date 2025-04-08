@@ -18,8 +18,6 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		inline static constexpr std::int32_t InvalidIndex = -1;
-
 		PhysicalDevice(HandleType newObjectHandle)
 			: VulkanObject(newObjectHandle) {}
 

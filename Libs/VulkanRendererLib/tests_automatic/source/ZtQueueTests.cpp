@@ -2,8 +2,7 @@
 
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
-#include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
-#include "Zinet/VulkanRenderer/ZtDevice.hpp"
+#include "Zinet/VulkanRenderer/ZtQueue.hpp"
 
 #include "Zinet/Core/ZtPaths.hpp"
 #include "Zinet/Core/ZtUtils.hpp"
@@ -18,7 +17,7 @@
 
 namespace zt::vulkan_renderer::tests
 {
-	class DeviceTests : public ::testing::Test
+	class QueueTests : public ::testing::Test
 	{
 	protected:
 
@@ -28,7 +27,7 @@ namespace zt::vulkan_renderer::tests
 
 			instance.setEnableValidationLayers(true);
 			ASSERT_TRUE(instance.create());
-			
+
 			ASSERT_TRUE(debugUtilsMessenger.create(instance));
 
 			auto physicalDevices = instance.getPhysicalDevices();
@@ -37,6 +36,9 @@ namespace zt::vulkan_renderer::tests
 
 			device = physicalDevice.createDeviceForPresent();
 			ASSERT_TRUE(device.isValid());
+
+			queue = device.getQueue();
+			ASSERT_TRUE(queue.isValid());
 		}
 
 		void TearDown() override
@@ -57,27 +59,20 @@ namespace zt::vulkan_renderer::tests
 		DebugUtilsMessenger debugUtilsMessenger;
 		PhysicalDevice physicalDevice{ nullptr };
 		Device device{ nullptr };
+		Queue queue{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkDevice>, Device>);
+		static_assert(std::is_base_of_v<VulkanObject<VkQueue, false>, Queue>);
 
-		static_assert(std::is_constructible_v<Device, VkDevice>);
-		static_assert(!std::is_default_constructible_v<Device>);
-		static_assert(!std::is_copy_constructible_v<Device>);
-		static_assert(!std::is_copy_assignable_v<Device>);
-		static_assert(std::is_move_constructible_v<Device>);
-		static_assert(std::is_move_assignable_v<Device>);
-		static_assert(std::is_destructible_v<Device>);
+		static_assert(std::is_constructible_v<Queue, VkQueue>);
+		static_assert(!std::is_default_constructible_v<Queue>);
+		static_assert(!std::is_copy_constructible_v<Queue>);
+		static_assert(!std::is_copy_assignable_v<Queue>);
+		static_assert(std::is_move_constructible_v<Queue>);
+		static_assert(std::is_move_assignable_v<Queue>);
+		static_assert(std::is_destructible_v<Queue>);
 	};
 
-	TEST_F(DeviceTests, GetQueueFamilyIndexTest)
+	TEST_F(QueueTests, Test)
 	{
-		const std::int32_t queueFamilyIndex = device.getQueueFamilyIndex();
-		ASSERT_NE(queueFamilyIndex, Device::InvalidIndex);
-	}
-
-	TEST_F(DeviceTests, GetQueueTest)
-	{
-		const Queue queue = device.getQueue();
-		ASSERT_TRUE(queue.isValid());
 	}
 }

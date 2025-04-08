@@ -13,6 +13,8 @@ namespace zt::vulkan_renderer
 	{
 	public:
 
+		inline static constexpr std::int32_t InvalidIndex = -1;
+
 		using HandleType = HandleT;
 
 		VulkanObject(HandleType newObjectHandle)

@@ -2,7 +2,6 @@
 
 namespace zt::vulkan_renderer
 {
-
 	void Device::destroy() noexcept
 	{
 		if (isValid())
@@ -12,4 +11,11 @@ namespace zt::vulkan_renderer
 		}
 	}
 
+	Queue Device::getQueue() noexcept
+	{
+		VkQueue queueObjectHandle = nullptr;
+		vkGetDeviceQueue(objectHandle, queueFamilyIndex, 0, &queueObjectHandle);
+
+		return Queue(queueObjectHandle);
+	}
 }

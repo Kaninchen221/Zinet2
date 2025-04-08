@@ -2,6 +2,7 @@
 
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
 #include "Zinet/VulkanRenderer/ZtVulkanObject.hpp"
+#include "Zinet/VulkanRenderer/ZtQueue.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -17,8 +18,10 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Device(HandleType newObjectHandle)
-			: VulkanObject(newObjectHandle) {}
+		Device(HandleType newObjectHandle, std::int32_t newQueueFamilyIndex = InvalidIndex)
+			: VulkanObject(newObjectHandle),
+			  queueFamilyIndex(newQueueFamilyIndex)
+		{}
 
 		Device() noexcept = delete;
 		Device(const Device& other) noexcept = delete;
@@ -29,5 +32,14 @@ namespace zt::vulkan_renderer
 		Device& operator = (Device&& other) noexcept = default;
 
 		void destroy() noexcept;
+
+		Queue getQueue() noexcept;
+
+		std::int32_t getQueueFamilyIndex() const noexcept { return queueFamilyIndex; }
+
+	protected:
+
+		std::int32_t queueFamilyIndex = InvalidIndex;
+
 	};
 }
