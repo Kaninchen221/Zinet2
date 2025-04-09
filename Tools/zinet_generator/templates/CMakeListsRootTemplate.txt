@@ -23,6 +23,7 @@ add_compile_definitions({argument_global_compile_definitions})
 
 # Conan
 include(build/conan/conan_toolchain.cmake)
+find_package(Wayland 1.22.0)
 find_package(GTest CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(plf_colony CONFIG REQUIRED)
