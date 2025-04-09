@@ -29,6 +29,7 @@ class ZinetConan(ConanFile):
 
     if get_system() == SystemInfo.Linux:
         default_options["glfw/*:with_wayland"] = True
+        requires.append("wayland/1.22.0")
 
     def generate(self):
         for dep in self.dependencies.values():
