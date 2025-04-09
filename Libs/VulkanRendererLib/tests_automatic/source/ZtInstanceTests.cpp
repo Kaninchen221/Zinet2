@@ -11,6 +11,7 @@
 #include <vulkan/vulkan.h>
 
 #include "Zinet/Window/ZtGLFW.hpp"
+#include "Zinet/Window/ZtWindow.hpp"
 
 #include <type_traits>
 
@@ -98,5 +99,17 @@ namespace zt::vulkan_renderer::tests
 	TEST_F(InstanceTests, GetPhysicalDevicesTest)
 	{
 		[[maybe_unused]] std::vector<PhysicalDevice> physicalDevices = instance.getPhysicalDevices();
+	}
+
+	TEST_F(InstanceTests, CreateSurfaceTest)
+	{
+		wd::Window window;
+		window.create();
+
+		Surface surface = instance.createSurface(window);
+		ASSERT_TRUE(surface.isValid());
+
+		surface.destroy(instance);
+		window.destroyWindow();
 	}
 }

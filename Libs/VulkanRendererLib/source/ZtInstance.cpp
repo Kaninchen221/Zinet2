@@ -2,6 +2,8 @@
 
 #include "Zinet/Core/ZtUtils.hpp"
 
+#include "Zinet/Window/ZtWindow.hpp"
+
 namespace zt::vulkan_renderer
 {
 	bool Instance::create() noexcept
@@ -122,6 +124,21 @@ namespace zt::vulkan_renderer
 			result.emplace_back(rawDevice);
 		}
 		return result;
+	}
+
+	Surface Instance::createSurface(wd::Window& window) noexcept
+	{
+		VkSurfaceKHR surfaceObjectHandle = nullptr;
+		VkResult result = glfwCreateWindowSurface(objectHandle, window.getInternal(), nullptr, &surfaceObjectHandle);
+		if (result == VK_SUCCESS)
+		{
+			return Surface{ surfaceObjectHandle };
+		}
+		else
+		{
+			Logger->error("Can't create surface, result: {}", static_cast<std::int32_t>(result));
+			return Surface{ nullptr };
+		}
 	}
 
 }

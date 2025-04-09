@@ -30,11 +30,14 @@
 
 #if ZINET_LINUX
 #	define VK_USE_PLATFORM_WAYLAND_KHR
+#	define GLFW_EXPOSE_NATIVE_WAYLAND
 #elif ZINET_WINDOWS
 #	define VK_USE_PLATFORM_WIN32_KHR
+#	define GLFW_EXPOSE_NATIVE_WIN32
 #else
 #	error "Not supported OS"
 #endif
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>

@@ -3,10 +3,16 @@
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
 #include "Zinet/VulkanRenderer/ZtVulkanObject.hpp"
 #include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
+#include "Zinet/VulkanRenderer/ZtSurface.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
 #include <vulkan/vulkan.h>
+
+namespace zt::wd
+{
+	class Window;
+}
 
 namespace zt::vulkan_renderer
 {
@@ -42,6 +48,8 @@ namespace zt::vulkan_renderer
 		std::vector<const char*> getRequiredExtensions() const noexcept;
 
 		std::vector<PhysicalDevice> getPhysicalDevices() const noexcept;
+
+		Surface createSurface(wd::Window& window) noexcept;
 
 	protected:
 
