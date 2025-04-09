@@ -23,6 +23,11 @@ add_compile_definitions(opt1 opt2 opt3)
 
 # Conan
 include(build/conan/conan_toolchain.cmake)
+
+if(UNIX AND NOT APPLE)
+	find_package(Wayland CONFIG REQUIRED)
+endif()
+
 find_package(GTest CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(plf_colony CONFIG REQUIRED)
