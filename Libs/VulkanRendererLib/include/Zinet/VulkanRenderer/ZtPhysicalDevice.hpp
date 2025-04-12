@@ -52,6 +52,10 @@ namespace zt::vulkan_renderer
 
 		bool isQueueFamilySupportingSurface(std::uint32_t index, const Surface& surface) const noexcept;
 
+		const std::vector<VkExtensionProperties> getDeviceExtensionProperties() const noexcept;
+
+		const std::vector<const char*> getRequiredExtensions() const noexcept;
+
 		Device createDevice(const Surface& surface = Surface{ nullptr }) noexcept;
 	};
 
@@ -86,11 +90,18 @@ namespace zt::vulkan_renderer
 		
 			const auto properties = physicalDevice.getVkPhysicalDeviceProperties();
 			const auto features = physicalDevice.getVkPhysicalDeviceFeatures();
-		
+
 			if (properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
 			{
-				Logger->info("Found physical device: {} with device type: {}", properties.deviceName, static_cast<std::int32_t>(properties.deviceType));
-				return std::move(physicalDevice);
+				const auto deviceExtensionProperties = physicalDevice.getDeviceExtensionProperties();
+				for (const auto& deviceExtension : deviceExtensionProperties)
+				{
+					if (std::string_view(deviceExtension.extensionName) == VK_KHR_SWAPCHAIN_EXTENSION_NAME)
+					{
+						Logger->info("Found physical device: {} with device type: {}", properties.deviceName, static_cast<std::int32_t>(properties.deviceType));
+						return std::move(physicalDevice);
+					}
+				}
 			}
 		}
 

@@ -132,8 +132,9 @@ namespace zt::vulkan_renderer
 		createInfo.queueCreateInfoCount = static_cast<std::uint32_t>(queueCreateInfos.size());
 		createInfo.pEnabledFeatures = &deviceFeatures;
 
-		createInfo.enabledExtensionCount = 0;
-		createInfo.ppEnabledExtensionNames = nullptr;
+		const auto extensions = getRequiredExtensions();
+		createInfo.enabledExtensionCount = static_cast<std::uint32_t>(extensions.size());
+		createInfo.ppEnabledExtensionNames = extensions.data();
 
 		// Deprecated and ignored
 		createInfo.enabledLayerCount = 0;
@@ -151,6 +152,22 @@ namespace zt::vulkan_renderer
 			Logger->error("Couldn't create device, result: {}", static_cast<std::int32_t>(createResult));
 			return Device(nullptr);
 		}
+	}
+
+	const std::vector<VkExtensionProperties> PhysicalDevice::getDeviceExtensionProperties() const noexcept
+	{
+		std::uint32_t extensionCount;
+		vkEnumerateDeviceExtensionProperties(objectHandle, nullptr, &extensionCount, nullptr);
+
+		std::vector<VkExtensionProperties> extensions(extensionCount);
+		vkEnumerateDeviceExtensionProperties(objectHandle, nullptr, &extensionCount, extensions.data());
+
+		return extensions;
+	}
+
+	const std::vector<const char*> PhysicalDevice::getRequiredExtensions() const noexcept
+	{
+		return { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	}
 
 }

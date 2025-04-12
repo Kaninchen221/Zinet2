@@ -128,6 +128,14 @@ namespace zt::vulkan_renderer::tests
 		surface.destroy(instance);
 	}
 
+	TEST_F(PhysicalDeviceTests, GetDeviceExtensionPropertiesTest)
+	{
+		createPhysicalDevice();
+
+		const std::vector<VkExtensionProperties> deviceExtensionProperties = physicalDevice.getDeviceExtensionProperties();
+		ASSERT_FALSE(deviceExtensionProperties.empty());
+	}
+
 	TEST_F(PhysicalDeviceTests, CreateDeviceTest)
 	{
 		createPhysicalDevice();
