@@ -40,14 +40,36 @@ namespace zt::vulkan_renderer
 
 		static PhysicalDevice TakeBestPhysicalDevice(auto& physicalDevices) noexcept;
 
-		std::vector<VkQueueFamilyProperties> getVkQueueFamiliesProperties() const noexcept;
+		std::vector<VkQueueFamilyProperties> getVkQueuesFamiliesProperties() const noexcept;
 
-		std::uint32_t getQueueFamilyIndexForPresent() const noexcept;
+		void printVkQueuesFamiliesProperties(const auto& familiesProperties, const Surface& surface) noexcept;
 
-		std::uint32_t getQueueFamilyIndexForSurface(const Surface& surface) const noexcept;
+		std::uint32_t takeQueueFamilyIndexForPresent(std::vector<VkQueueFamilyProperties>& familiesProperties) const noexcept;
+
+		std::uint32_t takeQueueFamilyIndexForSurface(std::vector<VkQueueFamilyProperties>& familiesProperties, const Surface& surface) const noexcept;
 
 		Device createDevice(const Surface& surface = Surface{ nullptr }) noexcept;
 	};
+
+	inline void PhysicalDevice::printVkQueuesFamiliesProperties(const auto& familiesProperties, const Surface& surface) noexcept
+	{
+		Logger->info("Print VkQueuesFamiliesProperties");
+
+		std::uint32_t index = 0;
+		for (const auto& properties : familiesProperties)
+		{
+			if (surface.isValid())
+			{
+				VkBool32 surfaceSupport = false;
+				vkGetPhysicalDeviceSurfaceSupportKHR(objectHandle, index, surface.get(), &surfaceSupport);
+				Logger->info("\tIndex: {} QueueCount: {} SurfaceSupport: {}", index, properties.queueCount, surfaceSupport);
+			}
+			else
+			{
+				Logger->info("\tIndex: {} QueueCount: {}", index, properties.queueCount);
+			}
+		}
+	}
 
 	inline PhysicalDevice PhysicalDevice::TakeBestPhysicalDevice(auto& physicalDevices) noexcept
 	{

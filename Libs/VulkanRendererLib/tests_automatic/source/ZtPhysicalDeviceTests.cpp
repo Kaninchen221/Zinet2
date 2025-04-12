@@ -91,10 +91,10 @@ namespace zt::vulkan_renderer::tests
 	TEST_F(PhysicalDeviceTests, GetVkQueueFamiliesPropertiesTest)
 	{
 		createPhysicalDevice();
-		const std::vector<VkQueueFamilyProperties> queueFamiliesProperties = physicalDevice.getVkQueueFamiliesProperties();
+		const std::vector<VkQueueFamilyProperties> queuesFamiliesProperties = physicalDevice.getVkQueuesFamiliesProperties();
 	}
 
-	TEST_F(PhysicalDeviceTests, GetQueueFamilyIndexTest)
+	TEST_F(PhysicalDeviceTests, TakeQueueFamilyIndexForPresentTest)
 	{
 		createPhysicalDevice();
 
@@ -104,7 +104,25 @@ namespace zt::vulkan_renderer::tests
 		Surface surface = instance.createSurface(window);
 		ASSERT_TRUE(surface.isValid());
 
-		const std::int32_t queueFamilyIndex = physicalDevice.getQueueFamilyIndexForSurface(surface);
+		auto queuesFamiliesProperties = physicalDevice.getVkQueuesFamiliesProperties();
+		const std::int32_t queueFamilyIndex = physicalDevice.takeQueueFamilyIndexForPresent(queuesFamiliesProperties);
+		ASSERT_NE(queueFamilyIndex, PhysicalDevice::InvalidIndex);
+
+		surface.destroy(instance);
+	}
+
+	TEST_F(PhysicalDeviceTests, TakeQueueFamilyIndexForSurfaceTest)
+	{
+		createPhysicalDevice();
+
+		wd::Window window;
+		window.create(2, 2);
+
+		Surface surface = instance.createSurface(window);
+		ASSERT_TRUE(surface.isValid());
+
+		auto queuesFamiliesProperties = physicalDevice.getVkQueuesFamiliesProperties();
+		const std::int32_t queueFamilyIndex = physicalDevice.takeQueueFamilyIndexForSurface(queuesFamiliesProperties, surface);
 		ASSERT_NE(queueFamilyIndex, PhysicalDevice::InvalidIndex);
 
 		surface.destroy(instance);

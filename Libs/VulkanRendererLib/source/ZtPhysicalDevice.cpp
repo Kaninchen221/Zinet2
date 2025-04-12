@@ -17,7 +17,7 @@ namespace zt::vulkan_renderer
 		return features;
 	}
 
-	std::vector<VkQueueFamilyProperties> PhysicalDevice::getVkQueueFamiliesProperties() const noexcept
+	std::vector<VkQueueFamilyProperties> PhysicalDevice::getVkQueuesFamiliesProperties() const noexcept
 	{
 		std::uint32_t count = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(objectHandle, &count, nullptr);
@@ -28,34 +28,42 @@ namespace zt::vulkan_renderer
 		return queueFamilies;
 	}
 
-	std::uint32_t PhysicalDevice::getQueueFamilyIndexForPresent() const noexcept
+	std::uint32_t PhysicalDevice::takeQueueFamilyIndexForPresent(std::vector<VkQueueFamilyProperties>& familiesProperties) const noexcept
 	{
-		const auto familiesProperties = getVkQueueFamiliesProperties();
 		std::uint32_t index = 0;
-		for (const auto& properties : familiesProperties)
+		for (auto& properties : familiesProperties)
 		{
-			if (properties.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+			if (properties.queueFlags & VK_QUEUE_GRAPHICS_BIT && properties.queueCount > 0)
+			{
+				properties.queueCount -= 1;
+				Logger->info("Found queue family index for present. Family index: {}, Queues left for that family: {}", index, properties.queueCount);
 				return index;
+			}
 			++index;
 		}
 
+		Logger->error("Couldn't find queue family index for present");
 		return InvalidIndex;
 	}
 
-	std::uint32_t PhysicalDevice::getQueueFamilyIndexForSurface(const Surface& surface) const noexcept
+	std::uint32_t PhysicalDevice::takeQueueFamilyIndexForSurface(std::vector<VkQueueFamilyProperties>& familiesProperties, const Surface& surface) const noexcept
 	{
-		const auto familiesProperties = getVkQueueFamiliesProperties();
 		std::uint32_t index = 0;
-		for ([[maybe_unused]] const auto& properties : familiesProperties)
+		for (auto& properties : familiesProperties)
 		{
 			VkBool32 surfaceSupport = false;
 			vkGetPhysicalDeviceSurfaceSupportKHR(objectHandle, index, surface.get(), &surfaceSupport);
-			if (surfaceSupport)
+			if (surfaceSupport && properties.queueCount > 0)
+			{
+				properties.queueCount -= 1;
+				Logger->info("Found queue family index for surface. Family index: {}, Queues left for that family: {}", index, properties.queueCount);
 				return index;
+			}
 
 			++index;
 		}
 
+		Logger->warn("Couldn't find queue family index for surface");
 		return InvalidIndex;
 
 	}
@@ -72,18 +80,21 @@ namespace zt::vulkan_renderer
 			return queueCreateInfo;
 		};
 
+		auto queuesFamiliesProperties = getVkQueuesFamiliesProperties();
+		printVkQueuesFamiliesProperties(queuesFamiliesProperties, surface);
+
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 
 		std::vector<std::uint32_t> queueIndicies;
 
-		const std::uint32_t presentQueueFamilyIndex = getQueueFamilyIndexForPresent();
+		const std::uint32_t presentQueueFamilyIndex = takeQueueFamilyIndexForPresent(queuesFamiliesProperties);
 		if (presentQueueFamilyIndex == InvalidIndex)
 		{
 			Logger->error("Couldn't get queue family index for present");
 			return Device{ nullptr };
 		}
 
-		const std::uint32_t surfaceQueueFamilyIndex = surface.isValid() ? getQueueFamilyIndexForSurface(surface) : InvalidIndex;
+		const std::uint32_t surfaceQueueFamilyIndex = surface.isValid() ? takeQueueFamilyIndexForSurface(queuesFamiliesProperties, surface) : InvalidIndex;
 		if (surface.isValid())
 		{
 			if (surfaceQueueFamilyIndex == InvalidIndex)
