@@ -48,6 +48,8 @@ namespace zt::vulkan_renderer
 
 		std::uint32_t takeQueueFamilyIndexForSurface(std::vector<VkQueueFamilyProperties>& familiesProperties, const Surface& surface) const noexcept;
 
+		std::uint32_t takeQueueFamilyIndexForPresentAndSurface(std::vector<VkQueueFamilyProperties>& familiesProperties, const Surface& surface) const noexcept;
+
 		bool isQueueFamilySupportingSurface(std::uint32_t index, const Surface& surface) const noexcept;
 
 		Device createDevice(const Surface& surface = Surface{ nullptr }) noexcept;

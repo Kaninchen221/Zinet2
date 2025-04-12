@@ -82,24 +82,15 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_destructible_v<Device>);
 	};
 
-	TEST_F(DeviceTests, GetPresentQueueFamilyIndexTest)
+	TEST_F(DeviceTests, GetQueueFamilyIndexTest)
 	{
-		const std::int32_t queueFamilyIndex = device.getPresentQueueFamilyIndex();
+		const std::int32_t queueFamilyIndex = device.getQueueFamilyIndex();
 		ASSERT_NE(queueFamilyIndex, Device::InvalidIndex);
 	}
 
-	TEST_F(DeviceTests, GetSurfaceQueueFamilyIndexTest)
+	TEST_F(DeviceTests, GetQueueTest)
 	{
-		const std::int32_t queueFamilyIndex = device.getSurfaceQueueFamilyIndex();
-		ASSERT_NE(queueFamilyIndex, Device::InvalidIndex);
-	}
-
-	TEST_F(DeviceTests, GetQueuesTest)
-	{
-		const Queue presentQueue = device.getPresentQueue();
+		const Queue presentQueue = device.getQueue();
 		ASSERT_TRUE(presentQueue.isValid());
-
-		const Queue surfaceQueue = device.getSurfaceQueue();
-		ASSERT_TRUE(surfaceQueue.isValid());
 	}
 }

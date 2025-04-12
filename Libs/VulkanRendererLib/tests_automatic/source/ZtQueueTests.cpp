@@ -37,8 +37,8 @@ namespace zt::vulkan_renderer::tests
 			device = physicalDevice.createDevice();
 			ASSERT_TRUE(device.isValid());
 
-			presentQueue = device.getPresentQueue();
-			ASSERT_TRUE(presentQueue.isValid());
+			queue = device.getQueue();
+			ASSERT_TRUE(queue.isValid());
 		}
 
 		void TearDown() override
@@ -59,7 +59,7 @@ namespace zt::vulkan_renderer::tests
 		DebugUtilsMessenger debugUtilsMessenger;
 		PhysicalDevice physicalDevice{ nullptr };
 		Device device{ nullptr };
-		Queue presentQueue{ nullptr };
+		Queue queue{ nullptr };
 
 		static_assert(std::is_base_of_v<VulkanObject<VkQueue, false>, Queue>);
 

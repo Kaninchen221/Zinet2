@@ -18,10 +18,9 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Device(HandleType newObjectHandle, std::uint32_t newPresentQueueFamilyIndex = InvalidIndex, std::uint32_t newSurfaceQueueFamilyIndex = InvalidIndex)
+		Device(HandleType newObjectHandle, std::uint32_t newQueueFamilyIndex = InvalidIndex)
 			: VulkanObject(newObjectHandle),
-			  presentQueueFamilyIndex(newPresentQueueFamilyIndex),
-			  surfaceQueueFamilyIndex(newSurfaceQueueFamilyIndex)
+			queueFamilyIndex(newQueueFamilyIndex)
 		{}
 
 		Device() noexcept = delete;
@@ -34,18 +33,13 @@ namespace zt::vulkan_renderer
 
 		void destroy() noexcept;
 
-		Queue getPresentQueue() noexcept;
+		Queue getQueue() noexcept;
 
-		Queue getSurfaceQueue() noexcept;
-
-		std::int32_t getPresentQueueFamilyIndex() const noexcept { return presentQueueFamilyIndex; }
-
-		std::int32_t getSurfaceQueueFamilyIndex() const noexcept { return surfaceQueueFamilyIndex; }
+		std::int32_t getQueueFamilyIndex() const noexcept { return queueFamilyIndex; }
 
 	protected:
 
-		std::int32_t presentQueueFamilyIndex = InvalidIndex;
-		std::int32_t surfaceQueueFamilyIndex = InvalidIndex;
+		std::int32_t queueFamilyIndex = InvalidIndex;
 
 	};
 }
