@@ -13,6 +13,7 @@
 #include <vulkan/vulkan.h>
 
 #include "Zinet/Window/ZtGLFW.hpp"
+#include "Zinet/Window/ZtWindow.hpp"
 
 #include <type_traits>
 
@@ -26,6 +27,8 @@ namespace zt::vulkan_renderer::tests
 		{
 			wd::GLFW::Init();
 
+			window.create(2, 2);
+
 			instance.setEnableValidationLayers(true);
 			ASSERT_TRUE(instance.create());
 			
@@ -35,12 +38,18 @@ namespace zt::vulkan_renderer::tests
 			physicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
 			ASSERT_TRUE(physicalDevice.isValid());
 
-			device = physicalDevice.createDeviceForPresent();
+			surface = instance.createSurface(window);
+			ASSERT_TRUE(surface.isValid());
+
+			device = physicalDevice.createDevice(surface);
 			ASSERT_TRUE(device.isValid());
 		}
 
 		void TearDown() override
 		{
+			surface.destroy(instance);
+			ASSERT_FALSE(surface.isValid());
+
 			device.destroy();
 			ASSERT_FALSE(device.isValid());
 
@@ -56,6 +65,8 @@ namespace zt::vulkan_renderer::tests
 		Instance instance;
 		DebugUtilsMessenger debugUtilsMessenger;
 		PhysicalDevice physicalDevice{ nullptr };
+		wd::Window window;
+		Surface surface{ nullptr };
 		Device device{ nullptr };
 
 		static_assert(std::is_base_of_v<VulkanObject<VkDevice>, Device>);
@@ -69,15 +80,24 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_destructible_v<Device>);
 	};
 
-	TEST_F(DeviceTests, GetQueueFamilyIndexTest)
+	TEST_F(DeviceTests, GetPresentQueueFamilyIndexTest)
 	{
-		const std::int32_t queueFamilyIndex = device.getQueueFamilyIndex();
+		const std::int32_t queueFamilyIndex = device.getPresentQueueFamilyIndex();
 		ASSERT_NE(queueFamilyIndex, Device::InvalidIndex);
 	}
 
-	TEST_F(DeviceTests, GetQueueTest)
+	TEST_F(DeviceTests, GetSurfaceQueueFamilyIndexTest)
 	{
-		const Queue queue = device.getQueue();
-		ASSERT_TRUE(queue.isValid());
+		const std::int32_t queueFamilyIndex = device.getSurfaceQueueFamilyIndex();
+		ASSERT_NE(queueFamilyIndex, Device::InvalidIndex);
+	}
+
+	TEST_F(DeviceTests, GetQueuesTest)
+	{
+		const Queue presentQueue = device.getPresentQueue();
+		ASSERT_TRUE(presentQueue.isValid());
+
+		const Queue surfaceQueue = device.getSurfaceQueue();
+		ASSERT_TRUE(surfaceQueue.isValid());
 	}
 }

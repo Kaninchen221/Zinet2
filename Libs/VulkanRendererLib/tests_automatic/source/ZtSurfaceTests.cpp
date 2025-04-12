@@ -33,12 +33,6 @@ namespace zt::vulkan_renderer::tests
 			physicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
 			ASSERT_TRUE(physicalDevice.isValid());
 
-			device = physicalDevice.createDeviceForPresent();
-			ASSERT_TRUE(device.isValid());
-
-			queue = device.getQueue();
-			ASSERT_TRUE(queue.isValid());
-
 			window.create(2, 2);
 
 			surface = instance.createSurface(window);
@@ -64,7 +58,6 @@ namespace zt::vulkan_renderer::tests
 		DebugUtilsMessenger debugUtilsMessenger;
 		PhysicalDevice physicalDevice{ nullptr };
 		Device device{ nullptr };
-		Queue queue{ nullptr };
 		wd::Window window;
 		Surface surface{ nullptr };
 

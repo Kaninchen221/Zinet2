@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
+#include <limits>
+#include <cstdint>
+#include <utility>
 
 #include "Zinet/Core/ZtLogger.hpp"
-
-#include <vulkan/vulkan.h>
 
 namespace zt::vulkan_renderer
 {
@@ -13,7 +13,8 @@ namespace zt::vulkan_renderer
 	{
 	public:
 
-		inline static constexpr std::int32_t InvalidIndex = -1;
+		// Not "std::numeric_limits<std::uint32_t>::max();" because MSVC see "max()" as macro
+		inline static constexpr std::uint32_t InvalidIndex = UINT32_MAX;
 
 		using HandleType = HandleT;
 

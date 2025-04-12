@@ -11,11 +11,31 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	Queue Device::getQueue() noexcept
+	Queue Device::getPresentQueue() noexcept
 	{
+		if (presentQueueFamilyIndex == InvalidIndex)
+			return Queue{ nullptr };
+
 		VkQueue queueObjectHandle = nullptr;
-		vkGetDeviceQueue(objectHandle, queueFamilyIndex, 0, &queueObjectHandle);
+		vkGetDeviceQueue(objectHandle, presentQueueFamilyIndex, 0, &queueObjectHandle);
 
 		return Queue(queueObjectHandle);
 	}
+
+	Queue Device::getSurfaceQueue() noexcept
+	{
+		if (presentQueueFamilyIndex == InvalidIndex)
+			return getPresentQueue();
+
+		if (surfaceQueueFamilyIndex == InvalidIndex)
+			return Queue{ nullptr };
+
+		std::uint32_t queueIndex = presentQueueFamilyIndex == surfaceQueueFamilyIndex ? 1 : 0;
+
+		VkQueue queueObjectHandle = nullptr;
+		vkGetDeviceQueue(objectHandle, presentQueueFamilyIndex, queueIndex, &queueObjectHandle);
+
+		return Queue(queueObjectHandle);
+	}
+
 }

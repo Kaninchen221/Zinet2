@@ -28,10 +28,10 @@ namespace zt::vulkan_renderer
 		return queueFamilies;
 	}
 
-	std::int32_t PhysicalDevice::getQueueFamilyIndexForPresent() const noexcept
+	std::uint32_t PhysicalDevice::getQueueFamilyIndexForPresent() const noexcept
 	{
 		const auto familiesProperties = getVkQueueFamiliesProperties();
-		std::int32_t index = 0;
+		std::uint32_t index = 0;
 		for (const auto& properties : familiesProperties)
 		{
 			if (properties.queueFlags & VK_QUEUE_GRAPHICS_BIT)
@@ -42,29 +42,81 @@ namespace zt::vulkan_renderer
 		return InvalidIndex;
 	}
 
-	Device PhysicalDevice::createDeviceForPresent() noexcept
+	std::uint32_t PhysicalDevice::getQueueFamilyIndexForSurface(const Surface& surface) const noexcept
 	{
-		const std::int32_t queueFamilyIndex = getQueueFamilyIndexForPresent();
-		if (queueFamilyIndex == InvalidIndex)
+		const auto familiesProperties = getVkQueueFamiliesProperties();
+		std::uint32_t index = 0;
+		for ([[maybe_unused]] const auto& properties : familiesProperties)
+		{
+			VkBool32 surfaceSupport = false;
+			vkGetPhysicalDeviceSurfaceSupportKHR(objectHandle, index, surface.get(), &surfaceSupport);
+			if (surfaceSupport)
+				return index;
+
+			++index;
+		}
+
+		return InvalidIndex;
+
+	}
+
+	Device PhysicalDevice::createDevice(const Surface& surface) noexcept
+	{
+		const auto createQueueCreateInfo = [](std::uint32_t queueFamilyIndex, std::uint32_t count, const std::vector<float>& priorities)
+		{
+			VkDeviceQueueCreateInfo queueCreateInfo{};
+			queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+			queueCreateInfo.queueFamilyIndex = queueFamilyIndex;
+			queueCreateInfo.queueCount = count;
+			queueCreateInfo.pQueuePriorities = priorities.data();
+			return queueCreateInfo;
+		};
+
+		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+
+		std::vector<std::uint32_t> queueIndicies;
+
+		const std::uint32_t presentQueueFamilyIndex = getQueueFamilyIndexForPresent();
+		if (presentQueueFamilyIndex == InvalidIndex)
 		{
 			Logger->error("Couldn't get queue family index for present");
 			return Device{ nullptr };
 		}
 
-		VkDeviceQueueCreateInfo queueCreateInfo{};
-		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		queueCreateInfo.queueFamilyIndex = queueFamilyIndex;
-		queueCreateInfo.queueCount = 1;
+		const std::uint32_t surfaceQueueFamilyIndex = surface.isValid() ? getQueueFamilyIndexForSurface(surface) : InvalidIndex;
+		if (surface.isValid())
+		{
+			if (surfaceQueueFamilyIndex == InvalidIndex)
+			{
+				Logger->error("Couldn't get queue family index for surface");
+				return Device{ nullptr };
+			}
+		}
 
-		const float queuePriority = 1.0f;
-		queueCreateInfo.pQueuePriorities = &queuePriority;
+		std::vector<float> priorities;
+		if (presentQueueFamilyIndex == surfaceQueueFamilyIndex)
+		{
+			priorities.push_back(1.f);
+			priorities.push_back(1.f);
+			queueCreateInfos.push_back(createQueueCreateInfo(presentQueueFamilyIndex, 2, priorities));
+		}
+		else
+		{
+			priorities.push_back(1.f);
+			queueCreateInfos.push_back(createQueueCreateInfo(presentQueueFamilyIndex, 1, priorities));
+			if (surface.isValid())
+			{
+				priorities.push_back(1.f);
+				queueCreateInfos.push_back(createQueueCreateInfo(surfaceQueueFamilyIndex, 1, priorities));
+			}
+		}
 
 		VkPhysicalDeviceFeatures deviceFeatures{};
 
 		VkDeviceCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-		createInfo.pQueueCreateInfos = &queueCreateInfo;
-		createInfo.queueCreateInfoCount = 1;
+		createInfo.pQueueCreateInfos = queueCreateInfos.data();
+		createInfo.queueCreateInfoCount = static_cast<std::uint32_t>(queueCreateInfos.size());
 		createInfo.pEnabledFeatures = &deviceFeatures;
 
 		createInfo.enabledExtensionCount = 0;
@@ -79,7 +131,7 @@ namespace zt::vulkan_renderer
 
 		if (createResult == VK_SUCCESS)
 		{
-			return Device{ device, queueFamilyIndex };
+			return Device{ device, presentQueueFamilyIndex, surfaceQueueFamilyIndex };
 		}
 		else
 		{

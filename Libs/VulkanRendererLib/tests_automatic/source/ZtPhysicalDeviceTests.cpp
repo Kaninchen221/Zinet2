@@ -11,6 +11,7 @@
 #include <vulkan/vulkan.h>
 
 #include "Zinet/Window/ZtGLFW.hpp"
+#include "Zinet/Window/ZtWindow.hpp"
 
 #include <type_traits>
 
@@ -93,19 +94,36 @@ namespace zt::vulkan_renderer::tests
 		const std::vector<VkQueueFamilyProperties> queueFamiliesProperties = physicalDevice.getVkQueueFamiliesProperties();
 	}
 
-	TEST_F(PhysicalDeviceTests, GetQueueFamilyForPresentIndexTest)
+	TEST_F(PhysicalDeviceTests, GetQueueFamilyIndexTest)
 	{
 		createPhysicalDevice();
-		const std::int32_t queueFamilyForPresentIndex = physicalDevice.getQueueFamilyIndexForPresent();
-		ASSERT_NE(queueFamilyForPresentIndex, PhysicalDevice::InvalidIndex);
+
+		wd::Window window;
+		window.create(2, 2);
+
+		Surface surface = instance.createSurface(window);
+		ASSERT_TRUE(surface.isValid());
+
+		const std::int32_t queueFamilyIndex = physicalDevice.getQueueFamilyIndexForSurface(surface);
+		ASSERT_NE(queueFamilyIndex, PhysicalDevice::InvalidIndex);
+
+		surface.destroy(instance);
 	}
 
-	TEST_F(PhysicalDeviceTests, CreateDeviceForPresentTest)
+	TEST_F(PhysicalDeviceTests, CreateDeviceTest)
 	{
 		createPhysicalDevice();
-		Device device = physicalDevice.createDeviceForPresent();
+
+		wd::Window window;
+		window.create(2, 2);
+
+		Surface surface = instance.createSurface(window);
+		ASSERT_TRUE(surface.isValid());
+
+		Device device = physicalDevice.createDevice(surface);
 		ASSERT_TRUE(device.isValid());
 
 		device.destroy();
+		surface.destroy(instance);
 	}
 }

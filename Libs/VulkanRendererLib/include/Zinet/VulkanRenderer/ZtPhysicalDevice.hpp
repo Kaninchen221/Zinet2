@@ -3,13 +3,18 @@
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
 #include "Zinet/VulkanRenderer/ZtVulkanObject.hpp"
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
+#include "Zinet/VulkanRenderer/ZtSurface.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
 #include <vulkan/vulkan.h>
 
+#include <optional>
+
 namespace zt::vulkan_renderer
 {
+	class Surface;
+
 	class ZINET_VULKAN_RENDERER_API PhysicalDevice : public VulkanObject<VkPhysicalDevice, false>
 	{
 	protected:
@@ -37,9 +42,11 @@ namespace zt::vulkan_renderer
 
 		std::vector<VkQueueFamilyProperties> getVkQueueFamiliesProperties() const noexcept;
 
-		std::int32_t getQueueFamilyIndexForPresent() const noexcept;
+		std::uint32_t getQueueFamilyIndexForPresent() const noexcept;
 
-		Device createDeviceForPresent() noexcept;
+		std::uint32_t getQueueFamilyIndexForSurface(const Surface& surface) const noexcept;
+
+		Device createDevice(const Surface& surface = Surface{ nullptr }) noexcept;
 	};
 
 	inline PhysicalDevice PhysicalDevice::TakeBestPhysicalDevice(auto& physicalDevices) noexcept
