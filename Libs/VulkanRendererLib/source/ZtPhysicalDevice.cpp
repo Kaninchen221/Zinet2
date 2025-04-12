@@ -51,9 +51,8 @@ namespace zt::vulkan_renderer
 		std::uint32_t index = 0;
 		for (auto& properties : familiesProperties)
 		{
-			VkBool32 surfaceSupport = false;
-			vkGetPhysicalDeviceSurfaceSupportKHR(objectHandle, index, surface.get(), &surfaceSupport);
-			if (surfaceSupport && properties.queueCount > 0)
+			const bool supportsSurface = isQueueFamilySupportingSurface(index, surface);
+			if (supportsSurface && properties.queueCount > 0)
 			{
 				properties.queueCount -= 1;
 				Logger->info("Found queue family index for surface. Family index: {}, Queues left for that family: {}", index, properties.queueCount);
@@ -63,9 +62,16 @@ namespace zt::vulkan_renderer
 			++index;
 		}
 
-		Logger->warn("Couldn't find queue family index for surface");
+		Logger->info("Couldn't find queue family index for surface");
 		return InvalidIndex;
 
+	}
+
+	bool PhysicalDevice::isQueueFamilySupportingSurface(std::uint32_t index, const Surface& surface) const noexcept
+	{
+		VkBool32 surfaceSupport = false;
+		vkGetPhysicalDeviceSurfaceSupportKHR(objectHandle, index, surface.get(), &surfaceSupport);
+		return surfaceSupport;
 	}
 
 	Device PhysicalDevice::createDevice(const Surface& surface) noexcept
@@ -94,13 +100,20 @@ namespace zt::vulkan_renderer
 			return Device{ nullptr };
 		}
 
-		const std::uint32_t surfaceQueueFamilyIndex = surface.isValid() ? takeQueueFamilyIndexForSurface(queuesFamiliesProperties, surface) : InvalidIndex;
+		std::uint32_t surfaceQueueFamilyIndex = surface.isValid() ? takeQueueFamilyIndexForSurface(queuesFamiliesProperties, surface) : InvalidIndex;
 		if (surface.isValid())
 		{
 			if (surfaceQueueFamilyIndex == InvalidIndex)
 			{
-				Logger->error("Couldn't get queue family index for surface");
-				return Device{ nullptr };
+				if (isQueueFamilySupportingSurface(presentQueueFamilyIndex, surface))
+				{
+					surfaceQueueFamilyIndex = presentQueueFamilyIndex;
+				}
+				else
+				{
+					Logger->error("Couldn't get queue family index for surface");
+					return Device{ nullptr };
+				}
 			}
 		}
 

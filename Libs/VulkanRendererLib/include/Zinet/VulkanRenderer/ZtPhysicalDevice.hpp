@@ -48,6 +48,8 @@ namespace zt::vulkan_renderer
 
 		std::uint32_t takeQueueFamilyIndexForSurface(std::vector<VkQueueFamilyProperties>& familiesProperties, const Surface& surface) const noexcept;
 
+		bool isQueueFamilySupportingSurface(std::uint32_t index, const Surface& surface) const noexcept;
+
 		Device createDevice(const Surface& surface = Surface{ nullptr }) noexcept;
 	};
 
@@ -60,14 +62,14 @@ namespace zt::vulkan_renderer
 		{
 			if (surface.isValid())
 			{
-				VkBool32 surfaceSupport = false;
-				vkGetPhysicalDeviceSurfaceSupportKHR(objectHandle, index, surface.get(), &surfaceSupport);
-				Logger->info("\tIndex: {} QueueCount: {} SurfaceSupport: {}", index, properties.queueCount, surfaceSupport);
+				const bool supportsSurface = isQueueFamilySupportingSurface(index, surface);
+				Logger->info("\tIndex: {} QueueCount: {} SurfaceSupport: {}", index, properties.queueCount, supportsSurface);
 			}
 			else
 			{
 				Logger->info("\tIndex: {} QueueCount: {}", index, properties.queueCount);
 			}
+			++index;
 		}
 	}
 
