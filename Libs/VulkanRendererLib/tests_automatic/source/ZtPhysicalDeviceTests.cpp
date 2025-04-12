@@ -152,4 +152,51 @@ namespace zt::vulkan_renderer::tests
 		device.destroy();
 		surface.destroy(instance);
 	}
+
+	TEST_F(PhysicalDeviceTests, GetPhysicalDeviceSurfaceCapabilitiesTest)
+	{
+		createPhysicalDevice();
+
+		wd::Window window;
+		window.create(1, 1);
+
+		Surface surface = instance.createSurface(window);
+		ASSERT_TRUE(surface.isValid());
+
+		const VkSurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getPhysicalDeviceSurfaceCapabilities(surface);
+
+		surface.destroy(instance);
+	}
+
+	TEST_F(PhysicalDeviceTests, GetPhysicalDeviceSurfaceFormatsTest)
+	{
+		createPhysicalDevice();
+
+		wd::Window window;
+		window.create(1, 1);
+
+		Surface surface = instance.createSurface(window);
+		ASSERT_TRUE(surface.isValid());
+
+		const std::vector<VkSurfaceFormatKHR> surfaceFormats = physicalDevice.getPhysicalDeviceSurfaceFormats(surface);
+		ASSERT_FALSE(surfaceFormats.empty());
+
+		surface.destroy(instance);
+	}
+
+	TEST_F(PhysicalDeviceTests, GetPhysicalDeviceSurfacePresentModesTest)
+	{
+		createPhysicalDevice();
+
+		wd::Window window;
+		window.create(1, 1);
+
+		Surface surface = instance.createSurface(window);
+		ASSERT_TRUE(surface.isValid());
+
+		const std::vector<VkPresentModeKHR> presentModes = physicalDevice.getPhysicalDeviceSurfacePresentModes(surface);
+		ASSERT_FALSE(presentModes.empty());
+
+		surface.destroy(instance);
+	}
 }

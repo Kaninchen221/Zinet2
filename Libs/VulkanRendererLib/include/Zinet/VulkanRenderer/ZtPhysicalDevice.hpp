@@ -57,6 +57,12 @@ namespace zt::vulkan_renderer
 		const std::vector<const char*> getRequiredExtensions() const noexcept;
 
 		Device createDevice(const Surface& surface = Surface{ nullptr }) noexcept;
+
+		const VkSurfaceCapabilitiesKHR getPhysicalDeviceSurfaceCapabilities(const Surface& surface) const noexcept;
+
+		const std::vector<VkSurfaceFormatKHR> getPhysicalDeviceSurfaceFormats(const Surface& surface) const noexcept;
+
+		const std::vector<VkPresentModeKHR> getPhysicalDeviceSurfacePresentModes(const Surface& surface) const noexcept;
 	};
 
 	inline void PhysicalDevice::printVkQueuesFamiliesProperties(const auto& familiesProperties, const Surface& surface) noexcept

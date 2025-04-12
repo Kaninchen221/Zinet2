@@ -20,7 +20,7 @@
 
 namespace zt::vulkan_renderer::tests
 {
-	class DeviceTests : public ::testing::Test
+	class SwapChainTests : public ::testing::Test
 	{
 	protected:
 
@@ -71,35 +71,27 @@ namespace zt::vulkan_renderer::tests
 		wd::Window window;
 		Surface surface{ nullptr };
 		Device device{ nullptr };
+		SwapChain swapChain{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkDevice>, Device>);
+		static_assert(std::is_base_of_v<VulkanObject<VkSwapchainKHR>, SwapChain>);
 
-		static_assert(std::is_constructible_v<Device, VkDevice>);
-		static_assert(!std::is_default_constructible_v<Device>);
-		static_assert(!std::is_copy_constructible_v<Device>);
-		static_assert(!std::is_copy_assignable_v<Device>);
-		static_assert(std::is_move_constructible_v<Device>);
-		static_assert(std::is_move_assignable_v<Device>);
-		static_assert(std::is_destructible_v<Device>);
+		static_assert(std::is_constructible_v<SwapChain, VkSwapchainKHR>);
+		static_assert(!std::is_default_constructible_v<SwapChain>);
+		static_assert(!std::is_copy_constructible_v<SwapChain>);
+		static_assert(!std::is_copy_assignable_v<SwapChain>);
+		static_assert(std::is_move_constructible_v<SwapChain>);
+		static_assert(std::is_move_assignable_v<SwapChain>);
+		static_assert(std::is_destructible_v<SwapChain>);
 	};
 
-	TEST_F(DeviceTests, GetQueueFamilyIndexTest)
+	TEST_F(SwapChainTests, GetImagesTest)
 	{
-		const std::int32_t queueFamilyIndex = device.getQueueFamilyIndex();
-		ASSERT_NE(queueFamilyIndex, Device::InvalidIndex);
-	}
+		swapChain = device.createSwapChain(physicalDevice, surface, window);
 
-	TEST_F(DeviceTests, GetQueueTest)
-	{
-		const Queue presentQueue = device.getQueue();
-		ASSERT_TRUE(presentQueue.isValid());
-	}
-
-	TEST_F(DeviceTests, CreateSwapChainTest)
-	{
-		SwapChain swapChain = device.createSwapChain(physicalDevice, surface, window);
-		ASSERT_TRUE(swapChain.isValid());
+		std::vector<VkImage> swapChainImages = swapChain.getImages(device);
+		ASSERT_FALSE(swapChainImages.empty());
 
 		swapChain.destroy(device);
 	}
+
 }

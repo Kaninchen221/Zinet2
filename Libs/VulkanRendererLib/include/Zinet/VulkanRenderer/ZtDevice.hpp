@@ -3,13 +3,22 @@
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
 #include "Zinet/VulkanRenderer/ZtVulkanObject.hpp"
 #include "Zinet/VulkanRenderer/ZtQueue.hpp"
+#include "Zinet/VulkanRenderer/ZtSwapChain.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
 #include <vulkan/vulkan.h>
 
+namespace zt::wd
+{
+	class Window;
+}
+
 namespace zt::vulkan_renderer
 {
+	class Surface;
+	class PhysicalDevice;
+
 	class ZINET_VULKAN_RENDERER_API Device : public VulkanObject<VkDevice>
 	{
 	protected:
@@ -36,6 +45,8 @@ namespace zt::vulkan_renderer
 		Queue getQueue() noexcept;
 
 		std::int32_t getQueueFamilyIndex() const noexcept { return queueFamilyIndex; }
+
+		SwapChain createSwapChain(const PhysicalDevice& physicalDevice, const Surface& surface, const wd::Window& window) noexcept;
 
 	protected:
 

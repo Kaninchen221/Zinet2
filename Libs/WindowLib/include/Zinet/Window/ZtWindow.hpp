@@ -65,6 +65,8 @@ namespace zt::wd
 
 		static void SetTransparentFramebuffer(bool value);
 
+		Vector2i getFramebufferSize() const noexcept;
+
 		void setShowWindowBar(bool value);
 
 		void setPosition(const Vector2i& position);
@@ -84,6 +86,13 @@ namespace zt::wd
 
 		void bindFramebufferSizeCallback();
 	};
+
+	inline Vector2i Window::getFramebufferSize() const noexcept
+	{
+		std::int32_t width, height;
+		glfwGetFramebufferSize(internalWindow, &width, &height);
+		return { width, height };
+	}
 
 	inline void Window::setPosition(const Vector2i& position)
 	{
