@@ -72,7 +72,8 @@ namespace zt::vulkan_renderer
 
 		VkSwapchainCreateInfoKHR createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-		createInfo.minImageCount = std::clamp(surfaceCapabilities.minImageCount + 1, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount);
+		createInfo.minImageCount = 
+			std::clamp(surfaceCapabilities.minImageCount + 1, surfaceCapabilities.minImageCount, std::max(surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount));
 		createInfo.imageFormat = format;
 		createInfo.imageColorSpace = colorSpace;
 		createInfo.presentMode = presentMode;
