@@ -3,7 +3,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool DebugUtilsMessenger::create(Instance& instance) noexcept
+	bool DebugUtilsMessenger::create(const Instance& instance) noexcept
 	{
 		if (!instance.getEnableValidationLayers())
 		{
@@ -36,7 +36,7 @@ namespace zt::vulkan_renderer
 		return false;
 	}
 
-	void DebugUtilsMessenger::destroy(Instance& instance) noexcept
+	void DebugUtilsMessenger::destroy(const Instance& instance) noexcept
 	{
 		if (isValid())
 		{
@@ -52,9 +52,9 @@ namespace zt::vulkan_renderer
 
 	VkBool32 DebugUtilsMessenger_DebugCallback(
 		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-		VkDebugUtilsMessageTypeFlagsEXT messageType,
+		[[maybe_unused]] VkDebugUtilsMessageTypeFlagsEXT messageType,
 		const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
-		void* userData)
+		[[maybe_unused]] void* userData)
 	{
 		static auto Logger = core::ConsoleLogger::Create("DebugUtilsMessenger_DebugCallback");
 

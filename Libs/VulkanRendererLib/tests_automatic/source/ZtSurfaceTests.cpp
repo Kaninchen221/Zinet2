@@ -35,8 +35,7 @@ namespace zt::vulkan_renderer::tests
 
 			window.create(2, 2);
 
-			surface = instance.createSurface(window);
-			ASSERT_TRUE(surface.isValid());
+			ASSERT_TRUE(surface.create(instance, window));
 		}
 
 		void TearDown() override
@@ -54,8 +53,8 @@ namespace zt::vulkan_renderer::tests
 		}
 
 		wd::GLFW glfw;
-		Instance instance;
-		DebugUtilsMessenger debugUtilsMessenger;
+		Instance instance{ nullptr };
+		DebugUtilsMessenger debugUtilsMessenger{ nullptr };
 		PhysicalDevice physicalDevice{ nullptr };
 		Device device{ nullptr };
 		wd::Window window;
@@ -72,7 +71,6 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_destructible_v<Surface>);
 	};
 
-	TEST_F(SurfaceTests, Test)
-	{
-	}
+	TEST_F(SurfaceTests, PassTest)
+	{}
 }

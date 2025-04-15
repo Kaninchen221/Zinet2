@@ -19,7 +19,10 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		DebugUtilsMessenger() noexcept = default;
+		DebugUtilsMessenger(HandleType newObjectHandle)
+			: VulkanObject(newObjectHandle) {}
+
+		DebugUtilsMessenger() noexcept = delete;
 		DebugUtilsMessenger(const DebugUtilsMessenger& other) noexcept = delete;
 		DebugUtilsMessenger(DebugUtilsMessenger&& other) noexcept = default;
 		~DebugUtilsMessenger() noexcept = default;
@@ -27,9 +30,9 @@ namespace zt::vulkan_renderer
 		DebugUtilsMessenger& operator = (const DebugUtilsMessenger& other) noexcept = delete;
 		DebugUtilsMessenger& operator = (DebugUtilsMessenger&& other) noexcept = default;
 
-		bool create(Instance& instance) noexcept;
+		bool create(const Instance& instance) noexcept;
 
-		void destroy(Instance& instance) noexcept;
+		void destroy(const Instance& instance) noexcept;
 	};
 
 	VKAPI_ATTR VkBool32 VKAPI_CALL DebugUtilsMessenger_DebugCallback(

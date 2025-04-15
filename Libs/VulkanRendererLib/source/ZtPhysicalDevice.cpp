@@ -108,68 +108,6 @@ namespace zt::vulkan_renderer
 		return { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	}
 
-	Device PhysicalDevice::createDevice(const Surface& surface) noexcept
-	{
-		const auto createQueueCreateInfo = [](std::uint32_t queueFamilyIndex, std::uint32_t count, const std::vector<float>& priorities)
-		{
-			VkDeviceQueueCreateInfo queueCreateInfo{};
-			queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-			queueCreateInfo.queueFamilyIndex = queueFamilyIndex;
-			queueCreateInfo.queueCount = count;
-			queueCreateInfo.pQueuePriorities = priorities.data();
-			return queueCreateInfo;
-		};
-
-		auto queuesFamiliesProperties = getVkQueuesFamiliesProperties();
-		printVkQueuesFamiliesProperties(queuesFamiliesProperties, surface);
-
-		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-
-		std::vector<std::uint32_t> queueIndicies;
-
-		const std::uint32_t queueFamilyIndex = 
-			surface.isValid() ? takeQueueFamilyIndexForPresentAndSurface(queuesFamiliesProperties, surface) : takeQueueFamilyIndexForPresent(queuesFamiliesProperties);
-
-		if (queueFamilyIndex == InvalidIndex)
-		{
-			Logger->error("Couldn't get queue family index for present");
-			return Device{ nullptr };
-		}
-
-		std::vector<float> priorities;
-		priorities.push_back(1.f);
-		queueCreateInfos.push_back(createQueueCreateInfo(queueFamilyIndex, 1, priorities));
-
-		VkPhysicalDeviceFeatures deviceFeatures{};
-
-		VkDeviceCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-		createInfo.pQueueCreateInfos = queueCreateInfos.data();
-		createInfo.queueCreateInfoCount = static_cast<std::uint32_t>(queueCreateInfos.size());
-		createInfo.pEnabledFeatures = &deviceFeatures;
-
-		const auto extensions = getRequiredExtensions();
-		createInfo.enabledExtensionCount = static_cast<std::uint32_t>(extensions.size());
-		createInfo.ppEnabledExtensionNames = extensions.data();
-
-		// Deprecated and ignored
-		createInfo.enabledLayerCount = 0;
-		createInfo.ppEnabledLayerNames = nullptr;
-
-		VkDevice device = nullptr;
-		const auto createResult = vkCreateDevice(objectHandle, &createInfo, nullptr, &device);
-
-		if (createResult == VK_SUCCESS)
-		{
-			return Device{ device, queueFamilyIndex };
-		}
-		else
-		{
-			Logger->error("Couldn't create device, result: {}", static_cast<std::int32_t>(createResult));
-			return Device(nullptr);
-		}
-	}
-
 	const VkSurfaceCapabilitiesKHR PhysicalDevice::getPhysicalDeviceSurfaceCapabilities(const Surface& surface) const noexcept
 	{
 		VkSurfaceCapabilitiesKHR surfaceCapabilities;

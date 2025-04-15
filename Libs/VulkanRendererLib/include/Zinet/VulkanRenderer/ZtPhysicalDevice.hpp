@@ -42,7 +42,7 @@ namespace zt::vulkan_renderer
 
 		std::vector<VkQueueFamilyProperties> getVkQueuesFamiliesProperties() const noexcept;
 
-		void printVkQueuesFamiliesProperties(const auto& familiesProperties, const Surface& surface) noexcept;
+		void printVkQueuesFamiliesProperties(const auto& familiesProperties, const Surface& surface) const noexcept;
 
 		std::uint32_t takeQueueFamilyIndexForPresent(std::vector<VkQueueFamilyProperties>& familiesProperties) const noexcept;
 
@@ -56,8 +56,6 @@ namespace zt::vulkan_renderer
 
 		const std::vector<const char*> getRequiredExtensions() const noexcept;
 
-		Device createDevice(const Surface& surface = Surface{ nullptr }) noexcept;
-
 		const VkSurfaceCapabilitiesKHR getPhysicalDeviceSurfaceCapabilities(const Surface& surface) const noexcept;
 
 		const std::vector<VkSurfaceFormatKHR> getPhysicalDeviceSurfaceFormats(const Surface& surface) const noexcept;
@@ -65,7 +63,7 @@ namespace zt::vulkan_renderer
 		const std::vector<VkPresentModeKHR> getPhysicalDeviceSurfacePresentModes(const Surface& surface) const noexcept;
 	};
 
-	inline void PhysicalDevice::printVkQueuesFamiliesProperties(const auto& familiesProperties, const Surface& surface) noexcept
+	inline void PhysicalDevice::printVkQueuesFamiliesProperties(const auto& familiesProperties, const Surface& surface) const noexcept
 	{
 		Logger->info("Print VkQueuesFamiliesProperties");
 

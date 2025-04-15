@@ -30,7 +30,7 @@ namespace zt::core
         *this = other;
     }
 
-    Identifier& Identifier::operator=(Identifier&& other)
+    Identifier& Identifier::operator=([[maybe_unused]] Identifier&& other)
     {
         return *this;
     }

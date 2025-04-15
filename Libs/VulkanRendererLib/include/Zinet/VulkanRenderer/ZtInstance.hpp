@@ -24,7 +24,10 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Instance() noexcept = default;
+		Instance(HandleType newObjectHandle)
+			: VulkanObject(newObjectHandle) {}
+
+		Instance() noexcept = delete;
 		Instance(const Instance& other) noexcept = delete;
 		Instance(Instance&& other) noexcept = default;
 		~Instance() noexcept = default;
@@ -48,8 +51,6 @@ namespace zt::vulkan_renderer
 		std::vector<const char*> getRequiredExtensions() const noexcept;
 
 		std::vector<PhysicalDevice> getPhysicalDevices() const noexcept;
-
-		Surface createSurface(wd::Window& window) noexcept;
 
 	protected:
 

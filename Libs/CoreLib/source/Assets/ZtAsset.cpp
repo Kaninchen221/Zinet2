@@ -3,7 +3,7 @@
 namespace zt::core::assets
 {
 
-	std::unique_ptr<ObjectBase> Asset::createObject(const std::filesystem::path& contentRootFolder) const
+	std::unique_ptr<ObjectBase> Asset::createObject([[maybe_unused]] const std::filesystem::path& contentRootFolder) const
 	{
 		if (metaData.is_null())
 		{

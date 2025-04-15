@@ -30,11 +30,9 @@ namespace zt::vulkan_renderer::tests
 			wd::GLFW::Init();
 
 			instance.setEnableValidationLayers(true);
-			instance.create();
-			ASSERT_TRUE(instance.isValid());
+			ASSERT_TRUE(instance.create());
 
-			debugUtilsMessenger.create(instance);
-			ASSERT_TRUE(debugUtilsMessenger.isValid());
+			ASSERT_TRUE(debugUtilsMessenger.create(instance));
 		}
 
 		void TearDown() override
@@ -48,12 +46,12 @@ namespace zt::vulkan_renderer::tests
 			wd::GLFW::Deinit();
 		}
 
-		Instance instance;
-		DebugUtilsMessenger debugUtilsMessenger;
+		Instance instance{ nullptr };
+		DebugUtilsMessenger debugUtilsMessenger{ nullptr };
 
 		static_assert(std::is_base_of_v<VulkanObject<VkDebugUtilsMessengerEXT>, DebugUtilsMessenger>);
 
-		static_assert(std::is_default_constructible_v<DebugUtilsMessenger>);
+		static_assert(!std::is_default_constructible_v<DebugUtilsMessenger>);
 		static_assert(!std::is_copy_constructible_v<DebugUtilsMessenger>);
 		static_assert(!std::is_copy_assignable_v<DebugUtilsMessenger>);
 		static_assert(std::is_move_constructible_v<DebugUtilsMessenger>);
@@ -61,8 +59,7 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_destructible_v<DebugUtilsMessenger>);
 	};
 
-	TEST_F(DebugUtilsMessengerTests, Test)
-	{
-	}
+	TEST_F(DebugUtilsMessengerTests, PassTest)
+	{}
 
 }

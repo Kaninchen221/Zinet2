@@ -34,8 +34,7 @@ namespace zt::vulkan_renderer::tests
 			physicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
 			ASSERT_TRUE(physicalDevice.isValid());
 
-			device = physicalDevice.createDevice();
-			ASSERT_TRUE(device.isValid());
+			ASSERT_TRUE(device.create(physicalDevice, Surface{ nullptr })); // We don't need valid Surface for Queue tests
 
 			queue = device.getQueue();
 			ASSERT_TRUE(queue.isValid());
@@ -55,8 +54,8 @@ namespace zt::vulkan_renderer::tests
 			wd::GLFW::Deinit();
 		}
 
-		Instance instance;
-		DebugUtilsMessenger debugUtilsMessenger;
+		Instance instance{ nullptr };
+		DebugUtilsMessenger debugUtilsMessenger{ nullptr };
 		PhysicalDevice physicalDevice{ nullptr };
 		Device device{ nullptr };
 		Queue queue{ nullptr };
@@ -72,7 +71,6 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_destructible_v<Queue>);
 	};
 
-	TEST_F(QueueTests, Test)
-	{
-	}
+	TEST_F(QueueTests, PassTest)
+	{}
 }

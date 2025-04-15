@@ -33,8 +33,7 @@ namespace zt::vulkan_renderer::tests
 		{
 			wd::GLFW::Init();
 
-			instance.create();
-			ASSERT_TRUE(instance.isValid());
+			ASSERT_TRUE(instance.create());
 		}
 
 		void TearDown() override
@@ -45,7 +44,7 @@ namespace zt::vulkan_renderer::tests
 			wd::GLFW::Deinit();
 		}
 
-		Instance instance;
+		Instance instance{ nullptr };
 		PhysicalDevice physicalDevice{ nullptr };
 
 		void createPhysicalDevice() 
@@ -101,7 +100,8 @@ namespace zt::vulkan_renderer::tests
 		wd::Window window;
 		window.create(2, 2);
 
-		Surface surface = instance.createSurface(window);
+		Surface surface{ nullptr };
+		surface.create(instance, window);
 		ASSERT_TRUE(surface.isValid());
 
 		auto queuesFamiliesProperties = physicalDevice.getVkQueuesFamiliesProperties();
@@ -118,8 +118,8 @@ namespace zt::vulkan_renderer::tests
 		wd::Window window;
 		window.create(2, 2);
 
-		Surface surface = instance.createSurface(window);
-		ASSERT_TRUE(surface.isValid());
+		Surface surface{ nullptr };
+		ASSERT_TRUE(surface.create(instance, window));
 
 		auto queuesFamiliesProperties = physicalDevice.getVkQueuesFamiliesProperties();
 		const std::int32_t queueFamilyIndex = physicalDevice.takeQueueFamilyIndexForSurface(queuesFamiliesProperties, surface);
@@ -143,11 +143,11 @@ namespace zt::vulkan_renderer::tests
 		wd::Window window;
 		window.create(2, 2);
 
-		Surface surface = instance.createSurface(window);
-		ASSERT_TRUE(surface.isValid());
+		Surface surface{ nullptr };
+		ASSERT_TRUE(surface.create(instance, window));
 
-		Device device = physicalDevice.createDevice(surface);
-		ASSERT_TRUE(device.isValid());
+		Device device{ nullptr };
+		ASSERT_TRUE(device.create(physicalDevice, surface));
 
 		device.destroy();
 		surface.destroy(instance);
@@ -160,8 +160,8 @@ namespace zt::vulkan_renderer::tests
 		wd::Window window;
 		window.create(1, 1);
 
-		Surface surface = instance.createSurface(window);
-		ASSERT_TRUE(surface.isValid());
+		Surface surface{ nullptr };
+		ASSERT_TRUE(surface.create(instance, window));
 
 		const VkSurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getPhysicalDeviceSurfaceCapabilities(surface);
 
@@ -175,8 +175,8 @@ namespace zt::vulkan_renderer::tests
 		wd::Window window;
 		window.create(1, 1);
 
-		Surface surface = instance.createSurface(window);
-		ASSERT_TRUE(surface.isValid());
+		Surface surface{ nullptr };
+		ASSERT_TRUE(surface.create(instance, window));
 
 		const std::vector<VkSurfaceFormatKHR> surfaceFormats = physicalDevice.getPhysicalDeviceSurfaceFormats(surface);
 		ASSERT_FALSE(surfaceFormats.empty());
@@ -191,8 +191,8 @@ namespace zt::vulkan_renderer::tests
 		wd::Window window;
 		window.create(1, 1);
 
-		Surface surface = instance.createSurface(window);
-		ASSERT_TRUE(surface.isValid());
+		Surface surface{ nullptr };
+		ASSERT_TRUE(surface.create(instance, window));
 
 		const std::vector<VkPresentModeKHR> presentModes = physicalDevice.getPhysicalDeviceSurfacePresentModes(surface);
 		ASSERT_FALSE(presentModes.empty());

@@ -41,7 +41,7 @@ namespace zt::wd
 		glfwSetKeyCallback(window->getInternal(), Keyboard::KeyCallback);
 	}
 
-	void Keyboard::pushEvent(KeyboardKey key, std::int32_t scanCode, KeyboardEventType type, KeyboardMods mods)
+	void Keyboard::pushEvent(KeyboardKey key, [[maybe_unused]] std::int32_t scanCode, KeyboardEventType type, KeyboardMods mods)
 	{
 		KeyboardEvent keyboardEvent;
 		keyboardEvent.type = type;

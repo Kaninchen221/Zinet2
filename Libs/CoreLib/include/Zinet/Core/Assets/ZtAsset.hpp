@@ -21,7 +21,7 @@ namespace zt::core::assets
 
 		std::unique_ptr<ObjectBase> createObject(const std::filesystem::path& contentRootFolder) const;
 
-		virtual bool loadContentUsingMetaData(const std::filesystem::path& contentRootFolder) { return false; }
+		virtual bool loadContentUsingMetaData([[maybe_unused]] const std::filesystem::path& contentRootFolder) { return false; }
 
 	protected:
 

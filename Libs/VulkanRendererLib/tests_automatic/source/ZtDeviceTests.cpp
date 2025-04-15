@@ -39,11 +39,9 @@ namespace zt::vulkan_renderer::tests
 			physicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
 			ASSERT_TRUE(physicalDevice.isValid());
 
-			surface = instance.createSurface(window);
-			ASSERT_TRUE(surface.isValid());
+			ASSERT_TRUE(surface.create(instance, window));
 
-			device = physicalDevice.createDevice(surface);
-			ASSERT_TRUE(device.isValid());
+			ASSERT_TRUE(device.create(physicalDevice, surface));
 		}
 
 		void TearDown() override
@@ -65,8 +63,8 @@ namespace zt::vulkan_renderer::tests
 			wd::GLFW::Deinit();
 		}
 
-		Instance instance;
-		DebugUtilsMessenger debugUtilsMessenger;
+		Instance instance{ nullptr };
+		DebugUtilsMessenger debugUtilsMessenger{ nullptr };
 		PhysicalDevice physicalDevice{ nullptr };
 		wd::Window window;
 		Surface surface{ nullptr };
@@ -83,6 +81,9 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_destructible_v<Device>);
 	};
 
+	TEST_F(DeviceTests, PassTest)
+	{}
+
 	TEST_F(DeviceTests, GetQueueFamilyIndexTest)
 	{
 		const std::int32_t queueFamilyIndex = device.getQueueFamilyIndex();
@@ -93,13 +94,5 @@ namespace zt::vulkan_renderer::tests
 	{
 		const Queue presentQueue = device.getQueue();
 		ASSERT_TRUE(presentQueue.isValid());
-	}
-
-	TEST_F(DeviceTests, CreateSwapChainTest)
-	{
-		SwapChain swapChain = device.createSwapChain(physicalDevice, surface, window);
-		ASSERT_TRUE(swapChain.isValid());
-
-		swapChain.destroy(device);
 	}
 }

@@ -7,6 +7,11 @@
 
 #include <vulkan/vulkan.h>
 
+namespace zt::wd
+{
+	class Window;
+}
+
 namespace zt::vulkan_renderer
 {
 	class Instance;
@@ -30,7 +35,9 @@ namespace zt::vulkan_renderer
 		Surface& operator = (const Surface& other) noexcept = delete;
 		Surface& operator = (Surface&& other) noexcept = default;
 
-		void destroy(Instance& instance) noexcept;
+		bool create(const Instance& instance, wd::Window& window) noexcept;
+
+		void destroy(const Instance& instance) noexcept;
 
 	};
 }

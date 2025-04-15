@@ -7,9 +7,16 @@
 
 #include <vulkan/vulkan.h>
 
+namespace zt::wd
+{
+	class Window;
+}
+
 namespace zt::vulkan_renderer
 {
 	class Device;
+	class PhysicalDevice;
+	class Surface;
 
 	class ZINET_VULKAN_RENDERER_API SwapChain : public VulkanObject<VkSwapchainKHR>
 	{
@@ -31,7 +38,9 @@ namespace zt::vulkan_renderer
 		SwapChain& operator = (const SwapChain& other) noexcept = delete;
 		SwapChain& operator = (SwapChain&& other) noexcept = default;
 
-		void destroy(Device& device) noexcept;
+		bool create(const Device& device, const PhysicalDevice& physicalDevice, const Surface& surface, const wd::Window& window) noexcept;
+
+		void destroy(const Device& device) noexcept;
 
 		std::vector<VkImage> getImages(Device& device) noexcept;
 

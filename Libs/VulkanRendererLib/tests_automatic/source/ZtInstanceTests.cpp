@@ -33,8 +33,7 @@ namespace zt::vulkan_renderer::tests
 		{
 			wd::GLFW::Init();
 
-			instance.create();
-			ASSERT_TRUE(instance.isValid());
+			ASSERT_TRUE(instance.create());
 		}
 
 		void TearDown() override
@@ -45,17 +44,20 @@ namespace zt::vulkan_renderer::tests
 			wd::GLFW::Deinit();
 		}
 
-		Instance instance;
+		Instance instance{ nullptr };
 
 		static_assert(std::is_base_of_v<VulkanObject<VkInstance>, Instance>);
 
-		static_assert(std::is_default_constructible_v<Instance>);
+		static_assert(!std::is_default_constructible_v<Instance>);
 		static_assert(!std::is_copy_constructible_v<Instance>);
 		static_assert(!std::is_copy_assignable_v<Instance>);
 		static_assert(std::is_move_constructible_v<Instance>);
 		static_assert(std::is_move_assignable_v<Instance>);
 		static_assert(std::is_destructible_v<Instance>);
 	};
+
+	TEST_F(InstanceTests, PassTest)
+	{}
 
 	TEST_F(InstanceTests, GetRequiredExtensionsTest)
 	{
@@ -84,7 +86,7 @@ namespace zt::vulkan_renderer::tests
 
 	TEST(Instance, GetEnabledLayerNamesTest)
 	{
-		Instance instance;
+		Instance instance{ nullptr };
 
 		ASSERT_TRUE(instance.getEnabledLayerNames().empty());
 
@@ -99,17 +101,5 @@ namespace zt::vulkan_renderer::tests
 	TEST_F(InstanceTests, GetPhysicalDevicesTest)
 	{
 		[[maybe_unused]] std::vector<PhysicalDevice> physicalDevices = instance.getPhysicalDevices();
-	}
-
-	TEST_F(InstanceTests, CreateSurfaceTest)
-	{
-		wd::Window window;
-		window.create();
-
-		Surface surface = instance.createSurface(window);
-		ASSERT_TRUE(surface.isValid());
-
-		surface.destroy(instance);
-		window.destroyWindow();
 	}
 }

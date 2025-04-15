@@ -39,15 +39,18 @@ namespace zt::vulkan_renderer::tests
 			physicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
 			ASSERT_TRUE(physicalDevice.isValid());
 
-			surface = instance.createSurface(window);
-			ASSERT_TRUE(surface.isValid());
+			ASSERT_TRUE(surface.create(instance, window));
 
-			device = physicalDevice.createDevice(surface);
-			ASSERT_TRUE(device.isValid());
+			ASSERT_TRUE(device.create(physicalDevice, surface));
+
+			ASSERT_TRUE(swapChain.create(device, physicalDevice, surface, window));
 		}
 
 		void TearDown() override
 		{
+			swapChain.destroy(device);
+			ASSERT_FALSE(swapChain.isValid());
+
 			surface.destroy(instance);
 			ASSERT_FALSE(surface.isValid());
 
@@ -65,8 +68,8 @@ namespace zt::vulkan_renderer::tests
 			wd::GLFW::Deinit();
 		}
 
-		Instance instance;
-		DebugUtilsMessenger debugUtilsMessenger;
+		Instance instance{ nullptr };
+		DebugUtilsMessenger debugUtilsMessenger{ nullptr };
 		PhysicalDevice physicalDevice{ nullptr };
 		wd::Window window;
 		Surface surface{ nullptr };
@@ -84,14 +87,14 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_destructible_v<SwapChain>);
 	};
 
+	TEST_F(SwapChainTests, PassTest)
+	{}
+
 	TEST_F(SwapChainTests, GetImagesTest)
 	{
-		swapChain = device.createSwapChain(physicalDevice, surface, window);
-
 		std::vector<VkImage> swapChainImages = swapChain.getImages(device);
 		ASSERT_FALSE(swapChainImages.empty());
 
 		swapChain.destroy(device);
 	}
-
 }

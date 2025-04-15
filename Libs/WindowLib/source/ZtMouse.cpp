@@ -54,7 +54,7 @@ namespace zt::wd
 		positionEvents.insert(positionEvents.begin(), positionEvent);
 	}
 
-	void Mouse::pushButtonEvent(int button, int action, int mods)
+	void Mouse::pushButtonEvent(int button, int action, [[maybe_unused]] int mods)
 	{
 		MouseButtonEvent buttonEvent;
 		buttonEvent.type = static_cast<MouseButtonEventType>(action);

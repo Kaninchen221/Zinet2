@@ -27,9 +27,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Device(HandleType newObjectHandle, std::uint32_t newQueueFamilyIndex = InvalidIndex)
-			: VulkanObject(newObjectHandle),
-			queueFamilyIndex(newQueueFamilyIndex)
+		Device(HandleType newObjectHandle)
+			: VulkanObject(newObjectHandle)
 		{}
 
 		Device() noexcept = delete;
@@ -40,13 +39,13 @@ namespace zt::vulkan_renderer
 		Device& operator = (const Device& other) noexcept = delete;
 		Device& operator = (Device&& other) noexcept = default;
 
+		bool create(const PhysicalDevice& physicalDevice, const Surface& surface) noexcept;
+
 		void destroy() noexcept;
 
 		Queue getQueue() noexcept;
 
 		std::int32_t getQueueFamilyIndex() const noexcept { return queueFamilyIndex; }
-
-		SwapChain createSwapChain(const PhysicalDevice& physicalDevice, const Surface& surface, const wd::Window& window) noexcept;
 
 	protected:
 
