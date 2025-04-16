@@ -13,5 +13,6 @@ generator.linkLibraries = """
     ZinetCore
     ZinetMath
     ZinetWindow
+    ${shaderc_LIBRARIES}
     """
 project_generator.add_generator(generator)
