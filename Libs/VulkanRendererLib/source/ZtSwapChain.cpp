@@ -27,7 +27,7 @@ namespace zt::vulkan_renderer
 				static_cast<std::int32_t>(availableFormat.format), static_cast<std::int32_t>(availableFormat.colorSpace));
 		}
 
-		const auto format = VK_FORMAT_B8G8R8A8_SRGB;
+		format = VK_FORMAT_B8G8R8A8_SRGB;
 		const auto colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 		const bool supportsFormat = [availableFormats](VkFormat format, VkColorSpaceKHR colorSpace) -> bool
 		{

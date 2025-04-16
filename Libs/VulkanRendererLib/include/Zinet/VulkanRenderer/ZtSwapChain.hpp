@@ -44,8 +44,11 @@ namespace zt::vulkan_renderer
 
 		std::vector<VkImage> getImages(Device& device) noexcept;
 
+		VkFormat getFormat() const noexcept { return format; }
+
 	protected:
 
+		VkFormat format{};
 
 	};
 }

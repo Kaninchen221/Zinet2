@@ -90,8 +90,10 @@ namespace zt::vulkan_renderer::tests
 	TEST_F(SwapChainTests, PassTest)
 	{}
 
-	TEST_F(SwapChainTests, GetImagesTest)
+	TEST_F(SwapChainTests, Test)
 	{
+		EXPECT_NE(swapChain.getFormat(), VkFormat::VK_FORMAT_UNDEFINED);
+
 		std::vector<VkImage> swapChainImages = swapChain.getImages(device);
 		ASSERT_FALSE(swapChainImages.empty());
 
