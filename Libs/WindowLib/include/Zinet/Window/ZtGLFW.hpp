@@ -27,7 +27,7 @@ namespace zt::wd
 		static bool Init(bool hideWindow = true);
 		static void Deinit();
 
-		static bool IsInitialized() { return Initialized; }
+		static bool IsInitialized();
 
 		static void HideWindow();
 		static void UnhideWindow();

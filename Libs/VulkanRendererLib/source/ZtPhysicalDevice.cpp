@@ -1,5 +1,7 @@
 #include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
 
+#include "Zinet/Window/ZtGLFW.hpp"
+
 namespace zt::vulkan_renderer
 {
 
@@ -105,6 +107,9 @@ namespace zt::vulkan_renderer
 
 	const std::vector<const char*> PhysicalDevice::getRequiredExtensions() const noexcept
 	{
+		if (!wd::GLFW::IsInitialized())
+			return {};
+
 		return { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	}
 

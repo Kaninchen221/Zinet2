@@ -86,6 +86,9 @@ namespace zt::vulkan_renderer
 
 	std::vector<const char*> Instance::GetGlfwRequiredInstanceExtensions() noexcept
 	{
+		if (!wd::GLFW::IsInitialized())
+			return {};
+
 		std::uint32_t glfwExtensionCount = 0;
 		const char** glfwExtensions;
 

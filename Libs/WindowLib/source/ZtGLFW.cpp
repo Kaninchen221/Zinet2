@@ -78,7 +78,12 @@ namespace zt::wd
         
 		glfwTerminate();
         Initialized = false;
-    }
+	}
+
+	bool GLFW::IsInitialized()
+	{
+		return Initialized;
+	}
 
     void GLFW::HideWindow()
     {
