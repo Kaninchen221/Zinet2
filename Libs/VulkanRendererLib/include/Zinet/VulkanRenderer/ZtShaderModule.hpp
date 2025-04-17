@@ -36,6 +36,8 @@ namespace zt::vulkan_renderer
 
 		bool create(const Device& device, const shaderc::SpvCompilationResult& compilationResult);
 
+		VkPipelineShaderStageCreateInfo createPipelineShaderStageCreateInfo(const ShaderType shaderType) const;
+
 		void destroy(const Device& device);
 
 	};

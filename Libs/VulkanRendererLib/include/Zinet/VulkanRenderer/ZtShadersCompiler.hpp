@@ -21,6 +21,8 @@ namespace zt::vulkan_renderer
 
 	shaderc_shader_kind ShaderTypeToShaderCShaderKind(const ShaderType shaderType);
 
+	VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType);
+
 	class Device;
 
 	class ZINET_VULKAN_RENDERER_API ShadersCompiler

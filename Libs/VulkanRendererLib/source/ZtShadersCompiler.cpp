@@ -13,7 +13,23 @@ namespace zt::vulkan_renderer
 		case ShaderType::Vertex: return shaderc_shader_kind::shaderc_glsl_vertex_shader;
 		}
 
+		auto Logger = core::ConsoleLogger::Create("ShaderTypeToShaderCShaderKind");
+		Logger->error("Not supported ShaderType");
 		return shaderc_shader_kind::shaderc_glsl_infer_from_source;
+	}
+
+	VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType)
+	{
+		switch (shaderType)
+		{
+		case ShaderType::Compute: return VK_SHADER_STAGE_COMPUTE_BIT;
+		case ShaderType::Fragment: return VK_SHADER_STAGE_FRAGMENT_BIT;
+		case ShaderType::Vertex: return VK_SHADER_STAGE_VERTEX_BIT;
+		}
+
+		auto Logger = core::ConsoleLogger::Create("ShaderTypeToVkShaderStage");
+		Logger->error("Not supported ShaderType");
+		return {};
 	}
 
 	shaderc::SpvCompilationResult ShadersCompiler::compileFromFile(const std::filesystem::path& filePath, const ShaderType shaderType)
@@ -39,4 +55,5 @@ namespace zt::vulkan_renderer
  
 		return result;
 	}
+
 }

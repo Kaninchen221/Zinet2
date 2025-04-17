@@ -65,7 +65,7 @@ namespace zt::vulkan_renderer::tests
 	TEST_F(ShaderModuleTests, PassTest)
 	{}
 
-	TEST_F(ShaderModuleTests, CreateTest)
+	TEST_F(ShaderModuleTests, Test)
 	{
 		ShadersCompiler shadersCompiler;
 
@@ -77,6 +77,12 @@ namespace zt::vulkan_renderer::tests
 
 		ASSERT_TRUE(shaderModule.create(device, vertShaderResult));
 		ASSERT_TRUE(shaderModule.isValid());
+
+		VkPipelineShaderStageCreateInfo shaderStageCreateInfo = shaderModule.createPipelineShaderStageCreateInfo(ShaderType::Vertex);
+		EXPECT_EQ(shaderStageCreateInfo.sType, VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
+		EXPECT_EQ(shaderStageCreateInfo.stage, VK_SHADER_STAGE_VERTEX_BIT);
+		EXPECT_EQ(shaderStageCreateInfo.module, shaderModule.get());
+		EXPECT_EQ(shaderStageCreateInfo.pName, std::string_view{ "main" });
 
 		shaderModule.destroy(device);
 	}

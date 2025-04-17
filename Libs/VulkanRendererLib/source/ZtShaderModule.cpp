@@ -25,6 +25,17 @@ namespace zt::vulkan_renderer
 		}
 	}
 
+	VkPipelineShaderStageCreateInfo ShaderModule::createPipelineShaderStageCreateInfo(const ShaderType shaderType) const
+	{
+		VkPipelineShaderStageCreateInfo result{};
+		result.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		result.module = get();
+		result.stage = ShaderTypeToVkShaderStage(shaderType);
+		result.pName = "main";
+
+		return result;
+	}
+
 	void ShaderModule::destroy(const Device& device)
 	{
 		if (isValid())
@@ -33,4 +44,5 @@ namespace zt::vulkan_renderer
 			objectHandle = nullptr;
 		}
 	}
+
 }
