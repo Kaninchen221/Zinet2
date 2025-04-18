@@ -19,9 +19,9 @@ namespace zt::vulkan_renderer
 		Invalid
 	};
 
-	shaderc_shader_kind ShaderTypeToShaderCShaderKind(const ShaderType shaderType);
+	shaderc_shader_kind ShaderTypeToShaderCShaderKind(const ShaderType shaderType) noexcept;
 
-	VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType);
+	VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType) noexcept;
 
 	class Device;
 
@@ -41,10 +41,7 @@ namespace zt::vulkan_renderer
 		ShadersCompiler& operator = (const ShadersCompiler& other) noexcept = default;
 		ShadersCompiler& operator = (ShadersCompiler&& other) noexcept = default;
 
-		shaderc::SpvCompilationResult compileFromFile(const std::filesystem::path& filePath, const ShaderType shaderType);
-
-	protected:
-
+		shaderc::SpvCompilationResult compileFromFile(const std::filesystem::path& filePath, const ShaderType shaderType) const noexcept;
 
 	};
 }

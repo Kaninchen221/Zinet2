@@ -34,11 +34,11 @@ namespace zt::vulkan_renderer
 		ShaderModule& operator = (const ShaderModule& other) noexcept = delete;
 		ShaderModule& operator = (ShaderModule&& other) noexcept = default;
 
-		bool create(const Device& device, const shaderc::SpvCompilationResult& compilationResult);
+		bool create(const Device& device, const shaderc::SpvCompilationResult& compilationResult) noexcept;
 
-		VkPipelineShaderStageCreateInfo createPipelineShaderStageCreateInfo(const ShaderType shaderType) const;
+		VkPipelineShaderStageCreateInfo createPipelineShaderStageCreateInfo(const ShaderType shaderType) const noexcept;
 
-		void destroy(const Device& device);
+		void destroy(const Device& device) noexcept;
 
 	};
 }

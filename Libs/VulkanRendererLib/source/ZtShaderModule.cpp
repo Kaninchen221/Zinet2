@@ -3,7 +3,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool ShaderModule::create(const Device& device, const shaderc::SpvCompilationResult& compilationResult)
+	bool ShaderModule::create(const Device& device, const shaderc::SpvCompilationResult& compilationResult) noexcept
 	{
 		const auto count = compilationResult.cend() - compilationResult.cbegin();
 		const size_t codeSize = count * sizeof(std::uint32_t);
@@ -25,7 +25,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	VkPipelineShaderStageCreateInfo ShaderModule::createPipelineShaderStageCreateInfo(const ShaderType shaderType) const
+	VkPipelineShaderStageCreateInfo ShaderModule::createPipelineShaderStageCreateInfo(const ShaderType shaderType) const noexcept
 	{
 		VkPipelineShaderStageCreateInfo result{};
 		result.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -36,7 +36,7 @@ namespace zt::vulkan_renderer
 		return result;
 	}
 
-	void ShaderModule::destroy(const Device& device)
+	void ShaderModule::destroy(const Device& device) noexcept
 	{
 		if (isValid())
 		{

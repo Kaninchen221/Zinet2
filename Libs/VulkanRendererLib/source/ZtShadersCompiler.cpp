@@ -4,7 +4,7 @@
 
 namespace zt::vulkan_renderer
 {
-	shaderc_shader_kind ShaderTypeToShaderCShaderKind(const ShaderType shaderType)
+	shaderc_shader_kind ShaderTypeToShaderCShaderKind(const ShaderType shaderType) noexcept
 	{
 		switch (shaderType)
 		{
@@ -18,7 +18,7 @@ namespace zt::vulkan_renderer
 		return shaderc_shader_kind::shaderc_glsl_infer_from_source;
 	}
 
-	VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType)
+	VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType) noexcept
 	{
 		switch (shaderType)
 		{
@@ -32,7 +32,7 @@ namespace zt::vulkan_renderer
 		return {};
 	}
 
-	shaderc::SpvCompilationResult ShadersCompiler::compileFromFile(const std::filesystem::path& filePath, const ShaderType shaderType)
+	shaderc::SpvCompilationResult ShadersCompiler::compileFromFile(const std::filesystem::path& filePath, const ShaderType shaderType) const noexcept
 	{
 		core::File file;
 		file.open(filePath, core::FileOpenMode::Read);
