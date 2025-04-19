@@ -39,8 +39,6 @@ namespace zt::vulkan_renderer::tests
 
 			ASSERT_TRUE(renderPass.create(device, VK_FORMAT_B8G8R8A8_SRGB));
 			ASSERT_TRUE(renderPass.isValid());
-
-			wd::GLFW::Deinit();
 		}
 
 		void TearDown() override
@@ -59,6 +57,10 @@ namespace zt::vulkan_renderer::tests
 
 			instance.destroy();
 			ASSERT_FALSE(instance.isValid());
+
+			window.destroyWindow();
+
+			wd::GLFW::Deinit();
 		}
 
 		wd::Window window;
