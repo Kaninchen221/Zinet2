@@ -59,6 +59,8 @@ namespace zt::vulkan_renderer::tests
 
 			instance.destroy();
 			ASSERT_FALSE(instance.isValid());
+
+			window.destroyWindow();
 		}
 
 		wd::Window window;
