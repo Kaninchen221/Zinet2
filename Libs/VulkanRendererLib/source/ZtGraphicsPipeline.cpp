@@ -1,4 +1,7 @@
 #include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
+#include "Zinet/VulkanRenderer/ZtDevice.hpp"
+#include "Zinet/VulkanRenderer/ZtPipelineLayout.hpp"
+#include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
 
 namespace zt::vulkan_renderer
 {
@@ -101,7 +104,7 @@ namespace zt::vulkan_renderer
 	{
 		VkPipelineColorBlendStateCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-		createInfo.logicOpEnable = VK_TRUE;
+		createInfo.logicOpEnable = VK_FALSE;
 		createInfo.logicOp = VK_LOGIC_OP_COPY;
 		createInfo.attachmentCount = 1;
 		createInfo.pAttachments = &colorBlendAttachmentState;
@@ -111,6 +114,67 @@ namespace zt::vulkan_renderer
 		createInfo.blendConstants[3] = 0.0f;
 
 		return createInfo;
+	}
+
+	bool GraphicsPipeline::create(
+		const Device& device,
+		const PipelineLayout& pipelineLayout,
+		const RenderPass& renderPass,
+		const VkViewport& viewport,
+		const VkRect2D& scissor,
+		const ShadersStages& shadersStages) noexcept
+	{
+		const std::vector<VkDynamicState> dynamicStates = {
+			VK_DYNAMIC_STATE_VIEWPORT,
+			VK_DYNAMIC_STATE_SCISSOR
+		};
+
+		const auto dynamicStateCreateInfo = createVkPipelineDynamicStateCreateInfo(dynamicStates);
+		const auto vertexInputStateCreateInfo = createVkPipelineVertexInputStateCreateInfo();
+		const auto inputAssemblyStateCreateInfo = createVkPipelineInputAssemblyStateCreateInfo();
+		const auto viewportStateCreateInfo = createVkPipelineViewportStateCreateInfo(viewport, scissor);
+		const auto rasterizationStateCreateInfo = createVkPipelineRasterizationStateCreateInfo();
+		const auto multisampleStateCreateInfo = createVkPipelineMultisampleStateCreateInfo();
+		const auto colorBlendAttachmentState = createVkPipelineColorBlendAttachmentState();
+		const auto colorBlendStateCreateInfo = createVkPipelineColorBlendStateCreateInfo(colorBlendAttachmentState);
+
+		VkGraphicsPipelineCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+		createInfo.stageCount = 2;
+		createInfo.pStages = shadersStages.data();
+		createInfo.pVertexInputState = &vertexInputStateCreateInfo;
+		createInfo.pInputAssemblyState = &inputAssemblyStateCreateInfo;
+		createInfo.pViewportState = &viewportStateCreateInfo;
+		createInfo.pRasterizationState = &rasterizationStateCreateInfo;
+		createInfo.pMultisampleState = &multisampleStateCreateInfo;
+		createInfo.pDepthStencilState = nullptr;
+		createInfo.pColorBlendState = &colorBlendStateCreateInfo;
+		createInfo.pDynamicState = &dynamicStateCreateInfo;
+		createInfo.layout = pipelineLayout.get();
+		createInfo.renderPass = renderPass.get();
+		createInfo.subpass = 0;
+		createInfo.basePipelineHandle = VK_NULL_HANDLE;
+		createInfo.basePipelineIndex = -1;
+
+		const auto result = vkCreateGraphicsPipelines(device.get(), VK_NULL_HANDLE, 1, &createInfo, nullptr, &objectHandle);
+		if (result == VK_SUCCESS)
+		{
+			return true;
+		}
+		else
+		{
+			Logger->error("Couldn't create GraphicsPipeline, result: {}", static_cast<std::int32_t>(result));
+			return false;
+		}
+	}
+
+	void GraphicsPipeline::destroy(const Device& device) noexcept
+	{
+		if (isValid())
+		{
+			vkDestroyPipeline(device.get(), objectHandle, nullptr);
+			objectHandle = nullptr;
+		}
 	}
 
 }

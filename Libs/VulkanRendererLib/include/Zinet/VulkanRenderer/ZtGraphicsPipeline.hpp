@@ -10,6 +10,8 @@
 namespace zt::vulkan_renderer
 {
 	class Device;
+	class PipelineLayout;
+	class RenderPass;
 
 	class ZINET_VULKAN_RENDERER_API GraphicsPipeline : public VulkanObject<VkPipeline>
 	{
@@ -30,6 +32,18 @@ namespace zt::vulkan_renderer
 
 		GraphicsPipeline& operator = (const GraphicsPipeline& other) noexcept = delete;
 		GraphicsPipeline& operator = (GraphicsPipeline&& other) noexcept = default;
+
+		using ShadersStages = std::vector<VkPipelineShaderStageCreateInfo>;
+
+		bool create(
+			const Device& device, 
+			const PipelineLayout& pipelineLayout, 
+			const RenderPass& renderPass, 
+			const VkViewport& viewport, 
+			const VkRect2D& scissor,
+			const ShadersStages& shadersStages) noexcept;
+
+		void destroy(const Device& device) noexcept;
 
 		VkPipelineDynamicStateCreateInfo createVkPipelineDynamicStateCreateInfo(
 			const std::vector<VkDynamicState>& dynamicStates) const noexcept;
