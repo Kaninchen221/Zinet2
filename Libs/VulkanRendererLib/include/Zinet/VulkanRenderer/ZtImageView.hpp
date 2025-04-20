@@ -31,7 +31,7 @@ namespace zt::vulkan_renderer
 		ImageView& operator = (const ImageView& other) noexcept = delete;
 		ImageView& operator = (ImageView&& other) noexcept = default;
 
-		bool createFromSwapChainImage(const VkImage& vkImage, VkFormat format, const Device& device);
+		bool create(const VkImage& vkImage, VkFormat format, const Device& device);
 
 		void destroy(const Device& device);
 

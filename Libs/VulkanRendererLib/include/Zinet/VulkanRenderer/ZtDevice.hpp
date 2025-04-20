@@ -45,11 +45,11 @@ namespace zt::vulkan_renderer
 
 		Queue getQueue() noexcept;
 
-		std::int32_t getQueueFamilyIndex() const noexcept { return queueFamilyIndex; }
+		const auto& getQueueFamilyIndex() const noexcept { return queueFamilyIndex; }
 
 	protected:
 
-		std::int32_t queueFamilyIndex = InvalidIndex;
+		std::uint32_t queueFamilyIndex = InvalidIndex;
 
 	};
 }

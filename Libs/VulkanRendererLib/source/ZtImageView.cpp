@@ -5,7 +5,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool ImageView::createFromSwapChainImage(const VkImage& vkImage, VkFormat format, const Device& device)
+	bool ImageView::create(const VkImage& vkImage, VkFormat format, const Device& device)
 	{
 		VkImageViewCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
