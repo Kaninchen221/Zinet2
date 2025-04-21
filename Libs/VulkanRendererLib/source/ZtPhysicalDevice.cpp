@@ -105,7 +105,7 @@ namespace zt::vulkan_renderer
 		return extensions;
 	}
 
-	const std::vector<const char*> PhysicalDevice::getRequiredExtensions() const noexcept
+	const std::vector<const char*> PhysicalDevice::GetRequiredExtensions() noexcept
 	{
 		if (!wd::GLFW::IsInitialized())
 			return {};

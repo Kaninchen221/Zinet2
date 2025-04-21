@@ -54,7 +54,7 @@ namespace zt::vulkan_renderer
 
 		const std::vector<VkExtensionProperties> getDeviceExtensionProperties() const noexcept;
 
-		const std::vector<const char*> getRequiredExtensions() const noexcept;
+		static const std::vector<const char*> GetRequiredExtensions() noexcept;
 
 		const VkSurfaceCapabilitiesKHR getPhysicalDeviceSurfaceCapabilities(const Surface& surface) const noexcept;
 

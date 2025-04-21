@@ -45,7 +45,7 @@ namespace zt::vulkan_renderer
 		createInfo.queueCreateInfoCount = static_cast<std::uint32_t>(queueCreateInfos.size());
 		createInfo.pEnabledFeatures = &deviceFeatures;
 
-		const auto extensions = physicalDevice.getRequiredExtensions();
+		const auto extensions = PhysicalDevice::GetRequiredExtensions();
 		createInfo.enabledExtensionCount = static_cast<std::uint32_t>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
 
