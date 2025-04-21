@@ -6,6 +6,18 @@
 
 namespace zt::vulkan_renderer
 {
+	void Instance::PrintAPIVersion() noexcept
+	{
+		std::uint32_t apiVersion = 0;
+		vkEnumerateInstanceVersion(&apiVersion);
+
+		const auto major = VK_VERSION_MAJOR(apiVersion);
+		const auto minor = VK_VERSION_MINOR(apiVersion);
+		const auto patch = VK_VERSION_PATCH(apiVersion);
+
+		Logger->info("API Version: {} {} {}", major, minor, patch);
+	}
+
 	bool Instance::create() noexcept
 	{
 		VkApplicationInfo appInfo{};
@@ -27,6 +39,8 @@ namespace zt::vulkan_renderer
 		const auto extensions = getRequiredExtensions();
 		createInfo.enabledExtensionCount = static_cast<std::uint32_t>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
+
+		PrintAPIVersion();
 
 		VkResult result = vkCreateInstance(&createInfo, nullptr, &objectHandle);
 		return result == VK_SUCCESS;

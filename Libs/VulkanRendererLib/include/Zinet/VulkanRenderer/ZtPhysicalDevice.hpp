@@ -97,6 +97,8 @@ namespace zt::vulkan_renderer
 			const auto features = physicalDevice.getVkPhysicalDeviceFeatures();
 
 			Logger->info("Test physical device: {}", properties.deviceName);
+			Logger->info("API version: {}", properties.apiVersion);
+			Logger->info("Driver version: {}", properties.driverVersion);
 
 			const auto requiredExtensions = PhysicalDevice::GetRequiredExtensions();
 

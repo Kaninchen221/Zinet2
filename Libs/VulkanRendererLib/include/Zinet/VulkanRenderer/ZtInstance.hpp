@@ -35,6 +35,8 @@ namespace zt::vulkan_renderer
 		Instance& operator = (const Instance& other) noexcept = delete;
 		Instance& operator = (Instance&& other) noexcept = default;
 
+		static void PrintAPIVersion() noexcept;
+
 		bool create() noexcept;
 
 		void destroy() noexcept;
