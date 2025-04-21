@@ -16,12 +16,16 @@ namespace zt::vulkan_renderer
 		vulkanFunctions.vkGetDeviceProcAddr = &vkGetDeviceProcAddr;
 
 		VmaAllocatorCreateInfo allocatorCreateInfo = {};
-		allocatorCreateInfo.flags = VMA_ALLOCATOR_CREATE_EXT_MEMORY_BUDGET_BIT;
 		allocatorCreateInfo.vulkanApiVersion = VK_API_VERSION_1_2;
 		allocatorCreateInfo.physicalDevice = physicalDevice.get();
 		allocatorCreateInfo.device = device.get();
 		allocatorCreateInfo.instance = instance.get();
 		allocatorCreateInfo.pVulkanFunctions = &vulkanFunctions;
+
+		if (core::Contains(physicalDevice.GetRequiredExtensions(), std::string_view(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME)))
+			allocatorCreateInfo.flags = VMA_ALLOCATOR_CREATE_EXT_MEMORY_BUDGET_BIT;
+		else
+			allocatorCreateInfo.flags = 0;
 
 		const auto result = vmaCreateAllocator(&allocatorCreateInfo, &objectHandle);
 		if (result == VK_SUCCESS)
