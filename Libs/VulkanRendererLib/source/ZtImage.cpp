@@ -16,7 +16,7 @@ namespace zt::vulkan_renderer
 		createInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 		createInfo.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 		createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		createInfo.samples = VK_SAMPLE_COUNT_8_BIT;
+		createInfo.samples = VK_SAMPLE_COUNT_4_BIT;
 		createInfo.queueFamilyIndexCount = 1;
 		createInfo.mipLevels = 1;
 		createInfo.arrayLayers = 1;
