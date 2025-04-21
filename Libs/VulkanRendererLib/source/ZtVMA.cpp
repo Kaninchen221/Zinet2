@@ -14,6 +14,7 @@ namespace zt::vulkan_renderer
 		VmaVulkanFunctions vulkanFunctions = {};
 		vulkanFunctions.vkGetInstanceProcAddr = &vkGetInstanceProcAddr;
 		vulkanFunctions.vkGetDeviceProcAddr = &vkGetDeviceProcAddr;
+		vulkanFunctions.vkGetBufferMemoryRequirements2KHR = vkGetBufferMemoryRequirements2;
 
 		VmaAllocatorCreateInfo allocatorCreateInfo = {};
 		allocatorCreateInfo.vulkanApiVersion = VK_API_VERSION_1_2;
