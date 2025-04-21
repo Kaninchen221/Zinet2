@@ -110,7 +110,7 @@ namespace zt::vulkan_renderer
 		if (!wd::GLFW::IsInitialized())
 			return {};
 
-		return { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+		return { VK_KHR_SWAPCHAIN_EXTENSION_NAME, VK_EXT_MEMORY_BUDGET_EXTENSION_NAME };
 	}
 
 	const VkSurfaceCapabilitiesKHR PhysicalDevice::getPhysicalDeviceSurfaceCapabilities(const Surface& surface) const noexcept

@@ -14,5 +14,6 @@ generator.linkLibraries = """
     ZinetMath
     ZinetWindow
     ${shaderc_LIBRARIES}
+    ${vulkan-memory-allocator_LIBRARIES}
     """
 project_generator.add_generator(generator)
