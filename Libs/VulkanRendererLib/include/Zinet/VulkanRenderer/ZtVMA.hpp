@@ -7,8 +7,12 @@
 
 #define VMA_STATIC_VULKAN_FUNCTIONS 0
 #define VMA_DYNAMIC_VULKAN_FUNCTIONS 1
-#define VMA_IMPLEMENTATION
 #define VMA_VULKAN_VERSION 1002000
+
+#if ZINET_LINUX
+#	define VMA_MEMORY_BUDGET 0 // Not available feature on linux build machine
+#endif
+
 #include <vk_mem_alloc.h>
 
 namespace zt::vulkan_renderer

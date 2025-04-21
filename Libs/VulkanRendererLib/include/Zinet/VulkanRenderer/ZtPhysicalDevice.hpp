@@ -6,6 +6,7 @@
 #include "Zinet/VulkanRenderer/ZtSurface.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtUtils.hpp"
 
 #include <vulkan/vulkan.h>
 
@@ -95,16 +96,33 @@ namespace zt::vulkan_renderer
 			const auto properties = physicalDevice.getVkPhysicalDeviceProperties();
 			const auto features = physicalDevice.getVkPhysicalDeviceFeatures();
 
+			Logger->info("Test physical device: {}", properties.deviceName);
+
+			const auto requiredExtensions = PhysicalDevice::GetRequiredExtensions();
+
 			if (properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
 			{
-				const auto deviceExtensionProperties = physicalDevice.getDeviceExtensionProperties();
-				for (const auto& deviceExtension : deviceExtensionProperties)
+				bool foundAllRequiredExtensions = true;
+				const auto deviceExtensions = physicalDevice.getDeviceExtensionProperties();
+				for (auto requiredExtension : requiredExtensions)
 				{
-					if (std::string_view(deviceExtension.extensionName) == VK_KHR_SWAPCHAIN_EXTENSION_NAME)
+					const auto predicate = [requiredExtension](const VkExtensionProperties& extension) { return std::string_view(extension.extensionName) == requiredExtension; };
+					if (std::find_if(std::begin(deviceExtensions), std::end(deviceExtensions), predicate) == std::end(deviceExtensions))
 					{
-						Logger->info("Found physical device: {} with device type: {}", properties.deviceName, static_cast<std::int32_t>(properties.deviceType));
-						return std::move(physicalDevice);
+						Logger->info("Device don't support extension: {}", requiredExtension);
+						foundAllRequiredExtensions = false;
+						break;
 					}
+					else
+					{
+						Logger->info("Device support extension: {}", requiredExtension);
+					}
+				}
+
+				if (foundAllRequiredExtensions)
+				{
+					Logger->info("Found physical device: {} with device type: {}", properties.deviceName, static_cast<std::int32_t>(properties.deviceType));
+					return std::move(physicalDevice);
 				}
 			}
 		}

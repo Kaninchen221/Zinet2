@@ -10,6 +10,9 @@
 
 #include <type_traits>
 
+#define VMA_IMPLEMENTATION
+#include <vk_mem_alloc.h>
+
 namespace zt::vulkan_renderer::tests
 {
 	class VMATests : public ::testing::Test
