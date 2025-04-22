@@ -1,5 +1,6 @@
 #include "Zinet/VulkanRenderer/ZtImage.hpp"
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
+#include "Zinet/VulkanRenderer/ZtVMA.hpp"
 
 #include <vulkan/vulkan.h>
 
@@ -25,9 +26,12 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	bool Image::create(const Device& device, const VkImageCreateInfo& createInfo) noexcept
+	bool Image::create(const VMA& vma, const VkImageCreateInfo& createInfo) noexcept
 	{
-		const auto result = vkCreateImage(device.get(), &createInfo, nullptr, &objectHandle);
+		VmaAllocationCreateInfo allocationCreateInfo = {};
+		allocationCreateInfo.usage = VMA_MEMORY_USAGE_AUTO;
+
+		const auto result = vmaCreateImage(vma.get(), &createInfo, &allocationCreateInfo, &objectHandle, &allocation, &allocationInfo);
 		if (result == VK_SUCCESS)
 		{
 			format = createInfo.format;
@@ -40,11 +44,11 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void Image::destroy(const Device& device) noexcept
+	void Image::destroy(const VMA& vma) noexcept
 	{
 		if (isValid())
 		{
-			vkDestroyImage(device.get(), objectHandle, nullptr);
+			vmaDestroyImage(vma.get(), objectHandle, allocation);
 			objectHandle = nullptr;
 		}
 	}

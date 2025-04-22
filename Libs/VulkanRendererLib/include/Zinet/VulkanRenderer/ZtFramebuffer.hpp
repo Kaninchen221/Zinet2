@@ -7,6 +7,8 @@
 
 #include <vulkan/vulkan.h>
 
+#include "Zinet/Math/ZtVecTypes.hpp"
+
 namespace zt::wd
 {
 	class Window;
@@ -14,7 +16,9 @@ namespace zt::wd
 
 namespace zt::vulkan_renderer
 {
-	class Instance;
+	class Device;
+	class RenderPass;
+	class ImageView;
 
 	class ZINET_VULKAN_RENDERER_API Framebuffer : public VulkanObject<VkFramebuffer>
 	{
@@ -35,5 +39,12 @@ namespace zt::vulkan_renderer
 		Framebuffer& operator = (const Framebuffer& other) noexcept = delete;
 		Framebuffer& operator = (Framebuffer&& other) noexcept = default;
 
+		bool create(const Device& device, const RenderPass& renderPass, const ImageView& imageView, const Vector2ui& size) noexcept;
+
+		void destroy(const Device& device) noexcept;
+
+	protected:
+
+		VkFormat format = VK_FORMAT_UNDEFINED;
 	};
 }

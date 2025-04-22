@@ -45,7 +45,7 @@ namespace zt::vulkan_renderer::tests
 
 			ASSERT_TRUE(swapChain.create(device, physicalDevice, surface, window));
 			
-			ASSERT_TRUE(renderPass.create(device, swapChain.getFormat()));
+			ASSERT_TRUE(renderPass.createForPresent(device, swapChain.getFormat()));
 
 			ASSERT_TRUE(pipelineLayout.create(device));
 

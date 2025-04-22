@@ -30,9 +30,15 @@ namespace zt::vulkan_renderer
 		RenderPass& operator = (const RenderPass& other) noexcept = delete;
 		RenderPass& operator = (RenderPass&& other) noexcept = default;
 	
-		bool create(const Device& device, const VkFormat format) noexcept;
+		bool createForPresent(const Device& device, const VkFormat format) noexcept;
+
+		bool createForDraw(const Device& device, const VkFormat format) noexcept;
 
 		void destroy(const Device& device) noexcept;
+
+	protected:
+
+		bool createInternal(const Device& device, const VkRenderPassCreateInfo& createInfo) noexcept;
 
 	};
 }

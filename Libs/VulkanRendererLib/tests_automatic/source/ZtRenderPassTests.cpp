@@ -37,7 +37,7 @@ namespace zt::vulkan_renderer::tests
 
 			ASSERT_TRUE(device.create(physicalDevice, surface));
 
-			ASSERT_TRUE(renderPass.create(device, VK_FORMAT_B8G8R8A8_SRGB));
+			ASSERT_TRUE(renderPass.createForPresent(device, VK_FORMAT_B8G8R8A8_SRGB));
 			ASSERT_TRUE(renderPass.isValid());
 		}
 

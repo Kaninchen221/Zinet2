@@ -4,7 +4,7 @@
 namespace zt::vulkan_renderer
 {
 
-	bool RenderPass::create(const Device& device, const VkFormat format) noexcept
+	bool RenderPass::createForPresent(const Device& device, const VkFormat format) noexcept
 	{
 		VkAttachmentDescription colorAttachmentDescription{};
 		colorAttachmentDescription.format = format;
@@ -32,6 +32,42 @@ namespace zt::vulkan_renderer
 		createInfo.subpassCount = 1;
 		createInfo.pSubpasses = &subpassDescription;
 
+		return createInternal(device, createInfo);
+	}
+
+	bool RenderPass::createForDraw(const Device& device, const VkFormat format) noexcept
+	{
+		VkAttachmentDescription colorAttachmentDescription{};
+		colorAttachmentDescription.format = format;
+		colorAttachmentDescription.samples = VK_SAMPLE_COUNT_4_BIT;
+		colorAttachmentDescription.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachmentDescription.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachmentDescription.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		colorAttachmentDescription.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		colorAttachmentDescription.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		colorAttachmentDescription.finalLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+
+		VkAttachmentReference colorAttachmentReference{};
+		colorAttachmentReference.attachment = 0;
+		colorAttachmentReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+		VkSubpassDescription subpassDescription{};
+		subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		subpassDescription.colorAttachmentCount = 1;
+		subpassDescription.pColorAttachments = &colorAttachmentReference;
+
+		VkRenderPassCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+		createInfo.attachmentCount = 1;
+		createInfo.pAttachments = &colorAttachmentDescription;
+		createInfo.subpassCount = 1;
+		createInfo.pSubpasses = &subpassDescription;
+
+		return createInternal(device, createInfo);
+	}
+
+	bool RenderPass::createInternal(const Device& device, const VkRenderPassCreateInfo& createInfo) noexcept
+	{
 		const auto result = vkCreateRenderPass(device.get(), &createInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
 		{

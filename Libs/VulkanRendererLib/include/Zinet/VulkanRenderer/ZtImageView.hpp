@@ -35,8 +35,11 @@ namespace zt::vulkan_renderer
 
 		void destroy(const Device& device);
 
+		VkFormat getFormat() const noexcept { return format; }
+
 	protected:
 
+		VkFormat format = VK_FORMAT_UNDEFINED;
 
 	};
 }

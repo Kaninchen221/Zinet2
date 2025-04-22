@@ -7,9 +7,12 @@
 
 #include <vulkan/vulkan.h>
 
+#include <vk_mem_alloc.h>
+
 namespace zt::vulkan_renderer
 {
 	class Device;
+	class VMA;
 
 	class ZINET_VULKAN_RENDERER_API Image : public VulkanObject<VkImage>
 	{
@@ -33,13 +36,16 @@ namespace zt::vulkan_renderer
 
 		static VkImageCreateInfo GetDefaultCreateInfo(const Device& device) noexcept;
 
-		bool create(const Device& device, const VkImageCreateInfo& createInfo) noexcept;
+		bool create(const VMA& vma, const VkImageCreateInfo& createInfo) noexcept;
 
-		void destroy(const Device& device) noexcept;
+		void destroy(const VMA& vma) noexcept;
 
 		VkFormat getFormat() const noexcept { return format; }
 
 	protected:
+
+		VmaAllocation allocation{};
+		VmaAllocationInfo allocationInfo{};
 
 		VkFormat format = VK_FORMAT_UNDEFINED;
 

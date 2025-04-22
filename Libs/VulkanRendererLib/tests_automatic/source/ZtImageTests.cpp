@@ -7,6 +7,7 @@
 #include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
+#include "Zinet/VulkanRenderer/ZtVMA.hpp"
 
 #include <gtest/gtest.h>
 
@@ -37,15 +38,20 @@ namespace zt::vulkan_renderer::tests
 
 			ASSERT_TRUE(device.create(physicalDevice, Surface{ nullptr }));
 
+			ASSERT_TRUE(vma.create(device, physicalDevice, instance));
+
 			const auto imageCreateInfo = Image::GetDefaultCreateInfo(device);
-			ASSERT_TRUE(image.create(device, imageCreateInfo));
+			ASSERT_TRUE(image.create(vma, imageCreateInfo));
 			ASSERT_TRUE(image.isValid());
 		}
 
 		void TearDown() override
 		{
-			image.destroy(device);
+			image.destroy(vma);
 			ASSERT_FALSE(image.isValid());
+
+			vma.destroy();
+			ASSERT_FALSE(vma.isValid());
 
 			device.destroy();
 			ASSERT_FALSE(device.isValid());
@@ -61,6 +67,7 @@ namespace zt::vulkan_renderer::tests
 		DebugUtilsMessenger debugUtilsMessenger{ nullptr };
 		PhysicalDevice physicalDevice{ nullptr };
 		Device device{ nullptr };
+		VMA vma{ nullptr };
 		Image image{ nullptr };
 
 		static_assert(std::is_base_of_v<VulkanObject<VkImage>, Image>);

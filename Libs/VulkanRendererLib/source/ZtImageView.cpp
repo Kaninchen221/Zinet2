@@ -5,13 +5,13 @@
 
 namespace zt::vulkan_renderer
 {
-	bool ImageView::create(const VkImage& vkImage, VkFormat format, const Device& device)
+	bool ImageView::create(const VkImage& vkImage, VkFormat newFormat, const Device& device)
 	{
 		VkImageViewCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 		createInfo.image = vkImage;
 		createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		createInfo.format = format;
+		createInfo.format = newFormat;
 		createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
 		createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
 		createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -25,6 +25,7 @@ namespace zt::vulkan_renderer
 		const auto createResult = vkCreateImageView(device.get(), &createInfo, nullptr, &objectHandle);
 		if (createResult == VK_SUCCESS)
 		{
+			format = newFormat;
 			return true;
 		}
 		else

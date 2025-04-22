@@ -86,6 +86,7 @@ namespace zt::vulkan_renderer::tests
 			auto& imageView = imageViews.emplace_back(nullptr);
 			ASSERT_TRUE(imageView.create(image, swapChain.getFormat(), device));
 			ASSERT_TRUE(imageView.isValid());
+			ASSERT_EQ(imageView.getFormat(), swapChain.getFormat());
 
 			imageView.destroy(device);
 		}

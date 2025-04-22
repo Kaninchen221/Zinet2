@@ -5,6 +5,8 @@
 #include "Zinet/VulkanRenderer/ZtFramebuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtImageView.hpp"
 #include "Zinet/VulkanRenderer/ZtImage.hpp"
+#include "Zinet/VulkanRenderer/ZtVMA.hpp"
+#include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
 
 #include "Zinet/Core/ZtPaths.hpp"
 #include "Zinet/Core/ZtUtils.hpp"
@@ -37,21 +39,35 @@ namespace zt::vulkan_renderer::tests
 
 			ASSERT_TRUE(device.create(physicalDevice, Surface{ nullptr }));
 
-			// TODO: Complete it after integrating VMA
+			ASSERT_TRUE(vma.create(device, physicalDevice, instance));
 
-			//const auto imageCreateInfo = Image::GetDefaultCreateInfo(device);
-			//ASSERT_TRUE(image.create(device, imageCreateInfo));
+			const auto imageCreateInfo = Image::GetDefaultCreateInfo(device);
+			ASSERT_TRUE(image.create(vma, imageCreateInfo));
 
-			//ASSERT_TRUE(imageView.create(image.get(), image.getFormat(), device));
+			ASSERT_TRUE(imageView.create(image.get(), image.getFormat(), device));
+
+			ASSERT_TRUE(renderPass.createForDraw(device, image.getFormat()));
+
+			ASSERT_TRUE(framebuffer.create(device, renderPass, imageView, { 1, 1 }));
+			ASSERT_TRUE(framebuffer.isValid());
 		}
 
 		void TearDown() override
 		{
-			//imageView.destroy(device);
-			//ASSERT_FALSE(imageView.isValid());
+			framebuffer.destroy(device);
+			ASSERT_FALSE(framebuffer.isValid());
 
-			//image.destroy(device);
-			//ASSERT_FALSE(image.isValid());
+			renderPass.destroy(device);
+			ASSERT_FALSE(renderPass.isValid());
+
+			imageView.destroy(device);
+			ASSERT_FALSE(imageView.isValid());
+
+			image.destroy(vma);
+			ASSERT_FALSE(image.isValid());
+
+			vma.destroy();
+			ASSERT_FALSE(vma.isValid());
 
 			device.destroy();
 			ASSERT_FALSE(device.isValid());
@@ -67,6 +83,8 @@ namespace zt::vulkan_renderer::tests
 		DebugUtilsMessenger debugUtilsMessenger{ nullptr };
 		PhysicalDevice physicalDevice{ nullptr };
 		Device device{ nullptr };
+		VMA vma{ nullptr };
+		RenderPass renderPass{ nullptr };
 		Image image{ nullptr };
 		ImageView imageView{ nullptr };
 		Framebuffer framebuffer{ nullptr };
