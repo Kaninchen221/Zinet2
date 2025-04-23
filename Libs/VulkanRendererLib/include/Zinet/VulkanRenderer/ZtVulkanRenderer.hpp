@@ -1,11 +1,25 @@
 #pragma once
 
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
+#include "Zinet/VulkanRenderer/ZtInstance.hpp"
+#include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
+#include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
+#include "Zinet/VulkanRenderer/ZtSurface.hpp"
+#include "Zinet/VulkanRenderer/ZtDevice.hpp"
+#include "Zinet/VulkanRenderer/ZtSwapChain.hpp"
+#include "Zinet/VulkanRenderer/ZtImageView.hpp"
+#include "Zinet/VulkanRenderer/ZtFramebuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
-
 #include "Zinet/Core/ZtLogger.hpp"
+
 #include "Zinet/Math/ZtVecTypes.hpp"
+
+namespace zt::wd
+{
+	class Window;
+}
 
 namespace zt::vulkan_renderer
 {
@@ -18,7 +32,22 @@ namespace zt::vulkan_renderer
 
 	public:
 
+		bool start(wd::Window& window);
+
+		void shutdown();
+
 	protected:
+
+		Instance instance{ nullptr };
+		DebugUtilsMessenger debugUtilsMessenger{ nullptr };
+		PhysicalDevice physicalDevice{ nullptr };
+		Surface surface{ nullptr };
+		Device device{ nullptr };
+		SwapChain swapChain{ nullptr };
+		std::vector<VkImage> images;
+		std::vector<ImageView> imageViews;
+		RenderPass renderPass{ nullptr };
+		std::vector<Framebuffer> framebuffers;
 
 	public:
 /*GENERATED_CODE_START*/

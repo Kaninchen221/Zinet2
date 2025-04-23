@@ -8,6 +8,9 @@
 
 #include <vulkan/vulkan.h>
 
+#include "Zinet/Window/ZtGLFW.hpp"
+#include "Zinet/Window/ZtWindow.hpp"
+
 namespace zt::vulkan_renderer::tests
 {
 	class VulkanRendererTests : public ::testing::Test
@@ -31,12 +34,28 @@ namespace zt::vulkan_renderer::tests
 		}
 
 		VulkanRenderer renderer;
-
-		VkInstance Get() { return nullptr; }
 	};
 
 	TEST_F(VulkanRendererTests, Test)
 	{
+		wd::GLFW::Init();
 
+		wd::Window window;
+		window.create(2, 2);
+
+		renderer.start(window);
+
+		while (window.isOpen())
+		{
+			// Render here
+
+			window.requestCloseWindow();
+		}
+
+		renderer.shutdown();
+
+		window.destroyWindow();
+
+		wd::GLFW::Deinit();
 	}
 }

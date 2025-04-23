@@ -59,4 +59,14 @@ namespace zt::vulkan_renderer::tests
 	{
 		ASSERT_FALSE(vulkanObject.isValid());
 	}
+
+	//TEST_F(VulkanObjectTests, InvalidateTest)
+	//{
+	//	int i{};
+	//	vulkanObject = VulkanObjectType{ &i };
+	//	ASSERT_TRUE(vulkanObject.isValid());
+	//
+	//	vulkanObject.invalidate();
+	//	ASSERT_FALSE(vulkanObject.isValid());
+	//}
 }

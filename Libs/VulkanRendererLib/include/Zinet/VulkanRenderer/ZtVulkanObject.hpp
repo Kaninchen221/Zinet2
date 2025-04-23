@@ -34,6 +34,9 @@ namespace zt::vulkan_renderer
 
 		bool isValid() const noexcept { return objectHandle != nullptr; }
 
+		// Useful for Image created from VkImage that was acquired from SwapChain 
+		void invalidate() { objectHandle = nullptr; }
+
 	protected:
 
 		HandleType objectHandle = nullptr;
