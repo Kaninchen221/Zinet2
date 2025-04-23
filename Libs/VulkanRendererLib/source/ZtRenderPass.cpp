@@ -68,6 +68,9 @@ namespace zt::vulkan_renderer
 
 	bool RenderPass::createInternal(const Device& device, const VkRenderPassCreateInfo& createInfo) noexcept
 	{
+		if (isValid())
+			return false;
+
 		const auto result = vkCreateRenderPass(device.get(), &createInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
 		{

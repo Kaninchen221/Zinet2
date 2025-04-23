@@ -6,6 +6,9 @@ namespace zt::vulkan_renderer
 
 	bool PipelineLayout::create(const Device& device) noexcept
 	{
+		if (isValid())
+			return false;
+
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 0;

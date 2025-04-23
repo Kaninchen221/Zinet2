@@ -124,6 +124,9 @@ namespace zt::vulkan_renderer
 		const VkRect2D& scissor,
 		const ShadersStages& shadersStages) noexcept
 	{
+		if (isValid())
+			return false;
+
 		const std::vector<VkDynamicState> dynamicStates = {
 			VK_DYNAMIC_STATE_VIEWPORT,
 			VK_DYNAMIC_STATE_SCISSOR

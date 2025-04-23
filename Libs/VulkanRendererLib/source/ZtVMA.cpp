@@ -11,6 +11,9 @@ namespace zt::vulkan_renderer
 
 	bool VMA::create(const Device& device, const PhysicalDevice& physicalDevice, const Instance& instance) noexcept
 	{
+		if (isValid())
+			return false;
+
 		VmaVulkanFunctions vulkanFunctions = {};
 		vulkanFunctions.vkGetInstanceProcAddr = &vkGetInstanceProcAddr;
 		vulkanFunctions.vkGetDeviceProcAddr = &vkGetDeviceProcAddr;

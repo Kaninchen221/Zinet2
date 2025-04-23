@@ -28,6 +28,9 @@ namespace zt::vulkan_renderer
 
 	bool Image::create(const VMA& vma, const VkImageCreateInfo& createInfo) noexcept
 	{
+		if (isValid())
+			return false;
+
 		VmaAllocationCreateInfo allocationCreateInfo = {};
 		allocationCreateInfo.usage = VMA_MEMORY_USAGE_AUTO;
 

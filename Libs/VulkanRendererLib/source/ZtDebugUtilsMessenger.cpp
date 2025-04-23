@@ -5,6 +5,9 @@ namespace zt::vulkan_renderer
 {
 	bool DebugUtilsMessenger::create(const Instance& instance) noexcept
 	{
+		if (isValid())
+			return false;
+
 		if (!instance.getEnableValidationLayers())
 		{
 			Logger->error("Instance has disabled validation layers");

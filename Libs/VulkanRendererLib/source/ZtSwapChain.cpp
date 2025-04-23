@@ -15,6 +15,9 @@ namespace zt::vulkan_renderer
 {
 	bool SwapChain::create(const Device& device, const PhysicalDevice& physicalDevice, const Surface& surface, const wd::Window& window) noexcept
 	{
+		if (isValid())
+			return false;
+
 		const auto surfaceCapabilities = physicalDevice.getPhysicalDeviceSurfaceCapabilities(surface);
 		const auto availableFormats = physicalDevice.getPhysicalDeviceSurfaceFormats(surface);
 		const auto presentModes = physicalDevice.getPhysicalDeviceSurfacePresentModes(surface);

@@ -20,6 +20,9 @@ namespace zt::vulkan_renderer
 
 	bool Instance::create() noexcept
 	{
+		if (isValid())
+			return false;
+
 		VkApplicationInfo appInfo{};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 		appInfo.pApplicationName = "Zinet Vulkan Renderer";

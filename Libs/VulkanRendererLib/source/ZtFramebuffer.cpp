@@ -8,6 +8,9 @@ namespace zt::vulkan_renderer
 
 	bool Framebuffer::create(const Device& device, const RenderPass& renderPass, const ImageView& imageView, const Vector2ui& size) noexcept
 	{
+		if (isValid())
+			return false;
+
 		auto attachment = imageView.get();
 
 		VkFramebufferCreateInfo framebufferInfo{};

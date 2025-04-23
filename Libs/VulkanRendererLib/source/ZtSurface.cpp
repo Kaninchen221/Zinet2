@@ -7,6 +7,9 @@ namespace zt::vulkan_renderer
 {
 	bool Surface::create(const Instance& instance, wd::Window& window) noexcept
 	{
+		if (isValid())
+			return false;
+
 		VkResult result = glfwCreateWindowSurface(instance.get(), window.getInternal(), nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
 		{

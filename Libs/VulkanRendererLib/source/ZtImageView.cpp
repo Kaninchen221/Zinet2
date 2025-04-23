@@ -7,6 +7,9 @@ namespace zt::vulkan_renderer
 {
 	bool ImageView::create(const VkImage& vkImage, VkFormat newFormat, const Device& device)
 	{
+		if (isValid())
+			return false;
+
 		VkImageViewCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 		createInfo.image = vkImage;

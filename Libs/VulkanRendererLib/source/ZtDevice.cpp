@@ -10,6 +10,9 @@ namespace zt::vulkan_renderer
 {
 	bool Device::create(const PhysicalDevice& physicalDevice, const Surface& surface) noexcept
 	{
+		if (isValid())
+			return false;
+
 		const auto createQueueCreateInfo = [](std::uint32_t queueFamilyIndex, std::uint32_t count, const std::vector<float>& priorities)
 		{
 			VkDeviceQueueCreateInfo queueCreateInfo{};

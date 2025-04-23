@@ -5,6 +5,9 @@ namespace zt::vulkan_renderer
 {
 	bool ShaderModule::create(const Device& device, const shaderc::SpvCompilationResult& compilationResult) noexcept
 	{
+		if (isValid())
+			return false;
+
 		const auto count = compilationResult.cend() - compilationResult.cbegin();
 		const size_t codeSize = count * sizeof(std::uint32_t);
 
