@@ -81,11 +81,11 @@ namespace zt::vulkan_renderer
 	Queue Device::getQueue() noexcept
 	{
 		if (queueFamilyIndex == InvalidIndex)
-			return Queue{ nullptr };
+			return Queue{ nullptr, InvalidIndex };
 
 		VkQueue queueObjectHandle = nullptr;
 		vkGetDeviceQueue(objectHandle, queueFamilyIndex, 0, &queueObjectHandle);
 
-		return Queue(queueObjectHandle);
+		return Queue(queueObjectHandle, queueFamilyIndex);
 	}
 }

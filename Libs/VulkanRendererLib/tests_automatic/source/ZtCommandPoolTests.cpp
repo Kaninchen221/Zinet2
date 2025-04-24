@@ -2,29 +2,22 @@
 
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
-#include "Zinet/VulkanRenderer/ZtQueue.hpp"
-
-#include "Zinet/Core/ZtPaths.hpp"
-#include "Zinet/Core/ZtUtils.hpp"
+#include "Zinet/VulkanRenderer/ZtCommandPool.hpp"
 
 #include <gtest/gtest.h>
 
 #include <vulkan/vulkan.h>
 
-#include "Zinet/Window/ZtGLFW.hpp"
-
 #include <type_traits>
 
 namespace zt::vulkan_renderer::tests
 {
-	class QueueTests : public ::testing::Test
+	class CommandPoolTests : public ::testing::Test
 	{
 	protected:
 
 		void SetUp() override
 		{
-			wd::GLFW::Init();
-
 			instance.setEnableValidationLayers(true);
 			ASSERT_TRUE(instance.create());
 
@@ -34,16 +27,19 @@ namespace zt::vulkan_renderer::tests
 			physicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
 			ASSERT_TRUE(physicalDevice.isValid());
 
-			ASSERT_TRUE(device.create(physicalDevice, Surface{ nullptr })); // We don't need valid Surface for Queue tests
+			ASSERT_TRUE(device.create(physicalDevice, Surface{ nullptr }));
 
 			queue = device.getQueue();
 			ASSERT_TRUE(queue.isValid());
 
-			ASSERT_EQ(queue.getQueueFamilyIndex(), device.getQueueFamilyIndex());
+			ASSERT_TRUE(commandPool.create(device, queue));
 		}
 
 		void TearDown() override
 		{
+			commandPool.destroy(device);
+			ASSERT_FALSE(commandPool.isValid());
+
 			device.destroy();
 			ASSERT_FALSE(device.isValid());
 
@@ -52,8 +48,6 @@ namespace zt::vulkan_renderer::tests
 
 			instance.destroy();
 			ASSERT_FALSE(instance.isValid());
-
-			wd::GLFW::Deinit();
 		}
 
 		Instance instance{ nullptr };
@@ -61,18 +55,19 @@ namespace zt::vulkan_renderer::tests
 		PhysicalDevice physicalDevice{ nullptr };
 		Device device{ nullptr };
 		Queue queue{ nullptr };
+		CommandPool commandPool{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkQueue, false>, Queue>);
+		static_assert(std::is_base_of_v<VulkanObject<VkCommandPool>, CommandPool>);
 
-		static_assert(std::is_constructible_v<Queue, VkQueue, std::uint32_t>);
-		static_assert(!std::is_default_constructible_v<Queue>);
-		static_assert(!std::is_copy_constructible_v<Queue>);
-		static_assert(!std::is_copy_assignable_v<Queue>);
-		static_assert(std::is_move_constructible_v<Queue>);
-		static_assert(std::is_move_assignable_v<Queue>);
-		static_assert(std::is_destructible_v<Queue>);
+		static_assert(std::is_constructible_v<CommandPool, VkCommandPool>);
+		static_assert(!std::is_default_constructible_v<CommandPool>);
+		static_assert(!std::is_copy_constructible_v<CommandPool>);
+		static_assert(!std::is_copy_assignable_v<CommandPool>);
+		static_assert(std::is_move_constructible_v<CommandPool>);
+		static_assert(std::is_move_assignable_v<CommandPool>);
+		static_assert(std::is_destructible_v<CommandPool>);
 	};
 
-	TEST_F(QueueTests, PassTest)
+	TEST_F(CommandPoolTests, PassTest)
 	{}
 }

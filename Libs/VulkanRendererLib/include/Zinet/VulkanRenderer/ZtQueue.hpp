@@ -17,8 +17,10 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Queue(HandleType newObjectHandle)
-			: VulkanObject(newObjectHandle) {}
+		Queue(HandleType newObjectHandle, std::uint32_t newQueueFamilyIndex = InvalidIndex)
+			: VulkanObject(newObjectHandle),
+			  queueFamilyIndex{ newQueueFamilyIndex }
+		{}
 
 		Queue() noexcept = delete;
 		Queue(const Queue& other) noexcept = delete;
@@ -27,5 +29,12 @@ namespace zt::vulkan_renderer
 
 		Queue& operator = (const Queue& other) noexcept = delete;
 		Queue& operator = (Queue&& other) noexcept = default;
+
+		const auto& getQueueFamilyIndex() const noexcept { return queueFamilyIndex; }
+
+	protected:
+
+		std::uint32_t queueFamilyIndex = InvalidIndex;
+
 	};
 }
