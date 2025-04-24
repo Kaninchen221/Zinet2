@@ -44,14 +44,16 @@ namespace zt::vulkan_renderer
 		for (auto image : images)
 		{
 			auto& imageView = imageViews.emplace_back(nullptr);
-			if (!imageView.create(image, swapChain.getFormat(), device))
+			const auto imageViewCreateInfo = ImageView::GetDefaultCreateInfo(image, swapChain.getFormat());
+			if (!imageView.create(device, imageViewCreateInfo))
 			{
 				Logger->error("Couldn't create image view from one of the swap chain images");
 				return false;
 			}
 		}
 
-		if (!renderPass.createForPresent(device, swapChain.getFormat()))
+		const auto renderPassCreateInfo = RenderPass::GetPresentCreateInfo(swapChain.getFormat());
+		if (!renderPass.create(device, renderPassCreateInfo))
 			return false;
 
 		const auto windowSize = window.getSize();

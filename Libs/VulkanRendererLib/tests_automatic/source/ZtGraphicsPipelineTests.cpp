@@ -44,8 +44,9 @@ namespace zt::vulkan_renderer::tests
 			ASSERT_TRUE(device.create(physicalDevice, surface));
 
 			ASSERT_TRUE(swapChain.create(device, physicalDevice, surface, window));
-			
-			ASSERT_TRUE(renderPass.createForPresent(device, swapChain.getFormat()));
+
+			const auto renderPassCreateInfo = RenderPass::GetPresentCreateInfo(VK_FORMAT_B8G8R8A8_SRGB);
+			ASSERT_TRUE(renderPass.create(device, renderPassCreateInfo));
 
 			ASSERT_TRUE(pipelineLayout.create(device));
 

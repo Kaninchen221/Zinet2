@@ -19,8 +19,9 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		ImageView(HandleType newObjectHandle)
-			: VulkanObject(newObjectHandle)
+		ImageView(HandleType newObjectHandle, VkFormat newFormat = VK_FORMAT_UNDEFINED)
+			: VulkanObject(newObjectHandle), 
+			  format{ newFormat }
 		{}
 
 		ImageView() noexcept = delete;
@@ -31,9 +32,11 @@ namespace zt::vulkan_renderer
 		ImageView& operator = (const ImageView& other) noexcept = delete;
 		ImageView& operator = (ImageView&& other) noexcept = default;
 
-		bool create(const VkImage& vkImage, VkFormat format, const Device& device);
+		static VkImageViewCreateInfo GetDefaultCreateInfo(const VkImage& vkImage, VkFormat format) noexcept;
 
-		void destroy(const Device& device);
+		bool create(const Device& device, const VkImageViewCreateInfo& createInfo) noexcept;
+
+		void destroy(const Device& device) noexcept;
 
 		VkFormat getFormat() const noexcept { return format; }
 

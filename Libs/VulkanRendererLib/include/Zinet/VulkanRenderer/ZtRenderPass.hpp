@@ -11,6 +11,14 @@ namespace zt::vulkan_renderer
 {
 	class Device;
 
+	struct ZINET_VULKAN_RENDERER_API RenderPassCreateInfo
+	{
+		VkAttachmentDescription colorAttachmentDescription{};
+		VkAttachmentReference colorAttachmentReference{};
+		VkSubpassDescription subpassDescription{};
+		VkRenderPassCreateInfo vkCreateInfo{};
+	};
+
 	class ZINET_VULKAN_RENDERER_API RenderPass : public VulkanObject<VkRenderPass>
 	{
 	protected:
@@ -29,16 +37,16 @@ namespace zt::vulkan_renderer
 
 		RenderPass& operator = (const RenderPass& other) noexcept = delete;
 		RenderPass& operator = (RenderPass&& other) noexcept = default;
-	
-		bool createForPresent(const Device& device, const VkFormat format) noexcept;
 
-		bool createForDraw(const Device& device, const VkFormat format) noexcept;
+		static RenderPassCreateInfo GetPresentCreateInfo(VkFormat format) noexcept;
+
+		static RenderPassCreateInfo GetDrawCreateInfo(VkFormat format) noexcept;
+
+		bool create(const Device& device, const RenderPassCreateInfo& createInfo) noexcept;
 
 		void destroy(const Device& device) noexcept;
 
 	protected:
-
-		bool createInternal(const Device& device, const VkRenderPassCreateInfo& createInfo) noexcept;
 
 	};
 }

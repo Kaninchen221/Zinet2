@@ -5,16 +5,13 @@
 
 namespace zt::vulkan_renderer
 {
-	bool ImageView::create(const VkImage& vkImage, VkFormat newFormat, const Device& device)
+	VkImageViewCreateInfo ImageView::GetDefaultCreateInfo(const VkImage& vkImage, VkFormat format) noexcept
 	{
-		if (isValid())
-			return false;
-
 		VkImageViewCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 		createInfo.image = vkImage;
 		createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		createInfo.format = newFormat;
+		createInfo.format = format;
 		createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
 		createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
 		createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -25,10 +22,18 @@ namespace zt::vulkan_renderer
 		createInfo.subresourceRange.baseArrayLayer = 0;
 		createInfo.subresourceRange.layerCount = 1;
 
+		return createInfo;
+	}
+
+	bool ImageView::create(const Device& device, const VkImageViewCreateInfo& createInfo) noexcept
+	{
+		if (isValid())
+			return false;
+
 		const auto createResult = vkCreateImageView(device.get(), &createInfo, nullptr, &objectHandle);
 		if (createResult == VK_SUCCESS)
 		{
-			format = newFormat;
+			format = createInfo.format;
 			return true;
 		}
 		else
@@ -38,7 +43,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void ImageView::destroy(const Device& device)
+	void ImageView::destroy(const Device& device) noexcept
 	{
 		if (isValid())
 		{
@@ -46,4 +51,5 @@ namespace zt::vulkan_renderer
 			objectHandle = nullptr;
 		}
 	}
+
 }

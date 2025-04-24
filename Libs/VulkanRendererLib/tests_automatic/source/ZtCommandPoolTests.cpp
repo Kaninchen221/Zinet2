@@ -33,6 +33,7 @@ namespace zt::vulkan_renderer::tests
 			ASSERT_TRUE(queue.isValid());
 
 			ASSERT_TRUE(commandPool.create(device, queue));
+			ASSERT_TRUE(commandPool.isValid());
 		}
 
 		void TearDown() override

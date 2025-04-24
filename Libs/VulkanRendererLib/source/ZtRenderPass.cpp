@@ -4,9 +4,11 @@
 namespace zt::vulkan_renderer
 {
 
-	bool RenderPass::createForPresent(const Device& device, const VkFormat format) noexcept
+	RenderPassCreateInfo RenderPass::GetPresentCreateInfo(VkFormat format) noexcept
 	{
-		VkAttachmentDescription colorAttachmentDescription{};
+		RenderPassCreateInfo createInfo;
+
+		VkAttachmentDescription& colorAttachmentDescription = createInfo.colorAttachmentDescription;
 		colorAttachmentDescription.format = format;
 		colorAttachmentDescription.samples = VK_SAMPLE_COUNT_1_BIT;
 		colorAttachmentDescription.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -16,28 +18,30 @@ namespace zt::vulkan_renderer
 		colorAttachmentDescription.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		colorAttachmentDescription.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-		VkAttachmentReference colorAttachmentReference{};
+		VkAttachmentReference& colorAttachmentReference = createInfo.colorAttachmentReference;
 		colorAttachmentReference.attachment = 0;
 		colorAttachmentReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-		VkSubpassDescription subpassDescription{};
+		VkSubpassDescription& subpassDescription = createInfo.subpassDescription;
 		subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 		subpassDescription.colorAttachmentCount = 1;
 		subpassDescription.pColorAttachments = &colorAttachmentReference;
 
-		VkRenderPassCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		createInfo.attachmentCount = 1;
-		createInfo.pAttachments = &colorAttachmentDescription;
-		createInfo.subpassCount = 1;
-		createInfo.pSubpasses = &subpassDescription;
+		VkRenderPassCreateInfo& vkCreateInfo = createInfo.vkCreateInfo;
+		vkCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+		vkCreateInfo.attachmentCount = 1;
+		vkCreateInfo.pAttachments = &colorAttachmentDescription;
+		vkCreateInfo.subpassCount = 1;
+		vkCreateInfo.pSubpasses = &subpassDescription;
 
-		return createInternal(device, createInfo);
+		return createInfo;
 	}
 
-	bool RenderPass::createForDraw(const Device& device, const VkFormat format) noexcept
+	RenderPassCreateInfo RenderPass::GetDrawCreateInfo(VkFormat format) noexcept
 	{
-		VkAttachmentDescription colorAttachmentDescription{};
+		RenderPassCreateInfo createInfo;
+
+		VkAttachmentDescription& colorAttachmentDescription = createInfo.colorAttachmentDescription;
 		colorAttachmentDescription.format = format;
 		colorAttachmentDescription.samples = VK_SAMPLE_COUNT_4_BIT;
 		colorAttachmentDescription.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -47,31 +51,31 @@ namespace zt::vulkan_renderer
 		colorAttachmentDescription.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		colorAttachmentDescription.finalLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 
-		VkAttachmentReference colorAttachmentReference{};
+		VkAttachmentReference& colorAttachmentReference = createInfo.colorAttachmentReference;
 		colorAttachmentReference.attachment = 0;
 		colorAttachmentReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-		VkSubpassDescription subpassDescription{};
+		VkSubpassDescription& subpassDescription = createInfo.subpassDescription;
 		subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 		subpassDescription.colorAttachmentCount = 1;
 		subpassDescription.pColorAttachments = &colorAttachmentReference;
 
-		VkRenderPassCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		createInfo.attachmentCount = 1;
-		createInfo.pAttachments = &colorAttachmentDescription;
-		createInfo.subpassCount = 1;
-		createInfo.pSubpasses = &subpassDescription;
+		VkRenderPassCreateInfo& vkCreateInfo = createInfo.vkCreateInfo;
+		vkCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+		vkCreateInfo.attachmentCount = 1;
+		vkCreateInfo.pAttachments = &colorAttachmentDescription;
+		vkCreateInfo.subpassCount = 1;
+		vkCreateInfo.pSubpasses = &subpassDescription;
 
-		return createInternal(device, createInfo);
+		return createInfo;
 	}
 
-	bool RenderPass::createInternal(const Device& device, const VkRenderPassCreateInfo& createInfo) noexcept
+	bool RenderPass::create(const Device& device, const RenderPassCreateInfo& createInfo) noexcept
 	{
 		if (isValid())
 			return false;
 
-		const auto result = vkCreateRenderPass(device.get(), &createInfo, nullptr, &objectHandle);
+		const auto result = vkCreateRenderPass(device.get(), &createInfo.vkCreateInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
 		{
 			return true;

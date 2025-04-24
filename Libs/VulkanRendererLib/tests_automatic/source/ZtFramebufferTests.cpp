@@ -44,9 +44,11 @@ namespace zt::vulkan_renderer::tests
 			const auto imageCreateInfo = Image::GetDefaultCreateInfo(device);
 			ASSERT_TRUE(image.create(vma, imageCreateInfo));
 
-			ASSERT_TRUE(imageView.create(image.get(), image.getFormat(), device));
+			const auto imageViewCreateInfo = ImageView::GetDefaultCreateInfo(image.get(), image.getFormat());
+			ASSERT_TRUE(imageView.create(device, imageViewCreateInfo));
 
-			ASSERT_TRUE(renderPass.createForDraw(device, image.getFormat()));
+			const auto renderPassCreateInfo = RenderPass::GetDrawCreateInfo(image.getFormat());
+			ASSERT_TRUE(renderPass.create(device, renderPassCreateInfo));
 
 			ASSERT_TRUE(framebuffer.create(device, renderPass, imageView, { 1, 1 }));
 			ASSERT_TRUE(framebuffer.isValid());

@@ -84,7 +84,8 @@ namespace zt::vulkan_renderer::tests
 		for (const auto& image : images)
 		{
 			auto& imageView = imageViews.emplace_back(nullptr);
-			ASSERT_TRUE(imageView.create(image, swapChain.getFormat(), device));
+			const auto imageViewCreateInfo = ImageView::GetDefaultCreateInfo(image, swapChain.getFormat());
+			ASSERT_TRUE(imageView.create(device, imageViewCreateInfo));
 			ASSERT_TRUE(imageView.isValid());
 			ASSERT_EQ(imageView.getFormat(), swapChain.getFormat());
 

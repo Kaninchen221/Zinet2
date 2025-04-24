@@ -7,6 +7,9 @@ namespace zt::vulkan_renderer
 
 	bool CommandPool::create(const Device& device, const Queue& queue) noexcept
 	{
+		if (isValid())
+			return false;
+
 		VkCommandPoolCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 		createInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
@@ -19,7 +22,7 @@ namespace zt::vulkan_renderer
 		}
 		else
 		{
-			Logger->error("Couldn't create command pool");
+			Logger->error("Couldn't create command pool, result: {}", static_cast<std::int32_t>(result));
 			return false;
 		}
 	}
