@@ -10,6 +10,7 @@
 #include "Zinet/VulkanRenderer/ZtImageView.hpp"
 #include "Zinet/VulkanRenderer/ZtFramebuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
+#include "Zinet/VulkanRenderer/ZtVMA.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
@@ -32,9 +33,11 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		bool start(wd::Window& window);
+		bool start(wd::Window& window) noexcept;
 
-		void shutdown();
+		void shutdown() noexcept;
+
+		void draw() noexcept;
 
 	protected:
 
@@ -43,6 +46,7 @@ namespace zt::vulkan_renderer
 		PhysicalDevice physicalDevice{ nullptr };
 		Surface surface{ nullptr };
 		Device device{ nullptr };
+		VMA vma{ nullptr };
 		SwapChain swapChain{ nullptr };
 		std::vector<VkImage> images;
 		std::vector<ImageView> imageViews;

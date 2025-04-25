@@ -47,7 +47,7 @@ namespace zt::vulkan_renderer::tests
 
 		while (window.isOpen())
 		{
-			// Render here
+			renderer.draw(); // For now empty because we store draw data in shaders
 
 			window.requestCloseWindow();
 		}

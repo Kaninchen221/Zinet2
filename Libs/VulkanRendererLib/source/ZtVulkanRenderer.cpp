@@ -5,7 +5,7 @@
 namespace zt::vulkan_renderer
 {
 
-	bool VulkanRenderer::start(wd::Window& window)
+	bool VulkanRenderer::start(wd::Window& window) noexcept
 	{
 		instance.setEnableValidationLayers(true);
 		if (!instance.create())
@@ -29,6 +29,9 @@ namespace zt::vulkan_renderer
 			return false;
 
 		if (!device.create(physicalDevice, surface))
+			return false;
+
+		if (!vma.create(device, physicalDevice, instance))
 			return false;
 
 		if (!swapChain.create(device, physicalDevice, surface, window))
@@ -70,21 +73,33 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	void VulkanRenderer::shutdown()
+	void VulkanRenderer::shutdown() noexcept
 	{
 		for (auto& framebuffer : framebuffers)
-			framebuffer.destroy(device);
+		{
+			if (framebuffer.isValid())
+				framebuffer.destroy(device);
+		}
 
 		renderPass.destroy(device);
 
 		for (auto& imageView : imageViews)
-			imageView.destroy(device);
+		{
+			if (imageView.isValid())
+				imageView.destroy(device);
+		}
 
 		swapChain.destroy(device);
+		vma.destroy();
 		device.destroy();
 		surface.destroy(instance);
 		debugUtilsMessenger.destroy(instance);
 		instance.destroy();
+	}
+
+	void VulkanRenderer::draw() noexcept
+	{
+
 	}
 
 }
