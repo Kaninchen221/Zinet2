@@ -32,7 +32,7 @@ namespace zt::vulkan_renderer
 	{
 		VkPipelineShaderStageCreateInfo result{};
 		result.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-		result.module = get();
+		result.module = objectHandle;
 		result.stage = ShaderTypeToVkShaderStage(shaderType);
 		result.pName = "main";
 

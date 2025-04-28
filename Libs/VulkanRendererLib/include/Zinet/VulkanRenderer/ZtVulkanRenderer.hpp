@@ -11,6 +11,12 @@
 #include "Zinet/VulkanRenderer/ZtFramebuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
 #include "Zinet/VulkanRenderer/ZtVMA.hpp"
+#include "Zinet/VulkanRenderer/ZtSemaphore.hpp"
+#include "Zinet/VulkanRenderer/ZtFence.hpp"
+#include "Zinet/VulkanRenderer/ZtCommandPool.hpp"
+#include "Zinet/VulkanRenderer/ZtCommandBuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
+#include "Zinet/VulkanRenderer/ZtPipelineLayout.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
@@ -24,6 +30,14 @@ namespace zt::wd
 
 namespace zt::vulkan_renderer
 {
+	class ShaderModule;
+
+	struct DrawInfo 
+	{
+		const ShaderModule& vertexShaderModule;
+		const ShaderModule& fragmentShaderModule;
+	};
+
 	ZT_REFLECT_CLASS()
 	class ZINET_VULKAN_RENDERER_API VulkanRenderer : public core::Object
 	{
@@ -37,7 +51,9 @@ namespace zt::vulkan_renderer
 
 		void shutdown() noexcept;
 
-		void draw() noexcept;
+		void draw(const DrawInfo& drawInfo) noexcept;
+
+		const Device& getDevice() const noexcept { return device; }
 
 	protected:
 
@@ -48,10 +64,21 @@ namespace zt::vulkan_renderer
 		Device device{ nullptr };
 		VMA vma{ nullptr };
 		SwapChain swapChain{ nullptr };
+		Queue queue{ nullptr };
+		CommandPool commandPool{ nullptr };
+
 		std::vector<VkImage> images;
 		std::vector<ImageView> imageViews;
-		RenderPass renderPass{ nullptr };
 		std::vector<Framebuffer> framebuffers;
+
+		CommandBuffer commandBuffer{ nullptr };
+		Semaphore imageAvailableSemaphore{ nullptr };
+		Semaphore renderFinishedSemaphore{ nullptr };
+		Fence fence{ nullptr };
+
+		RenderPass renderPass{ nullptr };
+		PipelineLayout pipelineLayout{ nullptr };
+		GraphicsPipeline pipeline{ nullptr };
 
 	public:
 /*GENERATED_CODE_START*/

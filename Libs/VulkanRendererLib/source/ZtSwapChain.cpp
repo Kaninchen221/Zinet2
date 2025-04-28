@@ -53,10 +53,10 @@ namespace zt::vulkan_renderer
 		const auto presentMode = supportsMailbox ? VK_PRESENT_MODE_MAILBOX_KHR : VK_PRESENT_MODE_FIFO_KHR;
 
 		// Extent
-		Vector2ui framebufferSize = window.getFramebufferSize();
-		VkExtent2D extent{ framebufferSize.x, framebufferSize.y };
-		extent.width = std::clamp(extent.width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width);
-		extent.height = std::clamp(extent.height, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height);
+		const Vector2ui framebufferSize = window.getFramebufferSize();
+		VkExtent2D newExtent{ framebufferSize.x, framebufferSize.y };
+		newExtent.width = std::clamp(newExtent.width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width);
+		newExtent.height = std::clamp(newExtent.height, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height);
 
 		VkSwapchainCreateInfoKHR createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -68,7 +68,7 @@ namespace zt::vulkan_renderer
 		createInfo.surface = surface.get();
 		createInfo.preTransform = surfaceCapabilities.currentTransform;
 		createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR; // TODO: Blend with other windows behind our window? Will be useful for the final tech demo.
-		createInfo.imageExtent = extent;
+		createInfo.imageExtent = newExtent;
 		createInfo.imageArrayLayers = 1;
 		createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -80,6 +80,7 @@ namespace zt::vulkan_renderer
 		const auto createResult = vkCreateSwapchainKHR(device.get(), &createInfo, nullptr, &objectHandle);
 		if (createResult == VK_SUCCESS)
 		{
+			extent = newExtent;
 			return true;
 		}
 		else

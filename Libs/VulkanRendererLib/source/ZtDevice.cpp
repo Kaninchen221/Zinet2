@@ -88,4 +88,19 @@ namespace zt::vulkan_renderer
 
 		return Queue(queueObjectHandle, queueFamilyIndex);
 	}
+
+	bool Device::waitIdle() const noexcept
+	{
+		const auto result = vkDeviceWaitIdle(objectHandle);
+		if (result == VK_SUCCESS)
+		{
+			return true;
+		}
+		else
+		{
+			Logger->error("Device can't wait idle, result: {}", static_cast<std::int32_t>(result));
+			return false;
+		}
+	}
+
 }

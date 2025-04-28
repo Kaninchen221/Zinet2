@@ -63,14 +63,14 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void CommandBuffer::beginRenderPass(const RenderPass& renderPass, const Framebuffer& framebuffer, const Vector2ui& extent, const Vector2i& offset, const VkClearValue& clearValue) noexcept
+	void CommandBuffer::beginRenderPass(const RenderPass& renderPass, const Framebuffer& framebuffer, const VkExtent2D& extent, const Vector2i& offset, const VkClearValue& clearValue) noexcept
 	{
 		VkRenderPassBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		beginInfo.renderPass = renderPass.get();
 		beginInfo.framebuffer = framebuffer.get();
 		beginInfo.renderArea.offset = { offset.x, offset.y };
-		beginInfo.renderArea.extent = { extent.x, extent.y };
+		beginInfo.renderArea.extent = extent;
 		VkClearValue clearColor = clearValue;
 		beginInfo.clearValueCount = 1;
 		beginInfo.pClearValues = &clearColor;

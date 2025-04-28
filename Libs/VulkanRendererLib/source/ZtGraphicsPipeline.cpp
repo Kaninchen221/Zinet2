@@ -143,7 +143,7 @@ namespace zt::vulkan_renderer
 
 		VkGraphicsPipelineCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-		createInfo.stageCount = 2;
+		createInfo.stageCount = static_cast<std::uint32_t>(shadersStages.size());
 		createInfo.pStages = shadersStages.data();
 		createInfo.pVertexInputState = &vertexInputStateCreateInfo;
 		createInfo.pInputAssemblyState = &inputAssemblyStateCreateInfo;

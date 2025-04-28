@@ -5,6 +5,8 @@
 
 #include "Zinet/Core/ZtLogger.hpp"
 
+#include "Zinet/Math/ZtVecTypes.hpp"
+
 #include <vulkan/vulkan.h>
 
 namespace zt::wd
@@ -46,9 +48,12 @@ namespace zt::vulkan_renderer
 
 		VkFormat getFormat() const noexcept { return format; }
 
+		VkExtent2D getExtent() const noexcept { return extent; }
+
 	protected:
 
 		VkFormat format{};
+		VkExtent2D extent{};
 
 	};
 }

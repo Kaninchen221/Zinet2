@@ -47,6 +47,8 @@ namespace zt::vulkan_renderer
 
 		const auto& getQueueFamilyIndex() const noexcept { return queueFamilyIndex; }
 
+		bool waitIdle() const noexcept;
+
 	protected:
 
 		std::uint32_t queueFamilyIndex = InvalidIndex;

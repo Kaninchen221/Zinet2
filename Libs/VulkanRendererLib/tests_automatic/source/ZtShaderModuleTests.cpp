@@ -63,9 +63,6 @@ namespace zt::vulkan_renderer::tests
 	};
 
 	TEST_F(ShaderModuleTests, PassTest)
-	{}
-
-	TEST_F(ShaderModuleTests, Test)
 	{
 		ShadersCompiler shadersCompiler;
 
