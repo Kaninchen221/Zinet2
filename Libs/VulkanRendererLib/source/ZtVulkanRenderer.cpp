@@ -130,7 +130,7 @@ namespace zt::vulkan_renderer
 	{
 		if (!pipeline.isValid())
 		{
-			GraphicsPipeline::ShadersStages shadersStages;
+			Pipeline::ShadersStages shadersStages;
 			shadersStages.push_back(drawInfo.vertexShaderModule.createPipelineShaderStageCreateInfo(ShaderType::Vertex));
 			shadersStages.push_back(drawInfo.fragmentShaderModule.createPipelineShaderStageCreateInfo(ShaderType::Fragment));
 

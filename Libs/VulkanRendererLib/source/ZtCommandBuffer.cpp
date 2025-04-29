@@ -3,7 +3,7 @@
 #include "Zinet/VulkanRenderer/ZtCommandPool.hpp"
 #include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
 #include "Zinet/VulkanRenderer/ZtFramebuffer.hpp"
-#include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
+#include "Zinet/VulkanRenderer/ZtPipeline.hpp"
 
 namespace zt::vulkan_renderer
 {
@@ -98,7 +98,7 @@ namespace zt::vulkan_renderer
 		vkCmdEndRenderPass(objectHandle);
 	}
 
-	void CommandBuffer::bindPipeline(const GraphicsPipeline& pipeline) noexcept
+	void CommandBuffer::bindPipeline(const Pipeline& pipeline) noexcept
 	{
 		vkCmdBindPipeline(objectHandle, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get());
 	}

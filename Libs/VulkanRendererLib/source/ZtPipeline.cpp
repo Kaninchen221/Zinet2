@@ -1,4 +1,4 @@
-#include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
+#include "Zinet/VulkanRenderer/ZtPipeline.hpp"
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtPipelineLayout.hpp"
 #include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
@@ -6,7 +6,7 @@
 namespace zt::vulkan_renderer
 {
 
-	VkPipelineDynamicStateCreateInfo GraphicsPipeline::createVkPipelineDynamicStateCreateInfo(
+	VkPipelineDynamicStateCreateInfo Pipeline::createVkPipelineDynamicStateCreateInfo(
 		const std::vector<VkDynamicState>& dynamicStates) const noexcept
 	{
 		VkPipelineDynamicStateCreateInfo createInfo{};
@@ -17,7 +17,7 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	VkPipelineVertexInputStateCreateInfo GraphicsPipeline::createVkPipelineVertexInputStateCreateInfo() const noexcept
+	VkPipelineVertexInputStateCreateInfo Pipeline::createVkPipelineVertexInputStateCreateInfo() const noexcept
 	{
 		VkPipelineVertexInputStateCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -29,7 +29,7 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	VkPipelineInputAssemblyStateCreateInfo GraphicsPipeline::createVkPipelineInputAssemblyStateCreateInfo() const noexcept
+	VkPipelineInputAssemblyStateCreateInfo Pipeline::createVkPipelineInputAssemblyStateCreateInfo() const noexcept
 	{
 		VkPipelineInputAssemblyStateCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -39,7 +39,7 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	VkPipelineViewportStateCreateInfo GraphicsPipeline::createVkPipelineViewportStateCreateInfo(
+	VkPipelineViewportStateCreateInfo Pipeline::createVkPipelineViewportStateCreateInfo(
 		const VkViewport& viewport, const VkRect2D& scissor) const noexcept
 	{
 		VkPipelineViewportStateCreateInfo createInfo{};
@@ -52,7 +52,7 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	VkPipelineRasterizationStateCreateInfo GraphicsPipeline::createVkPipelineRasterizationStateCreateInfo() const noexcept
+	VkPipelineRasterizationStateCreateInfo Pipeline::createVkPipelineRasterizationStateCreateInfo() const noexcept
 	{
 		VkPipelineRasterizationStateCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -70,7 +70,7 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	VkPipelineMultisampleStateCreateInfo GraphicsPipeline::createVkPipelineMultisampleStateCreateInfo() const noexcept
+	VkPipelineMultisampleStateCreateInfo Pipeline::createVkPipelineMultisampleStateCreateInfo() const noexcept
 	{
 		VkPipelineMultisampleStateCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
@@ -84,7 +84,7 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	VkPipelineColorBlendAttachmentState GraphicsPipeline::createVkPipelineColorBlendAttachmentState() const noexcept
+	VkPipelineColorBlendAttachmentState Pipeline::createVkPipelineColorBlendAttachmentState() const noexcept
 	{
 		VkPipelineColorBlendAttachmentState attachmentState{};
 		attachmentState.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
@@ -99,7 +99,7 @@ namespace zt::vulkan_renderer
 		return attachmentState;
 	}
 
-	VkPipelineColorBlendStateCreateInfo GraphicsPipeline::createVkPipelineColorBlendStateCreateInfo(
+	VkPipelineColorBlendStateCreateInfo Pipeline::createVkPipelineColorBlendStateCreateInfo(
 		const VkPipelineColorBlendAttachmentState& colorBlendAttachmentState) const noexcept
 	{
 		VkPipelineColorBlendStateCreateInfo createInfo{};
@@ -116,7 +116,7 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	bool GraphicsPipeline::create(
+	bool Pipeline::create(
 		const Device& device,
 		const PipelineLayout& pipelineLayout,
 		const RenderPass& renderPass,
@@ -166,12 +166,12 @@ namespace zt::vulkan_renderer
 		}
 		else
 		{
-			Logger->error("Couldn't create GraphicsPipeline, result: {}", static_cast<std::int32_t>(result));
+			Logger->error("Couldn't create Pipeline, result: {}", static_cast<std::int32_t>(result));
 			return false;
 		}
 	}
 
-	void GraphicsPipeline::destroy(const Device& device) noexcept
+	void Pipeline::destroy(const Device& device) noexcept
 	{
 		if (isValid())
 		{

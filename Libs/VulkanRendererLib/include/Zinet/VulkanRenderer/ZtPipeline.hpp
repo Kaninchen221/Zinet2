@@ -13,25 +13,25 @@ namespace zt::vulkan_renderer
 	class PipelineLayout;
 	class RenderPass;
 
-	class ZINET_VULKAN_RENDERER_API GraphicsPipeline : public VulkanObject<VkPipeline>
+	class ZINET_VULKAN_RENDERER_API Pipeline : public VulkanObject<VkPipeline>
 	{
 	protected:
 
-		inline static auto Logger = core::ConsoleLogger::Create("VRGraphicsPipeline");
+		inline static auto Logger = core::ConsoleLogger::Create("VRPipeline");
 
 	public:
 
-		GraphicsPipeline(HandleType newObjectHandle)
+		Pipeline(HandleType newObjectHandle)
 			: VulkanObject(newObjectHandle)
 		{}
 
-		GraphicsPipeline() noexcept = delete;
-		GraphicsPipeline(const GraphicsPipeline& other) noexcept = delete;
-		GraphicsPipeline(GraphicsPipeline&& other) noexcept = default;
-		~GraphicsPipeline() noexcept = default;
+		Pipeline() noexcept = delete;
+		Pipeline(const Pipeline& other) noexcept = delete;
+		Pipeline(Pipeline&& other) noexcept = default;
+		~Pipeline() noexcept = default;
 
-		GraphicsPipeline& operator = (const GraphicsPipeline& other) noexcept = delete;
-		GraphicsPipeline& operator = (GraphicsPipeline&& other) noexcept = default;
+		Pipeline& operator = (const Pipeline& other) noexcept = delete;
+		Pipeline& operator = (Pipeline&& other) noexcept = default;
 
 		using ShadersStages = std::vector<VkPipelineShaderStageCreateInfo>;
 

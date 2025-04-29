@@ -15,7 +15,7 @@
 #include "Zinet/VulkanRenderer/ZtFence.hpp"
 #include "Zinet/VulkanRenderer/ZtCommandPool.hpp"
 #include "Zinet/VulkanRenderer/ZtCommandBuffer.hpp"
-#include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
+#include "Zinet/VulkanRenderer/ZtPipeline.hpp"
 #include "Zinet/VulkanRenderer/ZtPipelineLayout.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
@@ -78,7 +78,7 @@ namespace zt::vulkan_renderer
 
 		RenderPass renderPass{ nullptr };
 		PipelineLayout pipelineLayout{ nullptr };
-		GraphicsPipeline pipeline{ nullptr };
+		Pipeline pipeline{ nullptr };
 
 	public:
 /*GENERATED_CODE_START*/

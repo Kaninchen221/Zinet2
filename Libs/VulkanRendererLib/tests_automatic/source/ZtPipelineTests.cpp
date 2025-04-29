@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
+#include "Zinet/VulkanRenderer/ZtPipeline.hpp"
 #include "Zinet/VulkanRenderer/ZtShadersCompiler.hpp"
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
@@ -20,7 +20,7 @@
 
 namespace zt::vulkan_renderer::tests
 {
-	class GraphicsPipelineTests : public ::testing::Test
+	class PipelineTests : public ::testing::Test
 	{
 	protected:
 
@@ -72,16 +72,16 @@ namespace zt::vulkan_renderer::tests
 			scissor = { { 0, 0 }, { static_cast<std::uint32_t>(viewportSize.x), static_cast<std::uint32_t>(viewportSize.y) } };
 
 			ASSERT_TRUE(
-				graphicsPipeline.create(device, pipelineLayout, renderPass, viewport, scissor, shadersStages)
+				pipeline.create(device, pipelineLayout, renderPass, viewport, scissor, shadersStages)
 			);
 
-			ASSERT_TRUE(graphicsPipeline.isValid());
+			ASSERT_TRUE(pipeline.isValid());
 		}
 
 		void TearDown() override
 		{
-			graphicsPipeline.destroy(device);
-			ASSERT_FALSE(graphicsPipeline.isValid());
+			pipeline.destroy(device);
+			ASSERT_FALSE(pipeline.isValid());
 
 			vertexShaderModule.destroy(device);
 			fragmentShaderModule.destroy(device);
@@ -112,60 +112,60 @@ namespace zt::vulkan_renderer::tests
 		ShaderModule vertexShaderModule{ nullptr };
 		ShaderModule fragmentShaderModule{ nullptr };
 		std::vector<VkPipelineShaderStageCreateInfo> shadersStages;
-		GraphicsPipeline graphicsPipeline{ nullptr };
+		Pipeline pipeline{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkPipeline>, GraphicsPipeline>);
+		static_assert(std::is_base_of_v<VulkanObject<VkPipeline>, Pipeline>);
 
-		static_assert(std::is_constructible_v<GraphicsPipeline, VkPipeline>);
-		static_assert(!std::is_default_constructible_v<GraphicsPipeline>);
-		static_assert(!std::is_copy_constructible_v<GraphicsPipeline>);
-		static_assert(!std::is_copy_assignable_v<GraphicsPipeline>);
-		static_assert(std::is_move_constructible_v<GraphicsPipeline>);
-		static_assert(std::is_move_assignable_v<GraphicsPipeline>);
-		static_assert(std::is_destructible_v<GraphicsPipeline>);
+		static_assert(std::is_constructible_v<Pipeline, VkPipeline>);
+		static_assert(!std::is_default_constructible_v<Pipeline>);
+		static_assert(!std::is_copy_constructible_v<Pipeline>);
+		static_assert(!std::is_copy_assignable_v<Pipeline>);
+		static_assert(std::is_move_constructible_v<Pipeline>);
+		static_assert(std::is_move_assignable_v<Pipeline>);
+		static_assert(std::is_destructible_v<Pipeline>);
 	};
 
-	TEST_F(GraphicsPipelineTests, PassTest)
+	TEST_F(PipelineTests, PassTest)
 	{}
 
-	TEST(GraphicsPipeline, CreateVkPipelineDynamicStateCreateInfoTest)
+	TEST(Pipeline, CreateVkPipelineDynamicStateCreateInfoTest)
 	{
 		const std::vector<VkDynamicState> dynamicStates = {
 			VK_DYNAMIC_STATE_VIEWPORT,
 			VK_DYNAMIC_STATE_SCISSOR
 		};
 
-		GraphicsPipeline graphicsPipeline{ nullptr };
+		Pipeline pipeline{ nullptr };
 		const VkPipelineDynamicStateCreateInfo createInfo =
-			graphicsPipeline.createVkPipelineDynamicStateCreateInfo(dynamicStates);
+			pipeline.createVkPipelineDynamicStateCreateInfo(dynamicStates);
 
 		EXPECT_EQ(createInfo.pDynamicStates, dynamicStates.data());
 		EXPECT_EQ(createInfo.dynamicStateCount, dynamicStates.size());
 	}
 
-	TEST(GraphicsPipeline, CreateVkPipelineVertexInputStateCreateInfoTest)
+	TEST(Pipeline, CreateVkPipelineVertexInputStateCreateInfoTest)
 	{
-		GraphicsPipeline graphicsPipeline{ nullptr };
+		Pipeline pipeline{ nullptr };
 		const VkPipelineVertexInputStateCreateInfo createInfo =
-			graphicsPipeline.createVkPipelineVertexInputStateCreateInfo();
+			pipeline.createVkPipelineVertexInputStateCreateInfo();
 	}
 
-	TEST(GraphicsPipeline, CreateVkPipelineInputAssemblyStateCreateInfoTest)
+	TEST(Pipeline, CreateVkPipelineInputAssemblyStateCreateInfoTest)
 	{
-		GraphicsPipeline graphicsPipeline{ nullptr };
+		Pipeline pipeline{ nullptr };
 		const VkPipelineInputAssemblyStateCreateInfo createInfo =
-			graphicsPipeline.createVkPipelineInputAssemblyStateCreateInfo();
+			pipeline.createVkPipelineInputAssemblyStateCreateInfo();
 	}
 
-	TEST(GraphicsPipeline, CreateVkPipelineViewportStateCreateInfoTest)
+	TEST(Pipeline, CreateVkPipelineViewportStateCreateInfoTest)
 	{
-		GraphicsPipeline graphicsPipeline{ nullptr };
+		Pipeline pipeline{ nullptr };
 
 		VkViewport viewport{};
 		VkRect2D scissor{};
 
 		const VkPipelineViewportStateCreateInfo createInfo =
-			graphicsPipeline.createVkPipelineViewportStateCreateInfo(viewport, scissor);
+			pipeline.createVkPipelineViewportStateCreateInfo(viewport, scissor);
 
 		EXPECT_EQ(createInfo.pViewports, &viewport);
 		EXPECT_EQ(createInfo.viewportCount, 1);
@@ -173,35 +173,35 @@ namespace zt::vulkan_renderer::tests
 		EXPECT_EQ(createInfo.scissorCount, 1);
 	}
 
-	TEST(GraphicsPipeline, CreateVkPipelineRasterizationStateCreateInfoTest)
+	TEST(Pipeline, CreateVkPipelineRasterizationStateCreateInfoTest)
 	{
-		GraphicsPipeline graphicsPipeline{ nullptr };
+		Pipeline pipeline{ nullptr };
 		const VkPipelineRasterizationStateCreateInfo createInfo =
-			graphicsPipeline.createVkPipelineRasterizationStateCreateInfo();
+			pipeline.createVkPipelineRasterizationStateCreateInfo();
 	}
 
-	TEST(GraphicsPipeline, CreateVkPipelineMultisampleStateCreateInfoTest)
+	TEST(Pipeline, CreateVkPipelineMultisampleStateCreateInfoTest)
 	{
-		GraphicsPipeline graphicsPipeline{ nullptr };
+		Pipeline pipeline{ nullptr };
 		const VkPipelineMultisampleStateCreateInfo createInfo =
-			graphicsPipeline.createVkPipelineMultisampleStateCreateInfo();
+			pipeline.createVkPipelineMultisampleStateCreateInfo();
 	}
 
-	TEST(GraphicsPipeline, CreateVkPipelineColorBlendAttachmentStateTest)
+	TEST(Pipeline, CreateVkPipelineColorBlendAttachmentStateTest)
 	{
-		GraphicsPipeline graphicsPipeline{ nullptr };
+		Pipeline pipeline{ nullptr };
 		const VkPipelineColorBlendAttachmentState attachmentState =
-			graphicsPipeline.createVkPipelineColorBlendAttachmentState();
+			pipeline.createVkPipelineColorBlendAttachmentState();
 	}
 
-	TEST(GraphicsPipeline, CreateVkPipelineColorBlendStateCreateInfoTest)
+	TEST(Pipeline, CreateVkPipelineColorBlendStateCreateInfoTest)
 	{
-		GraphicsPipeline graphicsPipeline{ nullptr };
+		Pipeline pipeline{ nullptr };
 
 		const VkPipelineColorBlendAttachmentState attachmentState =
-			graphicsPipeline.createVkPipelineColorBlendAttachmentState();
+			pipeline.createVkPipelineColorBlendAttachmentState();
 
 		const VkPipelineColorBlendStateCreateInfo createInfo =
-			graphicsPipeline.createVkPipelineColorBlendStateCreateInfo(attachmentState);
+			pipeline.createVkPipelineColorBlendStateCreateInfo(attachmentState);
 	}
 }

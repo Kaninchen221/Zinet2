@@ -15,7 +15,7 @@ namespace zt::vulkan_renderer
 	class CommandPool;
 	class RenderPass;
 	class Framebuffer;
-	class GraphicsPipeline;
+	class Pipeline;
 
 	class ZINET_VULKAN_RENDERER_API CommandBuffer : public VulkanObject<VkCommandBuffer, false>
 	{
@@ -50,7 +50,7 @@ namespace zt::vulkan_renderer
 
 		inline void endRenderPass() noexcept;
 
-		inline void bindPipeline(const GraphicsPipeline& pipeline) noexcept;
+		inline void bindPipeline(const Pipeline& pipeline) noexcept;
 
 		inline void setViewport(const VkViewport& viewport) noexcept;
 
