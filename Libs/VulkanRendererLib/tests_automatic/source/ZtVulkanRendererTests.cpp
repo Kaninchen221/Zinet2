@@ -93,7 +93,7 @@ namespace zt::vulkan_renderer::tests
 			// For now empty because we store draw data in shaders
 			renderer.draw(drawInfo); 
 
-			//window.requestCloseWindow();
+			window.requestCloseWindow();
 		}
 
 	}
