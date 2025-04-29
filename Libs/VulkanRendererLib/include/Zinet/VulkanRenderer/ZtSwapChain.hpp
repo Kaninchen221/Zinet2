@@ -51,7 +51,7 @@ namespace zt::vulkan_renderer
 
 		VkExtent2D getExtent() const noexcept { return extent; }
 
-		inline std::uint32_t acquireNextImage(const Device& device, Semaphore& semaphore) const noexcept;
+		std::uint32_t acquireNextImage(const Device& device, Semaphore& semaphore) const noexcept;
 
 	protected:
 
