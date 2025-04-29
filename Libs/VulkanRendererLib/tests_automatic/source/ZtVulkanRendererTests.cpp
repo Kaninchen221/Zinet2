@@ -43,8 +43,10 @@ namespace zt::vulkan_renderer::tests
 
 		void TearDown() override
 		{
-			vertexShaderModule.destroy(renderer.getDevice());
-			fragmentShaderModule.destroy(renderer.getDevice());
+			auto& device = renderer.getRendererContext().device;
+
+			vertexShaderModule.destroy(device);
+			fragmentShaderModule.destroy(device);
 
 			renderer.shutdown();
 
@@ -73,7 +75,8 @@ namespace zt::vulkan_renderer::tests
 		if (compileResult.GetCompilationStatus() != shaderc_compilation_status_success)
 			return shaderModule;
 
-		shaderModule.create(renderer.getDevice(), compileResult);
+		auto& device = renderer.getRendererContext().device;
+		shaderModule.create(device, compileResult);
 
 		return shaderModule;
 	}

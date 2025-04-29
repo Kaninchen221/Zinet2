@@ -17,6 +17,7 @@
 #include "Zinet/VulkanRenderer/ZtCommandBuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtPipeline.hpp"
 #include "Zinet/VulkanRenderer/ZtPipelineLayout.hpp"
+#include "Zinet/VulkanRenderer/ZtRendererContext.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
@@ -53,19 +54,12 @@ namespace zt::vulkan_renderer
 
 		void draw(const DrawInfo& drawInfo) noexcept;
 
-		const Device& getDevice() const noexcept { return device; }
+		const RendererContext& getRendererContext() const noexcept { return rendererContext; }
+		RendererContext& getRendererContext() noexcept { return rendererContext; }
 
 	protected:
 
-		Instance instance{ nullptr };
-		DebugUtilsMessenger debugUtilsMessenger{ nullptr };
-		PhysicalDevice physicalDevice{ nullptr };
-		Surface surface{ nullptr };
-		Device device{ nullptr };
-		VMA vma{ nullptr };
-		SwapChain swapChain{ nullptr };
-		Queue queue{ nullptr };
-		CommandPool commandPool{ nullptr };
+		RendererContext rendererContext;
 
 		std::vector<VkImage> images;
 		std::vector<ImageView> imageViews;

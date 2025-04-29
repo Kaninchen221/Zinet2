@@ -8,35 +8,11 @@ namespace zt::vulkan_renderer
 
 	bool VulkanRenderer::start(wd::Window& window) noexcept
 	{
-		instance.setEnableValidationLayers(true);
-		if (!instance.create())
-			return false;
+		rendererContext.create(window);
 
-		if (!debugUtilsMessenger.create(instance))
-			return false;
-
-		auto physicalDevices = instance.getPhysicalDevices();
-		if (physicalDevices.empty())
-		{
-			Logger->error("Couldn't get any physical devices");
-			return false;
-		}
-
-		physicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
-		if (!physicalDevice.isValid())
-			return false;
-
-		if (!surface.create(instance, window))
-			return false;
-
-		if (!device.create(physicalDevice, surface))
-			return false;
-
-		if (!vma.create(device, physicalDevice, instance))
-			return false;
-
-		if (!swapChain.create(device, physicalDevice, surface, window))
-			return false;
+		auto& swapChain = rendererContext.swapChain;
+		auto& device = rendererContext.device;
+		auto& commandPool = rendererContext.commandPool;
 
 		images = swapChain.getImages(device);
 		if (images.empty())
@@ -71,13 +47,6 @@ namespace zt::vulkan_renderer
 			}
 		}
 
-		queue = device.getQueue();
-		if (!queue.isValid())
-			return false;
-
-		if (!commandPool.create(device, queue))
-			return false;
-
 		if (!commandBuffer.create(device, commandPool))
 			return false;
 
@@ -98,6 +67,8 @@ namespace zt::vulkan_renderer
 
 	void VulkanRenderer::shutdown() noexcept
 	{
+		auto& device = rendererContext.device;
+
 		device.waitIdle();
 
 		renderPass.destroy(device);
@@ -117,17 +88,15 @@ namespace zt::vulkan_renderer
 		for (auto& imageView : imageViews)
 			imageView.destroy(device);
 
-		commandPool.destroy(device);
-		swapChain.destroy(device);
-		vma.destroy();
-		device.destroy();
-		surface.destroy(instance);
-		debugUtilsMessenger.destroy(instance);
-		instance.destroy();
+		rendererContext.destroy();
 	}
 
 	void VulkanRenderer::draw(const DrawInfo& drawInfo) noexcept
 	{
+		auto& swapChain = rendererContext.swapChain;
+		auto& device = rendererContext.device;
+		auto& queue = rendererContext.queue;
+
 		if (!pipeline.isValid())
 		{
 			Pipeline::ShadersStages shadersStages;
