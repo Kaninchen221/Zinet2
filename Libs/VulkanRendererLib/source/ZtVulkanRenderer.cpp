@@ -146,13 +146,13 @@ namespace zt::vulkan_renderer
 
 		const std::uint32_t imageIndex = swapChain.acquireNextImage(device, imageAvailableSemaphore);
 
-		vkResetCommandBuffer(commandBuffer.get(), 0);
+		commandBuffer.reset();
 
 		commandBuffer.begin();
 		const auto extent = swapChain.getExtent();
 		commandBuffer.beginRenderPass(renderPass, framebuffers[imageIndex], extent);
 
-		vkCmdBindPipeline(commandBuffer.get(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get());
+		commandBuffer.bindPipeline(pipeline);
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
@@ -161,14 +161,14 @@ namespace zt::vulkan_renderer
 		viewport.height = static_cast<float>(swapChain.getExtent().height);
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(commandBuffer.get(), 0, 1, &viewport);
+		commandBuffer.setViewport(viewport);
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
 		scissor.extent = swapChain.getExtent();
-		vkCmdSetScissor(commandBuffer.get(), 0, 1, &scissor);
+		commandBuffer.setScissor(scissor);
 
-		vkCmdDraw(commandBuffer.get(), 3, 1, 0, 0);
+		commandBuffer.draw(3, 1, 0, 0);
 
 		commandBuffer.endRenderPass();
 		commandBuffer.end();

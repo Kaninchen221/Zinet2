@@ -3,6 +3,7 @@
 #include "Zinet/VulkanRenderer/ZtCommandPool.hpp"
 #include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
 #include "Zinet/VulkanRenderer/ZtFramebuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
 
 namespace zt::vulkan_renderer
 {
@@ -26,6 +27,20 @@ namespace zt::vulkan_renderer
 		else
 		{
 			Logger->error("Couldn't create command buffer, result: {}", static_cast<std::int32_t>(result));
+			return false;
+		}
+	}
+
+	bool CommandBuffer::reset() noexcept
+	{
+		const auto result = vkResetCommandBuffer(objectHandle, 0);
+		if (result == VK_SUCCESS)
+		{
+			return true;
+		}
+		else
+		{
+			Logger->error("Couldn't reset, result: {}", static_cast<std::int32_t>(result));
 			return false;
 		}
 	}
@@ -81,6 +96,26 @@ namespace zt::vulkan_renderer
 	void CommandBuffer::endRenderPass() noexcept
 	{
 		vkCmdEndRenderPass(objectHandle);
+	}
+
+	void CommandBuffer::bindPipeline(const GraphicsPipeline& pipeline) noexcept
+	{
+		vkCmdBindPipeline(objectHandle, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get());
+	}
+
+	void CommandBuffer::setViewport(const VkViewport& viewport) noexcept
+	{
+		vkCmdSetViewport(objectHandle, 0, 1, &viewport);
+	}
+
+	void CommandBuffer::setScissor(const VkRect2D& scissor) noexcept
+	{
+		vkCmdSetScissor(objectHandle, 0, 1, &scissor);
+	}
+
+	void CommandBuffer::draw(std::uint32_t vertexCount, std::uint32_t instanceCount, std::uint32_t firstVertex, std::uint32_t firstInstance) noexcept
+	{
+		vkCmdDraw(objectHandle, vertexCount, instanceCount, firstVertex, firstInstance);
 	}
 
 }
