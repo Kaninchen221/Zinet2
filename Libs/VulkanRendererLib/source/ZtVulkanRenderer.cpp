@@ -144,13 +144,7 @@ namespace zt::vulkan_renderer
 		fence.wait(device);
 		fence.reset(device);
 
-		std::uint32_t imageIndex{};
-		[[maybe_unused]] const auto result = 
-			vkAcquireNextImageKHR(device.get(), swapChain.get(), UINT64_MAX, imageAvailableSemaphore.get(), VK_NULL_HANDLE, &imageIndex);
-		if (result != VK_SUCCESS)
-		{
-			Logger->error("vkAcquireNextImageKHR returned false");
-		}
+		const std::uint32_t imageIndex = swapChain.acquireNextImage(device, imageAvailableSemaphore);
 
 		vkResetCommandBuffer(commandBuffer.get(), 0);
 

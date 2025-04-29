@@ -2,6 +2,7 @@
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtSurface.hpp"
+#include "Zinet/VulkanRenderer/ZtSemaphore.hpp"
 
 #include "Zinet/Math/ZtVecTypes.hpp"
 
@@ -114,6 +115,23 @@ namespace zt::vulkan_renderer
 		images.resize(count);
 		vkGetSwapchainImagesKHR(device.get(), objectHandle, &count, images.data());
 		return images;
+	}
+
+	std::uint32_t SwapChain::acquireNextImage(const Device& device, Semaphore& semaphore) const noexcept
+	{
+		std::uint32_t imageIndex{};
+		const auto result =
+			vkAcquireNextImageKHR(device.get(), objectHandle, UINT64_MAX, semaphore.get(), VK_NULL_HANDLE, &imageIndex);
+
+		if (result == VK_SUCCESS)
+		{
+			return imageIndex;
+		}
+		else
+		{
+			Logger->error("Couldn't acquire next image, result: {}", static_cast<std::uint32_t>(result));
+			return InvalidIndex;
+		}
 	}
 
 }

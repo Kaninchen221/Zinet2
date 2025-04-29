@@ -19,6 +19,7 @@ namespace zt::vulkan_renderer
 	class Device;
 	class PhysicalDevice;
 	class Surface;
+	class Semaphore;
 
 	class ZINET_VULKAN_RENDERER_API SwapChain : public VulkanObject<VkSwapchainKHR>
 	{
@@ -49,6 +50,8 @@ namespace zt::vulkan_renderer
 		VkFormat getFormat() const noexcept { return format; }
 
 		VkExtent2D getExtent() const noexcept { return extent; }
+
+		std::uint32_t acquireNextImage(const Device& device, Semaphore& semaphore) const noexcept;
 
 	protected:
 
