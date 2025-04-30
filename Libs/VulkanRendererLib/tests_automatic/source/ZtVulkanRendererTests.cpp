@@ -2,6 +2,7 @@
 
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
+#include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
 
 #include "Zinet/Core/ZtPaths.hpp"
 

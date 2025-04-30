@@ -1,23 +1,8 @@
 #pragma once
 
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
-#include "Zinet/VulkanRenderer/ZtInstance.hpp"
-#include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
-#include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
-#include "Zinet/VulkanRenderer/ZtSurface.hpp"
-#include "Zinet/VulkanRenderer/ZtDevice.hpp"
-#include "Zinet/VulkanRenderer/ZtSwapChain.hpp"
-#include "Zinet/VulkanRenderer/ZtImageView.hpp"
-#include "Zinet/VulkanRenderer/ZtFramebuffer.hpp"
-#include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
-#include "Zinet/VulkanRenderer/ZtVMA.hpp"
-#include "Zinet/VulkanRenderer/ZtSemaphore.hpp"
-#include "Zinet/VulkanRenderer/ZtFence.hpp"
-#include "Zinet/VulkanRenderer/ZtCommandPool.hpp"
-#include "Zinet/VulkanRenderer/ZtCommandBuffer.hpp"
-#include "Zinet/VulkanRenderer/ZtPipeline.hpp"
-#include "Zinet/VulkanRenderer/ZtPipelineLayout.hpp"
 #include "Zinet/VulkanRenderer/ZtRendererContext.hpp"
+#include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
 
 #include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
@@ -31,13 +16,7 @@ namespace zt::wd
 
 namespace zt::vulkan_renderer
 {
-	class ShaderModule;
-
-	struct DrawInfo 
-	{
-		const ShaderModule& vertexShaderModule;
-		const ShaderModule& fragmentShaderModule;
-	};
+	class DrawInfo;
 
 	ZT_REFLECT_CLASS()
 	class ZINET_VULKAN_RENDERER_API VulkanRenderer : public core::Object
@@ -60,19 +39,7 @@ namespace zt::vulkan_renderer
 	protected:
 
 		RendererContext rendererContext;
-
-		std::vector<VkImage> images;
-		std::vector<ImageView> imageViews;
-		std::vector<Framebuffer> framebuffers;
-
-		CommandBuffer commandBuffer{ nullptr };
-		Semaphore imageAvailableSemaphore{ nullptr };
-		Semaphore renderFinishedSemaphore{ nullptr };
-		Fence fence{ nullptr };
-
-		RenderPass renderPass{ nullptr };
-		PipelineLayout pipelineLayout{ nullptr };
-		Pipeline pipeline{ nullptr };
+		GraphicsPipeline graphicsPipeline;
 
 	public:
 /*GENERATED_CODE_START*/
