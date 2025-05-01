@@ -53,15 +53,15 @@ namespace zt::vulkan_renderer
 
 		bool isQueueFamilySupportingSurface(std::uint32_t index, const Surface& surface) const noexcept;
 
-		const std::vector<VkExtensionProperties> getDeviceExtensionProperties() const noexcept;
+		std::vector<VkExtensionProperties> getDeviceExtensionProperties() const noexcept;
 
-		static const std::vector<const char*> GetRequiredExtensions() noexcept;
+		static std::vector<const char*> GetRequiredExtensions() noexcept;
 
-		const VkSurfaceCapabilitiesKHR getPhysicalDeviceSurfaceCapabilities(const Surface& surface) const noexcept;
+		VkSurfaceCapabilitiesKHR getPhysicalDeviceSurfaceCapabilities(const Surface& surface) const noexcept;
 
-		const std::vector<VkSurfaceFormatKHR> getPhysicalDeviceSurfaceFormats(const Surface& surface) const noexcept;
+		std::vector<VkSurfaceFormatKHR> getPhysicalDeviceSurfaceFormats(const Surface& surface) const noexcept;
 
-		const std::vector<VkPresentModeKHR> getPhysicalDeviceSurfacePresentModes(const Surface& surface) const noexcept;
+		std::vector<VkPresentModeKHR> getPhysicalDeviceSurfacePresentModes(const Surface& surface) const noexcept;
 	};
 
 	inline void PhysicalDevice::printVkQueuesFamiliesProperties(const auto& familiesProperties, const Surface& surface) const noexcept

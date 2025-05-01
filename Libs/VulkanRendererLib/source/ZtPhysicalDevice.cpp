@@ -94,7 +94,7 @@ namespace zt::vulkan_renderer
 		return surfaceSupport;
 	}
 
-	const std::vector<VkExtensionProperties> PhysicalDevice::getDeviceExtensionProperties() const noexcept
+	std::vector<VkExtensionProperties> PhysicalDevice::getDeviceExtensionProperties() const noexcept
 	{
 		std::uint32_t extensionCount;
 		vkEnumerateDeviceExtensionProperties(objectHandle, nullptr, &extensionCount, nullptr);
@@ -105,7 +105,7 @@ namespace zt::vulkan_renderer
 		return extensions;
 	}
 
-	const std::vector<const char*> PhysicalDevice::GetRequiredExtensions() noexcept
+	std::vector<const char*> PhysicalDevice::GetRequiredExtensions() noexcept
 	{
 		if (!wd::GLFW::IsInitialized())
 			return {};
@@ -118,15 +118,15 @@ namespace zt::vulkan_renderer
 
 		return result;
 	}
-
-	const VkSurfaceCapabilitiesKHR PhysicalDevice::getPhysicalDeviceSurfaceCapabilities(const Surface& surface) const noexcept
+	
+	VkSurfaceCapabilitiesKHR PhysicalDevice::getPhysicalDeviceSurfaceCapabilities(const Surface& surface) const noexcept
 	{
 		VkSurfaceCapabilitiesKHR surfaceCapabilities;
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(objectHandle, surface.get(), &surfaceCapabilities);
 		return surfaceCapabilities;
 	}
 
-	const std::vector<VkSurfaceFormatKHR> PhysicalDevice::getPhysicalDeviceSurfaceFormats(const Surface& surface) const noexcept
+	std::vector<VkSurfaceFormatKHR> PhysicalDevice::getPhysicalDeviceSurfaceFormats(const Surface& surface) const noexcept
 	{
 		std::uint32_t count;
 		vkGetPhysicalDeviceSurfaceFormatsKHR(objectHandle, surface.get(), &count, nullptr);
@@ -141,7 +141,7 @@ namespace zt::vulkan_renderer
 		return formats;
 	}
 
-	const std::vector<VkPresentModeKHR> PhysicalDevice::getPhysicalDeviceSurfacePresentModes(const Surface& surface) const noexcept
+	std::vector<VkPresentModeKHR> PhysicalDevice::getPhysicalDeviceSurfacePresentModes(const Surface& surface) const noexcept
 	{
 		std::uint32_t count;
 		vkGetPhysicalDeviceSurfacePresentModesKHR(objectHandle, surface.get(), &count, nullptr);

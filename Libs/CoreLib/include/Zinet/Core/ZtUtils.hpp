@@ -6,7 +6,7 @@
 
 namespace zt::core
 {
-	inline bool Contains(const auto& container, const auto& value)
+	inline bool Contains(auto&& container, auto&& value)
 	{
 		// https://github.com/shadps4-emu/shadPS4/issues/799#issuecomment-2391126439
 		// "gcc 13 with full C++23 support won't be included until Debian Trixie is released."

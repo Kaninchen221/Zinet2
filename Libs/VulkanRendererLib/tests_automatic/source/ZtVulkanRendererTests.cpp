@@ -95,7 +95,7 @@ namespace zt::vulkan_renderer::tests
 			windowEvents.pollEvents();
 
 			// For now empty because we store draw data in shaders
-			renderer.draw(drawInfo); 
+			renderer.draw(drawInfo);
 
 			window.requestCloseWindow();
 		}
