@@ -15,13 +15,13 @@ namespace zt::wd
 	{
 	public:
 
-		using WindowResizedCallback = std::function<void(void*, const Vector2ui&)>;
+		using WindowResizedCallback = std::function<void(void*, const Vector2i&)>;
 
 	private:
 
 		inline static core::ConsoleLogger Logger = core::ConsoleLogger::Create("Window");
 
-		WindowResizedCallback windowResizedCallbackPointer = nullptr;
+		WindowResizedCallback windowResizedCallback = nullptr;
 		void* windowResizedCallbackUserPointer = nullptr;
 
 	public:
@@ -57,7 +57,7 @@ namespace zt::wd
 
 		void setWindowResizedCallback(void* userPointer, WindowResizedCallback callback);
 
-		WindowResizedCallback getWindowResizedCallback() const { return windowResizedCallbackPointer; }
+		WindowResizedCallback getWindowResizedCallback() const { return windowResizedCallback; }
 
 		void* getWindowResizedCallbackUserPointer() { return windowResizedCallbackUserPointer; }
 
@@ -134,7 +134,7 @@ namespace zt::wd
 	{
 		if (userPointer && callback)
 		{
-			windowResizedCallbackPointer = callback;
+			windowResizedCallback = callback;
 			windowResizedCallbackUserPointer = userPointer;
 		}
 		else

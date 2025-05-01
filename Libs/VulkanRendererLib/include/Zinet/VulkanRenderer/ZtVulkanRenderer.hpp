@@ -33,13 +33,18 @@ namespace zt::vulkan_renderer
 
 		void draw(const DrawInfo& drawInfo) noexcept;
 
-		const RendererContext& getRendererContext() const noexcept { return rendererContext; }
-		RendererContext& getRendererContext() noexcept { return rendererContext; }
+		const auto& getRendererContext() const noexcept { return rendererContext; }
+		auto& getRendererContext() noexcept { return rendererContext; }
+
+		const auto& getGraphicsPipeline() const noexcept { return graphicsPipeline; }
+		auto& getGraphicsPipeline() noexcept { return graphicsPipeline; }
 
 	protected:
 
 		RendererContext rendererContext;
 		GraphicsPipeline graphicsPipeline;
+
+		static void WindowResizedCallback(void* userPointer, const Vector2i& size);
 
 	public:
 /*GENERATED_CODE_START*/

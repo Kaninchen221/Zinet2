@@ -75,7 +75,7 @@ namespace zt::vulkan_renderer::tests
 		ASSERT_TRUE(device.create(physicalDevice, surface));
 
 		SwapChain swapChain{ nullptr };
-		ASSERT_TRUE(swapChain.create(device, physicalDevice, surface, window));
+		ASSERT_TRUE(swapChain.create(device, physicalDevice, surface, window.getFramebufferSize()));
 
 		auto images = swapChain.getImages(device);
 

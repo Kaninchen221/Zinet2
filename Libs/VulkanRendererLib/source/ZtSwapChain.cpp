@@ -14,7 +14,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool SwapChain::create(const Device& device, const PhysicalDevice& physicalDevice, const Surface& surface, const wd::Window& window) noexcept
+	bool SwapChain::create(const Device& device, const PhysicalDevice& physicalDevice, const Surface& surface, const Vector2i& windowFramebufferSize) noexcept
 	{
 		if (isValid())
 			return false;
@@ -54,8 +54,7 @@ namespace zt::vulkan_renderer
 		const auto presentMode = supportsMailbox ? VK_PRESENT_MODE_MAILBOX_KHR : VK_PRESENT_MODE_FIFO_KHR;
 
 		// Extent
-		const Vector2ui framebufferSize = window.getFramebufferSize();
-		VkExtent2D newExtent{ framebufferSize.x, framebufferSize.y };
+		VkExtent2D newExtent{ static_cast<std::uint32_t>(windowFramebufferSize.x), static_cast<std::uint32_t>(windowFramebufferSize.y) };
 		newExtent.width = std::clamp(newExtent.width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width);
 		newExtent.height = std::clamp(newExtent.height, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height);
 

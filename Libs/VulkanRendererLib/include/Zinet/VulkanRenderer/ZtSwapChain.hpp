@@ -41,7 +41,7 @@ namespace zt::vulkan_renderer
 		SwapChain& operator = (const SwapChain& other) noexcept = delete;
 		SwapChain& operator = (SwapChain&& other) noexcept = default;
 
-		bool create(const Device& device, const PhysicalDevice& physicalDevice, const Surface& surface, const wd::Window& window) noexcept;
+		bool create(const Device& device, const PhysicalDevice& physicalDevice, const Surface& surface, const Vector2i& windowFramebufferSize) noexcept;
 
 		void destroy(const Device& device) noexcept;
 

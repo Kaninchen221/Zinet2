@@ -70,9 +70,11 @@ namespace zt::vulkan_renderer
 
 		for (auto& framebuffer : framebuffers)
 			framebuffer.destroy(device);
+		framebuffers.clear();
 
 		for (auto& imageView : imageViews)
 			imageView.destroy(device);
+		imageViews.clear();
 
 		renderPass.destroy(device);
 

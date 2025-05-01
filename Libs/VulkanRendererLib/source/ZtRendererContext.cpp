@@ -35,7 +35,7 @@ namespace zt::vulkan_renderer
 		if (!vma.create(device, physicalDevice, instance))
 			return false;
 
-		if (!swapChain.create(device, physicalDevice, surface, window))
+		if (!swapChain.create(device, physicalDevice, surface, window.getFramebufferSize()))
 			return false;
 
 		queue = device.getQueue();

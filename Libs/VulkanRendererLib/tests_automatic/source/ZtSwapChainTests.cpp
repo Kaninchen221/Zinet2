@@ -43,7 +43,7 @@ namespace zt::vulkan_renderer::tests
 
 			ASSERT_TRUE(device.create(physicalDevice, surface));
 
-			ASSERT_TRUE(swapChain.create(device, physicalDevice, surface, window));
+			ASSERT_TRUE(swapChain.create(device, physicalDevice, surface, window.getFramebufferSize()));
 		}
 
 		void TearDown() override

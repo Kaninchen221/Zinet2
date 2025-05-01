@@ -61,9 +61,9 @@ namespace zt::wd
         }
 
         Window* window = static_cast<Window*>(windowUserPointer);
-		if (window->windowResizedCallbackPointer && window->windowResizedCallbackUserPointer)
+		if (window->windowResizedCallback && window->windowResizedCallbackUserPointer)
 		{
-            auto callable = std::bind(window->windowResizedCallbackPointer, window->windowResizedCallbackUserPointer, Vector2ui{width, height});
+            auto callable = std::bind(window->windowResizedCallback, window->windowResizedCallbackUserPointer, Vector2i{width, height});
 			std::invoke(callable);
 		}
     }
