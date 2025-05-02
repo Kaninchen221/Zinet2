@@ -36,9 +36,11 @@ namespace zt::vulkan_renderer
 
 		bool createVertexBuffer(const auto& vertices, const VMA& vma) noexcept;
 
-		bool fill(const auto& contiguousContainer, const VMA& vma) noexcept;
+		template<class ContainerT>
+		bool fill(const ContainerT& contiguousContainer, const VMA& vma) noexcept;
 
-		bool getData(auto& contiguousContainer, const VMA& vma) const noexcept;
+		template<class ContainerT>
+		bool getData(ContainerT& contiguousContainer, const VMA& vma) const noexcept;
 
 		void destroy(const VMA& vma) noexcept;
 
@@ -79,12 +81,14 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	bool Buffer::fill(const auto& contiguousContainer, const VMA& vma) noexcept
+
+	template<class ContainerT>
+	bool Buffer::fill(const ContainerT& contiguousContainer, const VMA& vma) noexcept
 	{
 		if (!isValid())
 			return false;
 
-		const auto containerSize = sizeof(std::remove_reference_t<decltype(contiguousContainer)>::value_type) * contiguousContainer.size();
+		const auto containerSize = sizeof(ContainerT::value_type) * contiguousContainer.size();
 		if (containerSize != size)
 			return false;
 
@@ -104,12 +108,13 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	bool Buffer::getData(auto& contiguousContainer, const VMA& vma) const noexcept
+	template<class ContainerT>
+	bool Buffer::getData(ContainerT& contiguousContainer, const VMA& vma) const noexcept
 	{
 		if (!isValid())
 			return false;
 
-		const auto containerSize = sizeof(std::remove_reference_t<decltype(contiguousContainer)>::value_type) * contiguousContainer.size();
+		const auto containerSize = sizeof(ContainerT::value_type) * contiguousContainer.size();
 		if (containerSize != size)
 			return false;
 
