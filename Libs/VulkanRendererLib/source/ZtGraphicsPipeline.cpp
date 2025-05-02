@@ -2,6 +2,7 @@
 #include "Zinet/VulkanRenderer/ZtRendererContext.hpp"
 #include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
+#include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 
 namespace zt::vulkan_renderer
 {
@@ -96,14 +97,10 @@ namespace zt::vulkan_renderer
 
 		if (!pipeline.isValid())
 		{
-			Pipeline::ShadersStages shadersStages;
-			shadersStages.push_back(drawInfo.vertexShaderModule.createPipelineShaderStageCreateInfo(ShaderType::Vertex));
-			shadersStages.push_back(drawInfo.fragmentShaderModule.createPipelineShaderStageCreateInfo(ShaderType::Fragment));
-
 			const auto extent = swapChain.getExtent();
 			VkViewport viewport{ 0, 0, static_cast<float>(extent.width), static_cast<float>(extent.height) };
 			VkRect2D scissor{ { 0, 0 }, extent };
-			if (!pipeline.create(device, pipelineLayout, renderPass, viewport, scissor, shadersStages))
+			if (!pipeline.create(device, pipelineLayout, renderPass, viewport, scissor, drawInfo))
 				return;
 		}
 
@@ -134,7 +131,13 @@ namespace zt::vulkan_renderer
 		scissor.extent = swapChain.getExtent();
 		commandBuffer.setScissor(scissor);
 
-		commandBuffer.draw(3, 1, 0, 0);
+		///////
+		VkBuffer vertexBuffers[] = { drawInfo.vertexBuffer.get() };
+		VkDeviceSize offsets[] = { 0 };
+		vkCmdBindVertexBuffers(commandBuffer.get(), 0, 1, vertexBuffers, offsets);
+		///////
+
+		commandBuffer.draw(static_cast<uint32_t>(drawInfo.vertexBuffer.getSize()), 1, 0, 0);
 
 		commandBuffer.endRenderPass();
 		commandBuffer.end();

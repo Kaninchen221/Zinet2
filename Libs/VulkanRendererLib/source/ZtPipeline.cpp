@@ -2,6 +2,9 @@
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtPipelineLayout.hpp"
 #include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
+#include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
+#include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
+#include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 
 namespace zt::vulkan_renderer
 {
@@ -17,14 +20,27 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	VkPipelineVertexInputStateCreateInfo Pipeline::createVkPipelineVertexInputStateCreateInfo() const noexcept
+	VkPipelineVertexInputStateCreateInfo Pipeline::createVkPipelineVertexInputStateCreateInfo(
+		const Vertex::InputBindingDescription* bindingDescription,
+		const Vertex::InputAttributesDescriptions* attributesDescriptions) const noexcept
 	{
 		VkPipelineVertexInputStateCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		createInfo.vertexBindingDescriptionCount = 0;
-		createInfo.pVertexBindingDescriptions = nullptr; // Optional
-		createInfo.vertexAttributeDescriptionCount = 0;
-		createInfo.pVertexAttributeDescriptions = nullptr; // Optional
+
+		if (bindingDescription && attributesDescriptions)
+		{
+			createInfo.vertexBindingDescriptionCount = 1;
+			createInfo.pVertexBindingDescriptions = bindingDescription;
+			createInfo.vertexAttributeDescriptionCount = static_cast<std::uint32_t>(attributesDescriptions->size());
+			createInfo.pVertexAttributeDescriptions = attributesDescriptions->data();
+		}
+		else
+		{
+			createInfo.vertexBindingDescriptionCount = 0;
+			createInfo.pVertexBindingDescriptions = nullptr;
+			createInfo.vertexAttributeDescriptionCount = 0;
+			createInfo.pVertexAttributeDescriptions = nullptr;
+		}
 
 		return createInfo;
 	}
@@ -122,7 +138,7 @@ namespace zt::vulkan_renderer
 		const RenderPass& renderPass,
 		const VkViewport& viewport,
 		const VkRect2D& scissor,
-		const ShadersStages& shadersStages) noexcept
+		const DrawInfo& drawInfo) noexcept
 	{
 		if (isValid())
 			return false;
@@ -132,14 +148,29 @@ namespace zt::vulkan_renderer
 			VK_DYNAMIC_STATE_SCISSOR
 		};
 
+		auto vertexInputBindingDescription = Vertex::GetInputBindingDescription();
+		auto vertexInputAttributesDescriptions = Vertex::GetInputAttributesDescriptions();
+
+		VkPipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
+		
+		if (drawInfo.vertexBuffer.isValid())
+		{
+			vertexInputStateCreateInfo = createVkPipelineVertexInputStateCreateInfo(&vertexInputBindingDescription, &vertexInputAttributesDescriptions);
+		}
+		else
+		{
+			vertexInputStateCreateInfo = createVkPipelineVertexInputStateCreateInfo(nullptr, nullptr);
+		}
+
 		const auto dynamicStateCreateInfo = createVkPipelineDynamicStateCreateInfo(dynamicStates);
-		const auto vertexInputStateCreateInfo = createVkPipelineVertexInputStateCreateInfo();
 		const auto inputAssemblyStateCreateInfo = createVkPipelineInputAssemblyStateCreateInfo();
 		const auto viewportStateCreateInfo = createVkPipelineViewportStateCreateInfo(viewport, scissor);
 		const auto rasterizationStateCreateInfo = createVkPipelineRasterizationStateCreateInfo();
 		const auto multisampleStateCreateInfo = createVkPipelineMultisampleStateCreateInfo();
 		const auto colorBlendAttachmentState = createVkPipelineColorBlendAttachmentState();
 		const auto colorBlendStateCreateInfo = createVkPipelineColorBlendStateCreateInfo(colorBlendAttachmentState);
+
+		const auto shadersStages = createShadersStages(drawInfo);
 
 		VkGraphicsPipelineCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -178,6 +209,31 @@ namespace zt::vulkan_renderer
 			vkDestroyPipeline(device.get(), objectHandle, nullptr);
 			objectHandle = nullptr;
 		}
+	}
+
+	Pipeline::ShadersStages Pipeline::createShadersStages(const DrawInfo& drawInfo) const noexcept
+	{
+		Pipeline::ShadersStages shadersStages;
+
+		if (drawInfo.vertexShaderModule.isValid())
+		{
+			shadersStages.push_back(drawInfo.vertexShaderModule.createPipelineShaderStageCreateInfo(ShaderType::Vertex));
+		}
+		else
+		{
+			Logger->error("Vertex shader module is invalid");
+		}
+
+		if (drawInfo.fragmentShaderModule.isValid())
+		{
+			shadersStages.push_back(drawInfo.fragmentShaderModule.createPipelineShaderStageCreateInfo(ShaderType::Fragment));
+		}
+		else
+		{
+			Logger->error("Fragment shader module is invalid");
+		}
+
+		return shadersStages;
 	}
 
 }

@@ -9,6 +9,8 @@
 #include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
 #include "Zinet/VulkanRenderer/ZtPipelineLayout.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
+#include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
+#include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 
 #include <gtest/gtest.h>
 
@@ -50,6 +52,12 @@ namespace zt::vulkan_renderer::tests
 
 			ASSERT_TRUE(pipelineLayout.create(device));
 
+			const auto viewportSize = window.getFramebufferSize();
+			viewport = { 0, 0, static_cast<float>(viewportSize.x), static_cast<float>(viewportSize.y), 0.f, 1.f };
+
+			scissor = { { 0, 0 }, { static_cast<std::uint32_t>(viewportSize.x), static_cast<std::uint32_t>(viewportSize.y) } };
+
+			// Shaders
 			const auto contentFolderPath = core::Paths::CurrentProjectRootPath() / "test_files";
 
 			const auto vertexShaderFilePath = contentFolderPath / "simple_triangle_shader.vert";
@@ -57,22 +65,23 @@ namespace zt::vulkan_renderer::tests
 			ASSERT_EQ(vertexShaderResult.GetCompilationStatus(), shaderc_compilation_status_success);
 
 			ASSERT_TRUE(vertexShaderModule.create(device, vertexShaderResult));
-			shadersStages.push_back(vertexShaderModule.createPipelineShaderStageCreateInfo(ShaderType::Vertex));
 
 			const auto fragmentShaderFilePath = contentFolderPath / "simple_triangle_shader.frag";
 			const auto fragmentShaderResult = shadersCompiler.compileFromFile(fragmentShaderFilePath, ShaderType::Fragment);
 			ASSERT_EQ(fragmentShaderResult.GetCompilationStatus(), shaderc_compilation_status_success);
 
 			ASSERT_TRUE(fragmentShaderModule.create(device, fragmentShaderResult));
-			shadersStages.push_back(fragmentShaderModule.createPipelineShaderStageCreateInfo(ShaderType::Fragment));
 
-			const auto viewportSize = window.getFramebufferSize();
-			viewport = { 0, 0, static_cast<float>(viewportSize.x), static_cast<float>(viewportSize.y), 0.f, 1.f };
-
-			scissor = { { 0, 0 }, { static_cast<std::uint32_t>(viewportSize.x), static_cast<std::uint32_t>(viewportSize.y) } };
+			// DrawInfo
+			DrawInfo drawInfo
+			{
+				.vertexShaderModule = vertexShaderModule,
+				.fragmentShaderModule = fragmentShaderModule,
+				.vertexBuffer = vertexBuffer
+			};
 
 			ASSERT_TRUE(
-				pipeline.create(device, pipelineLayout, renderPass, viewport, scissor, shadersStages)
+				pipeline.create(device, pipelineLayout, renderPass, viewport, scissor, drawInfo)
 			);
 
 			ASSERT_TRUE(pipeline.isValid());
@@ -112,6 +121,7 @@ namespace zt::vulkan_renderer::tests
 		ShaderModule vertexShaderModule{ nullptr };
 		ShaderModule fragmentShaderModule{ nullptr };
 		std::vector<VkPipelineShaderStageCreateInfo> shadersStages;
+		Buffer vertexBuffer{ nullptr };
 		Pipeline pipeline{ nullptr };
 
 		static_assert(std::is_base_of_v<VulkanObject<VkPipeline>, Pipeline>);
@@ -145,9 +155,12 @@ namespace zt::vulkan_renderer::tests
 
 	TEST(Pipeline, CreateVkPipelineVertexInputStateCreateInfoTest)
 	{
+		const auto bindingDescriptions = Vertex::GetInputBindingDescription();
+		const auto attributesDescriptions = Vertex::GetInputAttributesDescriptions();
+
 		Pipeline pipeline{ nullptr };
 		const VkPipelineVertexInputStateCreateInfo createInfo =
-			pipeline.createVkPipelineVertexInputStateCreateInfo();
+			pipeline.createVkPipelineVertexInputStateCreateInfo(&bindingDescriptions, &attributesDescriptions);
 	}
 
 	TEST(Pipeline, CreateVkPipelineInputAssemblyStateCreateInfoTest)

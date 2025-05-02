@@ -2,6 +2,7 @@
 
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
 #include "Zinet/VulkanRenderer/ZtVulkanObject.hpp"
+#include "Zinet/VulkanRenderer/ZtVertex.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -12,6 +13,7 @@ namespace zt::vulkan_renderer
 	class Device;
 	class PipelineLayout;
 	class RenderPass;
+	class DrawInfo;
 
 	class ZINET_VULKAN_RENDERER_API Pipeline : public VulkanObject<VkPipeline>
 	{
@@ -40,15 +42,19 @@ namespace zt::vulkan_renderer
 			const PipelineLayout& pipelineLayout, 
 			const RenderPass& renderPass, 
 			const VkViewport& viewport, 
-			const VkRect2D& scissor,
-			const ShadersStages& shadersStages) noexcept;
+			const VkRect2D& scissor, 
+			const DrawInfo& drawInfo) noexcept;
 
 		void destroy(const Device& device) noexcept;
+
+		Pipeline::ShadersStages createShadersStages(const DrawInfo& drawInfo) const noexcept;
 
 		VkPipelineDynamicStateCreateInfo createVkPipelineDynamicStateCreateInfo(
 			const std::vector<VkDynamicState>& dynamicStates) const noexcept;
 
-		VkPipelineVertexInputStateCreateInfo createVkPipelineVertexInputStateCreateInfo() const noexcept;
+		VkPipelineVertexInputStateCreateInfo createVkPipelineVertexInputStateCreateInfo(
+			const Vertex::InputBindingDescription* bindingDescription,
+			const Vertex::InputAttributesDescriptions* attributesDescriptions) const noexcept;
 
 		VkPipelineInputAssemblyStateCreateInfo createVkPipelineInputAssemblyStateCreateInfo() const noexcept;
 

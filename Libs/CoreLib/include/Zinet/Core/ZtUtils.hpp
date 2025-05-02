@@ -16,4 +16,23 @@ namespace zt::core
 		return std::ranges::find(container, value) != container.cend();
 #endif
 	}
+
+	inline bool CompareContainers(auto&& lhs, auto&& rhs)
+	{
+		if (lhs.size() != rhs.size())
+			return false;
+
+		auto lhsCIt = std::cbegin(lhs);
+		auto rhsCIt = std::cbegin(rhs);
+		while (lhsCIt != std::cend(lhs) && rhsCIt != std::cend(rhs))
+		{
+			if (*lhsCIt != *rhsCIt)
+				return false;
+
+			++lhsCIt;
+			++rhsCIt;
+		}
+
+		return true;
+	}
 }

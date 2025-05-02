@@ -3,6 +3,7 @@
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
 #include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
+#include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 
 #include "Zinet/Core/ZtPaths.hpp"
 
@@ -35,16 +36,31 @@ namespace zt::vulkan_renderer::tests
 
 			renderer.start(window);
 
-			vertexShaderModule = createShaderModule("simple_triangle_shader.vert", ShaderType::Vertex);
+			vertexShaderModule = createShaderModule("shader.vert", ShaderType::Vertex);
 			ASSERT_TRUE(vertexShaderModule.isValid());
 
-			fragmentShaderModule = createShaderModule("simple_triangle_shader.frag", ShaderType::Fragment);
+			fragmentShaderModule = createShaderModule("shader.frag", ShaderType::Fragment);
 			ASSERT_TRUE(fragmentShaderModule.isValid());
+
+			auto& vma = renderer.getRendererContext().vma;
+
+			const DrawInfo::Vertices vertices = {
+				{{0.0f, -0.5f, 1.f}, {1.0f, 0.0f, 0.0f}},
+				{{0.5f, 0.5f, 1.f}, {0.0f, 1.0f, 0.0f}},
+				{{-0.5f, 0.5f, 1.f}, {0.0f, 0.0f, 1.0f}}
+			};
+
+			ASSERT_TRUE(vertexBuffer.createVertexBuffer(vertices, vma));
+			ASSERT_TRUE(vertexBuffer.fill(vertices, vma));
 		}
 
 		void TearDown() override
 		{
 			auto& device = renderer.getRendererContext().device;
+			auto& vma = renderer.getRendererContext().vma;
+
+			device.waitIdle();
+			vertexBuffer.destroy(vma);
 
 			vertexShaderModule.destroy(device);
 			fragmentShaderModule.destroy(device);
@@ -60,6 +76,7 @@ namespace zt::vulkan_renderer::tests
 		wd::WindowEvents windowEvents{ window };
 		ShaderModule vertexShaderModule{ nullptr };
 		ShaderModule fragmentShaderModule{ nullptr };
+		Buffer vertexBuffer{ nullptr };
 
 		ShaderModule createShaderModule(std::string_view sourceCodeFileName, ShaderType shaderType);
 	};
@@ -84,10 +101,11 @@ namespace zt::vulkan_renderer::tests
 
 	TEST_F(VulkanRendererTests, Test)
 	{
-		DrawInfo drawInfo
+		const DrawInfo drawInfo
 		{
 			.vertexShaderModule = vertexShaderModule,
-			.fragmentShaderModule = fragmentShaderModule
+			.fragmentShaderModule = fragmentShaderModule,
+			.vertexBuffer = vertexBuffer
 		};
 
 		while (window.isOpen())
@@ -99,6 +117,5 @@ namespace zt::vulkan_renderer::tests
 
 			window.requestCloseWindow();
 		}
-
 	}
 }
