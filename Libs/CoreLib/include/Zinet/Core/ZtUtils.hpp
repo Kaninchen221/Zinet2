@@ -3,6 +3,7 @@
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
 #include <algorithm>
+#include <iterator>
 
 namespace zt::core
 {
