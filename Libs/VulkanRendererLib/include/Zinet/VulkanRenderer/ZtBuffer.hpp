@@ -88,7 +88,7 @@ namespace zt::vulkan_renderer
 		if (!isValid())
 			return false;
 
-		const auto containerSize = sizeof(ContainerT::value_type) * contiguousContainer.size();
+		const auto containerSize = sizeof(typename ContainerT::value_type) * contiguousContainer.size();
 		if (containerSize != size)
 			return false;
 
@@ -114,7 +114,7 @@ namespace zt::vulkan_renderer
 		if (!isValid())
 			return false;
 
-		const auto containerSize = sizeof(ContainerT::value_type) * contiguousContainer.size();
+		const auto containerSize = sizeof(typename ContainerT::value_type) * contiguousContainer.size();
 		if (containerSize != size)
 			return false;
 
