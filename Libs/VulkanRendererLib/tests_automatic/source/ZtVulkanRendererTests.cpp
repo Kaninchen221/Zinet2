@@ -134,7 +134,7 @@ namespace zt::vulkan_renderer::tests
 
 			renderer.draw(drawInfo);
 
-			//window.requestCloseWindow();
+			window.requestCloseWindow();
 		}
 	}
 }
