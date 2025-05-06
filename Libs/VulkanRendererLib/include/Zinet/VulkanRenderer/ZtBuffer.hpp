@@ -34,7 +34,13 @@ namespace zt::vulkan_renderer
 		Buffer& operator = (const Buffer& other) noexcept = delete;
 		Buffer& operator = (Buffer&& other) noexcept = default;
 
-		bool createVertexBuffer(const auto& vertices, const VMA& vma) noexcept;
+		template<class ContainerT>
+		static VkBufferCreateInfo GetVertexBufferCreateInfo(const ContainerT& vertices) noexcept;
+
+		template<class ContainerT>
+		static VkBufferCreateInfo GetIndexBufferCreateInfo(const ContainerT& vertices) noexcept;
+
+		bool createBuffer(const VkBufferCreateInfo& createInfo, const VMA& vma) noexcept;
 
 		template<class ContainerT>
 		bool fill(const ContainerT& contiguousContainer, const VMA& vma) noexcept;
@@ -53,34 +59,29 @@ namespace zt::vulkan_renderer
 
 	};
 
-	bool Buffer::createVertexBuffer(const auto& vertices, const VMA& vma) noexcept
+	template<class ContainerT>
+	VkBufferCreateInfo Buffer::GetVertexBufferCreateInfo(const ContainerT& vertices) noexcept
 	{
-		if (isValid())
-			return false;
-
 		VkBufferCreateInfo createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-		createInfo.size = sizeof(Vertex) * vertices.size();
+		createInfo.size = sizeof(typename ContainerT::value_type) * vertices.size();
 		createInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 		createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-		VmaAllocationCreateInfo allocInfo = {};
-		allocInfo.flags = VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
-		allocInfo.usage = VMA_MEMORY_USAGE_AUTO;
-
-		const auto result = vmaCreateBuffer(vma.get(), &createInfo, &allocInfo, &objectHandle, &allocation, nullptr);
-		if (result == VK_SUCCESS)
-		{
-			size = static_cast<std::uint32_t>(createInfo.size);
-			return true;
-		}
-		else
-		{
-			Logger->error("Couldn't create buffer, result: {}", static_cast<std::int32_t>(result));
-			return false;
-		}
+		return createInfo;
 	}
 
+	template<class ContainerT>
+	VkBufferCreateInfo Buffer::GetIndexBufferCreateInfo(const ContainerT& indices) noexcept
+	{
+		VkBufferCreateInfo createInfo = {};
+		createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		createInfo.size = sizeof(typename ContainerT::value_type) * indices.size();
+		createInfo.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+		createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+		return createInfo;
+	}
 
 	template<class ContainerT>
 	bool Buffer::fill(const ContainerT& contiguousContainer, const VMA& vma) noexcept

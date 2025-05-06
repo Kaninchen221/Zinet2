@@ -77,7 +77,8 @@ namespace zt::vulkan_renderer::tests
 			{
 				.vertexShaderModule = vertexShaderModule,
 				.fragmentShaderModule = fragmentShaderModule,
-				.vertexBuffer = vertexBuffer
+				.vertexBuffer = vertexBuffer,
+				.indexBuffer = indexBuffer
 			};
 
 			ASSERT_TRUE(
@@ -122,6 +123,7 @@ namespace zt::vulkan_renderer::tests
 		ShaderModule fragmentShaderModule{ nullptr };
 		std::vector<VkPipelineShaderStageCreateInfo> shadersStages;
 		Buffer vertexBuffer{ nullptr };
+		Buffer indexBuffer{ nullptr };
 		Pipeline pipeline{ nullptr };
 
 		static_assert(std::is_base_of_v<VulkanObject<VkPipeline>, Pipeline>);

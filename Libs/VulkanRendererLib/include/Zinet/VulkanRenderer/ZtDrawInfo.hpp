@@ -13,10 +13,13 @@ namespace zt::vulkan_renderer
 	public:
 
 		using Vertices = std::vector<Vertex>;
+		using Indices = std::vector<std::uint16_t>;
 
 		const ShaderModule& vertexShaderModule;
 		const ShaderModule& fragmentShaderModule;
 		const Buffer& vertexBuffer;
+		const Buffer& indexBuffer;
+		const std::uint32_t indexCount{};
 
 	};
 }

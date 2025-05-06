@@ -79,23 +79,47 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_destructible_v<Buffer>);
 	};
 
-	TEST_F(BufferTests, PassTest)
+	TEST_F(BufferTests, VertexBufferTest)
 	{
-		const std::vector<Vertex> vertices{ 
+		using Vertices = std::vector<Vertex>;
+		const Vertices vertices
+		{ 
 			Vertex{ { 23.f, 212.f, 1.f }, { 0.4f, 0.4f, 0.1f } },
 			Vertex{ { 51, 21.f, 1.2f }, { 0.1f, 0.2f, 0.4f } },
 			Vertex{ { 65.f, 23.f, 111.f }, { 0.7f, 0.4f, 0.8f } }
 		};
 
-		buffer.createVertexBuffer(vertices, vma);
-		ASSERT_EQ(sizeof(Vertex) * vertices.size(), buffer.getSize());
+		const auto createInfo = Buffer::GetVertexBufferCreateInfo(vertices);
+		ASSERT_TRUE(buffer.createBuffer(createInfo, vma));
+		ASSERT_EQ(sizeof(Vertices::value_type) * vertices.size(), buffer.getSize());
 
-		buffer.fill(vertices, vma);
+		ASSERT_TRUE(buffer.fill(vertices, vma));
 
-		std::vector<Vertex> actualVertices(vertices.size(), Vertex{});
-		buffer.getData(actualVertices, vma);
+		Vertices actualVertices(vertices.size(), Vertices::value_type{});
+		ASSERT_TRUE(buffer.getData(actualVertices, vma));
 
 		ASSERT_TRUE(core::CompareContainers(vertices, actualVertices));
+	}
+
+	TEST_F(BufferTests, IndicesBufferTest)
+	{
+		using Indices = std::vector<uint16_t>;
+		const Indices indices =
+		{
+			0, 1, 2, 
+			2, 3, 0
+		};
+
+		const auto createInfo = Buffer::GetIndexBufferCreateInfo(indices);
+		ASSERT_TRUE(buffer.createBuffer(createInfo, vma));
+		ASSERT_EQ(sizeof(Indices::value_type) * indices.size(), buffer.getSize());
+
+		ASSERT_TRUE(buffer.fill(indices, vma));
+
+		Indices actualIndices(indices.size(), Indices::value_type{});
+		ASSERT_TRUE(buffer.getData(actualIndices, vma));
+
+		ASSERT_TRUE(core::CompareContainers(indices, actualIndices));
 	}
 
 }
