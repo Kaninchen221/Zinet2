@@ -44,14 +44,28 @@ namespace zt::vulkan_renderer::tests
 
 			auto& vma = renderer.getRendererContext().vma;
 
+			// Vertex Buffer
 			const DrawInfo::Vertices vertices = {
-				{{0.0f, -0.5f, 1.f}, {1.0f, 0.0f, 0.0f}},
-				{{0.5f, 0.5f, 1.f}, {0.0f, 1.0f, 0.0f}},
-				{{-0.5f, 0.5f, 1.f}, {0.0f, 0.0f, 1.0f}}
+				{{-0.5f, -0.5f, 1.f}, {1.0f, 0.0f, 0.0f}},
+				{{0.5f,  -0.5f, 1.f}, {0.0f, 1.0f, 0.0f}},
+				{{0.5f,  0.5f,  1.f}, {0.0f, 0.0f, 1.0f}},
+				{{-0.5f, 0.5f,  1.f}, {1.0f, 1.0f, 1.0f}}
 			};
 
-			ASSERT_TRUE(vertexBuffer.createVertexBuffer(vertices, vma));
+			const auto vertexBufferCreateInfo = Buffer::GetVertexBufferCreateInfo(vertices);
+			ASSERT_TRUE(vertexBuffer.createBuffer(vertexBufferCreateInfo, vma));
 			ASSERT_TRUE(vertexBuffer.fill(vertices, vma));
+
+			// Index Buffer
+			indices =
+			{
+				0, 1, 2,
+				2, 3, 0
+			};
+
+			const auto indexBufferCreateInfo = Buffer::GetIndexBufferCreateInfo(indices);
+			ASSERT_TRUE(indexBuffer.createBuffer(indexBufferCreateInfo, vma));
+			ASSERT_TRUE(indexBuffer.fill(indices, vma));
 		}
 
 		void TearDown() override
@@ -60,7 +74,9 @@ namespace zt::vulkan_renderer::tests
 			auto& vma = renderer.getRendererContext().vma;
 
 			device.waitIdle();
+
 			vertexBuffer.destroy(vma);
+			indexBuffer.destroy(vma);
 
 			vertexShaderModule.destroy(device);
 			fragmentShaderModule.destroy(device);
@@ -77,6 +93,8 @@ namespace zt::vulkan_renderer::tests
 		ShaderModule vertexShaderModule{ nullptr };
 		ShaderModule fragmentShaderModule{ nullptr };
 		Buffer vertexBuffer{ nullptr };
+		Buffer indexBuffer{ nullptr };
+		DrawInfo::Indices indices;
 
 		ShaderModule createShaderModule(std::string_view sourceCodeFileName, ShaderType shaderType);
 	};
@@ -105,14 +123,15 @@ namespace zt::vulkan_renderer::tests
 		{
 			.vertexShaderModule = vertexShaderModule,
 			.fragmentShaderModule = fragmentShaderModule,
-			.vertexBuffer = vertexBuffer
+			.vertexBuffer = vertexBuffer,
+			.indexBuffer = indexBuffer,
+			.indexCount = static_cast<std::uint32_t>(indices.size())
 		};
 
 		while (window.isOpen())
 		{
 			windowEvents.pollEvents();
 
-			// For now empty because we store draw data in shaders
 			renderer.draw(drawInfo);
 
 			window.requestCloseWindow();

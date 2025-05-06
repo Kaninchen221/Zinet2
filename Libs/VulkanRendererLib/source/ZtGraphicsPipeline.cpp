@@ -137,7 +137,15 @@ namespace zt::vulkan_renderer
 		vkCmdBindVertexBuffers(commandBuffer.get(), 0, 1, vertexBuffers, offsets);
 		///////
 
-		commandBuffer.draw(static_cast<uint32_t>(drawInfo.vertexBuffer.getSize()), 1, 0, 0);
+		if (drawInfo.indexBuffer.isValid())
+		{
+			vkCmdBindIndexBuffer(commandBuffer.get(), drawInfo.indexBuffer.get(), 0, VK_INDEX_TYPE_UINT16);
+			vkCmdDrawIndexed(commandBuffer.get(), drawInfo.indexCount, 1, 0, 0, 0);
+		}
+		else
+		{
+			commandBuffer.draw(static_cast<std::uint32_t>(drawInfo.vertexBuffer.getSize()), 1, 0, 0);
+		}
 
 		commandBuffer.endRenderPass();
 		commandBuffer.end();
