@@ -37,4 +37,36 @@ namespace zt::vulkan_renderer
 		}
 	}
 
+	VkResult Buffer::fillWithData(const void* src, size_t srcSize, const VMA& vma) const noexcept
+	{
+		if (srcSize != size)
+			return VK_ERROR_MEMORY_MAP_FAILED;
+
+		void* mappedData{};
+		const auto mapResult = vmaMapMemory(vma.get(), allocation, &mappedData);
+		if (mapResult != VK_SUCCESS)
+			return mapResult;
+
+		std::memcpy(mappedData, src, size);
+		vmaUnmapMemory(vma.get(), allocation);
+
+		return VK_SUCCESS;
+	}
+
+	VkResult Buffer::getData(void* dst, size_t dstSize, const VMA& vma) const noexcept
+	{
+		if (dstSize != size)
+			return VK_ERROR_MEMORY_MAP_FAILED;
+
+		void* mappedData{};
+		const auto mapResult = vmaMapMemory(vma.get(), allocation, &mappedData);
+		if (mapResult != VK_SUCCESS)
+			return mapResult;
+
+		std::memcpy(dst, mappedData, size);
+		vmaUnmapMemory(vma.get(), allocation);
+
+		return VK_SUCCESS;
+	}
+
 }

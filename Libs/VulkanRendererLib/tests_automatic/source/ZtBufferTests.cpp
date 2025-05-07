@@ -93,10 +93,10 @@ namespace zt::vulkan_renderer::tests
 		ASSERT_TRUE(buffer.createBuffer(createInfo, vma));
 		ASSERT_EQ(sizeof(Vertices::value_type) * vertices.size(), buffer.getSize());
 
-		ASSERT_TRUE(buffer.fill(vertices, vma));
+		ASSERT_TRUE(buffer.fillWithSTDContainer(vertices, vma));
 
 		Vertices actualVertices(vertices.size(), Vertices::value_type{});
-		ASSERT_TRUE(buffer.getData(actualVertices, vma));
+		ASSERT_TRUE(buffer.getDataToSTDContainer(actualVertices, vma));
 
 		ASSERT_TRUE(core::CompareContainers(vertices, actualVertices));
 	}
@@ -114,12 +114,29 @@ namespace zt::vulkan_renderer::tests
 		ASSERT_TRUE(buffer.createBuffer(createInfo, vma));
 		ASSERT_EQ(sizeof(Indices::value_type) * indices.size(), buffer.getSize());
 
-		ASSERT_TRUE(buffer.fill(indices, vma));
+		ASSERT_TRUE(buffer.fillWithSTDContainer(indices, vma));
 
 		Indices actualIndices(indices.size(), Indices::value_type{});
-		ASSERT_TRUE(buffer.getData(actualIndices, vma));
+		ASSERT_TRUE(buffer.getDataToSTDContainer(actualIndices, vma));
 
 		ASSERT_TRUE(core::CompareContainers(indices, actualIndices));
+	}
+
+	TEST_F(BufferTests, UniformBufferTest)
+	{
+		using DataT = Vector2f;
+		const DataT uniformBufferData{ 123.7842f, 0.8823f };
+
+		const auto createInfo = Buffer::GetUniformBufferCreateInfo(uniformBufferData);
+		ASSERT_TRUE(buffer.createBuffer(createInfo, vma));
+		ASSERT_EQ(sizeof(DataT), buffer.getSize());
+
+		ASSERT_TRUE(buffer.fillWithObject(uniformBufferData, vma));
+		
+		DataT actualData{};
+		ASSERT_TRUE(buffer.getDataToObject(actualData, vma));
+		
+		ASSERT_EQ(uniformBufferData, actualData);
 	}
 
 }

@@ -15,6 +15,18 @@ namespace zt::vulkan_renderer
 {
 	class VMA;
 
+	template<typename T>
+	concept STDContainer = requires(T t) {
+		typename T::value_type;
+		std::begin(t);
+		std::end(t);
+		t.begin();
+		t.end();
+	};
+
+	template<typename T>
+	concept NotSTDContainer = !STDContainer<T>;
+
 	class ZINET_VULKAN_RENDERER_API Buffer : public VulkanObject<VkBuffer>
 	{
 	protected:
@@ -34,19 +46,28 @@ namespace zt::vulkan_renderer
 		Buffer& operator = (const Buffer& other) noexcept = delete;
 		Buffer& operator = (Buffer&& other) noexcept = default;
 
-		template<class ContainerT>
+		template<STDContainer ContainerT>
 		static VkBufferCreateInfo GetVertexBufferCreateInfo(const ContainerT& vertices) noexcept;
 
-		template<class ContainerT>
-		static VkBufferCreateInfo GetIndexBufferCreateInfo(const ContainerT& vertices) noexcept;
+		template<STDContainer ContainerT>
+		static VkBufferCreateInfo GetIndexBufferCreateInfo(const ContainerT& indices) noexcept;
+
+		template<NotSTDContainer ObjectT>
+		static VkBufferCreateInfo GetUniformBufferCreateInfo(const ObjectT& data);
 
 		bool createBuffer(const VkBufferCreateInfo& createInfo, const VMA& vma) noexcept;
 
-		template<class ContainerT>
-		bool fill(const ContainerT& contiguousContainer, const VMA& vma) noexcept;
+		template<STDContainer ContainerT>
+		bool fillWithSTDContainer(const ContainerT& contiguousContainer, const VMA& vma) noexcept;
 
-		template<class ContainerT>
-		bool getData(ContainerT& contiguousContainer, const VMA& vma) const noexcept;
+		template<NotSTDContainer ObjectT>
+		bool fillWithObject(const ObjectT& object, const VMA& vma) noexcept;
+
+		template<STDContainer ContainerT>
+		bool getDataToSTDContainer(ContainerT& contiguousContainer, const VMA& vma) const noexcept;
+
+		template<NotSTDContainer ObjectT>
+		bool getDataToObject(ObjectT& object, const VMA& vma) const noexcept;
 
 		void destroy(const VMA& vma) noexcept;
 
@@ -54,12 +75,16 @@ namespace zt::vulkan_renderer
 
 	protected:
 
+		VkResult fillWithData(const void* src, size_t srcSize, const VMA& vma) const noexcept;
+
+		VkResult getData(void* dst, size_t dstSize, const VMA& vma) const noexcept;
+
 		VmaAllocation allocation{};
 		std::uint32_t size{};
 
 	};
 
-	template<class ContainerT>
+	template<STDContainer ContainerT>
 	VkBufferCreateInfo Buffer::GetVertexBufferCreateInfo(const ContainerT& vertices) noexcept
 	{
 		VkBufferCreateInfo createInfo = {};
@@ -71,7 +96,7 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	template<class ContainerT>
+	template<STDContainer ContainerT>
 	VkBufferCreateInfo Buffer::GetIndexBufferCreateInfo(const ContainerT& indices) noexcept
 	{
 		VkBufferCreateInfo createInfo = {};
@@ -83,54 +108,92 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	template<class ContainerT>
-	bool Buffer::fill(const ContainerT& contiguousContainer, const VMA& vma) noexcept
+	template<NotSTDContainer ObjectT>
+	VkBufferCreateInfo Buffer::GetUniformBufferCreateInfo([[maybe_unused]] const ObjectT& data)
+	{
+		VkBufferCreateInfo createInfo = {};
+		createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		createInfo.size = sizeof(ObjectT);
+		createInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+		createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+		return createInfo;
+	}
+
+	template<STDContainer ContainerT>
+	bool Buffer::fillWithSTDContainer(const ContainerT& stdContainer, const VMA& vma) noexcept
 	{
 		if (!isValid())
 			return false;
 
-		const auto containerSize = sizeof(typename ContainerT::value_type) * contiguousContainer.size();
-		if (containerSize != size)
-			return false;
+		const auto containerSize = sizeof(typename ContainerT::value_type) * stdContainer.size();
+		const auto result = fillWithData(stdContainer.data(), containerSize, vma);
 
-		void* mappedData{};
-		const auto mapResult = vmaMapMemory(vma.get(), allocation, &mappedData);
-
-		if (mapResult == VK_SUCCESS)
+		if (result == VK_SUCCESS)
 		{
-			std::memcpy(mappedData, contiguousContainer.data(), size);
-			vmaUnmapMemory(vma.get(), allocation);
 			return true;
 		}
 		else
 		{
-			Logger->error("Couldn't fill buffer, result: {}", static_cast<std::int32_t>(mapResult));
+			Logger->error("Couldn't fill buffer, result: {}", static_cast<std::int32_t>(result));
 			return false;
 		}
 	}
 
-	template<class ContainerT>
-	bool Buffer::getData(ContainerT& contiguousContainer, const VMA& vma) const noexcept
+	template<NotSTDContainer ObjectT>
+	bool Buffer::fillWithObject(const ObjectT& object, const VMA& vma) noexcept
 	{
 		if (!isValid())
 			return false;
 
-		const auto containerSize = sizeof(typename ContainerT::value_type) * contiguousContainer.size();
-		if (containerSize != size)
-			return false;
+		const auto result = fillWithData(&object, sizeof(ObjectT), vma);
 
-		void* mappedData{};
-		const auto mapResult = vmaMapMemory(vma.get(), allocation, &mappedData);
-
-		if (mapResult == VK_SUCCESS)
+		if (result == VK_SUCCESS)
 		{
-			std::memcpy(contiguousContainer.data(), mappedData, size);
-			vmaUnmapMemory(vma.get(), allocation);
 			return true;
 		}
 		else
 		{
-			Logger->error("Couldn't get buffer data, result: {}", static_cast<std::int32_t>(mapResult));
+			Logger->error("Couldn't fill buffer, result: {}", static_cast<std::int32_t>(result));
+			return false;
+		}
+	}
+
+	template<STDContainer ContainerT>
+	bool Buffer::getDataToSTDContainer(ContainerT& stdContainer, const VMA& vma) const noexcept
+	{
+		if (!isValid())
+			return false;
+
+		const auto containerSize = sizeof(typename ContainerT::value_type) * stdContainer.size();
+		const auto result = getData(stdContainer.data(), containerSize, vma);
+
+		if (result == VK_SUCCESS)
+		{
+			return true;
+		}
+		else
+		{
+			Logger->error("Couldn't get buffer data, result: {}", static_cast<std::int32_t>(result));
+			return false;
+		}
+	}
+
+	template<NotSTDContainer ObjectT>
+	bool Buffer::getDataToObject(ObjectT& object, const VMA& vma) const noexcept
+	{
+		if (!isValid())
+			return false;
+
+		const auto result = getData(&object, sizeof(object), vma);
+
+		if (result == VK_SUCCESS)
+		{
+			return true;
+		}
+		else
+		{
+			Logger->error("Couldn't get buffer data, result: {}", static_cast<std::int32_t>(result));
 			return false;
 		}
 	}

@@ -54,7 +54,7 @@ namespace zt::vulkan_renderer::tests
 
 			const auto vertexBufferCreateInfo = Buffer::GetVertexBufferCreateInfo(vertices);
 			ASSERT_TRUE(vertexBuffer.createBuffer(vertexBufferCreateInfo, vma));
-			ASSERT_TRUE(vertexBuffer.fill(vertices, vma));
+			ASSERT_TRUE(vertexBuffer.fillWithSTDContainer(vertices, vma));
 
 			// Index Buffer
 			indices =
@@ -65,7 +65,7 @@ namespace zt::vulkan_renderer::tests
 
 			const auto indexBufferCreateInfo = Buffer::GetIndexBufferCreateInfo(indices);
 			ASSERT_TRUE(indexBuffer.createBuffer(indexBufferCreateInfo, vma));
-			ASSERT_TRUE(indexBuffer.fill(indices, vma));
+			ASSERT_TRUE(indexBuffer.fillWithSTDContainer(indices, vma));
 		}
 
 		void TearDown() override
