@@ -45,8 +45,16 @@ namespace zt::vulkan_renderer
 
 		PrintAPIVersion();
 
-		VkResult result = vkCreateInstance(&createInfo, nullptr, &objectHandle);
-		return result == VK_SUCCESS;
+		const auto result = vkCreateInstance(&createInfo, nullptr, &objectHandle);
+		if (result == VK_SUCCESS)
+		{
+			return true;
+		}
+		else
+		{
+			Logger->error("Couldn't create Instance, result: {}", static_cast<std::int32_t>(result));
+			return false;
+		}
 	}
 
 	void Instance::destroy() noexcept

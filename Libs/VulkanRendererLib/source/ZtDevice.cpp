@@ -57,7 +57,6 @@ namespace zt::vulkan_renderer
 		createInfo.ppEnabledLayerNames = nullptr;
 
 		const auto createResult = vkCreateDevice(physicalDevice.get(), &createInfo, nullptr, &objectHandle);
-
 		if (createResult == VK_SUCCESS)
 		{
 			return true;
