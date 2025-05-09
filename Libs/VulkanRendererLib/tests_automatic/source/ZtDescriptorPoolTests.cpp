@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Zinet/VulkanRenderer/ZtDescriptorSetLayout.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorPool.hpp"
 #include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
@@ -16,15 +16,15 @@
 
 namespace zt::vulkan_renderer::tests
 {
-	class DescriptorSetLayoutTests : public ::testing::Test
+	class DescriptorPoolTests : public ::testing::Test
 	{
 	protected:
 
-		DescriptorSetLayoutTests()
+		DescriptorPoolTests()
 		{
 		}
 
-		~DescriptorSetLayoutTests() override
+		~DescriptorPoolTests() override
 		{
 		}
 
@@ -43,18 +43,18 @@ namespace zt::vulkan_renderer::tests
 
 			ASSERT_TRUE(device.create(physicalDevice, Surface{ nullptr }));
 
-			const auto layoutBinding = DescriptorSetLayout::GetDefaultLayoutBinding();
-			const DescriptorSetLayout::Bindings bindings{ layoutBinding };
-			const auto createInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
-
-			ASSERT_TRUE(descriptorSetLayout.create(createInfo, device));
-			ASSERT_TRUE(descriptorSetLayout.isValid());
+			const auto descriptorPoolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
+			std::vector<VkDescriptorPoolSize> descriptorPoolSizes{ descriptorPoolSize };
+			const auto descriptorCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);
+			
+			ASSERT_TRUE(descriptorPool.create(device, descriptorCreateInfo));
+			ASSERT_TRUE(descriptorPool.isValid());
 		}
 
 		void TearDown() override
 		{
-			descriptorSetLayout.destroy(device);
-			ASSERT_FALSE(descriptorSetLayout.isValid());
+			descriptorPool.destroy(device);
+			ASSERT_FALSE(descriptorPool.isValid());
 
 			device.destroy();
 			ASSERT_FALSE(device.isValid());
@@ -72,19 +72,20 @@ namespace zt::vulkan_renderer::tests
 		DebugUtilsMessenger debugUtilsMessenger{ nullptr };
 		PhysicalDevice physicalDevice{ nullptr };
 		Device device{ nullptr };
-		DescriptorSetLayout descriptorSetLayout{ nullptr };
+		DescriptorPool descriptorPool{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkDescriptorSetLayout>, DescriptorSetLayout>);
+		static_assert(std::is_base_of_v<VulkanObject<VkDescriptorPool>, DescriptorPool>);
 
-		static_assert(!std::is_default_constructible_v<DescriptorSetLayout>);
-		static_assert(!std::is_copy_constructible_v<DescriptorSetLayout>);
-		static_assert(!std::is_copy_assignable_v<DescriptorSetLayout>);
-		static_assert(std::is_move_constructible_v<DescriptorSetLayout>);
-		static_assert(std::is_move_assignable_v<DescriptorSetLayout>);
-		static_assert(std::is_destructible_v<DescriptorSetLayout>);
+		static_assert(!std::is_default_constructible_v<DescriptorPool>);
+		static_assert(!std::is_copy_constructible_v<DescriptorPool>);
+		static_assert(!std::is_copy_assignable_v<DescriptorPool>);
+		static_assert(std::is_move_constructible_v<DescriptorPool>);
+		static_assert(std::is_move_assignable_v<DescriptorPool>);
+		static_assert(std::is_destructible_v<DescriptorPool>);
 	};
 
-	TEST_F(DescriptorSetLayoutTests, PassTest)
+	TEST_F(DescriptorPoolTests, PassTest)
 	{
+
 	}
 }
