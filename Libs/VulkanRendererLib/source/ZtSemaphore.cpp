@@ -9,10 +9,14 @@ namespace zt::vulkan_renderer
 		if (isValid())
 			return false;
 
-		VkSemaphoreCreateInfo semaphoreInfo{};
-		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+		const VkSemaphoreCreateInfo createInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = {}
+		};
 
-		const auto result = vkCreateSemaphore(device.get(), &semaphoreInfo, nullptr, &objectHandle);
+		const auto result = vkCreateSemaphore(device.get(), &createInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
 		{
 			return true;

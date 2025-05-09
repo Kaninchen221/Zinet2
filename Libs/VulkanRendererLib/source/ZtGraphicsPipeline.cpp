@@ -117,23 +117,27 @@ namespace zt::vulkan_renderer
 
 		commandBuffer.bindPipeline(pipeline);
 
-		VkViewport viewport{};
-		viewport.x = 0.0f;
-		viewport.y = 0.0f;
-		viewport.width = static_cast<float>(swapChain.getExtent().width);
-		viewport.height = static_cast<float>(swapChain.getExtent().height);
-		viewport.minDepth = 0.0f;
-		viewport.maxDepth = 1.0f;
+		const VkViewport viewport
+		{
+			.x = 0.0f,
+			.y = 0.0f,
+			.width = static_cast<float>(swapChain.getExtent().width),
+			.height = static_cast<float>(swapChain.getExtent().height),
+			.minDepth = 0.0f,
+			.maxDepth = 1.0f
+		};
 		commandBuffer.setViewport(viewport);
 
-		VkRect2D scissor{};
-		scissor.offset = { 0, 0 };
-		scissor.extent = swapChain.getExtent();
+		const VkRect2D scissor
+		{
+			.offset = { 0, 0 },
+			.extent = swapChain.getExtent()
+		};
 		commandBuffer.setScissor(scissor);
 
 		///////
-		VkBuffer vertexBuffers[] = { drawInfo.vertexBuffer.get() };
-		VkDeviceSize offsets[] = { 0 };
+		const VkBuffer vertexBuffers[] = { drawInfo.vertexBuffer.get() };
+		const VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer.get(), 0, 1, vertexBuffers, offsets);
 		///////
 
@@ -151,42 +155,41 @@ namespace zt::vulkan_renderer
 		commandBuffer.end();
 
 		//
-
-		VkSubmitInfo submitInfo{};
-		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
-		VkSemaphore waitSemaphores[] = { imageAvailableSemaphore.get() };
-		VkPipelineStageFlags waitStages[] = {
+		const VkSemaphore waitSemaphores[] = { imageAvailableSemaphore.get() };
+		const VkPipelineStageFlags waitStages[] = {
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
 			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT
 		};
-		submitInfo.waitSemaphoreCount = 1;
-		submitInfo.pWaitSemaphores = waitSemaphores;
-		submitInfo.pWaitDstStageMask = waitStages;
+		const auto vkCommandBuffer = commandBuffer.get();
+		const VkSemaphore signalSemaphores[] = { renderFinishedSemaphore.get() };
 
-		submitInfo.commandBufferCount = 1;
-		auto vkCommandBuffer = commandBuffer.get();
-		submitInfo.pCommandBuffers = &vkCommandBuffer;
-
-		VkSemaphore signalSemaphores[] = { renderFinishedSemaphore.get() };
-		submitInfo.signalSemaphoreCount = 1;
-		submitInfo.pSignalSemaphores = signalSemaphores;
-
+		const VkSubmitInfo submitInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+			.waitSemaphoreCount = 1,
+			.pWaitSemaphores = waitSemaphores,
+			.pWaitDstStageMask = waitStages,
+			.commandBufferCount = 1,
+			.pCommandBuffers = &vkCommandBuffer,
+			.signalSemaphoreCount = 1,
+			.pSignalSemaphores = signalSemaphores
+		};
 		vkQueueSubmit(queue.get(), 1, &submitInfo, fence.get());
 
 		//
 
-		VkPresentInfoKHR presentInfo{};
-		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-		presentInfo.waitSemaphoreCount = 1;
-		presentInfo.pWaitSemaphores = signalSemaphores;
-
-		VkSwapchainKHR swapChains[] = { swapChain.get() };
-		presentInfo.swapchainCount = 1;
-		presentInfo.pSwapchains = swapChains;
-		presentInfo.pImageIndices = &imageIndex;
-		presentInfo.pResults = nullptr; // Optional
-
+		const VkSwapchainKHR swapChains[] = { swapChain.get() };
+		const VkPresentInfoKHR presentInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+			.pNext = nullptr,
+			.waitSemaphoreCount = 1,
+			.pWaitSemaphores = signalSemaphores,
+			.swapchainCount = 1,
+			.pSwapchains = swapChains,
+			.pImageIndices = &imageIndex,
+			.pResults = nullptr
+		};
 		vkQueuePresentKHR(queue.get(), &presentInfo);
 
 	}

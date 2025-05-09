@@ -10,10 +10,13 @@ namespace zt::vulkan_renderer
 		if (isValid())
 			return false;
 
-		VkCommandPoolCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-		createInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-		createInfo.queueFamilyIndex = queue.getQueueFamilyIndex();
+		const VkCommandPoolCreateInfo createInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+			.queueFamilyIndex = queue.getQueueFamilyIndex()
+		};
 
 		const auto result = vkCreateCommandPool(device.get(), &createInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)

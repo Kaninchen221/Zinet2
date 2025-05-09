@@ -9,9 +9,12 @@ namespace zt::vulkan_renderer
 		if (isValid())
 			return false;
 
-		VkFenceCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-		createInfo.flags = signaled ? VK_FENCE_CREATE_SIGNALED_BIT : VkFenceCreateFlags{};
+		const VkFenceCreateInfo createInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = signaled ? VK_FENCE_CREATE_SIGNALED_BIT : VkFenceCreateFlags{}
+		};
 
 		const auto result = vkCreateFence(device.get(), &createInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)

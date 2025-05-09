@@ -52,6 +52,9 @@ namespace zt::vulkan_renderer
 		VkPipelineDynamicStateCreateInfo createVkPipelineDynamicStateCreateInfo(
 			const std::vector<VkDynamicState>& dynamicStates) const noexcept;
 
+		VkPipelineDynamicStateCreateInfo createVkPipelineDynamicStateCreateInfo(
+			std::vector<VkDynamicState>&& dynamicStates) const noexcept = delete;
+
 		VkPipelineVertexInputStateCreateInfo createVkPipelineVertexInputStateCreateInfo(
 			const Vertex::InputBindingDescription* bindingDescription,
 			const Vertex::InputAttributesDescriptions* attributesDescriptions) const noexcept;

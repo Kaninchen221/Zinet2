@@ -58,24 +58,29 @@ namespace zt::vulkan_renderer
 		newExtent.width = std::clamp(newExtent.width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width);
 		newExtent.height = std::clamp(newExtent.height, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height);
 
-		VkSwapchainCreateInfoKHR createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-		createInfo.minImageCount =
-			std::clamp(surfaceCapabilities.minImageCount + 1, surfaceCapabilities.minImageCount, std::max(surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount));
-		createInfo.imageFormat = format;
-		createInfo.imageColorSpace = colorSpace;
-		createInfo.presentMode = presentMode;
-		createInfo.surface = surface.get();
-		createInfo.preTransform = surfaceCapabilities.currentTransform;
-		createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR; // TODO: Blend with other windows behind our window? Will be useful for the final tech demo.
-		createInfo.imageExtent = newExtent;
-		createInfo.imageArrayLayers = 1;
-		createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		createInfo.queueFamilyIndexCount = 0; // Optional
-		createInfo.pQueueFamilyIndices = nullptr; // Optional
-		createInfo.clipped = VK_TRUE;
-		createInfo.oldSwapchain = nullptr;
+		const VkSwapchainCreateInfoKHR createInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+			.pNext = nullptr,
+			.flags = {},
+			.surface = surface.get(),
+			.minImageCount = 
+				std::clamp(surfaceCapabilities.minImageCount + 1, surfaceCapabilities.minImageCount, 
+					std::max(surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount)),
+			.imageFormat = format,
+			.imageColorSpace = colorSpace,
+			.imageExtent = newExtent,
+			.imageArrayLayers = 1,
+			.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+			.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE,
+			.queueFamilyIndexCount = 0,
+			.pQueueFamilyIndices = nullptr,
+			.preTransform = surfaceCapabilities.currentTransform,
+			.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR, // TODO: Blend with other windows behind our window? Will be useful for the final tech demo.
+			.presentMode = presentMode,
+			.clipped = VK_TRUE,
+			.oldSwapchain = nullptr
+		};
 
 		const auto createResult = vkCreateSwapchainKHR(device.get(), &createInfo, nullptr, &objectHandle);
 		if (createResult == VK_SUCCESS)

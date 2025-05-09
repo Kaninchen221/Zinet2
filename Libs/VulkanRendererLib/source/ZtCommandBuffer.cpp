@@ -13,11 +13,13 @@ namespace zt::vulkan_renderer
 		if (isValid())
 			return true;
 
-		VkCommandBufferAllocateInfo allocInfo{};
-		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		allocInfo.commandPool = commandPool.get();
-		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandBufferCount = 1;
+		const VkCommandBufferAllocateInfo allocInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+			.commandPool = commandPool.get(),
+			.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+			.commandBufferCount = 1
+		};
 
 		const auto result = vkAllocateCommandBuffers(device.get(), &allocInfo, &objectHandle);
 		if (result == VK_SUCCESS)
@@ -33,15 +35,16 @@ namespace zt::vulkan_renderer
 
 	void CommandBuffer::beginRenderPass(const RenderPass& renderPass, const Framebuffer& framebuffer, const VkExtent2D& extent, const Vector2i& offset, const VkClearValue& clearValue) noexcept
 	{
-		VkRenderPassBeginInfo beginInfo{};
-		beginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		beginInfo.renderPass = renderPass.get();
-		beginInfo.framebuffer = framebuffer.get();
-		beginInfo.renderArea.offset = { offset.x, offset.y };
-		beginInfo.renderArea.extent = extent;
-		VkClearValue clearColor = clearValue;
-		beginInfo.clearValueCount = 1;
-		beginInfo.pClearValues = &clearColor;
+		const VkRenderPassBeginInfo beginInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+			.pNext = nullptr,
+			.renderPass = renderPass.get(),
+			.framebuffer = framebuffer.get(),
+			.renderArea = { { offset.x, offset.y }, extent },
+			.clearValueCount = 1,
+			.pClearValues = &clearValue
+		};
 
 		vkCmdBeginRenderPass(objectHandle, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
 	}

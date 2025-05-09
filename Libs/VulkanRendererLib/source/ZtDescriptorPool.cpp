@@ -6,18 +6,16 @@ namespace zt::vulkan_renderer
 
 	VkDescriptorPoolSize DescriptorPool::GetDefaultDescriptorPoolSize() noexcept
 	{
-		VkDescriptorPoolSize poolSize
+		return VkDescriptorPoolSize
 		{
 			.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
 			.descriptorCount = 1
 		};
-
-		return poolSize;
 	}
 
 	VkDescriptorPoolCreateInfo DescriptorPool::GetDefaultCreateInfo(const std::vector<VkDescriptorPoolSize>& poolSizes) noexcept
 	{
-		VkDescriptorPoolCreateInfo createInfo
+		return VkDescriptorPoolCreateInfo
 		{
 			.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
 			.pNext = nullptr,
@@ -26,8 +24,6 @@ namespace zt::vulkan_renderer
 			.poolSizeCount = static_cast<std::uint32_t>(poolSizes.size()),
 			.pPoolSizes = poolSizes.data()
 		};
-
-		return createInfo;
 	}
 
 	bool DescriptorPool::create(const Device& device, const VkDescriptorPoolCreateInfo& createInfo) noexcept

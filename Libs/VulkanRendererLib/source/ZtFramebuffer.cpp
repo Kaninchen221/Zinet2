@@ -11,18 +11,22 @@ namespace zt::vulkan_renderer
 		if (isValid())
 			return false;
 
-		auto attachment = imageView.get();
+		const auto attachment = imageView.get();
 
-		VkFramebufferCreateInfo framebufferInfo{};
-		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		framebufferInfo.renderPass = renderPass.get();
-		framebufferInfo.attachmentCount = 1;
-		framebufferInfo.pAttachments = &attachment;
-		framebufferInfo.width = size.x;
-		framebufferInfo.height = size.y;
-		framebufferInfo.layers = 1;
+		const VkFramebufferCreateInfo createInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = {},
+			.renderPass = renderPass.get(),
+			.attachmentCount = 1,
+			.pAttachments = &attachment,
+			.width = size.x,
+			.height = size.y,
+			.layers = 1
+		};
 
-		const auto result = vkCreateFramebuffer(device.get(), &framebufferInfo, nullptr, &objectHandle);
+		const auto result = vkCreateFramebuffer(device.get(), &createInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
 		{
 			return true;

@@ -87,37 +87,37 @@ namespace zt::vulkan_renderer
 	template<STDContainer ContainerT>
 	VkBufferCreateInfo Buffer::GetVertexBufferCreateInfo(const ContainerT& vertices) noexcept
 	{
-		VkBufferCreateInfo createInfo = {};
-		createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-		createInfo.size = sizeof(typename ContainerT::value_type) * vertices.size();
-		createInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
-		createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-		return createInfo;
+		return VkBufferCreateInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+			.size = sizeof(typename ContainerT::value_type) * vertices.size(),
+			.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			.sharingMode = VK_SHARING_MODE_EXCLUSIVE
+		};
 	}
 
 	template<STDContainer ContainerT>
 	VkBufferCreateInfo Buffer::GetIndexBufferCreateInfo(const ContainerT& indices) noexcept
 	{
-		VkBufferCreateInfo createInfo = {};
-		createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-		createInfo.size = sizeof(typename ContainerT::value_type) * indices.size();
-		createInfo.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
-		createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-		return createInfo;
+		return VkBufferCreateInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+			.size = sizeof(typename ContainerT::value_type) * indices.size(),
+			.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			.sharingMode = VK_SHARING_MODE_EXCLUSIVE
+		};
 	}
 
 	template<NotSTDContainer ObjectT>
 	VkBufferCreateInfo Buffer::GetUniformBufferCreateInfo([[maybe_unused]] const ObjectT& data)
 	{
-		VkBufferCreateInfo createInfo = {};
-		createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-		createInfo.size = sizeof(ObjectT);
-		createInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
-		createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-		return createInfo;
+		return VkBufferCreateInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+			.size = sizeof(ObjectT),
+			.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			.sharingMode = VK_SHARING_MODE_EXCLUSIVE
+		};
 	}
 
 	template<STDContainer ContainerT>

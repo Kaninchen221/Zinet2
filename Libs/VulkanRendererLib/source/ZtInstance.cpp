@@ -23,25 +23,29 @@ namespace zt::vulkan_renderer
 		if (isValid())
 			return false;
 
-		VkApplicationInfo appInfo{};
-		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-		appInfo.pApplicationName = "Zinet Vulkan Renderer";
-		appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-		appInfo.pEngineName = "Zinet";
-		appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-		appInfo.apiVersion = VK_API_VERSION_1_2;
-
-		VkInstanceCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-		createInfo.pApplicationInfo = &appInfo;
+		const VkApplicationInfo applicationInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
+			.pApplicationName = "Zinet Vulkan Renderer",
+			.applicationVersion = VK_MAKE_VERSION(1, 0, 0),
+			.pEngineName = "Zinet",
+			.engineVersion = VK_MAKE_VERSION(1, 0, 0),
+			.apiVersion = VK_API_VERSION_1_2
+		};
 
 		const auto enabledLayerNames = getEnabledLayerNames();
-		createInfo.enabledLayerCount = static_cast<std::uint32_t>(enabledLayerNames.size());
-		createInfo.ppEnabledLayerNames = enabledLayerNames.data();;
-
 		const auto extensions = getRequiredExtensions();
-		createInfo.enabledExtensionCount = static_cast<std::uint32_t>(extensions.size());
-		createInfo.ppEnabledExtensionNames = extensions.data();
+		const VkInstanceCreateInfo createInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = {},
+			.pApplicationInfo = &applicationInfo,
+			.enabledLayerCount = static_cast<std::uint32_t>(enabledLayerNames.size()),
+			.ppEnabledLayerNames = enabledLayerNames.data(),
+			.enabledExtensionCount = static_cast<std::uint32_t>(extensions.size()),
+			.ppEnabledExtensionNames = extensions.data()
+		};
 
 		PrintAPIVersion();
 

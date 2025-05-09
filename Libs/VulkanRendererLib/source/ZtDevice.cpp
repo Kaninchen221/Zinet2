@@ -15,12 +15,15 @@ namespace zt::vulkan_renderer
 
 		const auto createQueueCreateInfo = [](std::uint32_t queueFamilyIndex, std::uint32_t count, const std::vector<float>& priorities)
 		{
-			VkDeviceQueueCreateInfo queueCreateInfo{};
-			queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-			queueCreateInfo.queueFamilyIndex = queueFamilyIndex;
-			queueCreateInfo.queueCount = count;
-			queueCreateInfo.pQueuePriorities = priorities.data();
-			return queueCreateInfo;
+			return VkDeviceQueueCreateInfo
+			{
+				.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+				.pNext = nullptr,
+				.flags = {},
+				.queueFamilyIndex = queueFamilyIndex,
+				.queueCount = count,
+				.pQueuePriorities = priorities.data()
+			};
 		};
 
 		auto queuesFamiliesProperties = physicalDevice.getVkQueuesFamiliesProperties();
@@ -40,21 +43,22 @@ namespace zt::vulkan_renderer
 		priorities.push_back(1.f);
 		queueCreateInfos.push_back(createQueueCreateInfo(queueFamilyIndex, 1, priorities));
 
-		VkPhysicalDeviceFeatures deviceFeatures{};
-
-		VkDeviceCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-		createInfo.pQueueCreateInfos = queueCreateInfos.data();
-		createInfo.queueCreateInfoCount = static_cast<std::uint32_t>(queueCreateInfos.size());
-		createInfo.pEnabledFeatures = &deviceFeatures;
+		const VkPhysicalDeviceFeatures deviceFeatures{};
 
 		const auto extensions = PhysicalDevice::GetRequiredExtensions();
-		createInfo.enabledExtensionCount = static_cast<std::uint32_t>(extensions.size());
-		createInfo.ppEnabledExtensionNames = extensions.data();
-
-		// Deprecated and ignored
-		createInfo.enabledLayerCount = 0;
-		createInfo.ppEnabledLayerNames = nullptr;
+		const VkDeviceCreateInfo createInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = {},
+			.queueCreateInfoCount = static_cast<std::uint32_t>(queueCreateInfos.size()),
+			.pQueueCreateInfos = queueCreateInfos.data(),
+			.enabledLayerCount = 0,
+			.ppEnabledLayerNames = nullptr,
+			.enabledExtensionCount = static_cast<std::uint32_t>(extensions.size()),
+			.ppEnabledExtensionNames = extensions.data(),
+			.pEnabledFeatures = &deviceFeatures
+		};
 
 		const auto createResult = vkCreateDevice(physicalDevice.get(), &createInfo, nullptr, &objectHandle);
 		if (createResult == VK_SUCCESS)

@@ -5,24 +5,24 @@ namespace zt::vulkan_renderer
 
 	VkDescriptorSetLayoutBinding DescriptorSetLayout::GetDefaultLayoutBinding() noexcept
 	{
-		VkDescriptorSetLayoutBinding layoutBinding{};
-		layoutBinding.binding = 0;
-		layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		layoutBinding.descriptorCount = 1;
-		layoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-		layoutBinding.pImmutableSamplers = nullptr;
-
-		return layoutBinding;
+		return VkDescriptorSetLayoutBinding
+		{
+			.binding = 0,
+			.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+			.descriptorCount = 1,
+			.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+			.pImmutableSamplers = nullptr
+		};
 	}
 
 	VkDescriptorSetLayoutCreateInfo DescriptorSetLayout::GetDefaultCreateInfo(const Bindings& bindings) noexcept
 	{
-		VkDescriptorSetLayoutCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		createInfo.bindingCount = static_cast<std::uint32_t>(bindings.size());
-		createInfo.pBindings = bindings.data();
-
-		return createInfo;
+		return VkDescriptorSetLayoutCreateInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+			.bindingCount = static_cast<std::uint32_t>(bindings.size()),
+			.pBindings = bindings.data()
+		};
 	}
 
 	bool DescriptorSetLayout::create(const VkDescriptorSetLayoutCreateInfo& createInfo, const Device& device) noexcept

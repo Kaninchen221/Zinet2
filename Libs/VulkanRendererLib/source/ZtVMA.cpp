@@ -19,12 +19,20 @@ namespace zt::vulkan_renderer
 		vulkanFunctions.vkGetDeviceProcAddr = &vkGetDeviceProcAddr;
 		vulkanFunctions.vkGetBufferMemoryRequirements2KHR = vkGetBufferMemoryRequirements2;
 
-		VmaAllocatorCreateInfo allocatorCreateInfo = {};
-		allocatorCreateInfo.vulkanApiVersion = VK_API_VERSION_1_2;
-		allocatorCreateInfo.physicalDevice = physicalDevice.get();
-		allocatorCreateInfo.device = device.get();
-		allocatorCreateInfo.instance = instance.get();
-		allocatorCreateInfo.pVulkanFunctions = &vulkanFunctions;
+		VmaAllocatorCreateInfo allocatorCreateInfo
+		{
+			.flags = {},
+			.physicalDevice = physicalDevice.get(),
+			.device = device.get(),
+			.preferredLargeHeapBlockSize = {},
+			.pAllocationCallbacks = {},
+			.pDeviceMemoryCallbacks = {},
+			.pHeapSizeLimit = {},
+			.pVulkanFunctions = &vulkanFunctions,
+			.instance = instance.get(),
+			.vulkanApiVersion = VK_API_VERSION_1_2,
+			.pTypeExternalMemoryHandleTypes = {}
+		};
 
 		if (core::Contains(physicalDevice.GetRequiredExtensions(), std::string_view(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME)))
 			allocatorCreateInfo.flags = VMA_ALLOCATOR_CREATE_EXT_MEMORY_BUDGET_BIT;

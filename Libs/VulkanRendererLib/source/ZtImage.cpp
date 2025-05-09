@@ -8,22 +8,24 @@ namespace zt::vulkan_renderer
 {
 	VkImageCreateInfo Image::GetDefaultCreateInfo(const Device& device) noexcept
 	{
-		VkImageCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-		createInfo.imageType = VK_IMAGE_TYPE_2D;
-		createInfo.format = VK_FORMAT_B8G8R8A8_SRGB;
-		createInfo.extent = VkExtent3D{ 200, 200, 1 };
-		createInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		createInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-		createInfo.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-		createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		createInfo.samples = VK_SAMPLE_COUNT_4_BIT;
-		createInfo.queueFamilyIndexCount = 1;
-		createInfo.mipLevels = 1;
-		createInfo.arrayLayers = 1;
-		createInfo.pQueueFamilyIndices = &device.getQueueFamilyIndex();
-
-		return createInfo;
+		return VkImageCreateInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = {},
+			.imageType = VK_IMAGE_TYPE_2D,
+			.format = VK_FORMAT_B8G8R8A8_SRGB,
+			.extent = VkExtent3D{ 200, 200, 1 },
+			.mipLevels = 1,
+			.arrayLayers = 1,
+			.samples = VK_SAMPLE_COUNT_4_BIT,
+			.tiling = VK_IMAGE_TILING_OPTIMAL,
+			.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+			.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+			.queueFamilyIndexCount = 1,
+			.pQueueFamilyIndices = &device.getQueueFamilyIndex(),
+			.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED
+		};
 	}
 
 	bool Image::create(const VMA& vma, const VkImageCreateInfo& createInfo) noexcept
@@ -31,8 +33,11 @@ namespace zt::vulkan_renderer
 		if (isValid())
 			return false;
 
-		VmaAllocationCreateInfo allocationCreateInfo = {};
-		allocationCreateInfo.usage = VMA_MEMORY_USAGE_AUTO;
+		const VmaAllocationCreateInfo allocationCreateInfo
+		{
+			.flags = {},
+			.usage = VMA_MEMORY_USAGE_AUTO
+		};
 
 		const auto result = vmaCreateImage(vma.get(), &createInfo, &allocationCreateInfo, &objectHandle, &allocation, &allocationInfo);
 		if (result == VK_SUCCESS)

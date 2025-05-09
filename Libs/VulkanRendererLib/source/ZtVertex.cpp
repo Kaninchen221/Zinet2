@@ -18,16 +18,22 @@ namespace zt::vulkan_renderer
 		std::array<VkVertexInputAttributeDescription, 2> descriptions;
 
 		// Position
-		descriptions[0].binding = 0;
-		descriptions[0].location = 0;
-		descriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-		descriptions[0].offset = offsetof(Vertex, position);
+		descriptions[0] =
+		{
+			.location = 0,
+			.binding = 0,
+			.format = VK_FORMAT_R32G32B32_SFLOAT,
+			.offset = offsetof(Vertex, position)
+		};
 
 		// Color
-		descriptions[1].binding = 0;
-		descriptions[1].location = 1;
-		descriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-		descriptions[1].offset = offsetof(Vertex, color);
+		descriptions[1] =
+		{
+			.location = 1,
+			.binding = 0,
+			.format = VK_FORMAT_R32G32B32_SFLOAT,
+			.offset = offsetof(Vertex, color)
+		};
 
 		return descriptions;
 	}

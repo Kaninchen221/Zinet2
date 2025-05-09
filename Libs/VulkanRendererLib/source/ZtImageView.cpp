@@ -7,22 +7,30 @@ namespace zt::vulkan_renderer
 {
 	VkImageViewCreateInfo ImageView::GetDefaultCreateInfo(const VkImage& vkImage, VkFormat format) noexcept
 	{
-		VkImageViewCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		createInfo.image = vkImage;
-		createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		createInfo.format = format;
-		createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
-		createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
-		createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
-		createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-		createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		createInfo.subresourceRange.baseMipLevel = 0;
-		createInfo.subresourceRange.levelCount = 1;
-		createInfo.subresourceRange.baseArrayLayer = 0;
-		createInfo.subresourceRange.layerCount = 1;
-
-		return createInfo;
+		return VkImageViewCreateInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = {},
+			.image = vkImage,
+			.viewType = VK_IMAGE_VIEW_TYPE_2D,
+			.format = format,
+			.components = 
+			{ 
+				VK_COMPONENT_SWIZZLE_IDENTITY, 
+				VK_COMPONENT_SWIZZLE_IDENTITY, 
+				VK_COMPONENT_SWIZZLE_IDENTITY, 
+				VK_COMPONENT_SWIZZLE_IDENTITY 
+			},
+			.subresourceRange =
+			{
+				.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+				.baseMipLevel = 0,
+				.levelCount = 1,
+				.baseArrayLayer = 0,
+				.layerCount = 1
+			}
+		};
 	}
 
 	bool ImageView::create(const Device& device, const VkImageViewCreateInfo& createInfo) noexcept

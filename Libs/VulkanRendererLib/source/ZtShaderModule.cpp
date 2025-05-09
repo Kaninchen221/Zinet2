@@ -11,10 +11,14 @@ namespace zt::vulkan_renderer
 		const auto count = compilationResult.cend() - compilationResult.cbegin();
 		const size_t codeSize = count * sizeof(std::uint32_t);
 
-		VkShaderModuleCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-		createInfo.codeSize = codeSize;
-		createInfo.pCode = compilationResult.cbegin();
+		const VkShaderModuleCreateInfo createInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = {},
+			.codeSize = codeSize,
+			.pCode = compilationResult.cbegin()
+		};
 
 		const auto result = vkCreateShaderModule(device.get(), &createInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
@@ -30,13 +34,16 @@ namespace zt::vulkan_renderer
 
 	VkPipelineShaderStageCreateInfo ShaderModule::createPipelineShaderStageCreateInfo(const ShaderType shaderType) const noexcept
 	{
-		VkPipelineShaderStageCreateInfo result{};
-		result.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-		result.module = objectHandle;
-		result.stage = ShaderTypeToVkShaderStage(shaderType);
-		result.pName = "main";
-
-		return result;
+		return VkPipelineShaderStageCreateInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+			.pNext = nullptr,
+			.flags = {},
+			.stage = ShaderTypeToVkShaderStage(shaderType),
+			.module = objectHandle,
+			.pName = "main",
+			.pSpecializationInfo = nullptr
+		};
 	}
 
 	void ShaderModule::destroy(const Device& device) noexcept

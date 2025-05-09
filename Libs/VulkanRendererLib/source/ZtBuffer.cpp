@@ -9,9 +9,11 @@ namespace zt::vulkan_renderer
 		if (isValid())
 			return false;
 
-		VmaAllocationCreateInfo allocInfo = {};
-		allocInfo.flags = VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
-		allocInfo.usage = VMA_MEMORY_USAGE_AUTO;
+		const VmaAllocationCreateInfo allocInfo
+		{
+			.flags = VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT,
+			.usage = VMA_MEMORY_USAGE_AUTO
+		};
 
 		const auto result = vmaCreateBuffer(vma.get(), &createInfo, &allocInfo, &objectHandle, &allocation, nullptr);
 		if (result == VK_SUCCESS)
