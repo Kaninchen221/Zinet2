@@ -45,9 +45,9 @@ namespace zt::vulkan_renderer::tests
 
 			const auto descriptorPoolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
 			std::vector<VkDescriptorPoolSize> descriptorPoolSizes{ descriptorPoolSize };
-			const auto descriptorCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);
+			const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);
 			
-			ASSERT_TRUE(descriptorPool.create(device, descriptorCreateInfo));
+			ASSERT_TRUE(descriptorPool.create(device, descriptorPoolCreateInfo));
 			ASSERT_TRUE(descriptorPool.isValid());
 		}
 
