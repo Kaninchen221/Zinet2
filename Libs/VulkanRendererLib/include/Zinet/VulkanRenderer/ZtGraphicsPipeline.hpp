@@ -10,6 +10,11 @@
 #include "Zinet/VulkanRenderer/ZtPipelineLayout.hpp"
 #include "Zinet/VulkanRenderer/ZtPipeline.hpp"
 
+#include "Zinet/VulkanRenderer/ZtDescriptorPool.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorSetLayout.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorSet.hpp"
+#include "Zinet/VulkanRenderer/ZtBuffer.hpp"
+
 #include "Zinet/Core/ZtLogger.hpp"
 
 #include <vulkan/vulkan.h>
@@ -53,5 +58,12 @@ namespace zt::vulkan_renderer
 		RenderPass renderPass{ nullptr };
 		PipelineLayout pipelineLayout{ nullptr };
 		Pipeline pipeline{ nullptr };
+
+		Vector2f positionOffset{ -0.5, 0.f };
+		float positionOffsetDir = 1.f;
+		Buffer uniformBuffer{ nullptr };
+		DescriptorPool descriptorPool{ nullptr };
+		DescriptorSetLayout descriptorSetLayout{ nullptr };
+		DescriptorSet descriptorSet{ nullptr };
 	};
 }

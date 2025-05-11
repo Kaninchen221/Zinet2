@@ -104,7 +104,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	std::vector<VkImage> SwapChain::getImages(Device& device) noexcept
+	std::vector<VkImage> SwapChain::getImages(const Device& device) const noexcept
 	{
 		std::uint32_t count;
 		vkGetSwapchainImagesKHR(device.get(), objectHandle, &count, nullptr);

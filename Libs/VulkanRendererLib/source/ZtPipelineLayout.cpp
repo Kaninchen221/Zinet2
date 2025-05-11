@@ -4,12 +4,9 @@
 namespace zt::vulkan_renderer
 {
 
-	bool PipelineLayout::create(const Device& device) noexcept
+	VkPipelineLayoutCreateInfo PipelineLayout::GetDefaultCreateInfo() noexcept
 	{
-		if (isValid())
-			return false;
-
-		const VkPipelineLayoutCreateInfo pipelineLayoutInfo
+		return VkPipelineLayoutCreateInfo
 		{
 			.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
 			.pNext = nullptr,
@@ -19,8 +16,14 @@ namespace zt::vulkan_renderer
 			.pushConstantRangeCount = 0,
 			.pPushConstantRanges = nullptr
 		};
+	}
 
-		const auto result = vkCreatePipelineLayout(device.get(), &pipelineLayoutInfo, nullptr, &objectHandle);
+	bool PipelineLayout::create(const Device& device, const VkPipelineLayoutCreateInfo& createInfo) noexcept
+	{
+		if (isValid())
+			return false;
+
+		const auto result = vkCreatePipelineLayout(device.get(), &createInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
 		{
 			return true;

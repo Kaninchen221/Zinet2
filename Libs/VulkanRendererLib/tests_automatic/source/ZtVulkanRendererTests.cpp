@@ -111,7 +111,7 @@ namespace zt::vulkan_renderer::tests
 		if (compileResult.GetCompilationStatus() != shaderc_compilation_status_success)
 			return shaderModule;
 
-		auto& device = renderer.getRendererContext().device;
+		const auto& device = renderer.getRendererContext().device;
 		shaderModule.create(device, compileResult);
 
 		return shaderModule;

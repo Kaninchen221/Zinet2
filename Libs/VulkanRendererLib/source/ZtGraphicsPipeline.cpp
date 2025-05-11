@@ -9,9 +9,9 @@ namespace zt::vulkan_renderer
 
 	bool GraphicsPipeline::create(RendererContext& rendererContext) noexcept
 	{
-		auto& device = rendererContext.device;
-		auto& swapChain = rendererContext.swapChain;
-		auto& commandPool = rendererContext.commandPool;
+		const auto& device = rendererContext.device;
+		const auto& swapChain = rendererContext.swapChain;
+		const auto& commandPool = rendererContext.commandPool;
 
 		const auto renderPassCreateInfo = RenderPass::GetPresentCreateInfo(swapChain.getFormat());
 		if (!renderPass.create(device, renderPassCreateInfo))
@@ -59,7 +59,47 @@ namespace zt::vulkan_renderer
 		if (!fence.create(device, true))
 			return false;
 
-		if (!pipelineLayout.create(device))
+		// Uniforms section
+		const auto& vma = rendererContext.vma;
+
+		// Buffer
+		const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(positionOffset);
+		if (!uniformBuffer.createBuffer(uniformBufferCreateInfo, vma))
+			return false;
+
+		uniformBuffer.fillWithObject(positionOffset, vma);
+
+		// Descriptor Pool - One for entire program like command pool?
+		const auto descriptorPoolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
+		std::vector<VkDescriptorPoolSize> descriptorPoolSizes{ descriptorPoolSize };
+		const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);
+		if (!descriptorPool.create(device, descriptorPoolCreateInfo))
+			return false;
+
+		const auto layoutBinding = DescriptorSetLayout::GetDefaultLayoutBinding();
+		const DescriptorSetLayout::Bindings bindings{ layoutBinding };
+
+		const auto createInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
+		if (!descriptorSetLayout.create(createInfo, device))
+			return false;
+
+		const std::vector descriptorSetLayouts{ descriptorSetLayout.get() };
+		const auto allocateInfo = DescriptorSet::GetDefaultAllocateInfo(descriptorPool, descriptorSetLayouts);
+		if (!descriptorSet.create(device, allocateInfo))
+			return false;
+
+		// Update uniform
+		const VkDescriptorBufferInfo descriptorBufferInfo = DescriptorSet::GetBufferInfo(uniformBuffer);
+		auto writeDescriptorSet = DescriptorSet::GetDefaultWriteDescriptorSet();
+		writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
+		writeDescriptorSet.dstSet = descriptorSet.get();
+		descriptorSet.update(device, writeDescriptorSet);
+
+		// Pipeline Layout must be created after uniforms
+		auto pipelineLayoutCreateInfo = PipelineLayout::GetDefaultCreateInfo();
+		pipelineLayoutCreateInfo.pSetLayouts = descriptorSetLayouts.data();
+		pipelineLayoutCreateInfo.setLayoutCount = static_cast<std::uint32_t>(descriptorSetLayouts.size());
+		if (!pipelineLayout.create(device, pipelineLayoutCreateInfo))
 			return false;
 
 		return true;
@@ -67,7 +107,17 @@ namespace zt::vulkan_renderer
 
 	void GraphicsPipeline::destroy(const RendererContext& rendererContext) noexcept
 	{
-		auto& device = rendererContext.device;
+		const auto& device = rendererContext.device;
+
+		// Uniforms
+		const auto& vma = rendererContext.vma;
+
+		uniformBuffer.destroy(vma);
+		descriptorPool.destroy(device);
+		descriptorSetLayout.destroy(device);
+		descriptorSet.invalidate();
+
+		// Core
 
 		for (auto& framebuffer : framebuffers)
 			framebuffer.destroy(device);
@@ -95,6 +145,7 @@ namespace zt::vulkan_renderer
 		auto& device = rendererContext.device;
 		auto& queue = rendererContext.queue;
 
+		// Pre Draw
 		if (!pipeline.isValid())
 		{
 			const auto extent = swapChain.getExtent();
@@ -117,6 +168,7 @@ namespace zt::vulkan_renderer
 
 		commandBuffer.bindPipeline(pipeline);
 
+		// Viewport settings
 		const VkViewport viewport
 		{
 			.x = 0.0f,
@@ -135,12 +187,47 @@ namespace zt::vulkan_renderer
 		};
 		commandBuffer.setScissor(scissor);
 
-		///////
+		// Uniform Buffer
+
+		// Update uniform buffer ~ this should be in client code
+		const auto& vma = rendererContext.vma;
+		if (positionOffset.x <= -0.5f || positionOffset.x >= 0.5f)
+		{
+			positionOffsetDir *= -1.f;
+			positionOffset.x = std::clamp(positionOffset.x, -0.5f, 0.5f);
+		}
+
+		positionOffset.x += positionOffsetDir * 0.0001f;
+
+		uniformBuffer.fillWithObject(positionOffset, vma);
+
+		// Update descriptor set
+		const VkDescriptorBufferInfo descriptorBufferInfo = DescriptorSet::GetBufferInfo(uniformBuffer);
+		auto writeDescriptorSet = DescriptorSet::GetDefaultWriteDescriptorSet();
+		writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
+		writeDescriptorSet.dstSet = descriptorSet.get();
+		descriptorSet.update(device, writeDescriptorSet);
+
+		if (descriptorSet.isValid())
+		{
+			const auto vkDescriptorSet = descriptorSet.get();
+			vkCmdBindDescriptorSets(
+				commandBuffer.get(),
+				VK_PIPELINE_BIND_POINT_GRAPHICS,
+				pipelineLayout.get(),
+				0,
+				1,
+				&vkDescriptorSet,
+				0,
+				nullptr);
+		}
+
+		// Vertex Buffer
 		const VkBuffer vertexBuffers[] = { drawInfo.vertexBuffer.get() };
 		const VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer.get(), 0, 1, vertexBuffers, offsets);
-		///////
-
+		
+		// Index Buffer
 		if (drawInfo.indexBuffer.isValid())
 		{
 			vkCmdBindIndexBuffer(commandBuffer.get(), drawInfo.indexBuffer.get(), 0, VK_INDEX_TYPE_UINT16);
@@ -148,13 +235,15 @@ namespace zt::vulkan_renderer
 		}
 		else
 		{
+			// Actual draw command
 			commandBuffer.draw(static_cast<std::uint32_t>(drawInfo.vertexBuffer.getSize()), 1, 0, 0);
 		}
 
 		commandBuffer.endRenderPass();
 		commandBuffer.end();
 
-		//
+		// Post Draw
+		// Submit
 		const VkSemaphore waitSemaphores[] = { imageAvailableSemaphore.get() };
 		const VkPipelineStageFlags waitStages[] = {
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
@@ -176,8 +265,7 @@ namespace zt::vulkan_renderer
 		};
 		vkQueueSubmit(queue.get(), 1, &submitInfo, fence.get());
 
-		//
-
+		// Present
 		const VkSwapchainKHR swapChains[] = { swapChain.get() };
 		const VkPresentInfoKHR presentInfo
 		{

@@ -45,7 +45,7 @@ namespace zt::vulkan_renderer
 
 		void destroy(const Device& device) noexcept;
 
-		std::vector<VkImage> getImages(Device& device) noexcept;
+		std::vector<VkImage> getImages(const Device& device) const noexcept;
 
 		VkFormat getFormat() const noexcept { return format; }
 

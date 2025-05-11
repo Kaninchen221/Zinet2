@@ -30,7 +30,9 @@ namespace zt::vulkan_renderer
 		PipelineLayout& operator = (const PipelineLayout& other) noexcept = delete;
 		PipelineLayout& operator = (PipelineLayout&& other) noexcept = default;
 	
-		bool create(const Device& device) noexcept;
+		static VkPipelineLayoutCreateInfo GetDefaultCreateInfo() noexcept;
+
+		bool create(const Device& device, const VkPipelineLayoutCreateInfo& createInfo) noexcept;
 
 		void destroy(const Device& device) noexcept;
 

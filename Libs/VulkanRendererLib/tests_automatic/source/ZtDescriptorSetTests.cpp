@@ -48,10 +48,6 @@ namespace zt::vulkan_renderer::tests
 
 			ASSERT_TRUE(vma.create(device, physicalDevice, instance));
 
-			const auto layoutBinding = DescriptorSetLayout::GetDefaultLayoutBinding();
-			const DescriptorSetLayout::Bindings bindings{ layoutBinding };
-			const auto createInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
-
 			const Vector2f position{};
 			const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(position);
 			uniformBuffer.createBuffer(uniformBufferCreateInfo, vma);
@@ -61,6 +57,10 @@ namespace zt::vulkan_renderer::tests
 			const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);
 			ASSERT_TRUE(descriptorPool.create(device, descriptorPoolCreateInfo));
 
+			const auto layoutBinding = DescriptorSetLayout::GetDefaultLayoutBinding();
+			const DescriptorSetLayout::Bindings bindings{ layoutBinding };
+
+			const auto createInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
 			ASSERT_TRUE(descriptorSetLayout.create(createInfo, device));
 			ASSERT_TRUE(descriptorSetLayout.isValid());
 
