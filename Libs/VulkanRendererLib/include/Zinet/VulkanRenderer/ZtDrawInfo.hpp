@@ -20,6 +20,6 @@ namespace zt::vulkan_renderer
 		const Buffer& vertexBuffer;
 		const Buffer& indexBuffer;
 		const std::uint32_t indexCount{};
-
+		const Buffer& uniformBuffer;
 	};
 }

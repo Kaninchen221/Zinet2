@@ -46,6 +46,9 @@ namespace zt::vulkan_renderer
 	template<class HandleT, bool CheckObjectHandle>
 	VulkanObject<HandleT, CheckObjectHandle>& VulkanObject<HandleT, CheckObjectHandle>::operator=(VulkanObject&& other) noexcept
 	{
+		// TODO: Remove this if and the template "CheckObjectHandle" param
+		// Vulkan objects that we don't need to explicit remove should still be explicitly marked as invalid 
+		// by using "invalidate" method
 		if constexpr (CheckObjectHandle)
 		{
 			if (isValid())

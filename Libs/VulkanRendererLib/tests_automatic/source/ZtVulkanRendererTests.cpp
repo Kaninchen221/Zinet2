@@ -6,6 +6,7 @@
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 
 #include "Zinet/Core/ZtPaths.hpp"
+#include "Zinet/Core/ZtClock.hpp"
 
 #include <gtest/gtest.h>
 
@@ -46,10 +47,10 @@ namespace zt::vulkan_renderer::tests
 
 			// Vertex Buffer
 			const DrawInfo::Vertices vertices = {
-				{{-0.5f, -0.5f, 1.f}, {1.0f, 0.0f, 0.0f}},
+				{{-0.5f, -0.5f, 1.f}, {0.0f, 1.0f, 0.0f}},
 				{{0.5f,  -0.5f, 1.f}, {0.0f, 1.0f, 0.0f}},
 				{{0.5f,  0.5f,  1.f}, {0.0f, 0.0f, 1.0f}},
-				{{-0.5f, 0.5f,  1.f}, {1.0f, 1.0f, 1.0f}}
+				{{-0.5f, 0.5f,  1.f}, {0.0f, 0.0f, 1.0f}}
 			};
 
 			const auto vertexBufferCreateInfo = Buffer::GetVertexBufferCreateInfo(vertices);
@@ -66,6 +67,13 @@ namespace zt::vulkan_renderer::tests
 			const auto indexBufferCreateInfo = Buffer::GetIndexBufferCreateInfo(indices);
 			ASSERT_TRUE(indexBuffer.createBuffer(indexBufferCreateInfo, vma));
 			ASSERT_TRUE(indexBuffer.fillWithSTDContainer(indices, vma));
+
+			// Uniform Buffers
+			{
+				Buffer& uniformBuffer = uniformBuffers.emplace_back(nullptr);
+				const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(uniformData);
+				ASSERT_TRUE(uniformBuffer.createBuffer(uniformBufferCreateInfo, vma));
+			}
 		}
 
 		void TearDown() override
@@ -77,6 +85,7 @@ namespace zt::vulkan_renderer::tests
 
 			vertexBuffer.destroy(vma);
 			indexBuffer.destroy(vma);
+			std::for_each(uniformBuffers.begin(), uniformBuffers.end(), [&vma = vma](auto& buffer) { buffer.destroy(vma); });
 
 			vertexShaderModule.destroy(device);
 			fragmentShaderModule.destroy(device);
@@ -96,7 +105,18 @@ namespace zt::vulkan_renderer::tests
 		Buffer indexBuffer{ nullptr };
 		DrawInfo::Indices indices;
 
+		std::vector<Buffer> uniformBuffers;
+		struct UniformData
+		{
+			alignas(8) Vector2f position{ -0.5, 0.f };
+			alignas(4) float colorScalar{ 0.f };
+		};
+		UniformData uniformData;
+		float uniformDataScalar = 1.f;
+
 		ShaderModule createShaderModule(std::string_view sourceCodeFileName, ShaderType shaderType);
+
+		void updateUniformBuffersData();
 	};
 
 	ShaderModule VulkanRendererTests::createShaderModule(std::string_view sourceCodeFileName, ShaderType shaderType)
@@ -117,22 +137,62 @@ namespace zt::vulkan_renderer::tests
 		return shaderModule;
 	}
 
+	void VulkanRendererTests::updateUniformBuffersData()
+	{
+		const auto& vma = renderer.getRendererContext().vma;
+		
+		// First uniform buffer
+		{
+			auto& position = uniformData.position;
+			if (position.x <= -0.5f || position.x >= 0.5f)
+			{
+				uniformDataScalar *= -1.f;
+				position.x = std::clamp(position.x, -0.5f, 0.5f);
+			}
+			position.x += uniformDataScalar * 0.0001f;
+		}
+
+		{
+			auto& colorScalar = uniformData.colorScalar;
+			colorScalar += uniformDataScalar * 0.00015f;
+			colorScalar = std::clamp(colorScalar, 0.02f, 0.50f);
+		}
+		uniformBuffers[0].fillWithObject(uniformData, vma);
+	}
+
 	TEST_F(VulkanRendererTests, Test)
 	{
+		using namespace std::chrono_literals;
+
 		const DrawInfo drawInfo
 		{
 			.vertexShaderModule = vertexShaderModule,
 			.fragmentShaderModule = fragmentShaderModule,
 			.vertexBuffer = vertexBuffer,
 			.indexBuffer = indexBuffer,
-			.indexCount = static_cast<std::uint32_t>(indices.size())
+			.indexCount = static_cast<std::uint32_t>(indices.size()),
+			.uniformBuffer = uniformBuffers[0]
 		};
 
+		core::Clock fpsClock;
+		size_t fpsCount = 0;
+		fpsClock.start();
 		while (window.isOpen())
 		{
 			windowEvents.pollEvents();
 
+			updateUniformBuffersData();
+
 			renderer.draw(drawInfo);
+
+			fpsCount++;
+			if (fpsClock.getElapsedTime().getAsSeconds() >= 1.0f)
+			{
+				const std::string title = fmt::format("Zinet FPS: {}", fpsCount);
+				window.setTitle(title);
+				fpsCount = 0u;
+				fpsClock.restart();
+			}
 
 			window.requestCloseWindow();
 		}

@@ -59,16 +59,6 @@ namespace zt::vulkan_renderer
 		if (!fence.create(device, true))
 			return false;
 
-		// Uniforms section
-		const auto& vma = rendererContext.vma;
-
-		// Buffer
-		const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(positionOffset);
-		if (!uniformBuffer.createBuffer(uniformBufferCreateInfo, vma))
-			return false;
-
-		uniformBuffer.fillWithObject(positionOffset, vma);
-
 		// Descriptor Pool - One for entire program like command pool?
 		const auto descriptorPoolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
 		std::vector<VkDescriptorPoolSize> descriptorPoolSizes{ descriptorPoolSize };
@@ -76,6 +66,7 @@ namespace zt::vulkan_renderer
 		if (!descriptorPool.create(device, descriptorPoolCreateInfo))
 			return false;
 
+		// Uniforms section
 		const auto layoutBinding = DescriptorSetLayout::GetDefaultLayoutBinding();
 		const DescriptorSetLayout::Bindings bindings{ layoutBinding };
 
@@ -87,13 +78,6 @@ namespace zt::vulkan_renderer
 		const auto allocateInfo = DescriptorSet::GetDefaultAllocateInfo(descriptorPool, descriptorSetLayouts);
 		if (!descriptorSet.create(device, allocateInfo))
 			return false;
-
-		// Update uniform
-		const VkDescriptorBufferInfo descriptorBufferInfo = DescriptorSet::GetBufferInfo(uniformBuffer);
-		auto writeDescriptorSet = DescriptorSet::GetDefaultWriteDescriptorSet();
-		writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
-		writeDescriptorSet.dstSet = descriptorSet.get();
-		descriptorSet.update(device, writeDescriptorSet);
 
 		// Pipeline Layout must be created after uniforms
 		auto pipelineLayoutCreateInfo = PipelineLayout::GetDefaultCreateInfo();
@@ -110,15 +94,11 @@ namespace zt::vulkan_renderer
 		const auto& device = rendererContext.device;
 
 		// Uniforms
-		const auto& vma = rendererContext.vma;
-
-		uniformBuffer.destroy(vma);
 		descriptorPool.destroy(device);
 		descriptorSetLayout.destroy(device);
 		descriptorSet.invalidate();
 
 		// Core
-
 		for (auto& framebuffer : framebuffers)
 			framebuffer.destroy(device);
 		framebuffers.clear();
@@ -187,22 +167,11 @@ namespace zt::vulkan_renderer
 		};
 		commandBuffer.setScissor(scissor);
 
-		// Uniform Buffer
-
-		// Update uniform buffer ~ this should be in client code
-		const auto& vma = rendererContext.vma;
-		if (positionOffset.x <= -0.5f || positionOffset.x >= 0.5f)
-		{
-			positionOffsetDir *= -1.f;
-			positionOffset.x = std::clamp(positionOffset.x, -0.5f, 0.5f);
-		}
-
-		positionOffset.x += positionOffsetDir * 0.0001f;
-
-		uniformBuffer.fillWithObject(positionOffset, vma);
+		// Uniform Buffers
 
 		// Update descriptor set
-		const VkDescriptorBufferInfo descriptorBufferInfo = DescriptorSet::GetBufferInfo(uniformBuffer);
+		VkDescriptorBufferInfo descriptorBufferInfo = DescriptorSet::GetBufferInfo(drawInfo.uniformBuffer); // TODO: Support more than one uniform
+
 		auto writeDescriptorSet = DescriptorSet::GetDefaultWriteDescriptorSet();
 		writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
 		writeDescriptorSet.dstSet = descriptorSet.get();

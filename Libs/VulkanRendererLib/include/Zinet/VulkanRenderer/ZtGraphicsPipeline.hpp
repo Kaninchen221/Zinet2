@@ -59,9 +59,6 @@ namespace zt::vulkan_renderer
 		PipelineLayout pipelineLayout{ nullptr };
 		Pipeline pipeline{ nullptr };
 
-		Vector2f positionOffset{ -0.5, 0.f };
-		float positionOffsetDir = 1.f;
-		Buffer uniformBuffer{ nullptr };
 		DescriptorPool descriptorPool{ nullptr };
 		DescriptorSetLayout descriptorSetLayout{ nullptr };
 		DescriptorSet descriptorSet{ nullptr };
