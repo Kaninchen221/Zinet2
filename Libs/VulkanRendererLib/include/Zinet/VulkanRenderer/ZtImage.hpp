@@ -22,8 +22,9 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Image(HandleType newObjectHandle)
-			: VulkanObject(newObjectHandle)
+		Image(HandleType newObjectHandle, VkFormat newFormat = VK_FORMAT_UNDEFINED)
+			: VulkanObject{ newObjectHandle },
+			format{ newFormat }
 		{}
 
 		Image() noexcept = delete;

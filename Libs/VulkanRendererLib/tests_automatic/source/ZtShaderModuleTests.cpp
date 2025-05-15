@@ -28,6 +28,7 @@ namespace zt::vulkan_renderer::tests
 
 			auto physicalDevices = instance.getPhysicalDevices();
 			physicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
+			invalidateAll(physicalDevices);
 			ASSERT_TRUE(physicalDevice.isValid());
 
 			ASSERT_TRUE(device.create(physicalDevice, Surface{ nullptr }));
@@ -37,6 +38,9 @@ namespace zt::vulkan_renderer::tests
 		{
 			device.destroy();
 			ASSERT_FALSE(device.isValid());
+
+			physicalDevice.invalidate();
+			ASSERT_FALSE(physicalDevice.isValid());
 
 			debugUtilsMessenger.destroy(instance);
 			ASSERT_FALSE(debugUtilsMessenger.isValid());

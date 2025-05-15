@@ -42,6 +42,7 @@ namespace zt::vulkan_renderer::tests
 
 			auto physicalDevices = instance.getPhysicalDevices();
 			physicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
+			invalidateAll(physicalDevices);
 			ASSERT_TRUE(physicalDevice.isValid());
 
 			ASSERT_TRUE(device.create(physicalDevice, Surface{ nullptr }));
@@ -96,6 +97,9 @@ namespace zt::vulkan_renderer::tests
 			device.destroy();
 			ASSERT_FALSE(device.isValid());
 
+			physicalDevice.invalidate();
+			ASSERT_FALSE(physicalDevice.isValid());
+
 			debugUtilsMessenger.destroy(instance);
 			ASSERT_FALSE(debugUtilsMessenger.isValid());
 
@@ -115,7 +119,7 @@ namespace zt::vulkan_renderer::tests
 		DescriptorSetLayout descriptorSetLayout{ nullptr };
 		DescriptorSet descriptorSet{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkDescriptorSet, false>, DescriptorSet>);
+		static_assert(std::is_base_of_v<VulkanObject<VkDescriptorSet>, DescriptorSet>);
 
 		static_assert(!std::is_default_constructible_v<DescriptorSet>);
 		static_assert(!std::is_copy_constructible_v<DescriptorSet>);

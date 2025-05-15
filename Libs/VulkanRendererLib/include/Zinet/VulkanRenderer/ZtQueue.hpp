@@ -9,7 +9,7 @@
 
 namespace zt::vulkan_renderer
 {
-	class ZINET_VULKAN_RENDERER_API Queue : public VulkanObject<VkQueue, false>
+	class ZINET_VULKAN_RENDERER_API Queue : public VulkanObject<VkQueue>
 	{
 	protected:
 
@@ -29,6 +29,8 @@ namespace zt::vulkan_renderer
 
 		Queue& operator = (const Queue& other) noexcept = delete;
 		Queue& operator = (Queue&& other) noexcept = default;
+
+		void invalidate() { objectHandle = nullptr; }
 
 		const auto& getQueueFamilyIndex() const noexcept { return queueFamilyIndex; }
 

@@ -100,6 +100,7 @@ namespace zt::vulkan_renderer::tests
 
 	TEST_F(InstanceTests, GetPhysicalDevicesTest)
 	{
-		[[maybe_unused]] std::vector<PhysicalDevice> physicalDevices = instance.getPhysicalDevices();
+		std::vector<PhysicalDevice> physicalDevices = instance.getPhysicalDevices();
+		invalidateAll(physicalDevices);
 	}
 }

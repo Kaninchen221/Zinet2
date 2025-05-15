@@ -117,6 +117,8 @@ namespace zt::vulkan_renderer
 		renderFinishedSemaphore.destroy(device);
 
 		fence.destroy(device);
+
+		commandBuffer.invalidate();
 	}
 
 	void GraphicsPipeline::draw(const RendererContext& rendererContext, const DrawInfo& drawInfo)

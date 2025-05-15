@@ -17,7 +17,7 @@ namespace zt::vulkan_renderer
 	class Framebuffer;
 	class Pipeline;
 
-	class ZINET_VULKAN_RENDERER_API CommandBuffer : public VulkanObject<VkCommandBuffer, false>
+	class ZINET_VULKAN_RENDERER_API CommandBuffer : public VulkanObject<VkCommandBuffer>
 	{
 	protected:
 
@@ -39,6 +39,8 @@ namespace zt::vulkan_renderer
 		CommandBuffer& operator = (CommandBuffer&& other) noexcept = default;
 
 		bool create(const Device& device, const CommandPool& commandPool) noexcept;
+
+		void invalidate() { objectHandle = nullptr; }
 
 		bool reset() noexcept;
 

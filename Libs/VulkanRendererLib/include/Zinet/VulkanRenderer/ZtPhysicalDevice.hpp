@@ -16,7 +16,7 @@ namespace zt::vulkan_renderer
 {
 	class Surface;
 
-	class ZINET_VULKAN_RENDERER_API PhysicalDevice : public VulkanObject<VkPhysicalDevice, false>
+	class ZINET_VULKAN_RENDERER_API PhysicalDevice : public VulkanObject<VkPhysicalDevice>
 	{
 	protected:
 
@@ -34,6 +34,8 @@ namespace zt::vulkan_renderer
 
 		PhysicalDevice& operator = (const PhysicalDevice& other) noexcept = delete;
 		PhysicalDevice& operator = (PhysicalDevice&& other) noexcept = default;
+
+		void invalidate() { objectHandle = nullptr; }
 
 		VkPhysicalDeviceProperties getVkPhysicalDeviceProperties() const noexcept;
 

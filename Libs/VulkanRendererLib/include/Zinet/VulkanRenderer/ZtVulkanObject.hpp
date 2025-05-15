@@ -8,12 +8,12 @@
 
 namespace zt::vulkan_renderer
 {
-	template<class HandleT, bool CheckObjectHandle = true>
+	template<class HandleT>
 	class VulkanObject
 	{
 	public:
 
-		// Not "std::numeric_limits<std::uint32_t>::max();" because MSVC see "max()" as macro
+		// Not "std::numeric_limits<std::uint32_t>::max();" because MSVC see the "max()" part as the "max()" macro
 		inline static constexpr std::uint32_t InvalidIndex = UINT32_MAX;
 
 		using HandleType = HandleT;
@@ -34,28 +34,27 @@ namespace zt::vulkan_renderer
 
 		bool isValid() const noexcept { return objectHandle != nullptr; }
 
-		// Useful for Image created from VkImage that was acquired from SwapChain 
-		void invalidate() { objectHandle = nullptr; }
-
 	protected:
 
 		HandleType objectHandle = nullptr;
 
 	};
 
-	template<class HandleT, bool CheckObjectHandle>
-	VulkanObject<HandleT, CheckObjectHandle>& VulkanObject<HandleT, CheckObjectHandle>::operator=(VulkanObject&& other) noexcept
+	inline void invalidateAll(auto&& container) noexcept
 	{
-		// TODO: Remove this if and the template "CheckObjectHandle" param
-		// Vulkan objects that we don't need to explicit remove should still be explicitly marked as invalid 
-		// by using "invalidate" method
-		if constexpr (CheckObjectHandle)
+		for (auto&& element : container)
 		{
-			if (isValid())
-			{
-				auto Logger = core::ConsoleLogger::Create("VulkanObject");
-				Logger->error("Object must be manually destroyed before move call");
-			}
+			element.invalidate();
+		}
+	}
+
+	template<class HandleT>
+	VulkanObject<HandleT>& VulkanObject<HandleT>::operator=(VulkanObject&& other) noexcept
+	{
+		if (isValid())
+		{
+			auto Logger = core::ConsoleLogger::Create("VulkanObject");
+			Logger->error("Object must be manually destroyed/invalidated before move call");
 		}
 
 		objectHandle = other.objectHandle;
@@ -63,16 +62,13 @@ namespace zt::vulkan_renderer
 		return *this;
 	}
 
-	template<class HandleT, bool CheckObjectHandle>
-	VulkanObject<HandleT, CheckObjectHandle>::~VulkanObject() noexcept
+	template<class HandleT>
+	VulkanObject<HandleT>::~VulkanObject() noexcept
 	{
-		if constexpr (CheckObjectHandle)
+		if (isValid())
 		{
-			if (isValid())
-			{
-				auto Logger = core::ConsoleLogger::Create("VulkanObject");
-				Logger->error("Object must be manually destroyed before destructor call");
-			}
+			auto Logger = core::ConsoleLogger::Create("VulkanObject");
+			Logger->error("Object must be manually destroyed/invalidated before destructor call");
 		}
 	}
 

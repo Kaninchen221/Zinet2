@@ -39,6 +39,7 @@ namespace zt::vulkan_renderer::tests
 
 			auto physicalDevices = instance.getPhysicalDevices();
 			physicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
+			invalidateAll(physicalDevices);
 			ASSERT_TRUE(physicalDevice.isValid());
 
 			ASSERT_TRUE(surface.create(instance, window));
@@ -104,6 +105,7 @@ namespace zt::vulkan_renderer::tests
 			renderPass.destroy(device);
 			swapChain.destroy(device);
 			device.destroy();
+			physicalDevice.invalidate();
 			surface.destroy(instance);
 			debugUtilsMessenger.destroy(instance);
 			instance.destroy();

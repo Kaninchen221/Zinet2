@@ -15,7 +15,7 @@ namespace zt::vulkan_renderer
 	class DescriptorSetLayout;
 	class Buffer;
 
-	class ZINET_VULKAN_RENDERER_API DescriptorSet : public VulkanObject<VkDescriptorSet, false>
+	class ZINET_VULKAN_RENDERER_API DescriptorSet : public VulkanObject<VkDescriptorSet>
 	{
 	protected:
 
@@ -41,6 +41,8 @@ namespace zt::vulkan_renderer
 			const DescriptorPool& descriptorPool, std::vector<DescriptorSetLayout::HandleType>&& descriptorSetLayouts) noexcept = delete;
 
 		bool create(const Device& device, const VkDescriptorSetAllocateInfo& allocateInfo) noexcept;
+
+		void invalidate() { objectHandle = nullptr; }
 
 		static VkWriteDescriptorSet GetDefaultWriteDescriptorSet() noexcept;
 

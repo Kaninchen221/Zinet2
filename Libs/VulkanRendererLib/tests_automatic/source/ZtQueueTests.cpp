@@ -32,6 +32,7 @@ namespace zt::vulkan_renderer::tests
 
 			auto physicalDevices = instance.getPhysicalDevices();
 			physicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
+			invalidateAll(physicalDevices);
 			ASSERT_TRUE(physicalDevice.isValid());
 
 			ASSERT_TRUE(device.create(physicalDevice, Surface{ nullptr })); // We don't need valid Surface for Queue tests
@@ -44,8 +45,14 @@ namespace zt::vulkan_renderer::tests
 
 		void TearDown() override
 		{
+			queue.invalidate();
+			ASSERT_FALSE(queue.isValid());
+
 			device.destroy();
 			ASSERT_FALSE(device.isValid());
+
+			physicalDevice.invalidate();
+			ASSERT_FALSE(physicalDevice.isValid());
 
 			debugUtilsMessenger.destroy(instance);
 			ASSERT_FALSE(debugUtilsMessenger.isValid());
@@ -62,7 +69,7 @@ namespace zt::vulkan_renderer::tests
 		Device device{ nullptr };
 		Queue queue{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkQueue, false>, Queue>);
+		static_assert(std::is_base_of_v<VulkanObject<VkQueue>, Queue>);
 
 		static_assert(std::is_constructible_v<Queue, VkQueue, std::uint32_t>);
 		static_assert(!std::is_default_constructible_v<Queue>);

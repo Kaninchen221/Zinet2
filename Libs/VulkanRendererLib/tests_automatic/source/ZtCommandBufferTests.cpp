@@ -31,6 +31,7 @@ namespace zt::vulkan_renderer::tests
 
 			auto physicalDevices = instance.getPhysicalDevices();
 			physicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
+			invalidateAll(physicalDevices);
 			ASSERT_TRUE(physicalDevice.isValid());
 
 			ASSERT_TRUE(device.create(physicalDevice, Surface{ nullptr }));
@@ -49,8 +50,17 @@ namespace zt::vulkan_renderer::tests
 			commandPool.destroy(device);
 			ASSERT_FALSE(commandPool.isValid());
 
+			commandBuffer.invalidate();
+			ASSERT_FALSE(commandBuffer.isValid());
+
 			device.destroy();
 			ASSERT_FALSE(device.isValid());
+
+			queue.invalidate();
+			ASSERT_FALSE(queue.isValid());
+
+			physicalDevice.invalidate();
+			ASSERT_FALSE(physicalDevice.isValid());
 
 			debugUtilsMessenger.destroy(instance);
 			ASSERT_FALSE(debugUtilsMessenger.isValid());
@@ -67,7 +77,7 @@ namespace zt::vulkan_renderer::tests
 		CommandPool commandPool{ nullptr };
 		CommandBuffer commandBuffer{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkCommandBuffer, false>, CommandBuffer>);
+		static_assert(std::is_base_of_v<VulkanObject<VkCommandBuffer>, CommandBuffer>);
 
 		static_assert(std::is_constructible_v<CommandBuffer, VkCommandBuffer>);
 		static_assert(!std::is_default_constructible_v<CommandBuffer>);
@@ -91,7 +101,7 @@ namespace zt::vulkan_renderer::tests
 		vma.create(device, physicalDevice, instance);
 		ASSERT_TRUE(vma.isValid());
 
-		Image image{ nullptr };
+		Image image{ nullptr, VK_FORMAT_UNDEFINED };
 		auto imageCreateInfo = Image::GetDefaultCreateInfo(device);
 		imageCreateInfo.format = VK_FORMAT_B8G8R8A8_UNORM;
 		imageCreateInfo.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;

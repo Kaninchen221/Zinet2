@@ -23,6 +23,7 @@ namespace zt::vulkan_renderer
 		}
 
 		physicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
+		invalidateAll(physicalDevices);
 		if (!physicalDevice.isValid())
 			return false;
 
@@ -53,7 +54,9 @@ namespace zt::vulkan_renderer
 		commandPool.destroy(device);
 		swapChain.destroy(device);
 		vma.destroy();
+		queue.invalidate();
 		device.destroy();
+		physicalDevice.invalidate();
 		surface.destroy(instance);
 		debugUtilsMessenger.destroy(instance);
 		instance.destroy();

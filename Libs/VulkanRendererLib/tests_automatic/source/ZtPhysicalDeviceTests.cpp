@@ -41,6 +41,9 @@ namespace zt::vulkan_renderer::tests
 			instance.destroy();
 			ASSERT_FALSE(instance.isValid());
 
+			physicalDevice.invalidate();
+			ASSERT_FALSE(physicalDevice.isValid());
+
 			wd::GLFW::Deinit();
 		}
 
@@ -54,9 +57,11 @@ namespace zt::vulkan_renderer::tests
 
 			physicalDevice = std::move(physicalDevices.front());
 			ASSERT_TRUE(physicalDevice.isValid());
+
+			invalidateAll(physicalDevices);
 		}
 
-		static_assert(std::is_base_of_v<VulkanObject<VkPhysicalDevice, false>, PhysicalDevice>);
+		static_assert(std::is_base_of_v<VulkanObject<VkPhysicalDevice>, PhysicalDevice>);
 
 		static_assert(std::is_constructible_v<PhysicalDevice, VkPhysicalDevice>);
 		static_assert(!std::is_default_constructible_v<PhysicalDevice>);
@@ -85,6 +90,9 @@ namespace zt::vulkan_renderer::tests
 		PhysicalDevice bestPhysicalDevice = PhysicalDevice::TakeBestPhysicalDevice(physicalDevices);
 
 		ASSERT_TRUE(bestPhysicalDevice.isValid());
+
+		invalidateAll(physicalDevices);
+		bestPhysicalDevice.invalidate();
 	}
 
 	TEST_F(PhysicalDeviceTests, GetVkQueueFamiliesPropertiesTest)
