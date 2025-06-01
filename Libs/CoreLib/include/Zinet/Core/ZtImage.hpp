@@ -11,10 +11,9 @@
 
 namespace zt::core
 {
-	namespace fs = std::filesystem;
-
 	namespace
 	{
+		namespace fs = std::filesystem;
 		inline constexpr auto stbiFree = [](stbi_uc* ptr) { stbi_image_free(ptr); };
 	}
 
