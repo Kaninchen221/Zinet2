@@ -28,10 +28,10 @@ namespace zt::core
 
 		Image() = default;
 		Image(const Image& other) = delete;
-		Image(Image&& other) = default;
+		Image(Image&& other) { *this = std::move(other); }
 
 		Image& operator = (const Image& other) = delete;
-		Image& operator = (Image&& other) = default;
+		Image& operator = (Image&& other);
 
 		~Image() noexcept = default;
 

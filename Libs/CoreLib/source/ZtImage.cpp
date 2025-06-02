@@ -7,6 +7,18 @@
 
 namespace zt::core
 {
+	Image& Image::operator=(Image&& other)
+	{
+		imageData = std::move(other.imageData);
+		width = other.width;
+		other.width = {};
+		height = other.height;
+		other.height = {};
+		components = other.components;
+		other.components = {};
+
+		return *this;
+	}
 
 	bool Image::loadFromFile(const fs::path& path, std::int32_t expectedComponents) noexcept
 	{
