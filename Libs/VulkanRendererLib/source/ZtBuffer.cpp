@@ -1,6 +1,8 @@
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtVMA.hpp"
 
+#include "Zinet/Core/ZtImage.hpp"
+
 namespace zt::vulkan_renderer
 {
 
@@ -24,6 +26,24 @@ namespace zt::vulkan_renderer
 		else
 		{
 			Logger->error("Couldn't create buffer, result: {}", static_cast<std::int32_t>(result));
+			return false;
+		}
+	}
+
+	bool Buffer::fillWithImage(const core::Image& image, const VMA& vma) noexcept
+	{
+		if (!isValid())
+			return false;
+
+		const auto result = fillWithData(image.data(), image.getSize(), vma);
+
+		if (result == VK_SUCCESS)
+		{
+			return true;
+		}
+		else
+		{
+			Logger->error("Couldn't fill buffer, result: {}", static_cast<std::int32_t>(result));
 			return false;
 		}
 	}

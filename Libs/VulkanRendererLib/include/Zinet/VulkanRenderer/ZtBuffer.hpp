@@ -11,6 +11,11 @@
 
 #include <vk_mem_alloc.h>
 
+namespace zt::core
+{
+	class Image;
+}
+
 namespace zt::vulkan_renderer
 {
 	class VMA;
@@ -63,6 +68,8 @@ namespace zt::vulkan_renderer
 		template<NotSTDContainer ObjectT>
 		bool fillWithObject(const ObjectT& object, const VMA& vma) noexcept;
 
+		bool fillWithImage(const core::Image& image, const VMA& vma) noexcept;
+
 		template<STDContainer ContainerT>
 		bool getDataToSTDContainer(ContainerT& contiguousContainer, const VMA& vma) const noexcept;
 
@@ -72,6 +79,8 @@ namespace zt::vulkan_renderer
 		void destroy(const VMA& vma) noexcept;
 
 		std::uint32_t getSize() const noexcept { return size; }
+
+		VmaAllocation getAllocation() const noexcept { return allocation; }
 
 	protected:
 

@@ -30,7 +30,7 @@ namespace zt::wd::tests
 
 	TEST_F(WindowTests, Create)
 	{
-		window.create();
+		ASSERT_TRUE(window.create());
 
 		GLFWwindow* internalWindow = window.getInternal();
 		ASSERT_TRUE(internalWindow);
@@ -38,7 +38,7 @@ namespace zt::wd::tests
 
 	TEST_F(WindowTests, BindFramebufferSizeCallbackTest)
 	{
-		window.create();
+		ASSERT_TRUE(window.create());
 
 		GLFWwindow* glfwWindow = window.getInternal();
 		GLFWframebuffersizefun actualPointer = glfwSetFramebufferSizeCallback(glfwWindow, nullptr);
@@ -49,7 +49,7 @@ namespace zt::wd::tests
 
 	TEST_F(WindowTests, IsOpenTest)
 	{
-		window.create();
+		ASSERT_TRUE(window.create());
 	
 		bool isOpen = window.isOpen();
 		ASSERT_TRUE(isOpen);
@@ -62,7 +62,7 @@ namespace zt::wd::tests
 	
 	TEST_F(WindowTests, ShouldBeClosedTest)
 	{
-		window.create();
+		ASSERT_TRUE(window.create());
 		bool shouldBeClosed = window.shouldBeClosed();
 	
 		ASSERT_FALSE(shouldBeClosed);

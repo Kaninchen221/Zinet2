@@ -41,6 +41,7 @@ namespace zt::core
 		auto getWidth() const noexcept { return width; }
 		auto getHeight() const noexcept { return height; }
 		auto getComponents() const noexcept { return components; }
+		auto getSize() const noexcept { return width * height * components; }
 
 		void destroy() noexcept;
 

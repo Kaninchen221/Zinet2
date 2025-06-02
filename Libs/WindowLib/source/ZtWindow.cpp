@@ -13,7 +13,7 @@ namespace zt::wd
 		destroyWindow();
     }
 
-    void Window::create(int width, int height)
+    bool Window::create(int width, int height)
 	{
 		Logger->info(std::source_location::current().function_name());
 
@@ -21,7 +21,7 @@ namespace zt::wd
         if (internalWindow == nullptr)
         {
             Logger->error("Can't create window");
-            return;
+            return false;
         }
 
 		// OpenGL only
@@ -33,6 +33,8 @@ namespace zt::wd
         glfwSetWindowSizeLimits(internalWindow, 1, 1, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
 		bindFramebufferSizeCallback();
+
+		return true;
     }
 
     bool Window::isOpen() const

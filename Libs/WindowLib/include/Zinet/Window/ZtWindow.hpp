@@ -35,7 +35,7 @@ namespace zt::wd
 
 		~Window() noexcept;
 
-		void create(int width = 1024, int height = 1024);
+		bool create(int width = 1024, int height = 1024);
 
 		GLFWwindow* getInternal() { return internalWindow; }
 		const GLFWwindow* getInternal() const { return internalWindow; }

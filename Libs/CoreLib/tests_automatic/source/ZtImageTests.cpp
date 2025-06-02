@@ -26,11 +26,13 @@ namespace zt::core::tests
 		ASSERT_EQ(image.getWidth(), 32);
 		ASSERT_EQ(image.getHeight(), 32);
 		ASSERT_EQ(image.getComponents(), expectedComponents);
+		ASSERT_EQ(image.getSize(), 4096);
 
 		image.destroy();
 		ASSERT_FALSE(image.data());
 		ASSERT_EQ(image.getWidth(), 0);
 		ASSERT_EQ(image.getHeight(), 0);
 		ASSERT_EQ(image.getComponents(), 0);
+		ASSERT_EQ(image.getSize(), 0);
 	}
 }

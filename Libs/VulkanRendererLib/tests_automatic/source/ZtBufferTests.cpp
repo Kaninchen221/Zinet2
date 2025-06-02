@@ -96,6 +96,7 @@ namespace zt::vulkan_renderer::tests
 		const auto createInfo = Buffer::GetVertexBufferCreateInfo(vertices);
 		ASSERT_TRUE(buffer.createBuffer(createInfo, vma));
 		ASSERT_EQ(sizeof(Vertices::value_type) * vertices.size(), buffer.getSize());
+		ASSERT_TRUE(buffer.getAllocation());
 
 		ASSERT_TRUE(buffer.fillWithSTDContainer(vertices, vma));
 
@@ -117,6 +118,7 @@ namespace zt::vulkan_renderer::tests
 		const auto createInfo = Buffer::GetIndexBufferCreateInfo(indices);
 		ASSERT_TRUE(buffer.createBuffer(createInfo, vma));
 		ASSERT_EQ(sizeof(Indices::value_type) * indices.size(), buffer.getSize());
+		ASSERT_TRUE(buffer.getAllocation());
 
 		ASSERT_TRUE(buffer.fillWithSTDContainer(indices, vma));
 
@@ -134,6 +136,7 @@ namespace zt::vulkan_renderer::tests
 		const auto createInfo = Buffer::GetUniformBufferCreateInfo(uniformBufferData);
 		ASSERT_TRUE(buffer.createBuffer(createInfo, vma));
 		ASSERT_EQ(sizeof(DataT), buffer.getSize());
+		ASSERT_TRUE(buffer.getAllocation());
 
 		ASSERT_TRUE(buffer.fillWithObject(uniformBufferData, vma));
 		
