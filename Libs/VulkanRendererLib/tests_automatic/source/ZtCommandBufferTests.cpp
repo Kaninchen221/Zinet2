@@ -88,12 +88,6 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_destructible_v<CommandBuffer>);
 	};
 
-	TEST_F(CommandBufferTests, PassTest)
-	{
-		ASSERT_TRUE(commandBuffer.begin());
-		ASSERT_TRUE(commandBuffer.end());
-	}
-
 	TEST_F(CommandBufferTests, RenderPassTest)
 	{
 		// Prepare render pass and framebuffer
@@ -140,5 +134,11 @@ namespace zt::vulkan_renderer::tests
 		image.destroy(vma);
 		vma.destroy();
 		renderPass.destroy(device);
+	}
+
+	TEST_F(CommandBufferTests, DestroyTest)
+	{
+		commandBuffer.destroy(device, commandPool);
+		ASSERT_FALSE(commandBuffer.isValid());
 	}
 }

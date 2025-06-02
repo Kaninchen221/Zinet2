@@ -40,7 +40,9 @@ namespace zt::vulkan_renderer
 
 		bool create(const Device& device, const CommandPool& commandPool) noexcept;
 
-		void invalidate() { objectHandle = nullptr; }
+		void destroy(const Device& device, const CommandPool& commandPool) noexcept;
+
+		void invalidate() noexcept { objectHandle = nullptr; }
 
 		bool reset() noexcept;
 
@@ -80,10 +82,13 @@ namespace zt::vulkan_renderer
 
 	inline bool CommandBuffer::begin() noexcept
 	{
-		VkCommandBufferBeginInfo beginInfo{};
-		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		beginInfo.flags = 0;
-		beginInfo.pInheritanceInfo = nullptr;
+		const VkCommandBufferBeginInfo beginInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+			.pNext = nullptr,
+			.flags = {},
+			.pInheritanceInfo = nullptr,
+		};
 
 		const auto result = vkBeginCommandBuffer(objectHandle, &beginInfo);
 		if (result == VK_SUCCESS)

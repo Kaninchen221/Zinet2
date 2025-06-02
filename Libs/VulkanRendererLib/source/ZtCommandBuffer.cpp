@@ -33,6 +33,15 @@ namespace zt::vulkan_renderer
 		}
 	}
 
+	void CommandBuffer::destroy(const Device& device, const CommandPool& commandPool) noexcept
+	{
+		if (isValid())
+		{
+			vkFreeCommandBuffers(device.get(), commandPool.get(), 1u, &objectHandle);
+			objectHandle = nullptr;
+		}
+	}
+
 	void CommandBuffer::beginRenderPass(const RenderPass& renderPass, const Framebuffer& framebuffer, const VkExtent2D& extent, const Vector2i& offset, const VkClearValue& clearValue) noexcept
 	{
 		const VkRenderPassBeginInfo beginInfo
@@ -53,4 +62,5 @@ namespace zt::vulkan_renderer
 	{
 		vkCmdBindPipeline(objectHandle, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get());
 	}
+
 }
