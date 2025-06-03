@@ -6,6 +6,7 @@
 #include "Zinet/VulkanRenderer/ZtVMA.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtConcepts.hpp"
 
 #include <vulkan/vulkan.h>
 
@@ -19,18 +20,6 @@ namespace zt::core
 namespace zt::vulkan_renderer
 {
 	class VMA;
-
-	template<typename T>
-	concept STDContainer = requires(T t) {
-		typename T::value_type;
-		std::begin(t);
-		std::end(t);
-		t.begin();
-		t.end();
-	};
-
-	template<typename T>
-	concept NotSTDContainer = !STDContainer<T>;
 
 	class ZINET_VULKAN_RENDERER_API Buffer : public VulkanObject<VkBuffer>
 	{

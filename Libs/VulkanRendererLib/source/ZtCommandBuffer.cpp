@@ -62,5 +62,4 @@ namespace zt::vulkan_renderer
 	{
 		vkCmdBindPipeline(objectHandle, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get());
 	}
-
 }

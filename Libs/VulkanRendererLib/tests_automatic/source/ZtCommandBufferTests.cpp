@@ -141,4 +141,9 @@ namespace zt::vulkan_renderer::tests
 		commandBuffer.destroy(device, commandPool);
 		ASSERT_FALSE(commandBuffer.isValid());
 	}
+
+	TEST_F(CommandBufferTests, GetDefaultSubmitInfo)
+	{
+		[[maybe_unused]] const VkSubmitInfo submitInfo = CommandBuffer::GetDefaultSubmitInfo();
+	}
 }

@@ -64,6 +64,8 @@ namespace zt::vulkan_renderer
 			std::uint32_t instanceCount,
 			std::uint32_t firstVertex,
 			std::uint32_t firstInstance) noexcept;
+
+		static VkSubmitInfo GetDefaultSubmitInfo() noexcept;
 	};
 
 	inline bool CommandBuffer::reset() noexcept
@@ -136,4 +138,19 @@ namespace zt::vulkan_renderer
 		vkCmdDraw(objectHandle, vertexCount, instanceCount, firstVertex, firstInstance);
 	}
 
+	inline VkSubmitInfo CommandBuffer::GetDefaultSubmitInfo() noexcept
+	{
+		return
+		{
+			.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+			.pNext = nullptr,
+			.waitSemaphoreCount = 0,
+			.pWaitSemaphores = nullptr,
+			.pWaitDstStageMask = nullptr,
+			.commandBufferCount = 0,
+			.pCommandBuffers = nullptr,
+			.signalSemaphoreCount = 0,
+			.pSignalSemaphores = nullptr
+		};
+	}
 }
