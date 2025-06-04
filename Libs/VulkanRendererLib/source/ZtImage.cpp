@@ -61,4 +61,32 @@ namespace zt::vulkan_renderer
 		}
 	}
 
+	VkImageSubresourceRange Image::GetDefaultSubresourceRange() noexcept
+	{
+		return
+		{
+			.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+			.baseMipLevel = 0,
+			.levelCount = 1,
+			.baseArrayLayer = 0,
+			.layerCount = 1
+		};
+	}
+
+	VkImageMemoryBarrier Image::getDefaultMemoryBarier(VkImageLayout oldLayout, VkImageLayout newLayout, VkImageSubresourceRange subresourceRange) const noexcept
+	{
+		return 
+		{
+			.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			.pNext = nullptr,
+			.srcAccessMask = VK_ACCESS_NONE,
+			.dstAccessMask = VK_ACCESS_NONE,
+			.oldLayout = oldLayout,
+			.newLayout = newLayout,
+			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+			.image = get(),
+			.subresourceRange = subresourceRange
+		};
+	}
 }

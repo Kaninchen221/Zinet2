@@ -43,6 +43,14 @@ namespace zt::vulkan_renderer
 
 		VkFormat getFormat() const noexcept { return format; }
 
+		static VkImageSubresourceRange GetDefaultSubresourceRange() noexcept;
+
+		VkImageMemoryBarrier getDefaultMemoryBarier(
+			VkImageLayout oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+			VkImageLayout newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+			VkImageSubresourceRange subresourceRange = GetDefaultSubresourceRange()
+			) const noexcept;
+
 	protected:
 
 		VmaAllocation allocation{};
