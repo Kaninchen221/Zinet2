@@ -36,7 +36,7 @@ namespace zt::vulkan_renderer
 
 		const auto& getQueueFamilyIndex() const noexcept { return queueFamilyIndex; }
 
-		bool submit(const STDContainer auto& contiguousContainerSubmitInfos, const Fence& fence = Fence{ nullptr }) const noexcept;
+		bool submit(const core::STDContainer auto& contiguousContainerSubmitInfos, const Fence& fence = Fence{ nullptr }) const noexcept;
 
 		bool waitIdle() const noexcept;
 
@@ -46,7 +46,7 @@ namespace zt::vulkan_renderer
 
 	};
 
-	inline bool Queue::submit(const STDContainer auto& contiguousContainerSubmitInfos, const Fence& fence) const noexcept
+	inline bool Queue::submit(const core::STDContainer auto& contiguousContainerSubmitInfos, const Fence& fence) const noexcept
 	{
 		const auto result = vkQueueSubmit(get(), static_cast<uint32_t>(contiguousContainerSubmitInfos.size()), contiguousContainerSubmitInfos.data(), fence.get());
 		if (result == VK_SUCCESS)

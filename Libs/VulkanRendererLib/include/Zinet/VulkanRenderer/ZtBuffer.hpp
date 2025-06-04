@@ -40,29 +40,29 @@ namespace zt::vulkan_renderer
 		Buffer& operator = (const Buffer& other) noexcept = delete;
 		Buffer& operator = (Buffer&& other) noexcept = default;
 
-		template<STDContainer ContainerT>
+		template<core::STDContainer ContainerT>
 		static VkBufferCreateInfo GetVertexBufferCreateInfo(const ContainerT& vertices) noexcept;
 
-		template<STDContainer ContainerT>
+		template<core::STDContainer ContainerT>
 		static VkBufferCreateInfo GetIndexBufferCreateInfo(const ContainerT& indices) noexcept;
 
-		template<NotSTDContainer ObjectT>
+		template<core::NotSTDContainer ObjectT>
 		static VkBufferCreateInfo GetUniformBufferCreateInfo(const ObjectT& data);
 
 		bool createBuffer(const VkBufferCreateInfo& createInfo, const VMA& vma) noexcept;
 
-		template<STDContainer ContainerT>
+		template<core::STDContainer ContainerT>
 		bool fillWithSTDContainer(const ContainerT& contiguousContainer, const VMA& vma) noexcept;
 
-		template<NotSTDContainer ObjectT>
+		template<core::NotSTDContainer ObjectT>
 		bool fillWithObject(const ObjectT& object, const VMA& vma) noexcept;
 
 		bool fillWithImage(const core::Image& image, const VMA& vma) noexcept;
 
-		template<STDContainer ContainerT>
+		template<core::STDContainer ContainerT>
 		bool getDataToSTDContainer(ContainerT& contiguousContainer, const VMA& vma) const noexcept;
 
-		template<NotSTDContainer ObjectT>
+		template<core::NotSTDContainer ObjectT>
 		bool getDataToObject(ObjectT& object, const VMA& vma) const noexcept;
 
 		void destroy(const VMA& vma) noexcept;
@@ -82,7 +82,7 @@ namespace zt::vulkan_renderer
 
 	};
 
-	template<STDContainer ContainerT>
+	template<core::STDContainer ContainerT>
 	VkBufferCreateInfo Buffer::GetVertexBufferCreateInfo(const ContainerT& vertices) noexcept
 	{
 		return VkBufferCreateInfo
@@ -94,7 +94,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	template<STDContainer ContainerT>
+	template<core::STDContainer ContainerT>
 	VkBufferCreateInfo Buffer::GetIndexBufferCreateInfo(const ContainerT& indices) noexcept
 	{
 		return VkBufferCreateInfo
@@ -106,7 +106,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	template<NotSTDContainer ObjectT>
+	template<core::NotSTDContainer ObjectT>
 	VkBufferCreateInfo Buffer::GetUniformBufferCreateInfo([[maybe_unused]] const ObjectT& data)
 	{
 		return VkBufferCreateInfo
@@ -118,7 +118,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	template<STDContainer ContainerT>
+	template<core::STDContainer ContainerT>
 	bool Buffer::fillWithSTDContainer(const ContainerT& stdContainer, const VMA& vma) noexcept
 	{
 		if (!isValid())
@@ -138,7 +138,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	template<NotSTDContainer ObjectT>
+	template<core::NotSTDContainer ObjectT>
 	bool Buffer::fillWithObject(const ObjectT& object, const VMA& vma) noexcept
 	{
 		if (!isValid())
@@ -157,7 +157,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	template<STDContainer ContainerT>
+	template<core::STDContainer ContainerT>
 	bool Buffer::getDataToSTDContainer(ContainerT& stdContainer, const VMA& vma) const noexcept
 	{
 		if (!isValid())
@@ -177,7 +177,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	template<NotSTDContainer ObjectT>
+	template<core::NotSTDContainer ObjectT>
 	bool Buffer::getDataToObject(ObjectT& object, const VMA& vma) const noexcept
 	{
 		if (!isValid())
