@@ -23,6 +23,7 @@
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtCommandBuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtQueueUtils.hpp"
+#include "Zinet/VulkanRenderer/ZtSampler.hpp"
 #include "Zinet/Core/ZtImage.hpp"
 #include "Zinet/Core/ZtPaths.hpp"
 
@@ -212,9 +213,16 @@ namespace zt::vulkan_renderer::tests
 		ImageView imageView{ nullptr };
 		{
 			const auto createInfo = ImageView::GetDefaultCreateInfo(image.get(), VK_FORMAT_R8G8B8A8_SRGB);
-			imageView.create(device, createInfo);
+			ASSERT_TRUE(imageView.create(device, createInfo));
 		}
 
+		Sampler sampler{ nullptr };
+		{
+			const auto createInfo = Sampler::GetDefaultCreateInfo();
+			ASSERT_TRUE(sampler.create(device, createInfo));
+		}
+
+		sampler.destroy(device);
 		imageView.destroy(device);
 		buffer.destroy(vma);
 		image.destroy(vma);
