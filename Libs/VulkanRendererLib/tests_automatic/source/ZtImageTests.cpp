@@ -209,6 +209,13 @@ namespace zt::vulkan_renderer::tests
 			ASSERT_TRUE(SubmitSingleCommandBufferWaitIdle(device, queue, commandPool, bufferImageCopyCommands));
 		}
 
+		ImageView imageView{ nullptr };
+		{
+			const auto createInfo = ImageView::GetDefaultCreateInfo(image.get(), VK_FORMAT_R8G8B8A8_SRGB);
+			imageView.create(device, createInfo);
+		}
+
+		imageView.destroy(device);
 		buffer.destroy(vma);
 		image.destroy(vma);
 		rendererContext.destroy();
