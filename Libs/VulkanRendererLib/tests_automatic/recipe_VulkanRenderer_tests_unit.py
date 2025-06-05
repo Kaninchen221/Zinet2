@@ -11,6 +11,7 @@ generator.includeDirectories = """
     """
 generator.linkLibraries =  """
     ZinetVulkanRenderer
+    ZinetTestUtils
     gtest::gtest
     stb::stb
     """
