@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include <gtest/gtest.h>
 
 #include "Zinet/VulkanRenderer/ZtPipelineLayout.hpp"
@@ -58,15 +60,7 @@ namespace zt::vulkan_renderer::tests
 		Device device{ nullptr };
 		PipelineLayout pipelineLayout{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkPipelineLayout>, PipelineLayout>);
-
-		static_assert(std::is_constructible_v<PipelineLayout, VkPipelineLayout>);
-		static_assert(!std::is_default_constructible_v<PipelineLayout>);
-		static_assert(!std::is_copy_constructible_v<PipelineLayout>);
-		static_assert(!std::is_copy_assignable_v<PipelineLayout>);
-		static_assert(std::is_move_constructible_v<PipelineLayout>);
-		static_assert(std::is_move_assignable_v<PipelineLayout>);
-		static_assert(std::is_destructible_v<PipelineLayout>);
+		static_assert(VulkanObjectDecoratorStaticTest<PipelineLayout, VkPipelineLayout>());
 	};
 
 	TEST_F(PipelineLayoutTests, PassTest)

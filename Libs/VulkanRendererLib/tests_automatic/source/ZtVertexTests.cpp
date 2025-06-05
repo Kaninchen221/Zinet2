@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtVertex.hpp"
 
 #include <gtest/gtest.h>

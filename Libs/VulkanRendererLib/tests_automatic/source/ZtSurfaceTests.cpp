@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
 #include "Zinet/VulkanRenderer/ZtSurface.hpp"
@@ -64,15 +66,7 @@ namespace zt::vulkan_renderer::tests
 		wd::Window window;
 		Surface surface{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkSurfaceKHR>, Surface>);
-
-		static_assert(std::is_constructible_v<Surface, VkSurfaceKHR>);
-		static_assert(!std::is_default_constructible_v<Surface>);
-		static_assert(!std::is_copy_constructible_v<Surface>);
-		static_assert(!std::is_copy_assignable_v<Surface>);
-		static_assert(std::is_move_constructible_v<Surface>);
-		static_assert(std::is_move_assignable_v<Surface>);
-		static_assert(std::is_destructible_v<Surface>);
+		static_assert(VulkanObjectDecoratorStaticTest<Surface, VkSurfaceKHR>());
 	};
 
 	TEST_F(SurfaceTests, PassTest)

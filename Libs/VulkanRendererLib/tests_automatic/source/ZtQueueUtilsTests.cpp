@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtQueueUtils.hpp"
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"

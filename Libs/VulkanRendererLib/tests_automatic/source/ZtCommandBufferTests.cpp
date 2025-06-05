@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
 #include "Zinet/VulkanRenderer/ZtCommandBuffer.hpp"
@@ -77,15 +79,7 @@ namespace zt::vulkan_renderer::tests
 		CommandPool commandPool{ nullptr };
 		CommandBuffer commandBuffer{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkCommandBuffer>, CommandBuffer>);
-
-		static_assert(std::is_constructible_v<CommandBuffer, VkCommandBuffer>);
-		static_assert(!std::is_default_constructible_v<CommandBuffer>);
-		static_assert(!std::is_copy_constructible_v<CommandBuffer>);
-		static_assert(!std::is_copy_assignable_v<CommandBuffer>);
-		static_assert(std::is_move_constructible_v<CommandBuffer>);
-		static_assert(std::is_move_assignable_v<CommandBuffer>);
-		static_assert(std::is_destructible_v<CommandBuffer>);
+		static_assert(VulkanObjectDecoratorStaticTest<CommandBuffer, VkCommandBuffer>());
 	};
 
 	TEST_F(CommandBufferTests, RenderPassTest)

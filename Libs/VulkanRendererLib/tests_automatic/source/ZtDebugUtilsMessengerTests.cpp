@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 
@@ -49,14 +51,7 @@ namespace zt::vulkan_renderer::tests
 		Instance instance{ nullptr };
 		DebugUtilsMessenger debugUtilsMessenger{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkDebugUtilsMessengerEXT>, DebugUtilsMessenger>);
-
-		static_assert(!std::is_default_constructible_v<DebugUtilsMessenger>);
-		static_assert(!std::is_copy_constructible_v<DebugUtilsMessenger>);
-		static_assert(!std::is_copy_assignable_v<DebugUtilsMessenger>);
-		static_assert(std::is_move_constructible_v<DebugUtilsMessenger>);
-		static_assert(std::is_move_assignable_v<DebugUtilsMessenger>);
-		static_assert(std::is_destructible_v<DebugUtilsMessenger>);
+		static_assert(VulkanObjectDecoratorStaticTest<DebugUtilsMessenger, VkDebugUtilsMessengerEXT>());
 	};
 
 	TEST_F(DebugUtilsMessengerTests, PassTest)

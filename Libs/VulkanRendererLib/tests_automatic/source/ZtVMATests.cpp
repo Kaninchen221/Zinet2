@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtVMA.hpp"
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
@@ -62,15 +64,7 @@ namespace zt::vulkan_renderer::tests
 		VMA vma{ nullptr };
 
 		/// VmaAllocator is not a vulkan object but VMA project is using similar style
-		static_assert(std::is_base_of_v<VulkanObject<VmaAllocator>, VMA>);
-
-		static_assert(std::is_constructible_v<VMA, VmaAllocator>);
-		static_assert(!std::is_default_constructible_v<VMA>);
-		static_assert(!std::is_copy_constructible_v<VMA>);
-		static_assert(!std::is_copy_assignable_v<VMA>);
-		static_assert(std::is_move_constructible_v<VMA>);
-		static_assert(std::is_move_assignable_v<VMA>);
-		static_assert(std::is_destructible_v<VMA>);
+		static_assert(VulkanObjectDecoratorStaticTest<VMA, VmaAllocator>());
 	};
 
 	TEST_F(VMATests, PassTest)

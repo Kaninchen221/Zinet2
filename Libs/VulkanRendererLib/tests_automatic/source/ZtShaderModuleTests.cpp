@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
 #include "Zinet/VulkanRenderer/ZtShadersCompiler.hpp"
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
@@ -55,15 +57,7 @@ namespace zt::vulkan_renderer::tests
 		Device device{ nullptr };
 		ShaderModule shaderModule{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkShaderModule>, ShaderModule>);
-
-		static_assert(std::is_constructible_v<ShaderModule, VkShaderModule>);
-		static_assert(!std::is_default_constructible_v<ShaderModule>);
-		static_assert(!std::is_copy_constructible_v<ShaderModule>);
-		static_assert(!std::is_copy_assignable_v<ShaderModule>);
-		static_assert(std::is_move_constructible_v<ShaderModule>);
-		static_assert(std::is_move_assignable_v<ShaderModule>);
-		static_assert(std::is_destructible_v<ShaderModule>);
+		static_assert(VulkanObjectDecoratorStaticTest<ShaderModule, VkShaderModule>());
 	};
 
 	TEST_F(ShaderModuleTests, PassTest)

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
 #include "Zinet/VulkanRenderer/ZtCommandPool.hpp"
@@ -65,15 +67,7 @@ namespace zt::vulkan_renderer::tests
 		Queue queue{ nullptr };
 		CommandPool commandPool{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkCommandPool>, CommandPool>);
-
-		static_assert(std::is_constructible_v<CommandPool, VkCommandPool>);
-		static_assert(!std::is_default_constructible_v<CommandPool>);
-		static_assert(!std::is_copy_constructible_v<CommandPool>);
-		static_assert(!std::is_copy_assignable_v<CommandPool>);
-		static_assert(std::is_move_constructible_v<CommandPool>);
-		static_assert(std::is_move_assignable_v<CommandPool>);
-		static_assert(std::is_destructible_v<CommandPool>);
+		static_assert(VulkanObjectDecoratorStaticTest<CommandPool, VkCommandPool>());
 	};
 
 	TEST_F(CommandPoolTests, PassTest)

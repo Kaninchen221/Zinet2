@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtDescriptorSetLayout.hpp"
 #include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
@@ -78,14 +80,7 @@ namespace zt::vulkan_renderer::tests
 		Device device{ nullptr };
 		DescriptorSetLayout descriptorSetLayout{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkDescriptorSetLayout>, DescriptorSetLayout>);
-
-		static_assert(!std::is_default_constructible_v<DescriptorSetLayout>);
-		static_assert(!std::is_copy_constructible_v<DescriptorSetLayout>);
-		static_assert(!std::is_copy_assignable_v<DescriptorSetLayout>);
-		static_assert(std::is_move_constructible_v<DescriptorSetLayout>);
-		static_assert(std::is_move_assignable_v<DescriptorSetLayout>);
-		static_assert(std::is_destructible_v<DescriptorSetLayout>);
+		static_assert(VulkanObjectDecoratorStaticTest<DescriptorSetLayout, VkDescriptorSetLayout>());
 	};
 
 	TEST_F(DescriptorSetLayoutTests, PassTest)

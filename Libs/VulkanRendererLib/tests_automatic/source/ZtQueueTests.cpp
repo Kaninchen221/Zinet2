@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
 #include "Zinet/VulkanRenderer/ZtQueue.hpp"
@@ -69,15 +71,7 @@ namespace zt::vulkan_renderer::tests
 		Device device{ nullptr };
 		Queue queue{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkQueue>, Queue>);
-
-		static_assert(std::is_constructible_v<Queue, VkQueue, std::uint32_t>);
-		static_assert(!std::is_default_constructible_v<Queue>);
-		static_assert(!std::is_copy_constructible_v<Queue>);
-		static_assert(!std::is_copy_assignable_v<Queue>);
-		static_assert(std::is_move_constructible_v<Queue>);
-		static_assert(std::is_move_assignable_v<Queue>);
-		static_assert(std::is_destructible_v<Queue>);
+		static_assert(VulkanObjectDecoratorStaticTest<Queue, VkQueue, std::uint32_t>());
 	};
 
 	TEST_F(QueueTests, PassTest)

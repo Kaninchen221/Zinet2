@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtFence.hpp"
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
@@ -59,15 +61,7 @@ namespace zt::vulkan_renderer::tests
 		Device device{ nullptr };
 		Fence fence{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkFence>, Fence>);
-
-		static_assert(std::is_constructible_v<Fence, VkFence>);
-		static_assert(!std::is_default_constructible_v<Fence>);
-		static_assert(!std::is_copy_constructible_v<Fence>);
-		static_assert(!std::is_copy_assignable_v<Fence>);
-		static_assert(std::is_move_constructible_v<Fence>);
-		static_assert(std::is_move_assignable_v<Fence>);
-		static_assert(std::is_destructible_v<Fence>);
+		static_assert(VulkanObjectDecoratorStaticTest<Fence, VkFence>());
 	};
 
 	TEST_F(FenceTests, PassTest)

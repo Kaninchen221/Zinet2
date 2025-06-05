@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtVertex.hpp"
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
@@ -73,14 +75,7 @@ namespace zt::vulkan_renderer::tests
 		VMA vma{ nullptr };
 		Buffer buffer{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkBuffer>, Buffer>);
-
-		static_assert(!std::is_default_constructible_v<Buffer>);
-		static_assert(!std::is_copy_constructible_v<Buffer>);
-		static_assert(!std::is_copy_assignable_v<Buffer>);
-		static_assert(std::is_move_constructible_v<Buffer>);
-		static_assert(std::is_move_assignable_v<Buffer>);
-		static_assert(std::is_destructible_v<Buffer>);
+		static_assert(VulkanObjectDecoratorStaticTest<Buffer, VkBuffer>());
 	};
 
 	TEST_F(BufferTests, VertexBufferTest)

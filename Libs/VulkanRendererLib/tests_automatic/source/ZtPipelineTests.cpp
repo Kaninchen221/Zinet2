@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtPipeline.hpp"
 #include "Zinet/VulkanRenderer/ZtShadersCompiler.hpp"
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
@@ -134,15 +136,7 @@ namespace zt::vulkan_renderer::tests
 		std::vector<Buffer> uniformBuffers;
 		Pipeline pipeline{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkPipeline>, Pipeline>);
-
-		static_assert(std::is_constructible_v<Pipeline, VkPipeline>);
-		static_assert(!std::is_default_constructible_v<Pipeline>);
-		static_assert(!std::is_copy_constructible_v<Pipeline>);
-		static_assert(!std::is_copy_assignable_v<Pipeline>);
-		static_assert(std::is_move_constructible_v<Pipeline>);
-		static_assert(std::is_move_assignable_v<Pipeline>);
-		static_assert(std::is_destructible_v<Pipeline>);
+		static_assert(VulkanObjectDecoratorStaticTest<Pipeline, VkPipeline>());
 	};
 
 	TEST_F(PipelineTests, PassTest)

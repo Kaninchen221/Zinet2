@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
 #include "Zinet/VulkanRenderer/ZtSampler.hpp"
@@ -67,14 +69,7 @@ namespace zt::vulkan_renderer::tests
 		Device device{ nullptr };
 		Sampler sampler{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkSampler>, Sampler>);
-
-		static_assert(!std::is_default_constructible_v<Sampler>);
-		static_assert(!std::is_copy_constructible_v<Sampler>);
-		static_assert(!std::is_copy_assignable_v<Sampler>);
-		static_assert(std::is_move_constructible_v<Sampler>);
-		static_assert(std::is_move_assignable_v<Sampler>);
-		static_assert(std::is_destructible_v<Sampler>);
+		static_assert(VulkanObjectDecoratorStaticTest<Sampler, VkSampler>());
 	};
 
 	TEST_F(SamplerTests, PassTest)

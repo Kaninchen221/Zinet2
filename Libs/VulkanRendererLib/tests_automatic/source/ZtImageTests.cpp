@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtImage.hpp"
 #include "Zinet/VulkanRenderer/ZtSwapChain.hpp"
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
@@ -82,15 +84,7 @@ namespace zt::vulkan_renderer::tests
 		VMA vma{ nullptr };
 		Image image{ nullptr, VK_FORMAT_UNDEFINED };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkImage>, Image>);
-
-		static_assert(std::is_constructible_v<Image, VkImage>);
-		static_assert(!std::is_default_constructible_v<Image>);
-		static_assert(!std::is_copy_constructible_v<Image>);
-		static_assert(!std::is_copy_assignable_v<Image>);
-		static_assert(std::is_move_constructible_v<Image>);
-		static_assert(std::is_move_assignable_v<Image>);
-		static_assert(std::is_destructible_v<Image>);
+		static_assert(VulkanObjectDecoratorStaticTest<Image, VkImage>());
 	};
 
 	TEST_F(ImageTests, PassTest)

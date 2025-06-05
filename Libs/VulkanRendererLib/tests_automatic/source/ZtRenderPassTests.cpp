@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include <gtest/gtest.h>
 
 #include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
@@ -76,15 +78,7 @@ namespace zt::vulkan_renderer::tests
 		Device device{ nullptr };
 		RenderPass renderPass{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkRenderPass>, RenderPass>);
-
-		static_assert(std::is_constructible_v<RenderPass, VkRenderPass>);
-		static_assert(!std::is_default_constructible_v<RenderPass>);
-		static_assert(!std::is_copy_constructible_v<RenderPass>);
-		static_assert(!std::is_copy_assignable_v<RenderPass>);
-		static_assert(std::is_move_constructible_v<RenderPass>);
-		static_assert(std::is_move_assignable_v<RenderPass>);
-		static_assert(std::is_destructible_v<RenderPass>);
+		static_assert(VulkanObjectDecoratorStaticTest<RenderPass, VkRenderPass>());
 	};
 
 	TEST_F(RenderPassTests, PassTest)

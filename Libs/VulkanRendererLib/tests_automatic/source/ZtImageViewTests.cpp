@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtImageView.hpp"
 #include "Zinet/VulkanRenderer/ZtSwapChain.hpp"
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
@@ -36,15 +38,7 @@ namespace zt::vulkan_renderer::tests
 
 		ImageView imageView{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkImageView>, ImageView>);
-
-		static_assert(std::is_constructible_v<ImageView, VkImageView>);
-		static_assert(!std::is_default_constructible_v<ImageView>);
-		static_assert(!std::is_copy_constructible_v<ImageView>);
-		static_assert(!std::is_copy_assignable_v<ImageView>);
-		static_assert(std::is_move_constructible_v<ImageView>);
-		static_assert(std::is_move_assignable_v<ImageView>);
-		static_assert(std::is_destructible_v<ImageView>);
+		static_assert(VulkanObjectDecoratorStaticTest<ImageView, VkImageView>());
 	};
 
 	TEST_F(ImageViewTests, PassTest)

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
 #include "Zinet/VulkanRenderer/ZtFramebuffer.hpp"
@@ -95,15 +97,7 @@ namespace zt::vulkan_renderer::tests
 		ImageView imageView{ nullptr };
 		Framebuffer framebuffer{ nullptr };
 
-		static_assert(std::is_base_of_v<VulkanObject<VkFramebuffer>, Framebuffer>);
-
-		static_assert(std::is_constructible_v<Framebuffer, VkFramebuffer>);
-		static_assert(!std::is_default_constructible_v<Framebuffer>);
-		static_assert(!std::is_copy_constructible_v<Framebuffer>);
-		static_assert(!std::is_copy_assignable_v<Framebuffer>);
-		static_assert(std::is_move_constructible_v<Framebuffer>);
-		static_assert(std::is_move_assignable_v<Framebuffer>);
-		static_assert(std::is_destructible_v<Framebuffer>);
+		static_assert(VulkanObjectDecoratorStaticTest<Framebuffer, VkFramebuffer>());
 	};
 
 	TEST_F(FramebufferTests, PassTest)
