@@ -181,14 +181,14 @@ namespace zt::vulkan_renderer
 
 		if (descriptorSet.isValid())
 		{
-			const auto vkDescriptorSet = descriptorSet.get();
+			const auto vkDescriptorSets = std::vector{ descriptorSet.get() };
 			vkCmdBindDescriptorSets(
 				commandBuffer.get(),
 				VK_PIPELINE_BIND_POINT_GRAPHICS,
 				pipelineLayout.get(),
 				0,
-				1,
-				&vkDescriptorSet,
+				static_cast<uint32_t>(vkDescriptorSets.size()),
+				vkDescriptorSets.data(),
 				0,
 				nullptr);
 		}

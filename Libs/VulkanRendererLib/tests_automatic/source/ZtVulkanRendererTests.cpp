@@ -1,12 +1,18 @@
 #pragma once
 
+#include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
+
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
 #include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtTexture.hpp"
+#include "Zinet/VulkanRenderer/ZtQueueUtils.hpp"
+#include "Zinet/VulkanRenderer/ZtSampler.hpp"
 
 #include "Zinet/Core/ZtPaths.hpp"
 #include "Zinet/Core/ZtClock.hpp"
+#include "Zinet/Core/ZtImage.hpp"
 
 #include <gtest/gtest.h>
 
@@ -44,6 +50,7 @@ namespace zt::vulkan_renderer::tests
 			ASSERT_TRUE(fragmentShaderModule.isValid());
 
 			auto& vma = renderer.getRendererContext().vma;
+			auto& device = renderer.getRendererContext().device;
 
 			// Vertex Buffer
 			const DrawInfo::Vertices vertices = {
@@ -74,6 +81,11 @@ namespace zt::vulkan_renderer::tests
 				const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(uniformData);
 				ASSERT_TRUE(uniformBuffer.createBuffer(uniformBufferCreateInfo, vma));
 			}
+
+			createTexture();
+
+			const auto samplerCreateInfo = Sampler::GetDefaultCreateInfo();
+			ASSERT_TRUE(sampler.create(device, samplerCreateInfo));
 		}
 
 		void TearDown() override
@@ -89,6 +101,9 @@ namespace zt::vulkan_renderer::tests
 
 			vertexShaderModule.destroy(device);
 			fragmentShaderModule.destroy(device);
+
+			texture.destroy(device, vma);
+			sampler.destroy(device);
 
 			renderer.shutdown();
 
@@ -114,9 +129,14 @@ namespace zt::vulkan_renderer::tests
 		UniformData uniformData;
 		float uniformDataScalar = 1.f;
 
+		Texture texture;
+		Sampler sampler{ nullptr };
+
 		ShaderModule createShaderModule(std::string_view sourceCodeFileName, ShaderType shaderType);
 
 		void updateUniformBuffersData();
+
+		void createTexture();
 	};
 
 	ShaderModule VulkanRendererTests::createShaderModule(std::string_view sourceCodeFileName, ShaderType shaderType)
@@ -160,9 +180,54 @@ namespace zt::vulkan_renderer::tests
 		uniformBuffers[0].fillWithObject(uniformData, vma);
 	}
 
+	void VulkanRendererTests::createTexture()
+	{
+		const auto& rendererContext = renderer.getRendererContext();
+		const auto& vma = rendererContext.vma;
+		const auto& device = rendererContext.device;
+		const auto& queue = rendererContext.queue;
+		const auto& commandPool = rendererContext.commandPool;
+
+		const std::filesystem::path testFolderPath = core::Paths::CurrentProjectRootPath() / "test_files";
+		const std::filesystem::path imagePath = testFolderPath / "image.png";
+
+		core::Image sourceImage;
+		ASSERT_TRUE(sourceImage.loadFromFile(imagePath, 4));
+
+		Buffer buffer{ nullptr };
+		const auto bufferCreateInfo = Buffer::GetImageBufferCreateInfo(sourceImage);
+		ASSERT_TRUE(buffer.createBuffer(bufferCreateInfo, vma));
+
+		ASSERT_TRUE(buffer.fillWithImage(sourceImage, vma));
+
+		ASSERT_TRUE(texture.create(device, vma, { sourceImage.getWidth(), sourceImage.getHeight() }));
+		ASSERT_TRUE(texture.isValid());
+
+		const auto commands = [&texture = texture, &sourceImage = sourceImage, &buffer = buffer](const CommandBuffer& commandBuffer)
+		{
+			FillWithImageBufferInput input
+			{
+				.buffer = buffer,
+				.commandBuffer = commandBuffer,
+				.imageExtent = { sourceImage.getWidth(), sourceImage.getHeight() }
+			};
+			texture.fillWithImageBuffer(input);
+		};
+		SubmitSingleCommandBufferWaitIdle(device, queue, commandPool, commands);
+
+		buffer.destroy(vma);
+	}
+
 	TEST_F(VulkanRendererTests, Test)
 	{
 		using namespace std::chrono_literals;
+
+		TextureInfo textureInfo
+		{
+			.texture = &texture,
+			.sampler = &sampler,
+			.shaderType = ShaderType::Fragment
+		};
 
 		const DrawInfo drawInfo
 		{
@@ -171,7 +236,8 @@ namespace zt::vulkan_renderer::tests
 			.vertexBuffer = vertexBuffer,
 			.indexBuffer = indexBuffer,
 			.indexCount = static_cast<std::uint32_t>(indices.size()),
-			.uniformBuffer = uniformBuffers[0]
+			.uniformBuffer = uniformBuffers[0],
+			.textureInfos = { textureInfo }
 		};
 
 		core::Clock fpsClock;
