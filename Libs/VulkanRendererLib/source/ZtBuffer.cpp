@@ -5,6 +5,16 @@
 
 namespace zt::vulkan_renderer
 {
+	VkBufferCreateInfo Buffer::GetImageBufferCreateInfo(const core::Image& image) noexcept
+	{
+		return
+		{
+			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+			.size = static_cast<VkDeviceSize>(image.getSize()),
+			.usage = VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+			.sharingMode = VK_SHARING_MODE_EXCLUSIVE
+		};
+	}
 
 	bool Buffer::createBuffer(const VkBufferCreateInfo& createInfo, const VMA& vma) noexcept
 	{

@@ -47,7 +47,9 @@ namespace zt::vulkan_renderer
 		static VkBufferCreateInfo GetIndexBufferCreateInfo(const ContainerT& indices) noexcept;
 
 		template<core::NotSTDContainer ObjectT>
-		static VkBufferCreateInfo GetUniformBufferCreateInfo(const ObjectT& data);
+		static VkBufferCreateInfo GetUniformBufferCreateInfo(const ObjectT& data) noexcept;
+
+		static VkBufferCreateInfo GetImageBufferCreateInfo(const core::Image& image) noexcept;
 
 		bool createBuffer(const VkBufferCreateInfo& createInfo, const VMA& vma) noexcept;
 
@@ -107,7 +109,7 @@ namespace zt::vulkan_renderer
 	}
 
 	template<core::NotSTDContainer ObjectT>
-	VkBufferCreateInfo Buffer::GetUniformBufferCreateInfo([[maybe_unused]] const ObjectT& data)
+	VkBufferCreateInfo Buffer::GetUniformBufferCreateInfo([[maybe_unused]] const ObjectT& data) noexcept
 	{
 		return VkBufferCreateInfo
 		{

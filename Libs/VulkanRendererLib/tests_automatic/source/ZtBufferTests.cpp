@@ -16,6 +16,9 @@
 
 #include <type_traits>
 
+#include "Zinet/Core/ZtImage.hpp"
+#include "Zinet/Core/ZtPaths.hpp"
+
 namespace zt::vulkan_renderer::tests
 {
 	class BufferTests : public ::testing::Test
@@ -139,6 +142,18 @@ namespace zt::vulkan_renderer::tests
 		ASSERT_TRUE(buffer.getDataToObject(actualData, vma));
 		
 		ASSERT_EQ(uniformBufferData, actualData);
+	}
+
+	TEST_F(BufferTests, ImageBufferTest)
+	{
+		core::Image sourceImage;
+
+		const std::filesystem::path testFolderPath = core::Paths::CurrentProjectRootPath() / "test_files";
+		const std::filesystem::path imagePath = testFolderPath / "image.png";
+		ASSERT_TRUE(sourceImage.loadFromFile(imagePath, 4));
+
+		const auto createInfo = Buffer::GetImageBufferCreateInfo(sourceImage);
+		ASSERT_TRUE(buffer.createBuffer(createInfo, vma));
 	}
 
 }
