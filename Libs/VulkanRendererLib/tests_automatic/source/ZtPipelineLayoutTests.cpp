@@ -31,7 +31,7 @@ namespace zt::vulkan_renderer::tests
 
 			ASSERT_TRUE(device.create(physicalDevice, Surface{ nullptr }));
 
-			const auto pipelineLayoutCreateInfo = PipelineLayout::GetDefaultCreateInfo();
+			const auto pipelineLayoutCreateInfo = PipelineLayout::GetDefaultCreateInfo({});
 			ASSERT_TRUE(pipelineLayout.create(device, pipelineLayoutCreateInfo));
 			ASSERT_TRUE(pipelineLayout.isValid());
 		}

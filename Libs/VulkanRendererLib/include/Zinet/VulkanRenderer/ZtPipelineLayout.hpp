@@ -2,6 +2,7 @@
 
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
 #include "Zinet/VulkanRenderer/ZtVulkanObject.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorSetLayout.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -30,7 +31,7 @@ namespace zt::vulkan_renderer
 		PipelineLayout& operator = (const PipelineLayout& other) noexcept = delete;
 		PipelineLayout& operator = (PipelineLayout&& other) noexcept = default;
 	
-		static VkPipelineLayoutCreateInfo GetDefaultCreateInfo() noexcept;
+		static VkPipelineLayoutCreateInfo GetDefaultCreateInfo(const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) noexcept;
 
 		bool create(const Device& device, const VkPipelineLayoutCreateInfo& createInfo) noexcept;
 

@@ -4,15 +4,15 @@
 namespace zt::vulkan_renderer
 {
 
-	VkPipelineLayoutCreateInfo PipelineLayout::GetDefaultCreateInfo() noexcept
+	VkPipelineLayoutCreateInfo PipelineLayout::GetDefaultCreateInfo(const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) noexcept
 	{
 		return VkPipelineLayoutCreateInfo
 		{
 			.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
 			.pNext = nullptr,
 			.flags = {},
-			.setLayoutCount = 0,
-			.pSetLayouts = nullptr,
+			.setLayoutCount = static_cast<uint32_t>(vkDescriptorSetLayouts.size()),
+			.pSetLayouts = vkDescriptorSetLayouts.empty() ? nullptr : vkDescriptorSetLayouts.data(),
 			.pushConstantRangeCount = 0,
 			.pPushConstantRanges = nullptr
 		};

@@ -6,15 +6,15 @@
 namespace zt::vulkan_renderer
 {
 	VkDescriptorSetAllocateInfo DescriptorSet::GetDefaultAllocateInfo(
-		const DescriptorPool& descriptorPool, const std::vector<DescriptorSetLayout::HandleType>& descriptorSetLayouts) noexcept
+		const DescriptorPool& descriptorPool, const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) noexcept
 	{
 		return VkDescriptorSetAllocateInfo
 		{
 			.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
 			.pNext = nullptr,
 			.descriptorPool = descriptorPool.get(),
-			.descriptorSetCount = static_cast<std::uint32_t>(descriptorSetLayouts.size()),
-			.pSetLayouts = descriptorSetLayouts.data()
+			.descriptorSetCount = static_cast<std::uint32_t>(vkDescriptorSetLayouts.size()),
+			.pSetLayouts = vkDescriptorSetLayouts.data()
 		};
 	}
 

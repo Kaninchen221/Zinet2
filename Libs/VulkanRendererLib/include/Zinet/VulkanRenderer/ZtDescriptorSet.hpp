@@ -35,7 +35,7 @@ namespace zt::vulkan_renderer
 		DescriptorSet& operator = (DescriptorSet&& other) noexcept = default;
 
 		static VkDescriptorSetAllocateInfo GetDefaultAllocateInfo(
-			const DescriptorPool& descriptorPool, const std::vector<DescriptorSetLayout::HandleType>& descriptorSetLayouts) noexcept;
+			const DescriptorPool& descriptorPool, const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) noexcept;
 
 		static VkDescriptorSetAllocateInfo GetDefaultAllocateInfo(
 			const DescriptorPool& descriptorPool, std::vector<DescriptorSetLayout::HandleType>&& descriptorSetLayouts) noexcept = delete;

@@ -53,7 +53,7 @@ namespace zt::vulkan_renderer::tests
 			const auto renderPassCreateInfo = RenderPass::GetPresentCreateInfo(VK_FORMAT_B8G8R8A8_SRGB);
 			ASSERT_TRUE(renderPass.create(device, renderPassCreateInfo));
 
-			const auto pipelineLayoutCreateInfo = PipelineLayout::GetDefaultCreateInfo();
+			const auto pipelineLayoutCreateInfo = PipelineLayout::GetDefaultCreateInfo({});
 			ASSERT_TRUE(pipelineLayout.create(device, pipelineLayoutCreateInfo));
 
 			const auto viewportSize = window.getFramebufferSize();
