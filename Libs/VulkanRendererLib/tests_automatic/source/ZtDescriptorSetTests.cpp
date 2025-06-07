@@ -60,7 +60,7 @@ namespace zt::vulkan_renderer::tests
 			const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);
 			ASSERT_TRUE(descriptorPool.create(device, descriptorPoolCreateInfo));
 
-			const auto layoutBinding = DescriptorSetLayout::GetDefaultLayoutBinding();
+			const auto layoutBinding = DescriptorSetLayout::GetDefaultUniformLayoutBinding();
 			const DescriptorSetLayout::Bindings bindings{ layoutBinding };
 
 			const auto createInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
@@ -76,7 +76,10 @@ namespace zt::vulkan_renderer::tests
 			auto writeDescriptorSet = DescriptorSet::GetDefaultWriteDescriptorSet();
 			writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
 			writeDescriptorSet.dstSet = descriptorSet.get();
-			descriptorSet.update(device, writeDescriptorSet);
+
+			const std::array writeDescriptorSets{ writeDescriptorSet };
+
+			descriptorSet.update(device, writeDescriptorSets);
 		}
 
 		void TearDown() override

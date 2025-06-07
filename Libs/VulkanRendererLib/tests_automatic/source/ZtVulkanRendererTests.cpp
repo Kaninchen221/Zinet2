@@ -236,13 +236,15 @@ namespace zt::vulkan_renderer::tests
 			.vertexBuffer = vertexBuffer,
 			.indexBuffer = indexBuffer,
 			.indexCount = static_cast<std::uint32_t>(indices.size()),
-			.uniformBuffer = uniformBuffers[0],
+			.uniformBuffer = uniformBuffers.at(0),
 			.textureInfos = { textureInfo }
 		};
 
 		core::Clock fpsClock;
 		size_t fpsCount = 0;
 		fpsClock.start();
+
+		ASSERT_TRUE(renderer.preDraw(drawInfo));
 		while (window.isOpen())
 		{
 			windowEvents.pollEvents();

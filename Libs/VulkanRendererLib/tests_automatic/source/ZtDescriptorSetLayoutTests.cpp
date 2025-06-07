@@ -46,7 +46,7 @@ namespace zt::vulkan_renderer::tests
 
 			ASSERT_TRUE(device.create(physicalDevice, Surface{ nullptr }));
 
-			const auto layoutBinding = DescriptorSetLayout::GetDefaultLayoutBinding();
+			const auto layoutBinding = DescriptorSetLayout::GetDefaultUniformLayoutBinding();
 			const DescriptorSetLayout::Bindings bindings{ layoutBinding };
 			const auto createInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
 

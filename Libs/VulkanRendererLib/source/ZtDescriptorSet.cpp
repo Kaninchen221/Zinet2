@@ -2,6 +2,8 @@
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtDescriptorPool.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtImageView.hpp"
+#include "Zinet/VulkanRenderer/ZtSampler.hpp"
 
 namespace zt::vulkan_renderer
 {
@@ -51,7 +53,7 @@ namespace zt::vulkan_renderer
 
 	VkDescriptorBufferInfo DescriptorSet::GetBufferInfo(const Buffer& buffer) noexcept
 	{
-		return VkDescriptorBufferInfo
+		return
 		{
 			.buffer = buffer.get(),
 			.offset = 0,
@@ -59,9 +61,19 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	void DescriptorSet::update(const Device& device, const VkWriteDescriptorSet& writeDescriptorSet) const noexcept
+	VkDescriptorImageInfo DescriptorSet::GetImageInfo(const ImageView& imageView, const Sampler& sampler) noexcept
 	{
-		vkUpdateDescriptorSets(device.get(), 1, &writeDescriptorSet, 0, nullptr);
+		return
+		{
+			.sampler = sampler.get(),
+			.imageView = imageView.get(),
+			.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL // TODO: Refactor, image view or/and image should remember layout
+		};
+	}
+
+	void DescriptorSet::update(const Device& device, const std::span<const VkWriteDescriptorSet> writeDescriptorSets) const noexcept
+	{
+		vkUpdateDescriptorSets(device.get(), static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
 	}
 
 }

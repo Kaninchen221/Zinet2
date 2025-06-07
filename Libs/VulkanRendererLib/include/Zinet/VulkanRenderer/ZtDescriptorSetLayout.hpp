@@ -32,7 +32,8 @@ namespace zt::vulkan_renderer
 		DescriptorSetLayout& operator = (const DescriptorSetLayout& other) noexcept = delete;
 		DescriptorSetLayout& operator = (DescriptorSetLayout&& other) noexcept = default;
 
-		static VkDescriptorSetLayoutBinding GetDefaultLayoutBinding() noexcept;
+		static VkDescriptorSetLayoutBinding GetDefaultUniformLayoutBinding() noexcept;
+		static VkDescriptorSetLayoutBinding GetDefaultImageLayoutBinding() noexcept;
 
 		using Bindings = std::vector<VkDescriptorSetLayoutBinding>;
 		static VkDescriptorSetLayoutCreateInfo GetDefaultCreateInfo(const Bindings& bindings) noexcept;

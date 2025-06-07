@@ -8,12 +8,16 @@
 
 #include <vulkan/vulkan.h>
 
+#include <span>
+
 namespace zt::vulkan_renderer
 {
 	class Device;
 	class DescriptorPool;
 	class DescriptorSetLayout;
 	class Buffer;
+	class ImageView;
+	class Sampler;
 
 	class ZINET_VULKAN_RENDERER_API DescriptorSet : public VulkanObject<VkDescriptorSet>
 	{
@@ -48,7 +52,8 @@ namespace zt::vulkan_renderer
 
 		static VkDescriptorBufferInfo GetBufferInfo(const Buffer& buffer) noexcept;
 
-		void update(const Device& device, const VkWriteDescriptorSet& writeDescriptorSet) const noexcept;
-		void update(const Device& device, VkWriteDescriptorSet&& writeDescriptorSet) const noexcept = delete;
+		static VkDescriptorImageInfo GetImageInfo(const ImageView& imageView, const Sampler& sampler) noexcept;
+
+		void update(const Device& device, const std::span<const VkWriteDescriptorSet> writeDescriptorSets) const noexcept;
 	};
 }

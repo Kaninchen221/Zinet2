@@ -27,6 +27,11 @@ namespace zt::vulkan_renderer
 		rendererContext.destroy();
 	}
 
+	bool VulkanRenderer::preDraw(const DrawInfo& drawInfo) noexcept
+	{
+		return graphicsPipeline.preDraw(rendererContext, drawInfo);
+	}
+
 	void VulkanRenderer::draw(const DrawInfo& drawInfo) noexcept
 	{
 		graphicsPipeline.draw(rendererContext, drawInfo);

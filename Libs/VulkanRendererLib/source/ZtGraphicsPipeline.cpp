@@ -3,6 +3,7 @@
 #include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtTexture.hpp"
 
 namespace zt::vulkan_renderer
 {
@@ -59,33 +60,6 @@ namespace zt::vulkan_renderer
 		if (!fence.create(device, true))
 			return false;
 
-		// Descriptor Pool - One for entire program like command pool?
-		const auto descriptorPoolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
-		std::vector<VkDescriptorPoolSize> descriptorPoolSizes{ descriptorPoolSize };
-		const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);
-		if (!descriptorPool.create(device, descriptorPoolCreateInfo))
-			return false;
-
-		// Uniforms section
-		const auto layoutBinding = DescriptorSetLayout::GetDefaultLayoutBinding();
-		const DescriptorSetLayout::Bindings bindings{ layoutBinding };
-
-		const auto createInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
-		if (!descriptorSetLayout.create(createInfo, device))
-			return false;
-
-		const std::vector descriptorSetLayouts{ descriptorSetLayout.get() };
-		const auto allocateInfo = DescriptorSet::GetDefaultAllocateInfo(descriptorPool, descriptorSetLayouts);
-		if (!descriptorSet.create(device, allocateInfo))
-			return false;
-
-		// Pipeline Layout must be created after uniforms
-		auto pipelineLayoutCreateInfo = PipelineLayout::GetDefaultCreateInfo();
-		pipelineLayoutCreateInfo.pSetLayouts = descriptorSetLayouts.data();
-		pipelineLayoutCreateInfo.setLayoutCount = static_cast<std::uint32_t>(descriptorSetLayouts.size());
-		if (!pipelineLayout.create(device, pipelineLayoutCreateInfo))
-			return false;
-
 		return true;
 	}
 
@@ -121,21 +95,67 @@ namespace zt::vulkan_renderer
 		commandBuffer.invalidate();
 	}
 
-	void GraphicsPipeline::draw(const RendererContext& rendererContext, const DrawInfo& drawInfo)
+	bool GraphicsPipeline::preDraw(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept
+	{
+		const auto& device = rendererContext.device;
+		const auto& swapChain = rendererContext.swapChain;
+
+		DescriptorSetLayout::Bindings bindings;
+		std::vector<VkDescriptorPoolSize> descriptorPoolSizes;
+
+		if (drawInfo.uniformBuffer.isValid())
+		{
+			auto uniformLayoutBinding = DescriptorSetLayout::GetDefaultUniformLayoutBinding();
+			uniformLayoutBinding.binding = static_cast<uint32_t>(bindings.size());
+			bindings.push_back(uniformLayoutBinding);
+
+			auto descriptorPoolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
+			descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorPoolSizes.push_back(descriptorPoolSize);
+		}
+
+		if (!drawInfo.textureInfos.empty())
+		{
+			auto imageLayoutBinding = DescriptorSetLayout::GetDefaultImageLayoutBinding();
+			imageLayoutBinding.binding = static_cast<uint32_t>(bindings.size());
+			bindings.push_back(imageLayoutBinding);
+
+			auto descriptorPoolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
+			descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorPoolSizes.push_back(descriptorPoolSize);
+		}
+
+		const auto descriptorSetCreateInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
+		if (!descriptorSetLayout.create(descriptorSetCreateInfo, device))
+			return false;
+
+		const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);
+		if (!descriptorPool.create(device, descriptorPoolCreateInfo))
+			return false;
+
+		const std::vector descriptorSetLayouts{ descriptorSetLayout.get() };
+		const auto allocateInfo = DescriptorSet::GetDefaultAllocateInfo(descriptorPool, descriptorSetLayouts);
+		if (!descriptorSet.create(device, allocateInfo))
+			return false;
+
+		auto pipelineLayoutCreateInfo = PipelineLayout::GetDefaultCreateInfo(descriptorSetLayouts);
+		if (!pipelineLayout.create(device, pipelineLayoutCreateInfo))
+			return false;
+
+		const auto extent = swapChain.getExtent();
+		const VkViewport viewport{ 0, 0, static_cast<float>(extent.width), static_cast<float>(extent.height) };
+		const VkRect2D scissor{ { 0, 0 }, extent };
+		if (!pipeline.create(device, pipelineLayout, renderPass, viewport, scissor, drawInfo))
+			return false;
+
+		return true;
+	}
+
+	void GraphicsPipeline::draw(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept
 	{
 		auto& swapChain = rendererContext.swapChain;
 		auto& device = rendererContext.device;
 		auto& queue = rendererContext.queue;
-
-		// Pre Draw
-		if (!pipeline.isValid())
-		{
-			const auto extent = swapChain.getExtent();
-			VkViewport viewport{ 0, 0, static_cast<float>(extent.width), static_cast<float>(extent.height) };
-			VkRect2D scissor{ { 0, 0 }, extent };
-			if (!pipeline.create(device, pipelineLayout, renderPass, viewport, scissor, drawInfo))
-				return;
-		}
 
 		fence.wait(device);
 		fence.reset(device);
@@ -169,15 +189,28 @@ namespace zt::vulkan_renderer
 		};
 		commandBuffer.setScissor(scissor);
 
-		// Uniform Buffers
-
 		// Update descriptor set
-		VkDescriptorBufferInfo descriptorBufferInfo = DescriptorSet::GetBufferInfo(drawInfo.uniformBuffer); // TODO: Support more than one uniform
+		std::vector<VkWriteDescriptorSet> writeDescriptorSets;
+		{
+			auto descriptorBufferInfo = DescriptorSet::GetBufferInfo(drawInfo.uniformBuffer);
 
-		auto writeDescriptorSet = DescriptorSet::GetDefaultWriteDescriptorSet();
-		writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
-		writeDescriptorSet.dstSet = descriptorSet.get();
-		descriptorSet.update(device, writeDescriptorSet);
+			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSet::GetDefaultWriteDescriptorSet());
+			writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
+			writeDescriptorSet.dstSet = descriptorSet.get();
+		}
+
+		if (!drawInfo.textureInfos.empty())
+		{
+			const auto textureInfo = drawInfo.textureInfos[0];
+			auto imageDescriptorInfo = DescriptorSet::GetImageInfo(textureInfo.texture->getImageView(), *textureInfo.sampler);
+
+			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSet::GetDefaultWriteDescriptorSet());
+			writeDescriptorSet.dstSet = descriptorSet.get();
+			writeDescriptorSet.dstBinding = 1;
+			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			writeDescriptorSet.pImageInfo = &imageDescriptorInfo;
+		}
+		descriptorSet.update(device, writeDescriptorSets);
 
 		if (descriptorSet.isValid())
 		{
@@ -213,7 +246,7 @@ namespace zt::vulkan_renderer
 		commandBuffer.endRenderPass();
 		commandBuffer.end();
 
-		// Post Draw
+		// TODO: Post Draw?
 		// Submit
 		const VkSemaphore waitSemaphores[] = { imageAvailableSemaphore.get() };
 		const VkPipelineStageFlags waitStages[] = {

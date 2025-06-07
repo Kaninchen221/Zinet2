@@ -44,7 +44,9 @@ namespace zt::vulkan_renderer
 
 		void destroy(const RendererContext& rendererContext) noexcept;
 
-		void draw(const RendererContext& rendererContext, const DrawInfo& drawInfo);
+		bool preDraw(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept;
+
+		void draw(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept;
 
 		std::vector<VkImage> images;
 		std::vector<ImageView> imageViews;
