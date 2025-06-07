@@ -77,7 +77,7 @@ namespace zt::vulkan_renderer::tests
 			writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
 			writeDescriptorSet.dstSet = descriptorSet.get();
 
-			const std::array writeDescriptorSets{ writeDescriptorSet };
+			const std::vector writeDescriptorSets{ writeDescriptorSet };
 
 			descriptorSet.update(device, writeDescriptorSets);
 		}

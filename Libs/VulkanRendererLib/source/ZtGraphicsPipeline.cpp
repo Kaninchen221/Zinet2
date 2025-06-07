@@ -191,9 +191,11 @@ namespace zt::vulkan_renderer
 
 		// Update descriptor set
 		std::vector<VkWriteDescriptorSet> writeDescriptorSets;
+		std::vector<VkDescriptorBufferInfo> descriptorBuffersInfos;
+		std::vector<VkDescriptorImageInfo> descriptorImagesInfos;
+		if (drawInfo.uniformBuffer.isValid()) 
 		{
-			auto descriptorBufferInfo = DescriptorSet::GetBufferInfo(drawInfo.uniformBuffer);
-
+			auto& descriptorBufferInfo = descriptorBuffersInfos.emplace_back(DescriptorSet::GetBufferInfo(drawInfo.uniformBuffer));
 			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSet::GetDefaultWriteDescriptorSet());
 			writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
 			writeDescriptorSet.dstSet = descriptorSet.get();
@@ -202,7 +204,7 @@ namespace zt::vulkan_renderer
 		if (!drawInfo.textureInfos.empty())
 		{
 			const auto textureInfo = drawInfo.textureInfos[0];
-			auto imageDescriptorInfo = DescriptorSet::GetImageInfo(textureInfo.texture->getImageView(), *textureInfo.sampler);
+			auto& imageDescriptorInfo = descriptorImagesInfos.emplace_back(DescriptorSet::GetImageInfo(textureInfo.texture->getImageView(), *textureInfo.sampler));
 
 			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSet::GetDefaultWriteDescriptorSet());
 			writeDescriptorSet.dstSet = descriptorSet.get();

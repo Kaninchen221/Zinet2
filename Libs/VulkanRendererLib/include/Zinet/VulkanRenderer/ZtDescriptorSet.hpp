@@ -54,6 +54,6 @@ namespace zt::vulkan_renderer
 
 		static VkDescriptorImageInfo GetImageInfo(const ImageView& imageView, const Sampler& sampler) noexcept;
 
-		void update(const Device& device, const std::span<const VkWriteDescriptorSet> writeDescriptorSets) const noexcept;
+		void update(const Device& device, const std::vector<VkWriteDescriptorSet>& writeDescriptorSets) const noexcept;
 	};
 }

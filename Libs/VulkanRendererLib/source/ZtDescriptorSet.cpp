@@ -71,7 +71,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	void DescriptorSet::update(const Device& device, const std::span<const VkWriteDescriptorSet> writeDescriptorSets) const noexcept
+	void DescriptorSet::update(const Device& device, const std::vector<VkWriteDescriptorSet>& writeDescriptorSets) const noexcept
 	{
 		vkUpdateDescriptorSets(device.get(), static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
 	}
