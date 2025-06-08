@@ -71,18 +71,20 @@ namespace zt::vulkan_renderer
 		const auto& buffer = input.buffer;
 		const auto& commandBuffer = input.commandBuffer;
 
-		const auto imageMemoryBarrier = image.getDefaultMemoryBarier(
-			VK_IMAGE_LAYOUT_UNDEFINED,
-			VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+		{
+			const auto imageMemoryBarrier = image.getDefaultMemoryBarier(
+				VK_IMAGE_LAYOUT_UNDEFINED,
+				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-		vkCmdPipelineBarrier(
-			commandBuffer.get(),
-			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
-			0,
-			0, nullptr,
-			0, nullptr,
-			1, &imageMemoryBarrier
-		);
+			vkCmdPipelineBarrier(
+				commandBuffer.get(),
+				VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+				0,
+				0, nullptr,
+				0, nullptr,
+				1, &imageMemoryBarrier
+			);
+		}
 
 		const VkBufferImageCopy bufferImageCopy
 		{
@@ -114,6 +116,21 @@ namespace zt::vulkan_renderer
 			1,
 			&bufferImageCopy
 		);
+
+		{
+			const auto imageMemoryBarrier = image.getDefaultMemoryBarier(
+				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+			vkCmdPipelineBarrier(
+				commandBuffer.get(),
+				VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_VERTEX_SHADER_BIT,
+				0,
+				0, nullptr,
+				0, nullptr,
+				1, &imageMemoryBarrier
+			);
+		}
 	}
 
 }

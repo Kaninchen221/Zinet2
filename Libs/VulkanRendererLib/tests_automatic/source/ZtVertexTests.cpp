@@ -43,6 +43,6 @@ namespace zt::vulkan_renderer::tests
 	TEST_F(VertexTests, PassTest)
 	{
 		const VkVertexInputBindingDescription bindingDescription = Vertex::GetInputBindingDescription();
-		const std::array<VkVertexInputAttributeDescription, 2> attributesDescriptions = Vertex::GetInputAttributesDescriptions();
+		const std::array<VkVertexInputAttributeDescription, 3> attributesDescriptions = Vertex::GetInputAttributesDescriptions();
 	}
 }

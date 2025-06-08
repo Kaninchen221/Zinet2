@@ -5,17 +5,17 @@ namespace zt::vulkan_renderer
 
 	VkVertexInputBindingDescription Vertex::GetInputBindingDescription() noexcept
 	{
-		VkVertexInputBindingDescription bindingDescription{};
-		bindingDescription.binding = 0;
-		bindingDescription.stride = sizeof(Vertex);
-		bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-		return bindingDescription;
+		return
+		{
+			.binding = 0,
+			.stride = sizeof(Vertex),
+			.inputRate = VK_VERTEX_INPUT_RATE_VERTEX
+		};
 	}
 
-	std::array<VkVertexInputAttributeDescription, 2> Vertex::GetInputAttributesDescriptions() noexcept
+	std::array<VkVertexInputAttributeDescription, 3> Vertex::GetInputAttributesDescriptions() noexcept
 	{
-		std::array<VkVertexInputAttributeDescription, 2> descriptions;
+		std::array<VkVertexInputAttributeDescription, 3> descriptions;
 
 		// Position
 		descriptions[0] =
@@ -33,6 +33,15 @@ namespace zt::vulkan_renderer
 			.binding = 0,
 			.format = VK_FORMAT_R32G32B32_SFLOAT,
 			.offset = offsetof(Vertex, color)
+		};
+
+		// UV
+		descriptions[2] =
+		{
+			.location = 2,
+			.binding = 0,
+			.format = VK_FORMAT_R32G32_SFLOAT,
+			.offset = offsetof(Vertex, uv)
 		};
 
 		return descriptions;

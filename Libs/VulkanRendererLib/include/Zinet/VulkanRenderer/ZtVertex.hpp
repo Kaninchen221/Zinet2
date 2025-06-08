@@ -15,14 +15,15 @@ namespace zt::vulkan_renderer
 	public:
 
 		Vector3f position;
-		Vector3f color;
+		Vector4f color;
+		Vector2f uv;
 
 		auto operator<=>(const Vertex&) const = default;
 
 		using InputBindingDescription = VkVertexInputBindingDescription;
 		static InputBindingDescription GetInputBindingDescription() noexcept;
 
-		using InputAttributesDescriptions = std::array<VkVertexInputAttributeDescription, 2>;
+		using InputAttributesDescriptions = std::array<VkVertexInputAttributeDescription, 3>;
 		static InputAttributesDescriptions GetInputAttributesDescriptions() noexcept;
 	};
 }

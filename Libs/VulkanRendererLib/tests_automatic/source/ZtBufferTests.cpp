@@ -86,9 +86,9 @@ namespace zt::vulkan_renderer::tests
 		using Vertices = std::vector<Vertex>;
 		const Vertices vertices
 		{ 
-			Vertex{ { 23.f, 212.f, 1.f }, { 0.4f, 0.4f, 0.1f } },
-			Vertex{ { 51, 21.f, 1.2f }, { 0.1f, 0.2f, 0.4f } },
-			Vertex{ { 65.f, 23.f, 111.f }, { 0.7f, 0.4f, 0.8f } }
+			Vertex{ { 23.f, 212.f, 1.f }, { 0.4f, 0.4f, 0.1f, 1.f } },
+			Vertex{ { 51, 21.f, 1.2f }, { 0.1f, 0.2f, 0.4f, 1.f } },
+			Vertex{ { 65.f, 23.f, 111.f }, { 0.7f, 0.4f, 0.8f, 1.f } }
 		};
 
 		const auto createInfo = Buffer::GetVertexBufferCreateInfo(vertices);
