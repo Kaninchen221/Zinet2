@@ -31,8 +31,15 @@ namespace zt::vulkan_renderer
 
 		void shutdown() noexcept;
 
-		bool preDraw(const DrawInfo& drawInfo) noexcept;
+		bool beginFrame() noexcept;
+
+		bool createPipeline(const DrawInfo& drawInfo) noexcept;
+		
 		void draw(const DrawInfo& drawInfo) noexcept;
+
+		bool postDraw() noexcept;
+
+		bool endFrame() noexcept;
 
 		const auto& getRendererContext() const noexcept { return rendererContext; }
 		auto& getRendererContext() noexcept { return rendererContext; }

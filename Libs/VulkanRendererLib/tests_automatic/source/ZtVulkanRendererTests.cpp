@@ -218,7 +218,7 @@ namespace zt::vulkan_renderer::tests
 		buffer.destroy(vma);
 	}
 
-	TEST_F(VulkanRendererTests, Test)
+	TEST_F(VulkanRendererTests, VulkanRendererTest)
 	{
 		using namespace std::chrono_literals;
 
@@ -244,14 +244,22 @@ namespace zt::vulkan_renderer::tests
 		size_t fpsCount = 0;
 		fpsClock.start();
 
-		ASSERT_TRUE(renderer.preDraw(drawInfo));
 		while (window.isOpen())
 		{
 			windowEvents.pollEvents();
 
 			updateUniformBuffersData();
 
+			ASSERT_TRUE(renderer.createPipeline(drawInfo));
+			ASSERT_TRUE(renderer.getGraphicsPipeline().isValid());
+
+			ASSERT_TRUE(renderer.beginFrame());
+
 			renderer.draw(drawInfo);
+
+			ASSERT_TRUE(renderer.postDraw());
+
+			ASSERT_TRUE(renderer.endFrame());
 
 			fpsCount++;
 			if (fpsClock.getElapsedTime().getAsSeconds() >= 1.0f)

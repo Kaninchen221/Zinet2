@@ -40,24 +40,18 @@ namespace zt::vulkan_renderer
 		GraphicsPipeline& operator = (const GraphicsPipeline& other) noexcept = delete;
 		GraphicsPipeline& operator = (GraphicsPipeline&& other) noexcept = default;
 
-		bool create(RendererContext& rendererContext) noexcept;
+		bool create(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept;
 
 		void destroy(const RendererContext& rendererContext) noexcept;
 
-		bool preDraw(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept;
-
 		void draw(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept;
 
-		std::vector<VkImage> images;
-		std::vector<ImageView> imageViews;
-		std::vector<Framebuffer> framebuffers;
+		bool postDraw(const RendererContext& rendererContext) noexcept;
+
+		bool isValid() const noexcept;
 
 		CommandBuffer commandBuffer{ nullptr };
-		Semaphore imageAvailableSemaphore{ nullptr };
-		Semaphore renderFinishedSemaphore{ nullptr };
-		Fence fence{ nullptr };
 
-		RenderPass renderPass{ nullptr };
 		PipelineLayout pipelineLayout{ nullptr };
 		Pipeline pipeline{ nullptr };
 

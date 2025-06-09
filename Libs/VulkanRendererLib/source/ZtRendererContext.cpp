@@ -46,11 +46,67 @@ namespace zt::vulkan_renderer
 		if (!commandPool.create(device, queue))
 			return false;
 
+		if (!imageAvailableSemaphore.create(device))
+			return false;
+
+		if (!renderFinishedSemaphore.create(device))
+			return false;
+
+		if (!fence.create(device, true))
+			return false;
+
+		const auto renderPassCreateInfo = RenderPass::GetPresentCreateInfo(swapChain.getFormat());
+		if (!renderPass.create(device, renderPassCreateInfo))
+			return false;
+
+		/// Framebuffers
+		images = swapChain.getImages(device);
+		if (images.empty())
+		{
+			Logger->error("SwapChain returned empty swapChainImages");
+			return false;
+		}
+
+		for (auto image : images)
+		{
+			auto& imageView = imageViews.emplace_back(nullptr);
+			const auto imageViewCreateInfo = ImageView::GetDefaultCreateInfo(image, swapChain.getFormat());
+			if (!imageView.create(device, imageViewCreateInfo))
+			{
+				Logger->error("Couldn't create image view from one of the swap chain images");
+				return false;
+			}
+		}
+
+		const auto swapChainSize = swapChain.getExtent();
+		const Vector2ui framebufferSize{ swapChainSize.width, swapChainSize.height };
+		for (auto& imageView : imageViews)
+		{
+			auto& framebuffer = framebuffers.emplace_back(nullptr);
+			if (!framebuffer.create(device, renderPass, imageView, framebufferSize))
+			{
+				Logger->error("Couldn't create framebuffer from one of the swap chain images");
+				return false;
+			}
+		}
+
 		return true;
 	}
 
 	void RendererContext::destroy() noexcept
 	{
+		for (auto& framebuffer : framebuffers)
+			framebuffer.destroy(device);
+		framebuffers.clear();
+
+		for (auto& imageView : imageViews)
+			imageView.destroy(device);
+		imageViews.clear();
+
+		renderPass.destroy(device);
+		fence.destroy(device);
+		renderFinishedSemaphore.destroy(device);
+		imageAvailableSemaphore.destroy(device);
 		commandPool.destroy(device);
 		swapChain.destroy(device);
 		vma.destroy();
@@ -61,4 +117,61 @@ namespace zt::vulkan_renderer
 		debugUtilsMessenger.destroy(instance);
 		instance.destroy();
 	}
+
+	void RendererContext::windowResized(const Vector2i& size) noexcept
+	{
+		renderPass.destroy(device);
+		if (!renderPass.recreate(device))
+		{
+			Logger->error("Couldn't recreate render pass after window resized");
+			return;
+		}
+
+		swapChain.destroy(device);
+		if (!swapChain.create(device, physicalDevice, surface, size))
+		{
+			Logger->error("Couldn't recreate swap chain after window resized");
+			return;
+		}
+
+		images = swapChain.getImages(device);
+		if (images.empty())
+		{
+			Logger->error("SwapChain returned empty swapChainImages");
+			return;
+		}
+
+		/// Recreate swap chain framebuffers
+		for (auto& framebuffer : framebuffers)
+			framebuffer.destroy(device);
+		framebuffers.clear();
+
+		for (auto& imageView : imageViews)
+			imageView.destroy(device);
+		imageViews.clear();
+
+		for (auto image : images)
+		{
+			auto& imageView = imageViews.emplace_back(nullptr);
+			const auto imageViewCreateInfo = ImageView::GetDefaultCreateInfo(image, swapChain.getFormat());
+			if (!imageView.create(device, imageViewCreateInfo))
+			{
+				Logger->error("Couldn't create image view from one of the swap chain images");
+				return;
+			}
+		}
+
+		const auto swapChainSize = swapChain.getExtent();
+		const Vector2ui framebufferSize{ swapChainSize.width, swapChainSize.height };
+		for (auto& imageView : imageViews)
+		{
+			auto& framebuffer = framebuffers.emplace_back(nullptr);
+			if (!framebuffer.create(device, renderPass, imageView, framebufferSize))
+			{
+				Logger->error("Couldn't create framebuffer from one of the swap chain images");
+				return;
+			}
+		}
+	}
+
 }

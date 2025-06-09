@@ -7,101 +7,18 @@
 
 namespace zt::vulkan_renderer
 {
-
-	bool GraphicsPipeline::create(RendererContext& rendererContext) noexcept
+	bool GraphicsPipeline::create(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept
 	{
-		const auto& device = rendererContext.device;
-		const auto& swapChain = rendererContext.swapChain;
-		const auto& commandPool = rendererContext.commandPool;
-
-		const auto renderPassCreateInfo = RenderPass::GetPresentCreateInfo(swapChain.getFormat());
-		if (!renderPass.create(device, renderPassCreateInfo))
-			return false;
-
-		images = swapChain.getImages(device);
-		if (images.empty())
-		{
-			Logger->error("SwapChain returned empty swapChainImages");
-			return false;
-		}
-
-		for (auto image : images)
-		{
-			auto& imageView = imageViews.emplace_back(nullptr);
-			const auto imageViewCreateInfo = ImageView::GetDefaultCreateInfo(image, swapChain.getFormat());
-			if (!imageView.create(device, imageViewCreateInfo))
-			{
-				Logger->error("Couldn't create image view from one of the swap chain images");
-				return false;
-			}
-		}
-
-		const auto swapChainSize = swapChain.getExtent();
-		const Vector2ui framebufferSize{ swapChainSize.width, swapChainSize.height };
-		for (auto& imageView : imageViews)
-		{
-			auto& framebuffer = framebuffers.emplace_back(nullptr);
-			if (!framebuffer.create(device, renderPass, imageView, framebufferSize))
-			{
-				Logger->error("Couldn't create framebuffer from one of the swap chain images");
-				return false;
-			}
-		}
-
-		if (!commandBuffer.create(device, commandPool))
-			return false;
-
-		if (!imageAvailableSemaphore.create(device))
-			return false;
-
-		if (!renderFinishedSemaphore.create(device))
-			return false;
-
-		if (!fence.create(device, true))
-			return false;
-
-		return true;
-	}
-
-	void GraphicsPipeline::destroy(const RendererContext& rendererContext) noexcept
-	{
-		const auto& device = rendererContext.device;
-
-		// Uniforms
-		descriptorPool.destroy(device);
-		descriptorSetLayout.destroy(device);
-		descriptorSet.invalidate();
-
-		// Core
-		for (auto& framebuffer : framebuffers)
-			framebuffer.destroy(device);
-		framebuffers.clear();
-
-		for (auto& imageView : imageViews)
-			imageView.destroy(device);
-		imageViews.clear();
-
-		renderPass.destroy(device);
-
-		pipeline.destroy(device);
-		pipelineLayout.destroy(device);
-
-		imageAvailableSemaphore.destroy(device);
-
-		renderFinishedSemaphore.destroy(device);
-
-		fence.destroy(device);
-
-		commandBuffer.invalidate();
-	}
-
-	bool GraphicsPipeline::preDraw(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept
-	{
-		const auto& device = rendererContext.device;
-		const auto& swapChain = rendererContext.swapChain;
+		auto& device = rendererContext.device;
+		auto& swapChain = rendererContext.swapChain;
+		auto& renderPass = rendererContext.renderPass;
+		auto& commandPool = rendererContext.commandPool;
 
 		DescriptorSetLayout::Bindings bindings;
 		std::vector<VkDescriptorPoolSize> descriptorPoolSizes;
+
+		if (!commandBuffer.create(device, commandPool))
+			return false;
 
 		if (drawInfo.uniformBuffer.isValid())
 		{
@@ -151,22 +68,34 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
+	void GraphicsPipeline::destroy(const RendererContext& rendererContext) noexcept
+	{
+		const auto& device = rendererContext.device;
+
+		// Uniforms
+		descriptorPool.destroy(device);
+		descriptorSetLayout.destroy(device);
+		descriptorSet.invalidate();
+
+		pipeline.destroy(device);
+		pipelineLayout.destroy(device);
+
+		commandBuffer.invalidate();
+	}
+
 	void GraphicsPipeline::draw(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept
 	{
 		auto& swapChain = rendererContext.swapChain;
 		auto& device = rendererContext.device;
-		auto& queue = rendererContext.queue;
-
-		fence.wait(device);
-		fence.reset(device);
-
-		const std::uint32_t imageIndex = swapChain.acquireNextImage(device, imageAvailableSemaphore);
+		auto currentFramebufferIndex = rendererContext.currentFramebufferIndex;
+		auto& currentFramebuffer = rendererContext.framebuffers[currentFramebufferIndex];
+		auto& renderPass = rendererContext.renderPass;
 
 		commandBuffer.reset();
 
 		commandBuffer.begin();
 		const auto extent = swapChain.getExtent();
-		commandBuffer.beginRenderPass(renderPass, framebuffers[imageIndex], extent);
+		commandBuffer.beginRenderPass(renderPass, currentFramebuffer, extent);
 
 		commandBuffer.bindPipeline(pipeline);
 
@@ -247,9 +176,15 @@ namespace zt::vulkan_renderer
 
 		commandBuffer.endRenderPass();
 		commandBuffer.end();
+	}
 
-		// TODO: Post Draw?
-		// Submit
+	bool GraphicsPipeline::postDraw(const RendererContext& rendererContext) noexcept
+	{
+		auto& queue = rendererContext.queue;
+		auto& imageAvailableSemaphore = rendererContext.imageAvailableSemaphore;
+		auto& renderFinishedSemaphore = rendererContext.renderFinishedSemaphore;
+		auto& fence = rendererContext.fence;
+
 		const VkSemaphore waitSemaphores[] = { imageAvailableSemaphore.get() };
 		const VkPipelineStageFlags waitStages[] = {
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
@@ -269,23 +204,23 @@ namespace zt::vulkan_renderer
 			.signalSemaphoreCount = 1,
 			.pSignalSemaphores = signalSemaphores
 		};
-		vkQueueSubmit(queue.get(), 1, &submitInfo, fence.get());
 
-		// Present
-		const VkSwapchainKHR swapChains[] = { swapChain.get() };
-		const VkPresentInfoKHR presentInfo
+		const auto result = vkQueueSubmit(queue.get(), 1, &submitInfo, fence.get());
+			
+		if (result != VK_SUCCESS)
 		{
-			.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
-			.pNext = nullptr,
-			.waitSemaphoreCount = 1,
-			.pWaitSemaphores = signalSemaphores,
-			.swapchainCount = 1,
-			.pSwapchains = swapChains,
-			.pImageIndices = &imageIndex,
-			.pResults = nullptr
-		};
-		vkQueuePresentKHR(queue.get(), &presentInfo);
+			Logger->error("vkQueueSubmit returned not VK_SUCCESS, error code: {}", static_cast<int>(result));
+			return false;
+		}
 
+		return true;
+	}
+
+	bool GraphicsPipeline::isValid() const noexcept
+	{
+		return pipeline.isValid() && pipelineLayout.isValid() && 
+			descriptorPool.isValid() && descriptorSetLayout.isValid() &&
+			descriptorSet.isValid();
 	}
 
 }

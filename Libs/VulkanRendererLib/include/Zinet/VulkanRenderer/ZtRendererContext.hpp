@@ -13,6 +13,9 @@
 #include "Zinet/VulkanRenderer/ZtCommandPool.hpp"
 #include "Zinet/VulkanRenderer/ZtImageView.hpp"
 #include "Zinet/VulkanRenderer/ZtFramebuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtSemaphore.hpp"
+#include "Zinet/VulkanRenderer/ZtFence.hpp"
+#include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -56,9 +59,23 @@ namespace zt::vulkan_renderer
 		Queue queue{ nullptr };
 		CommandPool commandPool{ nullptr };
 
+		Semaphore imageAvailableSemaphore{ nullptr };
+		Semaphore renderFinishedSemaphore{ nullptr };
+		Fence fence{ nullptr };
+
+		std::vector<VkImage> images;
+		std::vector<ImageView> imageViews;
+		std::vector<Framebuffer> framebuffers;
+
+		uint32_t currentFramebufferIndex{};
+
+		RenderPass renderPass{ nullptr };
+
 		bool create(wd::Window& window) noexcept;
 
 		void destroy() noexcept;
+
+		void windowResized(const Vector2i& size) noexcept;
 
 	};
 }

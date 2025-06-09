@@ -17,6 +17,8 @@ namespace zt::vulkan_renderer
 		VkAttachmentReference colorAttachmentReference{};
 		VkSubpassDescription subpassDescription{};
 		VkRenderPassCreateInfo vkCreateInfo{};
+
+		RenderPassCreateInfo& operator = (const RenderPassCreateInfo& other) noexcept;
 	};
 
 	class ZINET_VULKAN_RENDERER_API RenderPass : public VulkanObject<VkRenderPass>
@@ -44,9 +46,13 @@ namespace zt::vulkan_renderer
 
 		bool create(const Device& device, const RenderPassCreateInfo& createInfo) noexcept;
 
+		bool recreate(const Device& device) noexcept;
+
 		void destroy(const Device& device) noexcept;
 
 	protected:
+
+		RenderPassCreateInfo cachedCreateInfo;
 
 	};
 }

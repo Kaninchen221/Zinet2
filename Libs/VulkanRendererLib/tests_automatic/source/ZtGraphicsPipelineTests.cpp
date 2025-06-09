@@ -20,6 +20,8 @@ namespace zt::vulkan_renderer::tests
 		{
 		}
 
+		GraphicsPipeline graphicsPipeline;
+
 		static_assert(std::is_default_constructible_v<GraphicsPipeline>);
 		static_assert(!std::is_copy_constructible_v<GraphicsPipeline>);
 		static_assert(!std::is_copy_assignable_v<GraphicsPipeline>);
@@ -29,5 +31,7 @@ namespace zt::vulkan_renderer::tests
 	};
 
 	TEST_F(GraphicsPipelineTests, PassTest)
-	{}
+	{
+		ASSERT_FALSE(graphicsPipeline.isValid());
+	}
 }

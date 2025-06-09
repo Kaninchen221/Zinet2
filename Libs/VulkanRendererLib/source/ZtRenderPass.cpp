@@ -3,9 +3,24 @@
 
 namespace zt::vulkan_renderer
 {
+	RenderPassCreateInfo& RenderPassCreateInfo::operator=(const RenderPassCreateInfo& other) noexcept
+	{
+		colorAttachmentDescription = other.colorAttachmentDescription;
+
+		colorAttachmentReference = other.colorAttachmentReference;
+
+		subpassDescription = other.subpassDescription;
+		subpassDescription.pColorAttachments = &colorAttachmentReference;
+
+		vkCreateInfo = other.vkCreateInfo;
+		vkCreateInfo.pAttachments = &colorAttachmentDescription;
+		vkCreateInfo.pSubpasses = &subpassDescription;
+
+		return *this;
+	}
 
 	RenderPassCreateInfo RenderPass::GetPresentCreateInfo(VkFormat format) noexcept
-	{
+	{	
 		RenderPassCreateInfo createInfo;
 
 		VkAttachmentDescription& colorAttachmentDescription = createInfo.colorAttachmentDescription;
@@ -78,6 +93,7 @@ namespace zt::vulkan_renderer
 		const auto result = vkCreateRenderPass(device.get(), &createInfo.vkCreateInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
 		{
+			cachedCreateInfo = createInfo;
 			return true;
 		}
 		else
@@ -85,6 +101,18 @@ namespace zt::vulkan_renderer
 			Logger->error("Couldn't create RenderPass, result: {}", static_cast<std::int32_t>(result));
 			return false;
 		}
+	}
+
+	bool RenderPass::recreate(const Device& device) noexcept
+	{
+		destroy(device);
+		if (!create(device, cachedCreateInfo))
+		{
+			Logger->error("Couldn't recreate render pass");
+			return false;
+		}
+
+		return true;
 	}
 
 	void RenderPass::destroy(const Device& device) noexcept

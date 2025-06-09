@@ -81,6 +81,9 @@ namespace zt::vulkan_renderer::tests
 		static_assert(VulkanObjectDecoratorStaticTest<RenderPass, VkRenderPass>());
 	};
 
-	TEST_F(RenderPassTests, PassTest)
-	{}
+	TEST_F(RenderPassTests, Test)
+	{
+		ASSERT_TRUE(renderPass.recreate(device));
+		ASSERT_TRUE(renderPass.isValid());
+	}
 }
