@@ -46,7 +46,7 @@ namespace zt::vulkan_renderer
 
 		void draw(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept;
 
-		bool postDraw(const RendererContext& rendererContext) noexcept;
+		bool submit(const RendererContext& rendererContext) noexcept;
 
 		bool isValid() const noexcept;
 

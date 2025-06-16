@@ -11,6 +11,7 @@ namespace zt::vulkan_renderer
 {
 	class Instance;
 
+	/// TODO: Use vkSetDebugUtilsObjectNameEXT for debug builds to track easier vulkan resources
 	class ZINET_VULKAN_RENDERER_API DebugUtilsMessenger : public VulkanObject<VkDebugUtilsMessengerEXT>
 	{
 	protected:

@@ -178,7 +178,7 @@ namespace zt::vulkan_renderer
 		commandBuffer.end();
 	}
 
-	bool GraphicsPipeline::postDraw(const RendererContext& rendererContext) noexcept
+	bool GraphicsPipeline::submit(const RendererContext& rendererContext) noexcept
 	{
 		auto& queue = rendererContext.queue;
 		auto& imageAvailableSemaphore = rendererContext.imageAvailableSemaphore;

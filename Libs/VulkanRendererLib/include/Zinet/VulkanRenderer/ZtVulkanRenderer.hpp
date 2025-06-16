@@ -37,7 +37,7 @@ namespace zt::vulkan_renderer
 		
 		void draw(const DrawInfo& drawInfo) noexcept;
 
-		bool postDraw() noexcept;
+		bool submit() noexcept;
 
 		bool endFrame() noexcept;
 

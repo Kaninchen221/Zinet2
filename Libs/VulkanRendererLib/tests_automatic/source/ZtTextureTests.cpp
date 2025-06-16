@@ -86,6 +86,13 @@ namespace zt::vulkan_renderer::tests
 		Queue queue{ nullptr };
 		CommandPool commandPool{ nullptr };
 		Texture texture;
+
+		static_assert(std::is_default_constructible_v<Texture>);
+		static_assert(!std::is_copy_constructible_v<Texture>);
+		static_assert(!std::is_copy_assignable_v<Texture>);
+		static_assert(std::is_move_constructible_v<Texture>);
+		static_assert(std::is_move_assignable_v<Texture>);
+		static_assert(std::is_destructible_v<Texture>);
 	};
 
 	TEST_F(TextureTests, PassTest)

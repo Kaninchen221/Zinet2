@@ -58,9 +58,9 @@ namespace zt::vulkan_renderer
 		graphicsPipeline.draw(rendererContext, drawInfo);
 	}
 
-	bool VulkanRenderer::postDraw() noexcept
+	bool VulkanRenderer::submit() noexcept
 	{
-		return graphicsPipeline.postDraw(rendererContext);
+		return graphicsPipeline.submit(rendererContext);
 	}
 
 	bool VulkanRenderer::endFrame() noexcept

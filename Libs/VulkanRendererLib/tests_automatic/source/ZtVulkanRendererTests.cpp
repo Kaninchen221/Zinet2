@@ -244,8 +244,14 @@ namespace zt::vulkan_renderer::tests
 		size_t fpsCount = 0;
 		fpsClock.start();
 
+		core::Clock turnOffTest;
+		turnOffTest.start();
+
 		while (window.isOpen())
 		{
+			if (turnOffTest.getElapsedTime().getAsSeconds() > 10.f)
+				break;
+
 			windowEvents.pollEvents();
 
 			updateUniformBuffersData();
@@ -257,7 +263,7 @@ namespace zt::vulkan_renderer::tests
 
 			renderer.draw(drawInfo);
 
-			ASSERT_TRUE(renderer.postDraw());
+			ASSERT_TRUE(renderer.submit());
 
 			ASSERT_TRUE(renderer.endFrame());
 
@@ -270,7 +276,7 @@ namespace zt::vulkan_renderer::tests
 				fpsClock.restart();
 			}
 
-			window.requestCloseWindow();
+			//window.requestCloseWindow();
 		}
 	}
 }
