@@ -1,4 +1,4 @@
-#include "Zinet/VulkanRenderer/ZtDescriptorSet.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorSets.hpp"
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtDescriptorPool.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
@@ -7,7 +7,7 @@
 
 namespace zt::vulkan_renderer
 {
-	VkDescriptorSetAllocateInfo DescriptorSet::GetDefaultAllocateInfo(
+	VkDescriptorSetAllocateInfo DescriptorSets::GetDefaultAllocateInfo(
 		const DescriptorPool& descriptorPool, const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) noexcept
 	{
 		return VkDescriptorSetAllocateInfo
@@ -20,21 +20,22 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	bool DescriptorSet::create(const Device& device, const VkDescriptorSetAllocateInfo& allocateInfo) noexcept
+	bool DescriptorSets::create(const Device& device, const VkDescriptorSetAllocateInfo& allocateInfo) noexcept
 	{
 		const auto result = vkAllocateDescriptorSets(device.get(), &allocateInfo, &objectHandle);
 		if (result == VK_SUCCESS)
 		{
+			count = allocateInfo.descriptorSetCount;
 			return true;
 		}
 		else
 		{
-			Logger->error("Couldn't create DescriptorSet, result: {}", static_cast<std::int32_t>(result));
+			Logger->error("Couldn't create DescriptorSets, result: {}", static_cast<std::int32_t>(result));
 			return false;
 		}
 	}
 
-	VkWriteDescriptorSet DescriptorSet::GetDefaultWriteDescriptorSet() noexcept
+	VkWriteDescriptorSet DescriptorSets::GetDefaultWriteDescriptorSet() noexcept
 	{
 		return VkWriteDescriptorSet
 		{
@@ -51,7 +52,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	VkDescriptorBufferInfo DescriptorSet::GetBufferInfo(const Buffer& buffer) noexcept
+	VkDescriptorBufferInfo DescriptorSets::GetBufferInfo(const Buffer& buffer) noexcept
 	{
 		return
 		{
@@ -61,7 +62,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	VkDescriptorImageInfo DescriptorSet::GetImageInfo(const ImageView& imageView, const Sampler& sampler) noexcept
+	VkDescriptorImageInfo DescriptorSets::GetImageInfo(const ImageView& imageView, const Sampler& sampler) noexcept
 	{
 		return
 		{
@@ -71,7 +72,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	void DescriptorSet::update(const Device& device, const std::vector<VkWriteDescriptorSet>& writeDescriptorSets) const noexcept
+	void DescriptorSets::update(const Device& device, const std::vector<VkWriteDescriptorSet>& writeDescriptorSets) const noexcept
 	{
 		vkUpdateDescriptorSets(device.get(), static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
 	}

@@ -79,14 +79,14 @@ namespace zt::vulkan_renderer::tests
 			uniformBuffers.emplace_back(nullptr);
 
 			// DrawInfo
-			DrawInfo drawInfo
+			drawInfo =
 			{
-				.vertexShaderModule = vertexShaderModule,
-				.fragmentShaderModule = fragmentShaderModule,
-				.vertexBuffer = vertexBuffer,
-				.indexBuffer = indexBuffer,
+				.vertexShaderModule = &vertexShaderModule,
+				.fragmentShaderModule = &fragmentShaderModule,
+				.vertexBuffer = &vertexBuffer,
+				.indexBuffer = &indexBuffer,
 				.indexCount = 0,
-				.uniformBuffer = uniformBuffers[0]
+				.pipelineDescriptorInfo = { .uniformBuffer = &uniformBuffers[0] }
 			};
 
 			ASSERT_TRUE(
@@ -103,6 +103,7 @@ namespace zt::vulkan_renderer::tests
 
 			vertexShaderModule.destroy(device);
 			fragmentShaderModule.destroy(device);
+
 			pipelineLayout.destroy(device);
 			renderPass.destroy(device);
 			swapChain.destroy(device);
@@ -135,6 +136,8 @@ namespace zt::vulkan_renderer::tests
 		Buffer indexBuffer{ nullptr };
 		std::vector<Buffer> uniformBuffers;
 		Pipeline pipeline{ nullptr };
+
+		DrawInfo drawInfo;
 
 		static_assert(VulkanObjectDecoratorStaticTest<Pipeline, VkPipeline>());
 	};

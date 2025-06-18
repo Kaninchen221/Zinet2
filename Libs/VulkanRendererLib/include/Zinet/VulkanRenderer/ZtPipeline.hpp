@@ -13,7 +13,7 @@ namespace zt::vulkan_renderer
 	class Device;
 	class PipelineLayout;
 	class RenderPass;
-	class DrawInfo;
+	struct DrawInfo;
 
 	class ZINET_VULKAN_RENDERER_API Pipeline : public VulkanObject<VkPipeline>
 	{

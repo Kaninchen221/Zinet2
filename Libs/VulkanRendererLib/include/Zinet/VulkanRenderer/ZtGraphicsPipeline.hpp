@@ -12,7 +12,7 @@
 
 #include "Zinet/VulkanRenderer/ZtDescriptorPool.hpp"
 #include "Zinet/VulkanRenderer/ZtDescriptorSetLayout.hpp"
-#include "Zinet/VulkanRenderer/ZtDescriptorSet.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorSets.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
@@ -22,7 +22,8 @@
 namespace zt::vulkan_renderer
 {
 	class RendererContext;
-	class DrawInfo;
+	struct DrawInfo;
+	struct DescriptorInfo;
 
 	class ZINET_VULKAN_RENDERER_API GraphicsPipeline
 	{
@@ -55,8 +56,20 @@ namespace zt::vulkan_renderer
 		PipelineLayout pipelineLayout{ nullptr };
 		Pipeline pipeline{ nullptr };
 
+		using DescriptorSetLayouts = std::vector<DescriptorSetLayout>;
+		DescriptorSetLayouts descriptorSetLayouts;
 		DescriptorPool descriptorPool{ nullptr };
-		DescriptorSetLayout descriptorSetLayout{ nullptr };
-		DescriptorSet descriptorSet{ nullptr };
+		DescriptorSets descriptorSets{ nullptr };
+
+	protected:
+
+		using DescriptorPoolSizes = std::vector<VkDescriptorPoolSize>;
+		void createDescriptorData(
+			DescriptorSetLayout::Bindings& outBindings, 
+			DescriptorPoolSizes& outDescriptorPoolSizes, 
+			const DescriptorInfo& descriptorInfo) const noexcept;
+
+		bool createDescriptorSetLayout(const Device& device, DescriptorSetLayout::Bindings& bindings) noexcept;
+
 	};
 }

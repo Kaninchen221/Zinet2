@@ -2,7 +2,7 @@
 
 #include "Zinet/VulkanRenderer/Tests/ZtTestUtils.hpp"
 
-#include "Zinet/VulkanRenderer/ZtDescriptorSet.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorSets.hpp"
 #include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
@@ -67,19 +67,22 @@ namespace zt::vulkan_renderer::tests
 			ASSERT_TRUE(descriptorSetLayout.create(createInfo, device));
 			ASSERT_TRUE(descriptorSetLayout.isValid());
 
-			const std::vector descriptorSetLayouts{ descriptorSetLayout.get() };
-			const auto allocateInfo = DescriptorSet::GetDefaultAllocateInfo(descriptorPool, descriptorSetLayouts);
-			ASSERT_TRUE(descriptorSet.create(device, allocateInfo));
-			ASSERT_TRUE(descriptorSet.isValid());
+			ASSERT_EQ(descriptorSets.getCount(), 0);
 
-			const VkDescriptorBufferInfo descriptorBufferInfo = DescriptorSet::GetBufferInfo(uniformBuffer);
-			auto writeDescriptorSet = DescriptorSet::GetDefaultWriteDescriptorSet();
+			const std::vector descriptorSetLayouts{ descriptorSetLayout.get() };
+			const auto allocateInfo = DescriptorSets::GetDefaultAllocateInfo(descriptorPool, descriptorSetLayouts);
+			ASSERT_TRUE(descriptorSets.create(device, allocateInfo));
+			ASSERT_EQ(descriptorSets.getCount(), descriptorSetLayouts.size());
+			ASSERT_TRUE(descriptorSets.isValid());
+
+			const VkDescriptorBufferInfo descriptorBufferInfo = DescriptorSets::GetBufferInfo(uniformBuffer);
+			auto writeDescriptorSet = DescriptorSets::GetDefaultWriteDescriptorSet();
 			writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
-			writeDescriptorSet.dstSet = descriptorSet.get();
+			writeDescriptorSet.dstSet = descriptorSets.get();
 
 			const std::vector writeDescriptorSets{ writeDescriptorSet };
 
-			descriptorSet.update(device, writeDescriptorSets);
+			descriptorSets.update(device, writeDescriptorSets);
 		}
 
 		void TearDown() override
@@ -90,8 +93,8 @@ namespace zt::vulkan_renderer::tests
 			descriptorPool.destroy(device);
 			ASSERT_FALSE(descriptorPool.isValid());
 
-			descriptorSet.invalidate();
-			ASSERT_FALSE(descriptorSet.isValid());
+			descriptorSets.invalidate();
+			ASSERT_FALSE(descriptorSets.isValid());
 
 			uniformBuffer.destroy(vma);
 			ASSERT_FALSE(uniformBuffer.isValid());
@@ -122,9 +125,9 @@ namespace zt::vulkan_renderer::tests
 		Buffer uniformBuffer{ nullptr };
 		DescriptorPool descriptorPool{ nullptr };
 		DescriptorSetLayout descriptorSetLayout{ nullptr };
-		DescriptorSet descriptorSet{ nullptr };
+		DescriptorSets descriptorSets{ nullptr };
 
-		static_assert(VulkanObjectDecoratorStaticTest<DescriptorSet, VkDescriptorSet>());
+		static_assert(VulkanObjectDecoratorStaticTest<DescriptorSets, VkDescriptorSet>());
 	};
 
 	TEST_F(DescriptorSetTests, PassTest)

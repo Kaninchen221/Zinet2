@@ -161,7 +161,7 @@ namespace zt::vulkan_renderer
 		const auto vertexInputAttributesDescriptions = Vertex::GetInputAttributesDescriptions();
 
 		VkPipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
-		if (drawInfo.vertexBuffer.isValid())
+		if (drawInfo.vertexBuffer && drawInfo.vertexBuffer->isValid())
 		{
 			vertexInputStateCreateInfo = createVkPipelineVertexInputStateCreateInfo(&vertexInputBindingDescription, &vertexInputAttributesDescriptions);
 		}
@@ -227,18 +227,18 @@ namespace zt::vulkan_renderer
 	{
 		Pipeline::ShadersStages shadersStages;
 
-		if (drawInfo.vertexShaderModule.isValid())
+		if (drawInfo.vertexShaderModule && drawInfo.vertexShaderModule->isValid())
 		{
-			shadersStages.push_back(drawInfo.vertexShaderModule.createPipelineShaderStageCreateInfo(ShaderType::Vertex));
+			shadersStages.push_back(drawInfo.vertexShaderModule->createPipelineShaderStageCreateInfo(ShaderType::Vertex));
 		}
 		else
 		{
 			Logger->error("Vertex shader module is invalid");
 		}
 
-		if (drawInfo.fragmentShaderModule.isValid())
+		if (drawInfo.fragmentShaderModule && drawInfo.fragmentShaderModule->isValid())
 		{
-			shadersStages.push_back(drawInfo.fragmentShaderModule.createPipelineShaderStageCreateInfo(ShaderType::Fragment));
+			shadersStages.push_back(drawInfo.fragmentShaderModule->createPipelineShaderStageCreateInfo(ShaderType::Fragment));
 		}
 		else
 		{

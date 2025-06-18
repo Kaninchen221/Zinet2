@@ -3,13 +3,13 @@
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
 #include "Zinet/VulkanRenderer/ZtVertex.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderType.hpp"
+#include "Zinet/VulkanRenderer/ZtBuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
 
 #include <span>
 
 namespace zt::vulkan_renderer
 {
-	class ShaderModule;
-	class Buffer;
 	class Texture;
 	class Sampler;
 
@@ -20,19 +20,24 @@ namespace zt::vulkan_renderer
 		ShaderType shaderType = ShaderType::Invalid;
 	};
 
-	class ZINET_VULKAN_RENDERER_API DrawInfo
+	struct ZINET_VULKAN_RENDERER_API DescriptorInfo
 	{
-	public:
+		Buffer* uniformBuffer{};
+		std::vector<TextureInfo> texturesInfos;
+	};
 
+	struct ZINET_VULKAN_RENDERER_API DrawInfo
+	{
 		using Vertices = std::vector<Vertex>;
 		using Indices = std::vector<std::uint16_t>;
 
-		const ShaderModule& vertexShaderModule;
-		const ShaderModule& fragmentShaderModule;
-		const Buffer& vertexBuffer;
-		const Buffer& indexBuffer;
-		const std::uint32_t indexCount{};
-		const Buffer& uniformBuffer;
-		std::vector<TextureInfo> textureInfos;
+		ShaderModule* vertexShaderModule{};
+		ShaderModule* fragmentShaderModule{};
+		Buffer* vertexBuffer{};
+		Buffer* indexBuffer{};
+		std::uint32_t indexCount{};
+
+		DescriptorInfo pipelineDescriptorInfo;
+		DescriptorInfo objectDescriptorInfo;
 	};
 }

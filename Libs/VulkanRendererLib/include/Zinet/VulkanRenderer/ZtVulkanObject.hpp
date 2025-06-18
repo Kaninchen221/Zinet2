@@ -48,6 +48,27 @@ namespace zt::vulkan_renderer
 		}
 	}
 
+	template<class ...ArgsT>
+	inline void destroyAll(auto&& container, ArgsT&& ... args) noexcept
+	{
+		for (auto&& element : container)
+		{
+			element.destroy(std::forward<ArgsT>(args)...);
+		}
+	}
+
+	template<class ResultContainerT>
+	inline ResultContainerT VulkanObjectsToVkObjects(auto&& container) noexcept
+	{
+		ResultContainerT resultContainer;
+		for (auto&& vulkanObject : container)
+		{
+			resultContainer.push_back(vulkanObject.get());
+		}
+
+		return resultContainer;
+	}
+
 	template<class HandleT>
 	VulkanObject<HandleT>& VulkanObject<HandleT>::operator=(VulkanObject&& other) noexcept
 	{

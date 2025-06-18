@@ -19,7 +19,7 @@ namespace zt::vulkan_renderer
 	class ImageView;
 	class Sampler;
 
-	class ZINET_VULKAN_RENDERER_API DescriptorSet : public VulkanObject<VkDescriptorSet>
+	class ZINET_VULKAN_RENDERER_API DescriptorSets : public VulkanObject<VkDescriptorSet>
 	{
 	protected:
 
@@ -27,16 +27,16 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		DescriptorSet(HandleType newObjectHandle)
+		DescriptorSets(HandleType newObjectHandle)
 			: VulkanObject(newObjectHandle) {}
 
-		DescriptorSet() noexcept = delete;
-		DescriptorSet(const DescriptorSet& other) noexcept = delete;
-		DescriptorSet(DescriptorSet&& other) noexcept = default;
-		~DescriptorSet() noexcept = default;
+		DescriptorSets() noexcept = delete;
+		DescriptorSets(const DescriptorSets& other) noexcept = delete;
+		DescriptorSets(DescriptorSets&& other) noexcept = default;
+		~DescriptorSets() noexcept = default;
 
-		DescriptorSet& operator = (const DescriptorSet& other) noexcept = delete;
-		DescriptorSet& operator = (DescriptorSet&& other) noexcept = default;
+		DescriptorSets& operator = (const DescriptorSets& other) noexcept = delete;
+		DescriptorSets& operator = (DescriptorSets&& other) noexcept = default;
 
 		static VkDescriptorSetAllocateInfo GetDefaultAllocateInfo(
 			const DescriptorPool& descriptorPool, const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) noexcept;
@@ -55,5 +55,12 @@ namespace zt::vulkan_renderer
 		static VkDescriptorImageInfo GetImageInfo(const ImageView& imageView, const Sampler& sampler) noexcept;
 
 		void update(const Device& device, const std::vector<VkWriteDescriptorSet>& writeDescriptorSets) const noexcept;
+
+		auto getCount() const noexcept { return count; }
+
+	protected:
+
+		uint32_t count = 0;
+
 	};
 }

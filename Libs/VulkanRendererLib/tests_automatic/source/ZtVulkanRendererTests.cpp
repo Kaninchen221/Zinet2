@@ -231,13 +231,16 @@ namespace zt::vulkan_renderer::tests
 
 		const DrawInfo drawInfo
 		{
-			.vertexShaderModule = vertexShaderModule,
-			.fragmentShaderModule = fragmentShaderModule,
-			.vertexBuffer = vertexBuffer,
-			.indexBuffer = indexBuffer,
+			.vertexShaderModule = &vertexShaderModule,
+			.fragmentShaderModule = &fragmentShaderModule,
+			.vertexBuffer = &vertexBuffer,
+			.indexBuffer = &indexBuffer,
 			.indexCount = static_cast<std::uint32_t>(indices.size()),
-			.uniformBuffer = uniformBuffers.at(0),
-			.textureInfos = { textureInfo }
+			.pipelineDescriptorInfo =
+			{
+				.uniformBuffer = &uniformBuffers[0],
+				.texturesInfos = { textureInfo }
+			}
 		};
 
 		core::Clock fpsClock;
