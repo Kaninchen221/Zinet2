@@ -41,7 +41,7 @@ namespace zt::vulkan_renderer
 		GraphicsPipeline& operator = (const GraphicsPipeline& other) noexcept = delete;
 		GraphicsPipeline& operator = (GraphicsPipeline&& other) noexcept = default;
 
-		bool create(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept;
+		bool create(const RendererContext& rendererContext, DrawInfo& drawInfo) noexcept;
 
 		void destroy(const RendererContext& rendererContext) noexcept;
 
@@ -56,10 +56,14 @@ namespace zt::vulkan_renderer
 		PipelineLayout pipelineLayout{ nullptr };
 		Pipeline pipeline{ nullptr };
 
-		using DescriptorSetLayouts = std::vector<DescriptorSetLayout>;
-		DescriptorSetLayouts descriptorSetLayouts;
+		// Descriptors
 		DescriptorPool descriptorPool{ nullptr };
-		DescriptorSets descriptorSets{ nullptr };
+
+		DescriptorSetLayout pipelineDescriptorSetLayout{ nullptr };
+		DescriptorSets pipelineDescriptorSet{ nullptr };
+
+		DescriptorSetLayout objectDescriptorSetLayout{ nullptr };
+		DescriptorSets objectDescriptorSet{ nullptr };
 
 	protected:
 
@@ -67,9 +71,15 @@ namespace zt::vulkan_renderer
 		void createDescriptorData(
 			DescriptorSetLayout::Bindings& outBindings, 
 			DescriptorPoolSizes& outDescriptorPoolSizes, 
-			const DescriptorInfo& descriptorInfo) const noexcept;
+			DescriptorInfo& descriptorInfo) const noexcept;
 
-		bool createDescriptorSetLayout(const Device& device, DescriptorSetLayout::Bindings& bindings) noexcept;
+		DescriptorSetLayout createDescriptorSetLayout(const Device& device, DescriptorSetLayout::Bindings& bindings) noexcept;
+
+		static DescriptorSets CreateDescriptorSet(
+			const Device& device, 
+			const DescriptorPool& descriptorPool,
+			const DescriptorSetLayout& layout, 
+			std::vector<VkDescriptorSetLayout>& outLayouts) noexcept;
 
 	};
 }

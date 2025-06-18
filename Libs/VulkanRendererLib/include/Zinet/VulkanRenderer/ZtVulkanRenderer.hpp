@@ -33,7 +33,7 @@ namespace zt::vulkan_renderer
 
 		bool beginFrame() noexcept;
 
-		bool createPipeline(const DrawInfo& drawInfo) noexcept;
+		bool createPipeline(DrawInfo& drawInfo) noexcept;
 		
 		void draw(const DrawInfo& drawInfo) noexcept;
 

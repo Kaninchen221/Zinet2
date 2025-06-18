@@ -229,14 +229,15 @@ namespace zt::vulkan_renderer::tests
 			.shaderType = ShaderType::Fragment
 		};
 
-		const DrawInfo drawInfo
+		DrawInfo drawInfo
 		{
 			.vertexShaderModule = &vertexShaderModule,
 			.fragmentShaderModule = &fragmentShaderModule,
 			.vertexBuffer = &vertexBuffer,
 			.indexBuffer = &indexBuffer,
 			.indexCount = static_cast<std::uint32_t>(indices.size()),
-			.pipelineDescriptorInfo =
+			.pipelineDescriptorInfo = {},
+			.objectDescriptorInfo =
 			{
 				.uniformBuffer = &uniformBuffers[0],
 				.texturesInfos = { textureInfo }

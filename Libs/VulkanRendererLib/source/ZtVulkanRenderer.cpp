@@ -45,7 +45,7 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	bool VulkanRenderer::createPipeline(const DrawInfo& drawInfo) noexcept
+	bool VulkanRenderer::createPipeline(DrawInfo& drawInfo) noexcept
 	{
 		if (graphicsPipeline.isValid())
 			return true;

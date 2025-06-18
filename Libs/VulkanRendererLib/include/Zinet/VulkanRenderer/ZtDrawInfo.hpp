@@ -18,11 +18,13 @@ namespace zt::vulkan_renderer
 		Texture* texture{};
 		Sampler* sampler{};
 		ShaderType shaderType = ShaderType::Invalid;
+		uint32_t cachedBinding;
 	};
 
 	struct ZINET_VULKAN_RENDERER_API DescriptorInfo
 	{
 		Buffer* uniformBuffer{};
+		uint32_t uniformCachedBinding;
 		std::vector<TextureInfo> texturesInfos;
 	};
 

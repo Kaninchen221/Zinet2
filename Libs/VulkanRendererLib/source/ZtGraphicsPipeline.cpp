@@ -7,7 +7,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool GraphicsPipeline::create(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept
+	bool GraphicsPipeline::create(const RendererContext& rendererContext, DrawInfo& drawInfo) noexcept
 	{
 		auto& device = rendererContext.device;
 		auto& swapChain = rendererContext.swapChain;
@@ -26,30 +26,20 @@ namespace zt::vulkan_renderer
 		DescriptorPoolSizes descriptorPoolSizes;
 
 		createDescriptorData(pipelineBindings, descriptorPoolSizes, pipelineDescriptorInfo);
+		pipelineDescriptorSetLayout = createDescriptorSetLayout(device, pipelineBindings);
 
 		createDescriptorData(objectBindings, descriptorPoolSizes, objectDescriptorInfo);
-
-		if (!createDescriptorSetLayout(device, pipelineBindings))
-		{
-			Logger->error("Couldn't create pipeline descriptor set layout");
-			return false;
-		}
-
-		if (!createDescriptorSetLayout(device, objectBindings))
-		{
-			Logger->error("Couldn't create object descriptor set layout");
-			return false;
-		}
+		objectDescriptorSetLayout = createDescriptorSetLayout(device, objectBindings);
 
 		const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);
 		if (!descriptorPool.create(device, descriptorPoolCreateInfo))
 			return false;
 
-		const auto vkDescriptorSetLayouts = VulkanObjectsToVkObjects<std::vector<VkDescriptorSetLayout>>(descriptorSetLayouts);
+		std::vector<VkDescriptorSetLayout> vkDescriptorSetLayouts;
+		pipelineDescriptorSet = CreateDescriptorSet(device, descriptorPool, pipelineDescriptorSetLayout, vkDescriptorSetLayouts);
+		objectDescriptorSet = CreateDescriptorSet(device, descriptorPool, objectDescriptorSetLayout, vkDescriptorSetLayouts);
 
-		const auto allocateInfo = DescriptorSets::GetDefaultAllocateInfo(descriptorPool, vkDescriptorSetLayouts);
-		if (!descriptorSets.create(device, allocateInfo))
-			return false;
+		// TODO: Update pipeline descriptor set only one time
 
 		auto pipelineLayoutCreateInfo = PipelineLayout::GetDefaultCreateInfo(vkDescriptorSetLayouts);
 		if (!pipelineLayout.create(device, pipelineLayoutCreateInfo))
@@ -69,8 +59,10 @@ namespace zt::vulkan_renderer
 		const auto& device = rendererContext.device;
 
 		descriptorPool.destroy(device);
-		destroyAll(descriptorSetLayouts, device);
-		descriptorSets.invalidate();
+		pipelineDescriptorSetLayout.destroy(device);
+		pipelineDescriptorSet.invalidate();
+		objectDescriptorSetLayout.destroy(device);
+		objectDescriptorSet.invalidate();
 
 		pipeline.destroy(device);
 		pipelineLayout.destroy(device);
@@ -85,8 +77,6 @@ namespace zt::vulkan_renderer
 		auto currentFramebufferIndex = rendererContext.currentFramebufferIndex;
 		auto& currentFramebuffer = rendererContext.framebuffers[currentFramebufferIndex];
 		auto& renderPass = rendererContext.renderPass;
-
-		auto& pipelineDescriptorInfo = drawInfo.pipelineDescriptorInfo;
 
 		commandBuffer.reset();
 
@@ -115,34 +105,38 @@ namespace zt::vulkan_renderer
 		};
 		commandBuffer.setScissor(scissor);
 
+		auto& descriptorInfo = drawInfo.objectDescriptorInfo;
+
 		// Update descriptor set
+		// TODO: Update object descriptor set everytime before draw command
 		std::vector<VkWriteDescriptorSet> writeDescriptorSets;
 		std::vector<VkDescriptorBufferInfo> descriptorBuffersInfos;
 		std::vector<VkDescriptorImageInfo> descriptorImagesInfos;
-		if (pipelineDescriptorInfo.uniformBuffer->isValid())
+		if (descriptorInfo.uniformBuffer && descriptorInfo.uniformBuffer->isValid())
 		{
-			auto& descriptorBufferInfo = descriptorBuffersInfos.emplace_back(DescriptorSets::GetBufferInfo(*pipelineDescriptorInfo.uniformBuffer));
+			auto& descriptorBufferInfo = descriptorBuffersInfos.emplace_back(DescriptorSets::GetBufferInfo(*descriptorInfo.uniformBuffer));
 			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSets::GetDefaultWriteDescriptorSet());
+			writeDescriptorSet.dstSet = objectDescriptorSet.get();
+			writeDescriptorSet.dstBinding = descriptorInfo.uniformCachedBinding;
 			writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
-			writeDescriptorSet.dstSet = descriptorSets.get();
 		}
 
-		if (!pipelineDescriptorInfo.texturesInfos.empty())
+		if (!descriptorInfo.texturesInfos.empty())
 		{
-			const auto textureInfo = pipelineDescriptorInfo.texturesInfos[0];
+			const auto textureInfo = descriptorInfo.texturesInfos[0];
 			auto& imageDescriptorInfo = descriptorImagesInfos.emplace_back(DescriptorSets::GetImageInfo(textureInfo.texture->getImageView(), *textureInfo.sampler));
 
 			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSets::GetDefaultWriteDescriptorSet());
-			writeDescriptorSet.dstSet = descriptorSets.get();
-			writeDescriptorSet.dstBinding = 1;
+			writeDescriptorSet.dstSet = objectDescriptorSet.get();
+			writeDescriptorSet.dstBinding = descriptorInfo.texturesInfos[0].cachedBinding;
 			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 			writeDescriptorSet.pImageInfo = &imageDescriptorInfo;
 		}
-		descriptorSets.update(device, writeDescriptorSets);
+		objectDescriptorSet.update(device, writeDescriptorSets);
 
-		if (descriptorSets.isValid())
+		if (objectDescriptorSet.isValid())
 		{
-			const auto vkDescriptorSets = std::vector{ descriptorSets.get() };
+			const auto vkDescriptorSets = std::vector{ objectDescriptorSet.get() };
 			vkCmdBindDescriptorSets(
 				commandBuffer.get(),
 				VK_PIPELINE_BIND_POINT_GRAPHICS,
@@ -214,16 +208,23 @@ namespace zt::vulkan_renderer
 
 	bool GraphicsPipeline::isValid() const noexcept
 	{
-		return pipeline.isValid() && pipelineLayout.isValid() && descriptorSets.isValid();
+		return 
+			commandBuffer.isValid() &&
+			pipeline.isValid() &&
+			pipelineLayout.isValid() &&
+			descriptorPool.isValid() &&
+			pipelineLayout.isValid() && pipelineDescriptorSet.isValid() &&
+			objectDescriptorSetLayout.isValid() && objectDescriptorSet.isValid();
 	}
 
-	void GraphicsPipeline::createDescriptorData(DescriptorSetLayout::Bindings& outBindings, DescriptorPoolSizes& outDescriptorPoolSizes, const DescriptorInfo& descriptorInfo) const noexcept
+	void GraphicsPipeline::createDescriptorData(DescriptorSetLayout::Bindings& outBindings, DescriptorPoolSizes& outDescriptorPoolSizes, DescriptorInfo& descriptorInfo) const noexcept
 	{
 		if (descriptorInfo.uniformBuffer && descriptorInfo.uniformBuffer->isValid())
 		{
-			auto uniformLayoutBinding = DescriptorSetLayout::GetDefaultUniformLayoutBinding();
-			uniformLayoutBinding.binding = static_cast<uint32_t>(outBindings.size());
-			outBindings.push_back(uniformLayoutBinding);
+			auto layoutBinding = DescriptorSetLayout::GetDefaultUniformLayoutBinding();
+			layoutBinding.binding = static_cast<uint32_t>(outBindings.size());
+			descriptorInfo.uniformCachedBinding = layoutBinding.binding;
+			outBindings.push_back(layoutBinding);
 
 			auto descriptorPoolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
 			descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -233,27 +234,46 @@ namespace zt::vulkan_renderer
 		// TODO: Handle more textures
 		if (!descriptorInfo.texturesInfos.empty())
 		{
-			auto imageLayoutBinding = DescriptorSetLayout::GetDefaultImageLayoutBinding();
-			imageLayoutBinding.binding = static_cast<uint32_t>(outBindings.size());
-			outBindings.push_back(imageLayoutBinding);
+			auto layoutBinding = DescriptorSetLayout::GetDefaultImageLayoutBinding();
+			layoutBinding.binding = static_cast<uint32_t>(outBindings.size());
+			descriptorInfo.texturesInfos[0].cachedBinding = layoutBinding.binding;
+			outBindings.push_back(layoutBinding);
 
-			auto descriptorPoolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
-			descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-			outDescriptorPoolSizes.push_back(descriptorPoolSize);
+			auto poolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
+			poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			outDescriptorPoolSizes.push_back(poolSize);
 		}
 	}
 
-	bool GraphicsPipeline::createDescriptorSetLayout(const Device& device, DescriptorSetLayout::Bindings& bindings) noexcept
+	DescriptorSetLayout GraphicsPipeline::createDescriptorSetLayout(const Device& device, DescriptorSetLayout::Bindings& bindings) noexcept
 	{
 		if (bindings.empty())
-			return true;
+			return DescriptorSetLayout{ nullptr };
 
 		const auto descriptorSetLayoutCreateInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
-		auto& descriptorSetLayout = descriptorSetLayouts.emplace_back(nullptr);
-		if (!descriptorSetLayout.create(descriptorSetLayoutCreateInfo, device))
-			return false;
+		DescriptorSetLayout descriptorSetLayout{ nullptr };
+		descriptorSetLayout.create(descriptorSetLayoutCreateInfo, device);
 
-		return true;
+		return std::move(descriptorSetLayout);
+	}
+
+	DescriptorSets GraphicsPipeline::CreateDescriptorSet(
+		const Device& device,
+		const DescriptorPool& descriptorPool,
+		const DescriptorSetLayout& layout,
+		std::vector<VkDescriptorSetLayout>& outLayouts) noexcept
+	{
+		DescriptorSets descriptorSet{ nullptr };
+
+		if (layout.isValid())
+		{
+			const std::vector<VkDescriptorSetLayout> vkDescriptorSetLayouts{ layout.get() };
+			outLayouts.push_back(layout.get());
+			const auto allocateInfo = DescriptorSets::GetDefaultAllocateInfo(descriptorPool, vkDescriptorSetLayouts);
+			descriptorSet.create(device, allocateInfo);
+		}
+
+		return std::move(descriptorSet);
 	}
 
 }
