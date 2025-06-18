@@ -31,9 +31,12 @@ namespace zt::vulkan_renderer
 		createDescriptorData(objectBindings, descriptorPoolSizes, objectDescriptorInfo);
 		objectDescriptorSetLayout = createDescriptorSetLayout(device, objectBindings);
 
-		const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);
-		if (!descriptorPool.create(device, descriptorPoolCreateInfo))
-			return false;
+		if (!descriptorPoolSizes.empty())
+		{
+			const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);
+			if (!descriptorPool.create(device, descriptorPoolCreateInfo))
+				return false;
+		}
 
 		std::vector<VkDescriptorSetLayout> vkDescriptorSetLayouts;
 		pipelineDescriptorSet = CreateDescriptorSet(device, descriptorPool, pipelineDescriptorSetLayout, vkDescriptorSetLayouts);
@@ -208,13 +211,11 @@ namespace zt::vulkan_renderer
 
 	bool GraphicsPipeline::isValid() const noexcept
 	{
+		// Ignore objects related to descriptors
 		return 
 			commandBuffer.isValid() &&
 			pipeline.isValid() &&
-			pipelineLayout.isValid() &&
-			descriptorPool.isValid() &&
-			pipelineLayout.isValid() && pipelineDescriptorSet.isValid() &&
-			objectDescriptorSetLayout.isValid() && objectDescriptorSet.isValid();
+			pipelineLayout.isValid();
 	}
 
 	void GraphicsPipeline::createDescriptorData(DescriptorSetLayout::Bindings& outBindings, DescriptorPoolSizes& outDescriptorPoolSizes, DescriptorInfo& descriptorInfo) const noexcept
