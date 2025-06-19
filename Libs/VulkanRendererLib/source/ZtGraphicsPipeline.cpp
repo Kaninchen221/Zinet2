@@ -9,6 +9,9 @@ namespace zt::vulkan_renderer
 {
 	bool GraphicsPipeline::create(const RendererContext& rendererContext, DrawInfo& drawInfo) noexcept
 	{
+		if (isValid())
+			return false;
+
 		auto& device = rendererContext.device;
 		auto& swapChain = rendererContext.swapChain;
 		auto& renderPass = rendererContext.renderPass;
@@ -190,7 +193,10 @@ namespace zt::vulkan_renderer
 			pipelineLayout.isValid();
 	}
 
-	void GraphicsPipeline::createDescriptorData(DescriptorSetLayout::Bindings& outBindings, DescriptorPoolSizes& outDescriptorPoolSizes, DescriptorInfo& descriptorInfo) const noexcept
+	void GraphicsPipeline::createDescriptorData(
+		DescriptorSetLayout::Bindings& outBindings, 
+		DescriptorPoolSizes& outDescriptorPoolSizes, 
+		DescriptorInfo& descriptorInfo) const noexcept
 	{
 		auto& uniformBuffer = descriptorInfo.uniformBuffer;
 		if (uniformBuffer && uniformBuffer->isValid())

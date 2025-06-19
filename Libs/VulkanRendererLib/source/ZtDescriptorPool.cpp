@@ -20,7 +20,7 @@ namespace zt::vulkan_renderer
 			.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
 			.pNext = nullptr,
 			.flags = {},
-			.maxSets = 1,
+			.maxSets = 4, // Significant number of GPUs supports only 4 descriptor sets
 			.poolSizeCount = static_cast<std::uint32_t>(poolSizes.size()),
 			.pPoolSizes = poolSizes.data()
 		};

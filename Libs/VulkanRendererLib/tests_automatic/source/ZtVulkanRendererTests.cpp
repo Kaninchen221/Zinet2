@@ -236,11 +236,11 @@ namespace zt::vulkan_renderer::tests
 			.vertexBuffer = &vertexBuffer,
 			.indexBuffer = &indexBuffer,
 			.indexCount = static_cast<std::uint32_t>(indices.size()),
-			.pipelineDescriptorInfo = {},
+			.pipelineDescriptorInfo = { nullptr, 0, { textureInfo } },
 			.objectDescriptorInfo =
 			{
 				.uniformBuffer = &uniformBuffers[0],
-				.texturesInfos = { textureInfo }
+				.texturesInfos{}
 			}
 		};
 
