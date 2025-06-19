@@ -39,10 +39,10 @@ namespace zt::vulkan_renderer
 		}
 
 		std::vector<VkDescriptorSetLayout> vkDescriptorSetLayouts;
-		pipelineDescriptorSet = CreateDescriptorSet(device, descriptorPool, pipelineDescriptorSetLayout, vkDescriptorSetLayouts);
-		objectDescriptorSet = CreateDescriptorSet(device, descriptorPool, objectDescriptorSetLayout, vkDescriptorSetLayouts);
+		pipelineDescriptorSet = createDescriptorSet(device, pipelineDescriptorSetLayout, vkDescriptorSetLayouts);
+		objectDescriptorSet = createDescriptorSet(device, objectDescriptorSetLayout, vkDescriptorSetLayouts);
 
-		// TODO: Update pipeline descriptor set only one time
+		UpdateDescriptorSet(device, drawInfo.pipelineDescriptorInfo, pipelineDescriptorSet);
 
 		auto pipelineLayoutCreateInfo = PipelineLayout::GetDefaultCreateInfo(vkDescriptorSetLayouts);
 		if (!pipelineLayout.create(device, pipelineLayoutCreateInfo))
@@ -108,38 +108,10 @@ namespace zt::vulkan_renderer
 		};
 		commandBuffer.setScissor(scissor);
 
-		auto& descriptorInfo = drawInfo.objectDescriptorInfo;
-
-		// Update descriptor set
-		// TODO: Update object descriptor set everytime before draw command
-		std::vector<VkWriteDescriptorSet> writeDescriptorSets;
-		std::vector<VkDescriptorBufferInfo> descriptorBuffersInfos;
-		std::vector<VkDescriptorImageInfo> descriptorImagesInfos;
-		if (descriptorInfo.uniformBuffer && descriptorInfo.uniformBuffer->isValid())
-		{
-			auto& descriptorBufferInfo = descriptorBuffersInfos.emplace_back(DescriptorSets::GetBufferInfo(*descriptorInfo.uniformBuffer));
-			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSets::GetDefaultWriteDescriptorSet());
-			writeDescriptorSet.dstSet = objectDescriptorSet.get();
-			writeDescriptorSet.dstBinding = descriptorInfo.uniformCachedBinding;
-			writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
-		}
-
-		if (!descriptorInfo.texturesInfos.empty())
-		{
-			const auto textureInfo = descriptorInfo.texturesInfos[0];
-			auto& imageDescriptorInfo = descriptorImagesInfos.emplace_back(DescriptorSets::GetImageInfo(textureInfo.texture->getImageView(), *textureInfo.sampler));
-
-			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSets::GetDefaultWriteDescriptorSet());
-			writeDescriptorSet.dstSet = objectDescriptorSet.get();
-			writeDescriptorSet.dstBinding = descriptorInfo.texturesInfos[0].cachedBinding;
-			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-			writeDescriptorSet.pImageInfo = &imageDescriptorInfo;
-		}
-		objectDescriptorSet.update(device, writeDescriptorSets);
+		UpdateDescriptorSet(device, drawInfo.objectDescriptorInfo, objectDescriptorSet);
 
 		if (objectDescriptorSet.isValid())
 		{
-			const auto vkDescriptorSets = std::vector{ objectDescriptorSet.get() };
 			vkCmdBindDescriptorSets(
 				commandBuffer.get(),
 				VK_PIPELINE_BIND_POINT_GRAPHICS,
@@ -258,9 +230,8 @@ namespace zt::vulkan_renderer
 		return std::move(descriptorSetLayout);
 	}
 
-	DescriptorSets GraphicsPipeline::CreateDescriptorSet(
+	DescriptorSets GraphicsPipeline::createDescriptorSet(
 		const Device& device,
-		const DescriptorPool& descriptorPool,
 		const DescriptorSetLayout& layout,
 		std::vector<VkDescriptorSetLayout>& outLayouts) noexcept
 	{
@@ -271,10 +242,46 @@ namespace zt::vulkan_renderer
 			const std::vector<VkDescriptorSetLayout> vkDescriptorSetLayouts{ layout.get() };
 			outLayouts.push_back(layout.get());
 			const auto allocateInfo = DescriptorSets::GetDefaultAllocateInfo(descriptorPool, vkDescriptorSetLayouts);
-			descriptorSet.create(device, allocateInfo);
+			if (descriptorSet.create(device, allocateInfo))
+			{
+				vkDescriptorSets.push_back(descriptorSet.get());
+			}
 		}
 
 		return std::move(descriptorSet);
+	}
+
+	void GraphicsPipeline::UpdateDescriptorSet(const Device& device, const DescriptorInfo& descriptorInfo, const DescriptorSets& descriptorSet) noexcept
+	{
+		std::vector<VkWriteDescriptorSet> writeDescriptorSets;
+		std::vector<VkDescriptorBufferInfo> descriptorBuffersInfos;
+		std::vector<VkDescriptorImageInfo> descriptorImagesInfos;
+
+		auto& uniformBuffer = descriptorInfo.uniformBuffer;
+		if (uniformBuffer && uniformBuffer->isValid())
+		{
+			auto& descriptorBufferInfo = descriptorBuffersInfos.emplace_back(DescriptorSets::GetBufferInfo(*descriptorInfo.uniformBuffer));
+			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSets::GetDefaultWriteDescriptorSet());
+			writeDescriptorSet.dstSet = descriptorSet.get();
+			writeDescriptorSet.dstBinding = descriptorInfo.uniformCachedBinding;
+			writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
+		}
+
+		auto& texturesInfos = descriptorInfo.texturesInfos;
+		if (!texturesInfos.empty())
+		{
+			const auto textureInfo = texturesInfos[0];
+			auto& imageDescriptorInfo = descriptorImagesInfos.emplace_back(DescriptorSets::GetImageInfo(textureInfo.texture->getImageView(), *textureInfo.sampler));
+
+			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSets::GetDefaultWriteDescriptorSet());
+			writeDescriptorSet.dstSet = descriptorSet.get();
+			writeDescriptorSet.dstBinding = descriptorInfo.texturesInfos[0].cachedBinding;
+			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			writeDescriptorSet.pImageInfo = &imageDescriptorInfo;
+		}
+
+		if (!writeDescriptorSets.empty())
+			descriptorSet.update(device, writeDescriptorSets);
 	}
 
 }

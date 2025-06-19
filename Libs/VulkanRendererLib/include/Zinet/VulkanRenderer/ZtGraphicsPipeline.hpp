@@ -65,6 +65,9 @@ namespace zt::vulkan_renderer
 		DescriptorSetLayout objectDescriptorSetLayout{ nullptr };
 		DescriptorSets objectDescriptorSet{ nullptr };
 
+		using VkDescriptorSets = std::vector<VkDescriptorSet>;
+		VkDescriptorSets vkDescriptorSets;
+
 	protected:
 
 		using DescriptorPoolSizes = std::vector<VkDescriptorPoolSize>;
@@ -75,11 +78,12 @@ namespace zt::vulkan_renderer
 
 		DescriptorSetLayout createDescriptorSetLayout(const Device& device, DescriptorSetLayout::Bindings& bindings) noexcept;
 
-		static DescriptorSets CreateDescriptorSet(
-			const Device& device, 
-			const DescriptorPool& descriptorPool,
+		DescriptorSets createDescriptorSet(
+			const Device& device,
 			const DescriptorSetLayout& layout, 
 			std::vector<VkDescriptorSetLayout>& outLayouts) noexcept;
+
+		static void UpdateDescriptorSet(const Device& device, const DescriptorInfo& descriptorInfo, const DescriptorSets& descriptorSet) noexcept;
 
 	};
 }
