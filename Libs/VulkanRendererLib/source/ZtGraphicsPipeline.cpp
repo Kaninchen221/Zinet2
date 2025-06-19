@@ -84,6 +84,7 @@ namespace zt::vulkan_renderer
 		auto& currentFramebuffer = rendererContext.framebuffers[currentFramebufferIndex];
 		auto& renderPass = rendererContext.renderPass;
 
+		// Begin draw start
 		commandBuffer.reset();
 
 		commandBuffer.begin();
@@ -111,8 +112,6 @@ namespace zt::vulkan_renderer
 		};
 		commandBuffer.setScissor(scissor);
 
-		UpdateDescriptorSet(device, drawInfo.objectDescriptorInfo, objectDescriptorSet);
-
 		if (objectDescriptorSet.isValid())
 		{
 			vkCmdBindDescriptorSets(
@@ -125,6 +124,9 @@ namespace zt::vulkan_renderer
 				0,
 				nullptr);
 		}
+		// Begin draw end
+
+		UpdateDescriptorSet(device, drawInfo.objectDescriptorInfo, objectDescriptorSet);
 
 		// Vertex Buffer
 		const VkBuffer vertexBuffers[] = { drawInfo.vertexBuffer->get() };

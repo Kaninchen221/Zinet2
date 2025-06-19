@@ -110,7 +110,7 @@ namespace zt::vulkan_renderer
 		if (!wd::GLFW::IsInitialized())
 			return {};
 
-		std::vector<const char*> result{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+		std::vector<const char*> result{ VK_KHR_SWAPCHAIN_EXTENSION_NAME, VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME };
 
 #if VMA_MEMORY_BUDGET == 1
 		result.push_back(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME);

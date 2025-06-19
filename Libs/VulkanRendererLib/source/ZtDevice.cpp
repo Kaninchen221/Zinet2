@@ -46,10 +46,18 @@ namespace zt::vulkan_renderer
 		const VkPhysicalDeviceFeatures deviceFeatures{};
 
 		const auto extensions = PhysicalDevice::GetRequiredExtensions();
+
+		/// We need it for: "#extension GL_EXT_nonuniform_qualifier : require" GLSL extension
+		VkPhysicalDeviceDescriptorIndexingFeaturesEXT indexingFeatures = {};
+		indexingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT;
+		indexingFeatures.runtimeDescriptorArray = VK_TRUE;
+		indexingFeatures.shaderSampledImageArrayNonUniformIndexing = VK_TRUE;
+		indexingFeatures.descriptorBindingVariableDescriptorCount = VK_TRUE;
+
 		const VkDeviceCreateInfo createInfo
 		{
 			.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-			.pNext = nullptr,
+			.pNext = &indexingFeatures,
 			.flags = {},
 			.queueCreateInfoCount = static_cast<std::uint32_t>(queueCreateInfos.size()),
 			.pQueueCreateInfos = queueCreateInfos.data(),
