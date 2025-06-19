@@ -192,7 +192,8 @@ namespace zt::vulkan_renderer
 
 	void GraphicsPipeline::createDescriptorData(DescriptorSetLayout::Bindings& outBindings, DescriptorPoolSizes& outDescriptorPoolSizes, DescriptorInfo& descriptorInfo) const noexcept
 	{
-		if (descriptorInfo.uniformBuffer && descriptorInfo.uniformBuffer->isValid())
+		auto& uniformBuffer = descriptorInfo.uniformBuffer;
+		if (uniformBuffer && uniformBuffer->isValid())
 		{
 			auto layoutBinding = DescriptorSetLayout::GetDefaultUniformLayoutBinding();
 			layoutBinding.binding = static_cast<uint32_t>(outBindings.size());
@@ -204,12 +205,11 @@ namespace zt::vulkan_renderer
 			outDescriptorPoolSizes.push_back(descriptorPoolSize);
 		}
 
-		// TODO: Handle more textures
-		if (!descriptorInfo.texturesInfos.empty())
+		for (auto& textureInfo : descriptorInfo.texturesInfos)
 		{
 			auto layoutBinding = DescriptorSetLayout::GetDefaultImageLayoutBinding();
 			layoutBinding.binding = static_cast<uint32_t>(outBindings.size());
-			descriptorInfo.texturesInfos[0].cachedBinding = layoutBinding.binding;
+			textureInfo.cachedBinding = layoutBinding.binding;
 			outBindings.push_back(layoutBinding);
 
 			auto poolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
@@ -267,15 +267,13 @@ namespace zt::vulkan_renderer
 			writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
 		}
 
-		auto& texturesInfos = descriptorInfo.texturesInfos;
-		if (!texturesInfos.empty())
+		for (auto& textureInfo : descriptorInfo.texturesInfos)
 		{
-			const auto textureInfo = texturesInfos[0];
 			auto& imageDescriptorInfo = descriptorImagesInfos.emplace_back(DescriptorSets::GetImageInfo(textureInfo.texture->getImageView(), *textureInfo.sampler));
 
 			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSets::GetDefaultWriteDescriptorSet());
 			writeDescriptorSet.dstSet = descriptorSet.get();
-			writeDescriptorSet.dstBinding = descriptorInfo.texturesInfos[0].cachedBinding;
+			writeDescriptorSet.dstBinding = textureInfo.cachedBinding;
 			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 			writeDescriptorSet.pImageInfo = &imageDescriptorInfo;
 		}
