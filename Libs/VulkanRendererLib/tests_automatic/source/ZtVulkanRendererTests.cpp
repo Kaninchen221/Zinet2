@@ -186,7 +186,7 @@ namespace zt::vulkan_renderer::tests
 		}
 		uniformBuffers[0].fillWithObject(uniformData, vma);
 
-		uniformData2.position = { 0.0f, 0.0f };
+		uniformData2.position = uniformData.position * -1.f;
 		uniformData2.colorScalar = 1.f;
 		uniformBuffers[1].fillWithObject(uniformData2, vma);
 	}
@@ -251,8 +251,7 @@ namespace zt::vulkan_renderer::tests
 			.pipelineDescriptorInfo = { {}, { textureInfo }},
 			.drawCallDescriptorInfo =
 			{
-				//.uniformBuffers = { { &uniformBuffers[0] }, { &uniformBuffers[1] } },
-				.uniformBuffers = { { &uniformBuffers[0] } }, // TODO: Fix buffers offset alignment
+				.uniformBuffers = { { &uniformBuffers[0] }, { &uniformBuffers[1] } },
 				.texturesInfos{}
 			}
 		};

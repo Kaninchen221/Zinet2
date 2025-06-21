@@ -16,6 +16,7 @@ namespace zt::vulkan_renderer
 {
 	class Surface;
 
+	// TODO: Cache various data? Like VkPhysicalDeviceProperties or VkPhysicalDeviceFeatures
 	class ZINET_VULKAN_RENDERER_API PhysicalDevice : public VulkanObject<VkPhysicalDevice>
 	{
 	protected:
