@@ -5,6 +5,8 @@
 #include "Zinet/VulkanRenderer/ZtShaderType.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
+#include "Zinet/VulkanRenderer/ZtImageView.hpp"
+#include "Zinet/VulkanRenderer/ZtSampler.hpp"
 
 #include <span>
 
@@ -18,14 +20,24 @@ namespace zt::vulkan_renderer
 		Texture* texture{};
 		Sampler* sampler{};
 		ShaderType shaderType = ShaderType::Invalid;
-		uint32_t cachedBinding;
+	};
+
+	struct ZINET_VULKAN_RENDERER_API UniformBufferInfo
+	{
+		Buffer* uniformBuffer{};
 	};
 
 	struct ZINET_VULKAN_RENDERER_API DescriptorInfo
 	{
-		Buffer* uniformBuffer{};
-		uint32_t uniformCachedBinding;
+		/// Uniform buffer per instance
+		std::vector<UniformBufferInfo> uniformBuffers;
+
+		/// Texture per instance
 		std::vector<TextureInfo> texturesInfos;
+
+		/// Cached data
+		uint32_t cachedUniformBuffersBinding;
+		uint32_t cachedTexturesBinding;
 	};
 
 	struct ZINET_VULKAN_RENDERER_API DrawInfo
@@ -37,9 +49,10 @@ namespace zt::vulkan_renderer
 		ShaderModule* fragmentShaderModule{};
 		Buffer* vertexBuffer{};
 		Buffer* indexBuffer{};
-		std::uint32_t indexCount{};
+		uint32_t indexCount{};
+		uint32_t instances = 1;
 
 		DescriptorInfo pipelineDescriptorInfo;
-		DescriptorInfo objectDescriptorInfo;
+		DescriptorInfo drawCallDescriptorInfo;
 	};
 }

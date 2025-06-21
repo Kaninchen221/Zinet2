@@ -20,9 +20,10 @@ void main() {
 	instanceIndex = gl_InstanceIndex;
 
 	vec2 posOffset = uniforms[gl_InstanceIndex].posOffset;
-	float colorScalar = uniforms[gl_InstanceIndex].colorScalar;
+	float colorScalar = uniforms[0].colorScalar;
 
-	vec3 position = vec3(inPosition.x + posOffset.x, inPosition.y + posOffset.y, inPosition.z);
+	float instanceYOffset = gl_InstanceIndex * 0.5;
+	vec3 position = vec3(inPosition.x + posOffset.x, inPosition.y + posOffset.y + instanceYOffset, inPosition.z);
     gl_Position = vec4(position, 1.0);
     fragColor = inColor;
 	fragColor *= colorScalar;

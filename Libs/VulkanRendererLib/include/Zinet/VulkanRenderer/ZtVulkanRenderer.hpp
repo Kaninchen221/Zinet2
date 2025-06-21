@@ -52,6 +52,7 @@ namespace zt::vulkan_renderer
 		RendererContext rendererContext;
 		GraphicsPipeline graphicsPipeline;
 
+		// TODO: Fix window resize
 		static void WindowResizedCallback(void* userPointer, const Vector2i& size);
 
 	public:

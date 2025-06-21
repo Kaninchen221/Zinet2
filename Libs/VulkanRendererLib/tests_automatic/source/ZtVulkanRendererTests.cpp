@@ -76,9 +76,15 @@ namespace zt::vulkan_renderer::tests
 			ASSERT_TRUE(indexBuffer.fillWithSTDContainer(indices, vma));
 
 			// Uniform Buffers
-			{
+			{ // #0
 				Buffer& uniformBuffer = uniformBuffers.emplace_back(nullptr);
 				const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(uniformData);
+				ASSERT_TRUE(uniformBuffer.createBuffer(uniformBufferCreateInfo, vma));
+			}
+
+			{ // #1
+				Buffer& uniformBuffer = uniformBuffers.emplace_back(nullptr);
+				const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(uniformData2);
 				ASSERT_TRUE(uniformBuffer.createBuffer(uniformBufferCreateInfo, vma));
 			}
 
@@ -127,6 +133,7 @@ namespace zt::vulkan_renderer::tests
 			alignas(4) float colorScalar{ 0.f };
 		};
 		UniformData uniformData;
+		UniformData uniformData2;
 		float uniformDataScalar = 1.f;
 
 		Texture texture;
@@ -175,9 +182,13 @@ namespace zt::vulkan_renderer::tests
 		{
 			auto& colorScalar = uniformData.colorScalar;
 			colorScalar += uniformDataScalar * 0.00015f;
-			colorScalar = std::clamp(colorScalar, 0.02f, 0.50f);
+			colorScalar = std::clamp(colorScalar, 0.1f, 0.50f);
 		}
 		uniformBuffers[0].fillWithObject(uniformData, vma);
+
+		uniformData2.position = { 0.0f, 0.0f };
+		uniformData2.colorScalar = 1.f;
+		uniformBuffers[1].fillWithObject(uniformData2, vma);
 	}
 
 	void VulkanRendererTests::createTexture()
@@ -236,10 +247,12 @@ namespace zt::vulkan_renderer::tests
 			.vertexBuffer = &vertexBuffer,
 			.indexBuffer = &indexBuffer,
 			.indexCount = static_cast<std::uint32_t>(indices.size()),
-			.pipelineDescriptorInfo = { nullptr, 0, { textureInfo } },
-			.objectDescriptorInfo =
+			.instances = 2u,
+			.pipelineDescriptorInfo = { {}, { textureInfo }},
+			.drawCallDescriptorInfo =
 			{
-				.uniformBuffer = &uniformBuffers[0],
+				//.uniformBuffers = { { &uniformBuffers[0] }, { &uniformBuffers[1] } },
+				.uniformBuffers = { { &uniformBuffers[0] } }, // TODO: Fix buffers offset alignment
 				.texturesInfos{}
 			}
 		};

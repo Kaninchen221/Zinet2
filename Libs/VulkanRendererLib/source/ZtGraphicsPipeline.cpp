@@ -18,7 +18,7 @@ namespace zt::vulkan_renderer
 		auto& commandPool = rendererContext.commandPool;
 
 		auto& pipelineDescriptorInfo = drawInfo.pipelineDescriptorInfo;
-		auto& objectDescriptorInfo = drawInfo.objectDescriptorInfo;
+		auto& drawCallDescriptorInfo = drawInfo.drawCallDescriptorInfo;
 
 		if (!commandBuffer.create(device, commandPool))
 			return false;
@@ -31,7 +31,7 @@ namespace zt::vulkan_renderer
 		createDescriptorData(pipelineBindings, descriptorPoolSizes, pipelineDescriptorInfo);
 		pipelineDescriptorSetLayout = createDescriptorSetLayout(device, pipelineBindings);
 
-		createDescriptorData(objectBindings, descriptorPoolSizes, objectDescriptorInfo);
+		createDescriptorData(objectBindings, descriptorPoolSizes, drawCallDescriptorInfo);
 		objectDescriptorSetLayout = createDescriptorSetLayout(device, objectBindings);
 
 		if (!descriptorPoolSizes.empty())
@@ -126,7 +126,7 @@ namespace zt::vulkan_renderer
 		}
 		// Begin draw end
 
-		UpdateDescriptorSet(device, drawInfo.objectDescriptorInfo, objectDescriptorSet);
+		UpdateDescriptorSet(device, drawInfo.drawCallDescriptorInfo, objectDescriptorSet);
 
 		// Vertex Buffer
 		const VkBuffer vertexBuffers[] = { drawInfo.vertexBuffer->get() };
@@ -137,11 +137,11 @@ namespace zt::vulkan_renderer
 		if (drawInfo.indexBuffer->isValid())
 		{
 			vkCmdBindIndexBuffer(commandBuffer.get(), drawInfo.indexBuffer->get(), 0, VK_INDEX_TYPE_UINT16);
-			vkCmdDrawIndexed(commandBuffer.get(), drawInfo.indexCount, 1, 0, 0, 0);
+			vkCmdDrawIndexed(commandBuffer.get(), drawInfo.indexCount, drawInfo.instances, 0, 0, 0);
 		}
 		else
 		{
-			commandBuffer.draw(static_cast<std::uint32_t>(drawInfo.vertexBuffer->getSize()), 1, 0, 0);
+			commandBuffer.draw(static_cast<uint32_t>(drawInfo.vertexBuffer->getSize()), drawInfo.instances, 0, 0);
 		}
 
 		commandBuffer.endRenderPass();
@@ -200,28 +200,36 @@ namespace zt::vulkan_renderer
 		DescriptorPoolSizes& outDescriptorPoolSizes, 
 		DescriptorInfo& descriptorInfo) const noexcept
 	{
-		auto& uniformBuffer = descriptorInfo.uniformBuffer;
-		if (uniformBuffer && uniformBuffer->isValid())
+		auto& uniformBuffer = descriptorInfo.uniformBuffers;
+		if (!uniformBuffer.empty())
 		{
+			descriptorInfo.cachedUniformBuffersBinding = static_cast<uint32_t>(outBindings.size());
+			uint32_t descriptorsCount = static_cast<uint32_t>(descriptorInfo.uniformBuffers.size());
+
 			auto layoutBinding = DescriptorSetLayout::GetDefaultUniformLayoutBinding();
-			layoutBinding.binding = static_cast<uint32_t>(outBindings.size());
-			descriptorInfo.uniformCachedBinding = layoutBinding.binding;
+			layoutBinding.binding = descriptorInfo.cachedUniformBuffersBinding;
+			layoutBinding.descriptorCount = descriptorsCount;
 			outBindings.push_back(layoutBinding);
 
-			auto descriptorPoolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
-			descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			outDescriptorPoolSizes.push_back(descriptorPoolSize);
+			auto poolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
+			poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			poolSize.descriptorCount = descriptorsCount;
+			outDescriptorPoolSizes.push_back(poolSize);
 		}
 
-		for (auto& textureInfo : descriptorInfo.texturesInfos)
+		if (!descriptorInfo.texturesInfos.empty())
 		{
+			descriptorInfo.cachedTexturesBinding = static_cast<uint32_t>(outBindings.size());
+			uint32_t descriptorsCount = static_cast<uint32_t>(descriptorInfo.texturesInfos.size());
+
 			auto layoutBinding = DescriptorSetLayout::GetDefaultImageLayoutBinding();
-			layoutBinding.binding = static_cast<uint32_t>(outBindings.size());
-			textureInfo.cachedBinding = layoutBinding.binding;
+			layoutBinding.binding = descriptorInfo.cachedTexturesBinding;
+			layoutBinding.descriptorCount = descriptorsCount;
 			outBindings.push_back(layoutBinding);
 
 			auto poolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
 			poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			poolSize.descriptorCount = descriptorsCount;
 			outDescriptorPoolSizes.push_back(poolSize);
 		}
 	}
@@ -265,25 +273,39 @@ namespace zt::vulkan_renderer
 		std::vector<VkDescriptorBufferInfo> descriptorBuffersInfos;
 		std::vector<VkDescriptorImageInfo> descriptorImagesInfos;
 
-		auto& uniformBuffer = descriptorInfo.uniformBuffer;
-		if (uniformBuffer && uniformBuffer->isValid())
+		uint32_t elementIndex = 0u;
+		for (const auto& uniformBufferInfo : descriptorInfo.uniformBuffers)
 		{
-			auto& descriptorBufferInfo = descriptorBuffersInfos.emplace_back(DescriptorSets::GetBufferInfo(*descriptorInfo.uniformBuffer));
+			auto& uniformBuffer = uniformBufferInfo.uniformBuffer;
+			if (!uniformBuffer || !uniformBuffer->isValid())
+				continue;
+		
+			auto& descriptorBufferInfo = descriptorBuffersInfos.emplace_back(DescriptorSets::GetBufferInfo(*uniformBuffer));
 			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSets::GetDefaultWriteDescriptorSet());
 			writeDescriptorSet.dstSet = descriptorSet.get();
-			writeDescriptorSet.dstBinding = descriptorInfo.uniformCachedBinding;
+			writeDescriptorSet.dstBinding = descriptorInfo.cachedUniformBuffersBinding;
+			writeDescriptorSet.dstArrayElement = elementIndex;
 			writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
+
+			++elementIndex;
 		}
 
+		elementIndex = 0u;
 		for (auto& textureInfo : descriptorInfo.texturesInfos)
 		{
+			if (!textureInfo.texture || !textureInfo.texture->isValid() || !textureInfo.sampler || !textureInfo.sampler->isValid())
+				continue;
+
 			auto& imageDescriptorInfo = descriptorImagesInfos.emplace_back(DescriptorSets::GetImageInfo(textureInfo.texture->getImageView(), *textureInfo.sampler));
 
 			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSets::GetDefaultWriteDescriptorSet());
 			writeDescriptorSet.dstSet = descriptorSet.get();
-			writeDescriptorSet.dstBinding = textureInfo.cachedBinding;
+			writeDescriptorSet.dstBinding = descriptorInfo.cachedTexturesBinding;
+			writeDescriptorSet.dstArrayElement = elementIndex;
 			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 			writeDescriptorSet.pImageInfo = &imageDescriptorInfo;
+
+			++elementIndex;
 		}
 
 		if (!writeDescriptorSets.empty())
