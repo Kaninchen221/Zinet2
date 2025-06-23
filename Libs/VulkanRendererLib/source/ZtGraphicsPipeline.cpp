@@ -319,5 +319,4 @@ namespace zt::vulkan_renderer
 		if (!writeDescriptorSets.empty())
 			descriptorSet.update(device, writeDescriptorSets);
 	}
-
 }
