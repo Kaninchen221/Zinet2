@@ -62,7 +62,7 @@ namespace zt::vulkan_renderer
 
 	};
 
-	bool Device::setDebugName(const auto& vulkanObject, std::string_view debugName) const noexcept
+	bool Device::setDebugName([[maybe_unused]] const auto& vulkanObject, [[maybe_unused]] std::string_view debugName) const noexcept
 	{
 		/// Should be empty for not debug builds
 #		if ZINET_DEBUG
