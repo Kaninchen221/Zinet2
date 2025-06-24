@@ -70,6 +70,8 @@ namespace zt::vulkan_renderer
 		objectDescriptorSetLayout.destroy(device);
 		objectDescriptorSet.invalidate();
 
+		vkDescriptorSets.clear();
+
 		pipeline.destroy(device);
 		pipelineLayout.destroy(device);
 
