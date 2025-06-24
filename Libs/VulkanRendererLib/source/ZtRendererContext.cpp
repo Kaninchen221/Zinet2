@@ -30,7 +30,7 @@ namespace zt::vulkan_renderer
 		if (!surface.create(instance, window))
 			return false;
 
-		if (!device.create(physicalDevice, surface))
+		if (!device.create(instance, physicalDevice, surface))
 			return false;
 
 		if (!vma.create(device, physicalDevice, instance))

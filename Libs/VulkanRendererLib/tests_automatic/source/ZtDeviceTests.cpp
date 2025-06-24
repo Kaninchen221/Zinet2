@@ -7,6 +7,7 @@
 #include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtSwapChain.hpp"
+#include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 
 #include "Zinet/Core/ZtPaths.hpp"
 #include "Zinet/Core/ZtUtils.hpp"
@@ -44,7 +45,7 @@ namespace zt::vulkan_renderer::tests
 
 			ASSERT_TRUE(surface.create(instance, window));
 
-			ASSERT_TRUE(device.create(physicalDevice, surface));
+			ASSERT_TRUE(device.create(instance, physicalDevice, surface));
 		}
 
 		void TearDown() override
@@ -94,5 +95,24 @@ namespace zt::vulkan_renderer::tests
 		ASSERT_TRUE(presentQueue.isValid());
 
 		presentQueue.invalidate();
+	}
+
+	TEST_F(DeviceTests, SetDebugName)
+	{
+		VMA vma{ nullptr };
+		vma.create(device, physicalDevice, instance);
+		ASSERT_TRUE(vma.isValid());
+
+		Buffer buffer{ nullptr };
+		int i = 50;
+		auto bufferCreateInfo = Buffer::GetUniformBufferCreateInfo(i);
+		buffer.createBuffer(bufferCreateInfo, vma);
+		ASSERT_TRUE(buffer.isValid());
+
+		std::string_view bufferDebugName = "BufferDebugName";
+		ASSERT_TRUE(device.setDebugName(buffer, bufferDebugName));
+
+		buffer.destroy(vma);
+		vma.destroy();
 	}
 }

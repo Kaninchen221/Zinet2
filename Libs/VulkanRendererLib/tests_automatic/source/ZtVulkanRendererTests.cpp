@@ -80,12 +80,16 @@ namespace zt::vulkan_renderer::tests
 				Buffer& uniformBuffer = uniformBuffers.emplace_back(nullptr);
 				const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(uniformData);
 				ASSERT_TRUE(uniformBuffer.createBuffer(uniformBufferCreateInfo, vma));
+
+				ASSERT_TRUE(device.setDebugName(uniformBuffer, "UniformBuffer_0"));
 			}
 
 			{ // #1
 				Buffer& uniformBuffer = uniformBuffers.emplace_back(nullptr);
 				const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(uniformData2);
 				ASSERT_TRUE(uniformBuffer.createBuffer(uniformBufferCreateInfo, vma));
+
+				ASSERT_TRUE(device.setDebugName(uniformBuffer, "UniformBuffer_1"));
 			}
 
 			createTexture();
@@ -127,6 +131,7 @@ namespace zt::vulkan_renderer::tests
 		DrawInfo::Indices indices;
 
 		std::vector<Buffer> uniformBuffers;
+		/// TODO: Transform and Camera
 		struct UniformData
 		{
 			alignas(8) Vector2f position{ -0.5, 0.f };
@@ -185,7 +190,8 @@ namespace zt::vulkan_renderer::tests
 			colorScalar = std::clamp(colorScalar, 0.1f, 0.50f);
 		}
 		uniformBuffers[0].fillWithObject(uniformData, vma);
-
+		
+		// Second uniform buffer
 		uniformData2.position = uniformData.position * -1.f;
 		uniformData2.colorScalar = 1.f;
 		uniformBuffers[1].fillWithObject(uniformData2, vma);
@@ -265,7 +271,7 @@ namespace zt::vulkan_renderer::tests
 
 		while (window.isOpen())
 		{
-			if (turnOffTest.getElapsedTime().getAsSeconds() > 10.f)
+			if (turnOffTest.getElapsedTime().getAsSeconds() > 4.f)
 				break;
 
 			windowEvents.pollEvents();

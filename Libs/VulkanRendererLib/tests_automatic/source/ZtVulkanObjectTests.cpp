@@ -1,6 +1,10 @@
 #pragma once
 
 #include "Zinet/VulkanRenderer/ZtVulkanObject.hpp"
+#include "Zinet/VulkanRenderer/ZtInstance.hpp"
+#include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
+#include "Zinet/VulkanRenderer/ZtVMA.hpp"
+#include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 
 #include <gtest/gtest.h>
 
@@ -14,22 +18,6 @@ namespace zt::vulkan_renderer::tests
 	{
 	protected:
 
-		VulkanObjectTests()
-		{
-		}
-
-		~VulkanObjectTests() override
-		{
-		}
-
-		void SetUp() override
-		{
-		}
-
-		void TearDown() override
-		{
-		}
-
 		using HandleType = int*;
 		using VulkanObjectType = VulkanObject<HandleType>;
 		VulkanObjectType vulkanObject;
@@ -37,6 +25,7 @@ namespace zt::vulkan_renderer::tests
 
 		static_assert(std::is_same_v<HandleType, VulkanObjectType::HandleType>);
 
+		/// TODO: Remove default constructor
 		static_assert(std::is_default_constructible_v<VulkanObjectType>);
 		static_assert(std::is_constructible_v<VulkanObjectType, HandleType>);
 		static_assert(!std::is_copy_constructible_v<VulkanObjectType>);
@@ -59,14 +48,4 @@ namespace zt::vulkan_renderer::tests
 	{
 		ASSERT_FALSE(vulkanObject.isValid());
 	}
-
-	//TEST_F(VulkanObjectTests, InvalidateTest)
-	//{
-	//	int i{};
-	//	vulkanObject = VulkanObjectType{ &i };
-	//	ASSERT_TRUE(vulkanObject.isValid());
-	//
-	//	vulkanObject.invalidate();
-	//	ASSERT_FALSE(vulkanObject.isValid());
-	//}
 }

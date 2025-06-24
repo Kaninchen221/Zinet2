@@ -149,7 +149,7 @@ namespace zt::vulkan_renderer::tests
 		ASSERT_TRUE(surface.create(instance, window));
 
 		Device device{ nullptr };
-		ASSERT_TRUE(device.create(physicalDevice, surface));
+		ASSERT_TRUE(device.create(instance, physicalDevice, surface));
 
 		device.destroy();
 		surface.destroy(instance);

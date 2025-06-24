@@ -37,7 +37,7 @@ namespace zt::vulkan_renderer::tests
 			invalidateAll(physicalDevices);
 			ASSERT_TRUE(physicalDevice.isValid());
 
-			ASSERT_TRUE(device.create(physicalDevice, Surface{ nullptr })); // We don't need valid Surface for Queue tests
+			ASSERT_TRUE(device.create(instance, physicalDevice, Surface{ nullptr })); // We don't need valid Surface for Queue tests
 
 			queue = device.getQueue();
 			ASSERT_TRUE(queue.isValid());

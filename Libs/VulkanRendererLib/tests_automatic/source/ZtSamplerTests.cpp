@@ -37,7 +37,7 @@ namespace zt::vulkan_renderer::tests
 			invalidateAll(physicalDevices);
 			ASSERT_TRUE(physicalDevice.isValid());
 
-			ASSERT_TRUE(device.create(physicalDevice, Surface{ nullptr }));
+			ASSERT_TRUE(device.create(instance, physicalDevice, Surface{ nullptr }));
 
 			const VkSamplerCreateInfo samplerCreateInfo = Sampler::GetDefaultCreateInfo();
 			ASSERT_TRUE(sampler.create(device, samplerCreateInfo));

@@ -1,6 +1,7 @@
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
 #include "Zinet/VulkanRenderer/ZtSurface.hpp"
 #include "Zinet/VulkanRenderer/ZtPhysicalDevice.hpp"
+#include "Zinet/VulkanRenderer/ZtInstance.hpp"
 
 #include "Zinet/Core/ZtUtils.hpp"
 
@@ -8,10 +9,12 @@
 
 namespace zt::vulkan_renderer
 {
-	bool Device::create(const PhysicalDevice& physicalDevice, const Surface& surface) noexcept
+	bool Device::create(const Instance& instance, const PhysicalDevice& physicalDevice, const Surface& surface) noexcept
 	{
 		if (isValid())
 			return false;
+
+		setDebugUtilsObjectName = reinterpret_cast<PFN_vkSetDebugUtilsObjectNameEXT>(vkGetInstanceProcAddr(instance.get(), "vkSetDebugUtilsObjectNameEXT"));
 
 		const auto createQueueCreateInfo = [](std::uint32_t queueFamilyIndex, std::uint32_t count, const std::vector<float>& priorities)
 		{
