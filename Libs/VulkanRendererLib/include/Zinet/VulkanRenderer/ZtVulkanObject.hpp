@@ -9,6 +9,15 @@
 namespace zt::vulkan_renderer
 {
 	template<class HandleT>
+	class VulkanObject;
+
+	template<typename T>
+	concept IsVulkanObjectT = requires {
+		typename T::HandleType;
+	}&&
+	std::derived_from<T, VulkanObject<typename T::HandleType>>;
+
+	template<class HandleT>
 	class VulkanObject
 	{
 	public:
