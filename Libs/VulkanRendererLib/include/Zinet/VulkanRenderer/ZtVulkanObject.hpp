@@ -30,7 +30,7 @@ namespace zt::vulkan_renderer
 		VulkanObject(HandleType newObjectHandle)
 			: objectHandle(newObjectHandle) {}
 
-		VulkanObject() noexcept = default;
+		VulkanObject() noexcept = delete;
 		VulkanObject(const VulkanObject& other) = delete;
 		VulkanObject(VulkanObject&& other) noexcept { *this = std::move(other); }
 		~VulkanObject() noexcept;

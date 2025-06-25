@@ -20,13 +20,12 @@ namespace zt::vulkan_renderer::tests
 
 		using HandleType = int*;
 		using VulkanObjectType = VulkanObject<HandleType>;
-		VulkanObjectType vulkanObject;
+		VulkanObjectType vulkanObject{ nullptr };
 		const VulkanObjectType& vulkanObjectConst = vulkanObject;
 
 		static_assert(std::is_same_v<HandleType, VulkanObjectType::HandleType>);
 
-		/// TODO: Remove default constructor
-		static_assert(std::is_default_constructible_v<VulkanObjectType>);
+		static_assert(!std::is_default_constructible_v<VulkanObjectType>);
 		static_assert(std::is_constructible_v<VulkanObjectType, HandleType>);
 		static_assert(!std::is_copy_constructible_v<VulkanObjectType>);
 		static_assert(!std::is_copy_assignable_v<VulkanObjectType>);
