@@ -50,8 +50,7 @@ namespace zt::vulkan_renderer
 
 		bool waitIdle() const noexcept;
 
-		/// TODO: VulkanObject cpp concept
-		bool setDebugName(const auto& vulkanObject, std::string_view debugName) const noexcept;
+		bool setDebugName(const IsVulkanObjectT auto& vulkanObject, std::string_view debugName) const noexcept;
 
 	protected:
 
@@ -62,7 +61,7 @@ namespace zt::vulkan_renderer
 
 	};
 
-	bool Device::setDebugName([[maybe_unused]] const auto& vulkanObject, [[maybe_unused]] std::string_view debugName) const noexcept
+	bool Device::setDebugName([[maybe_unused]] const IsVulkanObjectT auto& vulkanObject, [[maybe_unused]] std::string_view debugName) const noexcept
 	{
 		/// Should be empty for not debug builds
 #		if ZINET_DEBUG

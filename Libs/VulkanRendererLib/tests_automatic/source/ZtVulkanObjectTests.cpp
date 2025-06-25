@@ -48,4 +48,15 @@ namespace zt::vulkan_renderer::tests
 	{
 		ASSERT_FALSE(vulkanObject.isValid());
 	}
+
+	TEST(VulkanObject, IsVulkanObjectT)
+	{
+		using ValidVulkanObjectT = VulkanObject<int*>;
+		const auto validVulkanObjectResult = IsVulkanObjectT<ValidVulkanObjectT>;
+		ASSERT_TRUE(validVulkanObjectResult);
+
+		using InvalidVulkanObjectT = int;
+		const auto invalidVulkanObjectResult = IsVulkanObjectT<InvalidVulkanObjectT>;
+		ASSERT_FALSE(invalidVulkanObjectResult);
+	}
 }
