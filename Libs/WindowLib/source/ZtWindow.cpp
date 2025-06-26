@@ -5,6 +5,11 @@
 #include <type_traits>
 #include <source_location>
 
+#if ZINET_WINDOWS
+#	define GLFW_EXPOSE_NATIVE_WIN32
+#	include <GLFW/glfw3native.h>
+#endif
+
 namespace zt::wd
 {
 
@@ -33,6 +38,16 @@ namespace zt::wd
         glfwSetWindowSizeLimits(internalWindow, 1, 1, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
 		bindFramebufferSizeCallback();
+
+		// TODO: Linux version
+		// Enable transparent framebuffer on windows platform
+#		if ZINET_WINDOWS
+		auto hwnd = glfwGetWin32Window(getInternal());
+
+		SetWindowLong(hwnd, GWL_EXSTYLE,
+		GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
+		SetLayeredWindowAttributes(hwnd, 0, static_cast<BYTE>(255), LWA_ALPHA);
+#		endif
 
 		return true;
     }

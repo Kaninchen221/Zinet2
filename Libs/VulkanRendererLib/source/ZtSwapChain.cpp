@@ -76,7 +76,7 @@ namespace zt::vulkan_renderer
 			.queueFamilyIndexCount = 0,
 			.pQueueFamilyIndices = nullptr,
 			.preTransform = surfaceCapabilities.currentTransform,
-			.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR, // TODO: Blend with other windows behind our window? Will be useful for the final tech demo.
+			.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
 			.presentMode = presentMode,
 			.clipped = VK_TRUE,
 			.oldSwapchain = nullptr

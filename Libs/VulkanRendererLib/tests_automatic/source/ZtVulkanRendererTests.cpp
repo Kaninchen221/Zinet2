@@ -39,6 +39,9 @@ namespace zt::vulkan_renderer::tests
 		void SetUp() override
 		{
 			wd::GLFW::Init(false);
+
+			zt::wd::Window::SetTransparentFramebuffer(true);
+
 			window.create(800, 800);
 
 			renderer.start(window);
