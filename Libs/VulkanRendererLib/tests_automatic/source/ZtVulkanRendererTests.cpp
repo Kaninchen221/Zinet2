@@ -137,8 +137,9 @@ namespace zt::vulkan_renderer::tests
 		/// TODO: Transform and Camera
 		struct UniformData
 		{
-			alignas(8) Vector2f position{ -0.5, 0.f };
-			alignas(4) float colorScalar{ 0.f };
+			alignas(16) glm::mat4 model;
+			alignas(16) glm::mat4 view;
+			alignas(16) glm::mat4 projection;
 		};
 		UniformData uniformData;
 		UniformData uniformData2;
@@ -175,29 +176,29 @@ namespace zt::vulkan_renderer::tests
 	void VulkanRendererTests::updateUniformBuffersData()
 	{
 		const auto& vma = renderer.getRendererContext().vma;
-		
-		// First uniform buffer
-		{
-			auto& position = uniformData.position;
-			if (position.x <= -0.5f || position.x >= 0.5f)
-			{
-				uniformDataScalar *= -1.f;
-				position.x = std::clamp(position.x, -0.5f, 0.5f);
-			}
-			position.x += uniformDataScalar * 0.0001f;
-		}
 
-		{
-			auto& colorScalar = uniformData.colorScalar;
-			colorScalar += uniformDataScalar * 0.00015f;
-			colorScalar = std::clamp(colorScalar, 0.1f, 0.50f);
-		}
-		uniformBuffers[0].fillWithObject(uniformData, vma);
-		
-		// Second uniform buffer
-		uniformData2.position = uniformData.position * -1.f;
-		uniformData2.colorScalar = 1.f;
-		uniformBuffers[1].fillWithObject(uniformData2, vma);
+		const auto windowSize = window.getSize();
+
+		auto baseModel = glm::rotate(glm::mat4(1.0f), glm::radians(90.f), glm::vec3(0, 0, 1));
+
+		uniformData.model = baseModel;
+		uniformData.model = glm::translate(uniformData.model, Vector3f{ 0, 0, 0 });
+		uniformData.model = glm::rotate(uniformData.model, glm::radians(0.f), glm::vec3(0, 0, 1));
+		uniformData.model *= glm::scale(Vector3f{ 1, 1, 1 });
+
+		uniformData.view = glm::lookAt(glm::vec3(0.00001, 0, 8), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0, 0, 1));
+		uniformData.projection = glm::perspective(glm::radians(45.0f), (float)windowSize.x / (float)windowSize.y, 0.01f, 100.0f);
+
+		auto& firstBuffer = uniformBuffers[0];
+		firstBuffer.fillWithObject(uniformData, vma);
+
+		uniformData.model = baseModel;
+		uniformData.model = glm::translate(uniformData.model, Vector3f{ 2, 0, 0 });
+		uniformData.model = glm::rotate(uniformData.model, glm::radians(0.f), glm::vec3(0, 0, 1));
+		uniformData.model *= glm::scale(Vector3f{ 1, 1, 1 });
+
+		auto& secondBuffer = uniformBuffers[1];
+		secondBuffer.fillWithObject(uniformData, vma);
 	}
 
 	void VulkanRendererTests::createTexture()
@@ -274,7 +275,7 @@ namespace zt::vulkan_renderer::tests
 
 		while (window.isOpen())
 		{
-			if (turnOffTest.getElapsedTime().getAsSeconds() > 4.f)
+			if (turnOffTest.getElapsedTime().getAsSeconds() > 4000.f)
 				break;
 
 			windowEvents.pollEvents();

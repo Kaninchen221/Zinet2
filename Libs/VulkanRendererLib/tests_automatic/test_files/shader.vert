@@ -11,21 +11,18 @@ layout(location = 1) out vec2 fragTexCoord;
 layout(location = 2) out uint instanceIndex;
 
 layout(set = 1, binding = 0) uniform Uniforms {
-    vec2 posOffset;
-	float colorScalar;
+    mat4 model;
+	mat4 view;
+	mat4 projection;
 } uniforms[];
 
 void main() {
+	mat4 model = uniforms[gl_InstanceIndex].model;
+	mat4 view = uniforms[gl_InstanceIndex].view;
+	mat4 projection = uniforms[gl_InstanceIndex].projection;
 
-	instanceIndex = gl_InstanceIndex;
-
-	vec2 posOffset = uniforms[gl_InstanceIndex].posOffset;
-	float colorScalar = uniforms[0].colorScalar;
-
-	float instanceYOffset = gl_InstanceIndex * 0.5;
-	vec3 position = vec3(inPosition.x + posOffset.x, inPosition.y + posOffset.y + instanceYOffset, inPosition.z);
-    gl_Position = vec4(position, 1.0);
+	vec4 position = vec4(inPosition, 1.0);
+    gl_Position = projection * view * model * position;
     fragColor = inColor;
-	fragColor *= colorScalar;
     fragTexCoord = inTexCoord;
 }
