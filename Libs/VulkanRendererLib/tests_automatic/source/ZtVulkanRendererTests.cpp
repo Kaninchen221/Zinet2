@@ -9,6 +9,8 @@
 #include "Zinet/VulkanRenderer/ZtTexture.hpp"
 #include "Zinet/VulkanRenderer/ZtQueueUtils.hpp"
 #include "Zinet/VulkanRenderer/ZtSampler.hpp"
+#include "Zinet/VulkanRenderer/ZtTransform.hpp"
+#include "Zinet/VulkanRenderer/ZtCamera.hpp"
 
 #include "Zinet/Core/ZtPaths.hpp"
 #include "Zinet/Core/ZtClock.hpp"
@@ -89,7 +91,7 @@ namespace zt::vulkan_renderer::tests
 
 			{ // #1
 				Buffer& uniformBuffer = uniformBuffers.emplace_back(nullptr);
-				const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(uniformData2);
+				const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(uniformData);
 				ASSERT_TRUE(uniformBuffer.createBuffer(uniformBufferCreateInfo, vma));
 
 				ASSERT_TRUE(device.setDebugName(uniformBuffer, "UniformBuffer_1"));
@@ -134,7 +136,6 @@ namespace zt::vulkan_renderer::tests
 		DrawInfo::Indices indices;
 
 		std::vector<Buffer> uniformBuffers;
-		/// TODO: Transform and Camera
 		struct UniformData
 		{
 			alignas(16) glm::mat4 model;
@@ -142,11 +143,11 @@ namespace zt::vulkan_renderer::tests
 			alignas(16) glm::mat4 projection;
 		};
 		UniformData uniformData;
-		UniformData uniformData2;
-		float uniformDataScalar = 1.f;
 
 		Texture texture;
 		Sampler sampler{ nullptr };
+
+		Camera camera;
 
 		ShaderModule createShaderModule(std::string_view sourceCodeFileName, ShaderType shaderType);
 
@@ -176,26 +177,32 @@ namespace zt::vulkan_renderer::tests
 	void VulkanRendererTests::updateUniformBuffersData()
 	{
 		const auto& vma = renderer.getRendererContext().vma;
-
 		const auto windowSize = window.getSize();
 
-		auto baseModel = glm::rotate(glm::mat4(1.0f), glm::radians(90.f), glm::vec3(0, 0, 1));
+		Transform transform;
+		transform.setPosition({ 0, 0, 0 });
+		transform.setRotation(0);
+		transform.setScale({ 1, 1, 1 });
 
-		uniformData.model = baseModel;
-		uniformData.model = glm::translate(uniformData.model, Vector3f{ 0, 0, 0 });
-		uniformData.model = glm::rotate(uniformData.model, glm::radians(0.f), glm::vec3(0, 0, 1));
-		uniformData.model *= glm::scale(Vector3f{ 1, 1, 1 });
+		camera.setPosition(Vector3f(0.00001, 0, 8));
+		camera.setLookingAt(Vector3f(0.0f, 0.0f, 0.0f));
+		camera.setUpVector(Vector3f(0, 0, 1));
 
-		uniformData.view = glm::lookAt(glm::vec3(0.00001, 0, 8), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0, 0, 1));
-		uniformData.projection = glm::perspective(glm::radians(45.0f), (float)windowSize.x / (float)windowSize.y, 0.01f, 100.0f);
+		camera.setFieldOfView(45.f);
+		camera.setAspectRatio(windowSize.x / static_cast<float>(windowSize.y));
+		camera.setClipping(Vector2f{ 0.01f, 100.0f });
+
+		uniformData.model = transform.getMatrix();
+		uniformData.view = camera.getViewMatrix();
+		uniformData.projection = camera.getPerspectiveMatrix();
 
 		auto& firstBuffer = uniformBuffers[0];
 		firstBuffer.fillWithObject(uniformData, vma);
 
-		uniformData.model = baseModel;
-		uniformData.model = glm::translate(uniformData.model, Vector3f{ 2, 0, 0 });
-		uniformData.model = glm::rotate(uniformData.model, glm::radians(0.f), glm::vec3(0, 0, 1));
-		uniformData.model *= glm::scale(Vector3f{ 1, 1, 1 });
+		transform.setPosition({ 2, 0, 0 });
+		transform.setRotation(20);
+		transform.setScale({ 1, 1, 1 });
+		uniformData.model = transform.getMatrix();
 
 		auto& secondBuffer = uniformBuffers[1];
 		secondBuffer.fillWithObject(uniformData, vma);
@@ -275,8 +282,8 @@ namespace zt::vulkan_renderer::tests
 
 		while (window.isOpen())
 		{
-			if (turnOffTest.getElapsedTime().getAsSeconds() > 4000.f)
-				break;
+			if (turnOffTest.getElapsedTime().getAsSeconds() > 4.f)
+				window.requestCloseWindow();
 
 			windowEvents.pollEvents();
 
@@ -301,8 +308,6 @@ namespace zt::vulkan_renderer::tests
 				fpsCount = 0u;
 				fpsClock.restart();
 			}
-
-			//window.requestCloseWindow();
 		}
 	}
 }
