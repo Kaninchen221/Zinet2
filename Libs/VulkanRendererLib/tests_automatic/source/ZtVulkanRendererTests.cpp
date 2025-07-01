@@ -11,6 +11,7 @@
 #include "Zinet/VulkanRenderer/ZtSampler.hpp"
 #include "Zinet/VulkanRenderer/ZtTransform.hpp"
 #include "Zinet/VulkanRenderer/ZtCamera.hpp"
+#include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
 
 #include "Zinet/Core/ZtPaths.hpp"
 #include "Zinet/Core/ZtClock.hpp"
@@ -23,6 +24,8 @@
 #include "Zinet/Window/ZtGLFW.hpp"
 #include "Zinet/Window/ZtWindow.hpp"
 #include "Zinet/Window/ZtWindowEvents.hpp"
+#include "imgui_impl_vulkan.h"
+#include "imgui_impl_glfw.h"
 
 namespace zt::vulkan_renderer::tests
 {
@@ -43,10 +46,12 @@ namespace zt::vulkan_renderer::tests
 			wd::GLFW::Init(false);
 
 			zt::wd::Window::SetTransparentFramebuffer(true);
-
 			window.create(800, 800);
+			window.makeWindowTransparentWhileUsingVulkan();
 
 			renderer.start(window);
+
+			imGuiIntegration.init(renderer.getRendererContext(), window);
 
 			vertexShaderModule = createShaderModule("shader.vert", ShaderType::Vertex);
 			ASSERT_TRUE(vertexShaderModule.isValid());
@@ -120,6 +125,8 @@ namespace zt::vulkan_renderer::tests
 			texture.destroy(device, vma);
 			sampler.destroy(device);
 
+			imGuiIntegration.deinit(renderer.getRendererContext());
+
 			renderer.shutdown();
 
 			window.destroyWindow();
@@ -127,6 +134,7 @@ namespace zt::vulkan_renderer::tests
 		}
 
 		VulkanRenderer renderer;
+		ImGuiIntegration imGuiIntegration;
 		wd::Window window;
 		wd::WindowEvents windowEvents{ window };
 		ShaderModule vertexShaderModule{ nullptr };
@@ -270,7 +278,8 @@ namespace zt::vulkan_renderer::tests
 			{
 				.uniformBuffers = { { &uniformBuffers[0] }, { &uniformBuffers[1] } },
 				.texturesInfos{}
-			}
+			},
+			.additionalCommands = { ImGuiIntegration::DrawCommand }
 		};
 
 		core::Clock fpsClock;
@@ -282,23 +291,38 @@ namespace zt::vulkan_renderer::tests
 
 		while (window.isOpen())
 		{
-			if (turnOffTest.getElapsedTime().getAsSeconds() > 4.f)
+			if (turnOffTest.getElapsedTime().getAsSeconds() > 4000.f)
 				window.requestCloseWindow();
 
 			windowEvents.pollEvents();
 
+			// Game logic
+
+			imGuiIntegration.implSpecificNewFrame();
+
+			ImGui::NewFrame();
+
+
+			ImGui::EndFrame();
+
 			updateUniformBuffersData();
+
+			// Rendering logic
 
 			ASSERT_TRUE(renderer.createPipeline(drawInfo));
 			ASSERT_TRUE(renderer.getGraphicsPipeline().isValid());
 
 			ASSERT_TRUE(renderer.beginFrame());
 
+			imGuiIntegration.prepareRenderData();
+
 			renderer.draw(drawInfo);
 
 			ASSERT_TRUE(renderer.submit());
 
 			ASSERT_TRUE(renderer.endFrame());
+
+			// Post logic
 
 			fpsCount++;
 			if (fpsClock.getElapsedTime().getAsSeconds() >= 1.0f)

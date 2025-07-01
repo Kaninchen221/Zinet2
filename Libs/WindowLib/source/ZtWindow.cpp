@@ -39,16 +39,6 @@ namespace zt::wd
 
 		bindFramebufferSizeCallback();
 
-		// TODO: Linux version
-		// Enable transparent framebuffer on windows platform
-#		if ZINET_WINDOWS
-		auto hwnd = glfwGetWin32Window(getInternal());
-
-		SetWindowLong(hwnd, GWL_EXSTYLE,
-		GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
-		SetLayeredWindowAttributes(hwnd, 0, static_cast<BYTE>(255), LWA_ALPHA);
-#		endif
-
 		return true;
     }
 
@@ -131,6 +121,19 @@ namespace zt::wd
 	void Window::setTitle(const std::string& title)
 	{
 		glfwSetWindowTitle(internalWindow, title.c_str());
+	}
+
+	void Window::makeWindowTransparentWhileUsingVulkan() noexcept
+	{
+		// TODO: Linux version
+		// Enable transparent framebuffer on windows platform
+#		if ZINET_WINDOWS
+		auto hwnd = glfwGetWin32Window(getInternal());
+
+		SetWindowLong(hwnd, GWL_EXSTYLE,
+		GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
+		SetLayeredWindowAttributes(hwnd, 0, static_cast<BYTE>(255), LWA_ALPHA);
+#		endif
 	}
 
 	void Window::destroyWindow()

@@ -65,6 +65,9 @@ namespace zt::wd
 
 		static void SetTransparentFramebuffer(bool value);
 
+		/// For Vulkan sometimes it's necessary to call this function too
+		void makeWindowTransparentWhileUsingVulkan() noexcept;
+
 		Vector2i getFramebufferSize() const noexcept;
 
 		void setShowWindowBar(bool value);

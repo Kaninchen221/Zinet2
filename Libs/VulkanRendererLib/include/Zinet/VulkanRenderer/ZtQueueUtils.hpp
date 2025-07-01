@@ -8,10 +8,17 @@
 #include "Zinet/VulkanRenderer/ZtQueue.hpp"
 #include "Zinet/VulkanRenderer/ZtCommandPool.hpp"
 #include "Zinet/VulkanRenderer/ZtCommandBuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtRendererContext.hpp"
+#include "Zinet/VulkanRenderer/ZtConcepts.hpp"
 
 namespace zt::vulkan_renderer
 {
-	const auto SubmitSingleCommandBufferWaitIdle = [](const Device& device, const Queue& queue, const CommandPool& commandPool, std::invocable<const CommandBuffer&> auto commands) -> bool
+	auto SubmitSingleCommandBufferWaitIdle(const RendererContext& rendererContext, IsCommandsT auto commands) -> bool
+	{
+		return SubmitSingleCommandBufferWaitIdle(rendererContext.device, rendererContext.queue, rendererContext.commandPool, commands);
+	};
+
+	auto SubmitSingleCommandBufferWaitIdle(const Device& device, const Queue& queue, const CommandPool& commandPool, IsCommandsT auto commands) -> bool
 	{
 		CommandBuffer commandBuffer{ nullptr };
 		if (!commandBuffer.create(device, commandPool))

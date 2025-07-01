@@ -146,6 +146,11 @@ namespace zt::vulkan_renderer
 			commandBuffer.draw(static_cast<uint32_t>(drawInfo.vertexBuffer->getSize()), drawInfo.instances, 0, 0);
 		}
 
+		for (const auto& additionalCommand : drawInfo.additionalCommands)
+		{
+			std::invoke(additionalCommand, commandBuffer);
+		}
+
 		commandBuffer.endRenderPass();
 		commandBuffer.end();
 	}

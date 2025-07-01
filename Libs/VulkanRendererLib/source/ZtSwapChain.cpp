@@ -23,13 +23,14 @@ namespace zt::vulkan_renderer
 		const auto availableFormats = physicalDevice.getPhysicalDeviceSurfaceFormats(surface);
 		const auto presentModes = physicalDevice.getPhysicalDeviceSurfacePresentModes(surface);
 
+		// TODO: Take available format
 		// Format and Color Space
-		Logger->info("Print formats");
-		for (const auto& availableFormat : availableFormats)
-		{
-			Logger->info("\tFormat: {}, Color Space: {}",
-				static_cast<std::int32_t>(availableFormat.format), static_cast<std::int32_t>(availableFormat.colorSpace));
-		}
+		//Logger->info("Print formats");
+		//for (const auto& availableFormat : availableFormats)
+		//{
+		//	Logger->info("\tFormat: {}, Color Space: {}",
+		//		static_cast<std::int32_t>(availableFormat.format), static_cast<std::int32_t>(availableFormat.colorSpace));
+		//}
 
 		format = VK_FORMAT_B8G8R8A8_SRGB;
 		const auto colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;

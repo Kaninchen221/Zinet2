@@ -15,5 +15,6 @@ generator.linkLibraries = """
     ZinetWindow
     ${shaderc_LIBRARIES}
     ${vulkan-memory-allocator_LIBRARIES}
+    ImGui
     """
 project_generator.add_generator(generator)

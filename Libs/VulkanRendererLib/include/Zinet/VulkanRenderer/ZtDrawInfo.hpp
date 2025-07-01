@@ -14,6 +14,7 @@ namespace zt::vulkan_renderer
 {
 	class Texture;
 	class Sampler;
+	class CommandBuffer;
 
 	struct ZINET_VULKAN_RENDERER_API TextureInfo
 	{
@@ -54,5 +55,8 @@ namespace zt::vulkan_renderer
 
 		DescriptorInfo pipelineDescriptorInfo;
 		DescriptorInfo drawCallDescriptorInfo;
+
+		using AdditionalCommands = std::vector<void(*)(const CommandBuffer&)>;
+		AdditionalCommands additionalCommands;
 	};
 }
