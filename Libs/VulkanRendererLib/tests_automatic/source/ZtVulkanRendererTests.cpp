@@ -296,7 +296,7 @@ namespace zt::vulkan_renderer::tests
 
 		while (window.isOpen())
 		{
-			if (turnOffTest.getElapsedTime().getAsSeconds() > 40000.f)
+			if (turnOffTest.getElapsedTime().getAsSeconds() > 4.f)
 				window.requestCloseWindow();
 
 			windowEvents.pollEvents();
