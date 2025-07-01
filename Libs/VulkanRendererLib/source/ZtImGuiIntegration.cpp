@@ -46,7 +46,7 @@ namespace zt::vulkan_renderer
 		}
 
 		ImGui::CreateContext();
-		
+
 		ImGui_ImplGlfw_InitForVulkan(window.getInternal(), true);
 		
 		ImGui_ImplVulkan_InitInfo init_info = {};
@@ -73,6 +73,7 @@ namespace zt::vulkan_renderer
 	void ImGuiIntegration::deinit(const RendererContext& rendererContext) noexcept
 	{
 		descriptorPool.destroy(rendererContext.device);
+		ImGui_ImplGlfw_Shutdown();
 		ImGui_ImplVulkan_Shutdown();
 	}
 

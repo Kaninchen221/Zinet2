@@ -28,7 +28,9 @@ namespace zt::vulkan_renderer::tests
 		void TearDown() override
 		{
 			imGui.deinit(rendererContext);
+			rendererContext.destroy();
 
+			window.destroyWindow();
 			wd::GLFW::Deinit();
 		}
 
