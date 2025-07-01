@@ -23,28 +23,22 @@ namespace zt::vulkan_renderer
 		const auto availableFormats = physicalDevice.getPhysicalDeviceSurfaceFormats(surface);
 		const auto presentModes = physicalDevice.getPhysicalDeviceSurfacePresentModes(surface);
 
-		// TODO: Take available format
-		// Format and Color Space
-		//Logger->info("Print formats");
-		//for (const auto& availableFormat : availableFormats)
-		//{
-		//	Logger->info("\tFormat: {}, Color Space: {}",
-		//		static_cast<std::int32_t>(availableFormat.format), static_cast<std::int32_t>(availableFormat.colorSpace));
-		//}
-
-		format = VK_FORMAT_B8G8R8A8_SRGB;
-		const auto colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
-		const bool supportsFormat = [availableFormats](VkFormat format, VkColorSpaceKHR colorSpace) -> bool
+		std::vector<VkSurfaceFormatKHR> correctSurfaceFormats{ { VK_FORMAT_B8G8R8A8_SRGB, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR } };
+		auto getBestSurfaceFormat = [&correctSurfaceFormats = correctSurfaceFormats, &availableFormats = availableFormats]() -> std::optional<VkSurfaceFormatKHR>
 		{
-			for (const auto& availableFormat : availableFormats)
+			for (auto correctSurfaceFormat : correctSurfaceFormats)
 			{
-				if (availableFormat.format == format && availableFormat.colorSpace == colorSpace)
-					return true;
+				for (const auto& availableFormat : availableFormats)
+				{
+					if (availableFormat.format == correctSurfaceFormat.format && availableFormat.colorSpace == correctSurfaceFormat.colorSpace)
+						return correctSurfaceFormat;
+				}
 			}
 
-			return false;
-		}(format, colorSpace);
-		if (!supportsFormat)
+			return std::nullopt;
+		};
+		auto bestSurfaceFormat = getBestSurfaceFormat();
+		if (!bestSurfaceFormat)
 		{
 			Logger->error("Physical device doesn't support format B8G8R8A8_SRGB and color space SRGB NONLINEAR");
 			return false;
@@ -68,8 +62,8 @@ namespace zt::vulkan_renderer
 			.minImageCount = 
 				std::clamp(surfaceCapabilities.minImageCount + 1, surfaceCapabilities.minImageCount, 
 					std::max(surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount)),
-			.imageFormat = format,
-			.imageColorSpace = colorSpace,
+			.imageFormat = bestSurfaceFormat->format,
+			.imageColorSpace = bestSurfaceFormat->colorSpace,
 			.imageExtent = newExtent,
 			.imageArrayLayers = 1,
 			.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
@@ -87,6 +81,7 @@ namespace zt::vulkan_renderer
 		if (createResult == VK_SUCCESS)
 		{
 			extent = newExtent;
+			format = bestSurfaceFormat->format;
 			return true;
 		}
 		else
