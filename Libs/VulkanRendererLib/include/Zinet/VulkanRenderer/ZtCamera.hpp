@@ -54,6 +54,8 @@ namespace zt::vulkan_renderer
 		void setClipping(const Vector2f& newClipping) noexcept { clipping = newClipping; }
 		const auto& getClipping() const noexcept { return clipping; }
 
+		void imGui();
+
 	protected:
 
 		Vector3f position{ 0.00001, 0, 1 };

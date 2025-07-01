@@ -1,4 +1,6 @@
-#include "Zinet/VulkanRenderer/ZtCamera.hpp"
+﻿#include "Zinet/VulkanRenderer/ZtCamera.hpp"
+
+#include <imgui.h>
 
 namespace zt::vulkan_renderer
 {
@@ -9,7 +11,55 @@ namespace zt::vulkan_renderer
 
 	Camera::MatrixT Camera::getPerspectiveMatrix() const noexcept
 	{
-		return glm::perspective(glm::radians(fieldOfView), aspectRatio, clipping.x, clipping.y);
+		auto perspective = glm::perspective(glm::radians(fieldOfView), aspectRatio, clipping.x, clipping.y);
+		perspective[1][1] *= -1;
+		return perspective;
+	}
+
+	void Camera::imGui()
+	{
+#		if ZINET_USE_IMGUI
+
+		if (ImGui::CollapsingHeader("Camera"))
+		{
+			if (ImGui::Button("Reset camera"))
+			{
+				position = Vector3f{ 0, 0, 150 };
+				lookingAt = Vector3f{};
+			}
+
+			ImGui::SliderFloat3("Position", reinterpret_cast<float*>(&position), -1000, 1000);
+			ImGui::SliderFloat3("Looking At", reinterpret_cast<float*>(&lookingAt), -1000, 1000);
+
+			if (ImGui::Button(">"))
+			{
+				position.x += 10;
+				lookingAt.x += 10;
+			}
+			ImGui::SameLine();
+
+			if (ImGui::Button("<"))
+			{
+				position.x -= 10;
+				lookingAt.x -= 10;
+			}
+			ImGui::SameLine();
+
+			if (ImGui::Button("^"))
+			{
+				position.y += 10;
+				lookingAt.y += 10;
+			}
+			ImGui::SameLine();
+
+			if (ImGui::Button("v"))
+			{
+				position.y -= 10;
+				lookingAt.y -= 10;
+			}
+		}
+
+#		endif 
 	}
 
 }

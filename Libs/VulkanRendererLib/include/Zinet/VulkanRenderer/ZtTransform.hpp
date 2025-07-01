@@ -41,6 +41,7 @@ namespace zt::vulkan_renderer
 		void setScale(const Vector3f& newScale) noexcept { scale = newScale; }
 		const auto& getScale() const noexcept { return scale; }
 
+		void imGui();
 
 	protected:
 

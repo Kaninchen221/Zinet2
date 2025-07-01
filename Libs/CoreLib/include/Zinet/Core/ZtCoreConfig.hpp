@@ -11,9 +11,6 @@
 #define ZT_REFLECT_MEMBER(...)
 #define ZT_REFLECT_STRUCT(...)
 
-// Turn On/Off Debug UI
-#define ZINET_DEBUG_UI
-
 #ifdef _DEBUG
 #	define ZINET_DEBUG 1
 #else
@@ -43,6 +40,12 @@
 #else
 #	define ZINET_LINUX 0
 #endif // __linux__
+
+#if ZINET_DEBUG
+#	define ZINET_USE_IMGUI 1
+#else
+#	define ZINET_USE_IMGUI 0
+#endif // ZINET_DEBUG
 
 #ifndef ZINET_STATIC
 

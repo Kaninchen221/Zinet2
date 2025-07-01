@@ -64,10 +64,10 @@ namespace zt::vulkan_renderer::tests
 
 			// Vertex Buffer
 			const DrawInfo::Vertices vertices = {
-				{{-0.5f, -0.5f, 1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {0.f, 0.f}},
-				{{0.5f,  -0.5f, 1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {1.f, 0.f}},
-				{{0.5f,  0.5f,  1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {1.f, 1.f}},
-				{{-0.5f, 0.5f,  1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {0.f, 1.f}}
+				{{-0.5f, 0.5f, 1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {0.f, 0.f}},
+				{{0.5f,  0.5f, 1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {1.f, 0.f}},
+				{{0.5f,  -0.5f,  1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {1.f, 1.f}},
+				{{-0.5f, -0.5f,  1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {0.f, 1.f}}
 			};
 
 			const auto vertexBufferCreateInfo = Buffer::GetVertexBufferCreateInfo(vertices);
@@ -106,6 +106,25 @@ namespace zt::vulkan_renderer::tests
 
 			const auto samplerCreateInfo = Sampler::GetDefaultCreateInfo();
 			ASSERT_TRUE(sampler.create(device, samplerCreateInfo));
+
+			// Set default data for unfiorm buffers
+			const auto windowSize = window.getSize();
+
+			transform.setPosition({ 0, 0, 0 });
+			transform.setRotation(0);
+			transform.setScale({ 50, 50, 1 });
+
+			camera.setPosition(Vector3f(0.00001, 0, 150));
+			camera.setLookingAt(Vector3f(0.0f, 0.0f, 0.0f));
+			camera.setUpVector(Vector3f(0, 1, 0));
+
+			camera.setFieldOfView(45.f);
+			camera.setAspectRatio(windowSize.x / static_cast<float>(windowSize.y));
+			camera.setClipping(Vector2f{ 0.0000001f, 10000000.0f });
+
+			transform2.setPosition({ 60, 0, 0 });
+			transform2.setRotation(20);
+			transform2.setScale({ 50, 50, 1 });
 		}
 
 		void TearDown() override
@@ -142,6 +161,8 @@ namespace zt::vulkan_renderer::tests
 		Buffer vertexBuffer{ nullptr };
 		Buffer indexBuffer{ nullptr };
 		DrawInfo::Indices indices;
+		Transform transform;
+		Transform transform2;
 
 		std::vector<Buffer> uniformBuffers;
 		struct UniformData
@@ -185,32 +206,16 @@ namespace zt::vulkan_renderer::tests
 	void VulkanRendererTests::updateUniformBuffersData()
 	{
 		const auto& vma = renderer.getRendererContext().vma;
-		const auto windowSize = window.getSize();
 
-		Transform transform;
-		transform.setPosition({ 0, 0, 0 });
-		transform.setRotation(0);
-		transform.setScale({ 1, 1, 1 });
-
-		camera.setPosition(Vector3f(0.00001, 0, 8));
-		camera.setLookingAt(Vector3f(0.0f, 0.0f, 0.0f));
-		camera.setUpVector(Vector3f(0, 0, 1));
-
-		camera.setFieldOfView(45.f);
-		camera.setAspectRatio(windowSize.x / static_cast<float>(windowSize.y));
-		camera.setClipping(Vector2f{ 0.01f, 100.0f });
-
-		uniformData.model = transform.getMatrix();
 		uniformData.view = camera.getViewMatrix();
 		uniformData.projection = camera.getPerspectiveMatrix();
+
+		uniformData.model = transform.getMatrix();
 
 		auto& firstBuffer = uniformBuffers[0];
 		firstBuffer.fillWithObject(uniformData, vma);
 
-		transform.setPosition({ 2, 0, 0 });
-		transform.setRotation(20);
-		transform.setScale({ 1, 1, 1 });
-		uniformData.model = transform.getMatrix();
+		uniformData.model = transform2.getMatrix();
 
 		auto& secondBuffer = uniformBuffers[1];
 		secondBuffer.fillWithObject(uniformData, vma);
@@ -291,7 +296,7 @@ namespace zt::vulkan_renderer::tests
 
 		while (window.isOpen())
 		{
-			if (turnOffTest.getElapsedTime().getAsSeconds() > 4.f)
+			if (turnOffTest.getElapsedTime().getAsSeconds() > 40000.f)
 				window.requestCloseWindow();
 
 			windowEvents.pollEvents();
@@ -301,7 +306,47 @@ namespace zt::vulkan_renderer::tests
 			imGuiIntegration.implSpecificNewFrame();
 
 			ImGui::NewFrame();
+			ImGui::ShowDemoWindow();
 
+			ImGui::SetNextWindowBgAlpha(0.80f); // Transparent background
+
+			const float padding = 10.0f;
+			const ImGuiViewport* viewport = ImGui::GetMainViewport();
+			ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
+			ImVec2 workSize = viewport->WorkSize;
+
+			ImVec2 windowPos, windowPivot;
+			windowPos.x = work_pos.x + padding;
+			windowPos.y = work_pos.y + padding;
+			windowPivot.x = 0.0f;
+			windowPivot.y = 0.0f;
+			ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPivot);
+			//ImGui::SetNextWindowSize(workSize, ImGuiCond_Once);
+			ImGui::SetNextWindowSizeConstraints(
+				ImVec2(0, workSize.y - padding * 2),
+				ImVec2(workSize.x - padding * 2, workSize.y - padding * 2)
+			);
+
+			ImGuiWindowFlags windowFlags =
+				ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
+				ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+			
+			bool isOpen = false;
+			if (ImGui::Begin("EditorOverlay", &isOpen, windowFlags))
+			{
+				camera.imGui();
+
+				if (ImGui::CollapsingHeader("Sprite1"))
+				{
+					transform.imGui();
+				}
+
+				if (ImGui::CollapsingHeader("Sprite2"))
+				{
+					transform2.imGui();
+				}
+			}
+			ImGui::End();
 
 			ImGui::EndFrame();
 
@@ -333,5 +378,6 @@ namespace zt::vulkan_renderer::tests
 				fpsClock.restart();
 			}
 		}
+
 	}
 }
