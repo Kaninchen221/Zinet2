@@ -37,6 +37,23 @@ namespace zt::core
 		return line;
 	}
 
+	std::vector<uint8_t> File::readData()
+	{
+		fileStream.seekg(0, std::ios::end);
+		std::streamsize size = fileStream.tellg();
+		fileStream.seekg(0, std::ios::beg);
+
+		std::vector<uint8_t> result;
+		result.resize(size);
+
+		static_assert(sizeof(uint8_t) == sizeof(char));
+
+		fileStream.seekg(0, std::ios::beg);
+		fileStream.read(reinterpret_cast<char*>(result.data()), size);
+
+		return result;
+	}
+
 	void File::write(const std::string& string)
 	{
 		fileStream << string;

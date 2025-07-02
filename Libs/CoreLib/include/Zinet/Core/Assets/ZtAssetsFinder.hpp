@@ -11,19 +11,25 @@
 
 namespace zt::core::assets
 {
+	namespace fs = std::filesystem;
 
-	ZT_REFLECT_CLASS()
 	class ZINET_CORE_API AssetsFinder : public Object
 	{
 	protected:
 
 		inline static core::ConsoleLogger Logger = core::ConsoleLogger::Create("AssetsFinder");
 
-	public:
+	public:		
+		
+		AssetsFinder() noexcept = default;
+		AssetsFinder(const AssetsFinder& other) noexcept = default;
+		AssetsFinder(AssetsFinder&& other) noexcept = default;
+		~AssetsFinder() noexcept = default;
 
-		std::filesystem::path getContentFolderPath() const { return rootFolder / contentFolderName; }
+		AssetsFinder& operator = (const AssetsFinder& other) noexcept = default;
+		AssetsFinder& operator = (AssetsFinder&& other) noexcept = default;
 
-		bool contentFolderExists() const { return std::filesystem::exists(getContentFolderPath()); }
+		std::filesystem::path getContentFolderPath() const noexcept { return rootFolder / contentFolderName; }
 
 		struct FindAssetsInput
 		{
@@ -33,70 +39,28 @@ namespace zt::core::assets
 
 		struct FindAssetsResult 
 		{
-			std::vector<std::filesystem::path> filesPaths;
-			std::vector<std::filesystem::path> assetsFilesPaths;
+			std::vector<std::filesystem::path> files;
+			std::vector<std::filesystem::path> assets;
 		};
 
-		FindAssetsResult findAssets(const FindAssetsInput& findAssetsInput) const;
+		FindAssetsResult findAssets(const FindAssetsInput& findAssetsInput) const noexcept;
 
-		bool isAssetFilePath(const std::filesystem::path& path) const;
+		bool isAssetFile(const std::filesystem::path& path) const noexcept;
 
-		std::filesystem::path createAssetFilePath(const std::filesystem::path& filePath) const;
+		std::filesystem::path createAssetFilePath(const std::filesystem::path& filePath) const noexcept;
 
-		std::filesystem::path createRelativePath(const std::string& folderAsRoot, const std::filesystem::path& path) const;
+		std::filesystem::path createRelativePath(const std::string& folderAsRoot, const std::filesystem::path& path) const noexcept;
 
-		struct CreateAssetsResult
-		{
-			std::vector<Asset> assets;
-		};
+		void createAssetFile(const std::filesystem::path& filePath, const std::filesystem::path& assetPath) const noexcept;
 
-		AssetsFinder::CreateAssetsResult createAssets(const FindAssetsResult& findAssetsResult) const;
+		Asset loadAsset(const fs::path& filePath, const fs::path& assetPath) const noexcept;
+
+		fs::path rootFolder = Paths::RootPath();
+		std::string contentFolderName = "Content";
+		std::string assetFileExtension = "asset";
 
 	protected:
 
-		void createAssetFile(const std::filesystem::path& filePath, const std::filesystem::path& path) const;
-
-		ZT_REFLECT_MEMBER(ReadWrite)
-		std::filesystem::path rootFolder = Paths::RootPath();
-
-		ZT_REFLECT_MEMBER(ReadOnly)
-		std::string contentFolderName = "Content";
-
-		ZT_REFLECT_MEMBER(ReadOnly)
-		std::string assetFileExtension = "asset";
-
-	public:
-/*GENERATED_CODE_START*/
-		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
-		const inline static bool RegisterClassResult = RegisterClass<AssetsFinder>();
-		std::unique_ptr<ObjectBase> createCopy() const override { std::unique_ptr<ObjectBase> result = createCopyInternal<AssetsFinder>(); *result = *this; return result; }
-		
-		AssetsFinder() = default;
-		AssetsFinder(const AssetsFinder& other) = default;
-		AssetsFinder(AssetsFinder&& other) = default;
-		~AssetsFinder() noexcept = default;
-		
-		AssetsFinder& operator = (const AssetsFinder& other) = default;
-		AssetsFinder& operator = (AssetsFinder&& other) = default;
-		
-		class ClassInfo : public zt::core::ClassInfoBase
-		{
-		public:
-		
-			std::string_view getClassName() const override { return "AssetsFinder"; }
-		};
-		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
-		
-		
-		const decltype(rootFolder)& getRootFolder() const { return rootFolder; }
-		decltype(rootFolder)& getRootFolder() { return rootFolder; }
-		void setRootFolder(const decltype(rootFolder)& newValue) { rootFolder = newValue; }
-		
-		const decltype(contentFolderName)& getContentFolderName() const { return contentFolderName; }
-		
-		const decltype(assetFileExtension)& getAssetFileExtension() const { return assetFileExtension; }
-		
-/*GENERATED_CODE_END*/
 	};
 
 }

@@ -9,7 +9,6 @@
 
 namespace zt::core
 {
-
 	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_DESTRUCTOR, NO_OPERATORS)
 	class ZINET_CORE_API File : public Object
 	{
@@ -28,6 +27,9 @@ namespace zt::core
 
 		~File() noexcept;
 
+		auto& get() const noexcept { return fileStream; }
+		auto& get() noexcept { return fileStream; }
+
 		void open(const std::filesystem::path& filePath, FileOpenMode openMode);
 
 		bool isOpen() const;
@@ -35,6 +37,8 @@ namespace zt::core
 		std::string readLine();
 
 		std::string readAll();
+
+		std::vector<uint8_t> readData();
 
 		void write(const std::string& string);
 

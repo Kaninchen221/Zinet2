@@ -6,13 +6,14 @@
 #include <nlohmann/json.hpp>
 
 #include <chrono>
+#include <filesystem>
 
 namespace zt::core::assets
 {
 
-	AssetsFinder::FindAssetsResult AssetsFinder::findAssets(const FindAssetsInput& findAssetsInput) const
+	AssetsFinder::FindAssetsResult AssetsFinder::findAssets(const FindAssetsInput& findAssetsInput) const noexcept
 	{
-		if (!contentFolderExists())
+		if (!fs::exists(getContentFolderPath()))
 		{
 			Logger->error("Content folder doesn't exist");
 			return {};
@@ -22,19 +23,19 @@ namespace zt::core::assets
 
 		const auto foundFilesPaths = FileFinder::FindFiles(getContentFolderPath(), findAssetsInput.recursive);
 
-		result.filesPaths.reserve(foundFilesPaths.size());
-		result.assetsFilesPaths.reserve(foundFilesPaths.size());
+		result.files.reserve(foundFilesPaths.size());
+		result.assets.reserve(foundFilesPaths.size());
 		for (const auto& filePath : foundFilesPaths)
 		{
-			if (isAssetFilePath(filePath))
+			if (isAssetFile(filePath))
 				continue;
 
-			result.filesPaths.push_back(filePath);
+			result.files.push_back(filePath);
 
 			const auto assetFilePath = createAssetFilePath(filePath);
-			result.assetsFilesPaths.push_back(assetFilePath);
+			result.assets.push_back(assetFilePath);
 
-			if (std::filesystem::exists(assetFilePath))
+			if (fs::exists(assetFilePath))
 			{
 				if (findAssetsInput.reimport)
 				{
@@ -51,18 +52,18 @@ namespace zt::core::assets
 		return result;
 	}
 
-	bool AssetsFinder::isAssetFilePath(const std::filesystem::path& path) const
+	bool AssetsFinder::isAssetFile(const fs::path& path) const noexcept
 	{
 		return path.extension().string().ends_with(assetFileExtension);
 	}
 
-	std::filesystem::path AssetsFinder::createAssetFilePath(const std::filesystem::path& filePath) const
+	fs::path AssetsFinder::createAssetFilePath(const fs::path& filePath) const noexcept
 	{
-		const std::filesystem::path result = filePath.string() + "." + assetFileExtension;
+		const fs::path result = filePath.string() + "." + assetFileExtension;
 		return result;
 	}
 
-	std::filesystem::path AssetsFinder::createRelativePath(const std::string& folderAsRoot, const std::filesystem::path& path) const
+	fs::path AssetsFinder::createRelativePath(const std::string& folderAsRoot, const fs::path& path) const noexcept
 	{
 		std::string result = path.relative_path().string();
 		while (!result.starts_with(folderAsRoot))
@@ -79,52 +80,55 @@ namespace zt::core::assets
 		return result;
 	}
 
-	void AssetsFinder::createAssetFile(const std::filesystem::path& filePath, const std::filesystem::path& assetFilePath) const
+	void AssetsFinder::createAssetFile(const fs::path& filePath, const fs::path& assetPath) const noexcept
 	{
-		auto assetFile = File::CreateFile(assetFilePath);
-		const auto assetRelativePath = createRelativePath(contentFolderName, assetFilePath);
+		auto assetFile = File::CreateFile(assetPath);
+		const auto assetRelativePath = createRelativePath(contentFolderName, assetPath);
 		const auto fileRelativePath = createRelativePath(contentFolderName, filePath);
 
 		nlohmann::json data;
-		data["hash"] = std::hash<std::filesystem::path>{}(assetRelativePath);
+		data["hash"] = std::hash<fs::path>{}(assetRelativePath);
 		data["assetRelativePath"] = assetRelativePath.string();
 		data["fileRelativePath"] = fileRelativePath.string();
 		data["fileName"] = fileRelativePath.filename().replace_extension("").string();
 
-		const auto extension = fileRelativePath.filename().extension();
-		std::string extension_string = "";
+		auto extension = fileRelativePath.filename().extension().string();
 		if (!extension.empty())
 		{
-			extension_string = extension.string();
-			if (extension_string[0] == '.')
-				extension_string.erase(extension_string.begin());
+			if (extension.front() == '.')
+				extension.erase(extension.begin());
 		}
 
-		data["fileExtension"] = extension_string;
+		data["fileExtension"] = extension;
 		assetFile.write(data.dump(1, '\t'));
 	}
 
-	AssetsFinder::CreateAssetsResult AssetsFinder::createAssets(const FindAssetsResult& findAssetsResult) const
+	Asset AssetsFinder::loadAsset(const fs::path& filePath, const fs::path& assetPath) const noexcept
 	{
-		CreateAssetsResult result;
+		Asset asset;
 
-		result.assets.reserve(findAssetsResult.assetsFilesPaths.size());
-		for (const auto& assetFilePath : findAssetsResult.assetsFilesPaths)
+		File file;
+		file.open(filePath, FileOpenMode::Read);
+		if (!file.isOpen())
 		{
-			File file;
-			file.open(assetFilePath, FileOpenMode::Read);
-			if (!file.isOpen())
-			{
-				Logger->error("Found asset file but couldn't open it: {}", assetFilePath.string());
-				continue;
-			}
-
-			auto& asset = result.assets.emplace_back();
-			nlohmann::json content = nlohmann::json::parse(file.readAll());
-			asset.setMetaData(content);
+			Logger->error("Couldn't open file, path: {}", filePath.string());
+			return {};
 		}
 
-		return result;
+		asset.rawData = file.readData();
+		file.close();
+
+		file.open(assetPath, FileOpenMode::Read);
+		if (!file.isOpen())
+		{
+			Logger->error("Couldn't open asset, path: {}", assetPath.string());
+			return {};
+		}
+
+		using json = nlohmann::json;
+		asset.metaData = json::parse(file.readAll());
+
+		return asset;
 	}
 
 }

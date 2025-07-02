@@ -42,6 +42,13 @@ namespace zt::core::tests
 		ASSERT_EQ(actualSecondLine, expectedSecondLine);
 	}
 
+	TEST_F(FileTests, ReadDataTest)
+	{
+		file.open(pathToReadOnlyFile, FileOpenMode::Read);
+		std::vector<uint8_t> data = file.readData();
+		ASSERT_FALSE(data.empty());
+	}
+
 	TEST_F(FileTests, ReadAllTest)
 	{
 		file.open(pathToReadOnlyFile, FileOpenMode::Read);

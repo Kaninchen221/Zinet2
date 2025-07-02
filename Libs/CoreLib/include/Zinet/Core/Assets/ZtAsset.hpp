@@ -15,18 +15,14 @@ namespace zt::core::assets
 	{
 	protected:
 
-		inline static core::ConsoleLogger Logger = core::ConsoleLogger::Create("Asset");
+		inline static auto Logger = ConsoleLogger::Create("Asset");
 
 	public:
 
-		std::unique_ptr<ObjectBase> createObject(const std::filesystem::path& contentRootFolder) const;
+		std::vector<uint8_t> rawData;
 
-		virtual bool loadContentUsingMetaData([[maybe_unused]] const std::filesystem::path& contentRootFolder) { return false; }
-
-	protected:
-
-		ZT_REFLECT_MEMBER(ReadWrite)
-		nlohmann::json metaData;
+		using json = nlohmann::json;
+		json metaData;
 
 	public:
 /*GENERATED_CODE_START*/
@@ -50,10 +46,6 @@ namespace zt::core::assets
 		};
 		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
 		
-		
-		const decltype(metaData)& getMetaData() const { return metaData; }
-		decltype(metaData)& getMetaData() { return metaData; }
-		void setMetaData(const decltype(metaData)& newValue) { metaData = newValue; }
 		
 /*GENERATED_CODE_END*/
 	};

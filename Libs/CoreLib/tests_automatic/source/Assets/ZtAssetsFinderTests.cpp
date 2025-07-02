@@ -21,7 +21,7 @@ namespace zt::core::assets::tests
 
 		void SetUp() override
 		{
-			assetsFinder.setRootFolder(Paths::CurrentProjectRootPath() / "assets_finder_test_folder");
+			assetsFinder.rootFolder = Paths::CurrentProjectRootPath() / "assets_finder_test_folder";
 		}
 
 		void TearDown() override
@@ -31,33 +31,6 @@ namespace zt::core::assets::tests
 		AssetsFinder assetsFinder;
 		const AssetsFinder& assetsFinderConst = assetsFinder;
 	};
-
-	TEST(AssetsFinderSimpleTests, GetContentFolderNameTest)
-	{
-		const AssetsFinder assetsFinder;
-		const std::string& contentFolderName = assetsFinder.getContentFolderName();
-		EXPECT_EQ(contentFolderName, "Content");
-	}
-
-	TEST(AssetsFinderSimpleTests, GetContentFolderPathTest)
-	{
-		const AssetsFinder assetsFinder;
-		auto contentFolderPath = assetsFinder.getContentFolderPath();
-
-		EXPECT_EQ(contentFolderPath, Paths::RootPath() / assetsFinder.getContentFolderName());
-	}
-
-	TEST(AssetsFinderSimpleTests, ContentFolderExistsTest)
-	{
-		const AssetsFinder assetsFinder;
-		EXPECT_TRUE(assetsFinder.contentFolderExists());
-	}
-
-	TEST(AssetsFinderSimpleTests, GetAssetExtensionTest)
-	{
-		const AssetsFinder assetsFinder;
-		EXPECT_EQ(assetsFinder.getAssetFileExtension(), "asset");
-	}
 
 	TEST_F(AssetsFinderTests, FindAssetsTest)
 	{
@@ -69,20 +42,20 @@ namespace zt::core::assets::tests
 
 		const AssetsFinder::FindAssetsResult findAssetsResult = assetsFinderConst.findAssets(findAssetsInput);
 
-		EXPECT_EQ(findAssetsResult.filesPaths.size(), 3u);
-		EXPECT_EQ(findAssetsResult.assetsFilesPaths.size(), 3u);
+		EXPECT_EQ(findAssetsResult.files.size(), 3u);
+		EXPECT_EQ(findAssetsResult.assets.size(), 3u);
 	}
 
 	TEST_F(AssetsFinderTests, IsAssetFilePathTest)
 	{
 		const std::filesystem::path assetPath = "shader.vert.asset";
-		EXPECT_TRUE(assetsFinder.isAssetFilePath(assetPath));
+		EXPECT_TRUE(assetsFinder.isAssetFile(assetPath));
 
 		const std::filesystem::path notAssetPath = "shader.vert";
-		EXPECT_FALSE(assetsFinder.isAssetFilePath(notAssetPath));
+		EXPECT_FALSE(assetsFinder.isAssetFile(notAssetPath));
 
 		const std::filesystem::path directoryPath = "test/folder";
-		EXPECT_FALSE(assetsFinder.isAssetFilePath(directoryPath));
+		EXPECT_FALSE(assetsFinder.isAssetFile(directoryPath));
 	}
 
 	TEST_F(AssetsFinderTests, CreateAssetFilePathTest)
@@ -103,23 +76,29 @@ namespace zt::core::assets::tests
 		EXPECT_EQ(expectedPath, actualPath);
 	}
 
-	TEST_F(AssetsFinderTests, CreateAssetsObjectsTest)
+	TEST_F(AssetsFinderTests, LoadAssetTest)
 	{
 		AssetsFinder::FindAssetsInput findAssetsInput
 		{
-			.recursive = true,
+			.recursive = false,
 			.reimport = false
 		};
 
 		const AssetsFinder::FindAssetsResult findAssetsResult = assetsFinderConst.findAssets(findAssetsInput);
 
-		const AssetsFinder::CreateAssetsResult createAssetsResult = assetsFinderConst.createAssets(findAssetsResult);
+		EXPECT_EQ(findAssetsResult.files.size(), 1u);
+		EXPECT_EQ(findAssetsResult.assets.size(), 1u);
 
-		EXPECT_EQ(createAssetsResult.assets.size(), 3u);
+		Asset asset = assetsFinder.loadAsset(findAssetsResult.files.front(), findAssetsResult.assets.front());
 
-		for (const auto& asset : createAssetsResult.assets)
-		{
-			EXPECT_FALSE(asset.getMetaData().is_null());
-		}
+		ASSERT_TRUE(!asset.rawData.empty());
+		ASSERT_TRUE(!asset.metaData.empty());
+
+		auto extension = asset.metaData["fileExtension"];
+		ASSERT_TRUE(extension.is_string());
+
+		auto Logger = core::ConsoleLogger::Create("temp");
+		Logger->info("Asset extension: {}", extension.get<std::string_view>());
+		Logger->info(std::string_view(reinterpret_cast<char*>(asset.rawData.data()), asset.rawData.size()));
 	}
 }
