@@ -35,7 +35,10 @@ namespace zt::core
 
 		~Image() noexcept = default;
 
-		bool loadFromFile(const fs::path& path, std::int32_t expectedComponents) noexcept;
+		bool loadFromFile(const fs::path& path, int32_t expectedComponents) noexcept;
+
+		using Data = std::vector<uint8_t>;
+		bool loadFromData(const Data& data, int32_t expectedComponents) noexcept;
 
 		auto data() const noexcept { return imageData.get(); }
 		auto getWidth() const noexcept { return width; }

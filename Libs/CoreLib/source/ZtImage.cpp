@@ -20,7 +20,7 @@ namespace zt::core
 		return *this;
 	}
 
-	bool Image::loadFromFile(const fs::path& path, std::int32_t expectedComponents) noexcept
+	bool Image::loadFromFile(const fs::path& path, int32_t expectedComponents) noexcept
 	{
 		if (!fs::exists(path))
 		{
@@ -36,6 +36,28 @@ namespace zt::core
 		if (!imageData)
 		{
 			Logger->error("Couldn't load image from file, stbi returned nullptr, error message: {}", stbi_failure_reason());
+			return false;
+		}
+
+		return true;
+	}
+
+	bool Image::loadFromData(const Data& data, int32_t expectedComponents) noexcept
+	{
+		if (data.empty())
+		{
+			Logger->error("Data is empty");
+			return false;
+		}
+
+		const auto size = static_cast<int>(data.size());
+		stbi_uc* stbiRawDataPtr = stbi_load_from_memory(data.data(), size, &width, &height, &components, expectedComponents);
+
+		imageData = ImageDataT{ stbiRawDataPtr, stbiFree };
+
+		if (!imageData)
+		{
+			Logger->error("Couldn't load image from data, stbi returned nullptr, error message: {}", stbi_failure_reason());
 			return false;
 		}
 

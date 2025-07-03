@@ -11,15 +11,40 @@ namespace zt::core
 		}
 	}
 
-	void File::open(const std::filesystem::path& filePath, FileOpenMode openMode)
+	void File::open(const std::filesystem::path& filePath, FileOpenMode openMode, bool binary)
 	{
 		std::ios_base::openmode stdOpenMode = ToStdOpenMode(openMode);
+		if (binary)
+		{
+			stdOpenMode |= std::ios_base::binary;
+		}
+
 		fileStream.open(filePath, stdOpenMode);
 	}
 
-	bool File::isOpen() const
+	bool File::isOpen() const noexcept
 	{
 		return fileStream.is_open();
+	}
+
+	bool File::isOkay() const noexcept
+	{
+		return fileStream.good() && !fileStream.fail() && !fileStream.bad();
+	}
+
+	void File::log() const noexcept
+	{
+		if (isOkay())
+		{
+			Logger->info("Everything is okay with the file stream");
+		}
+		else
+		{
+			Logger->error("Something is wrong: \nis good: {}, fail: {}, bad: {}",
+				fileStream.good(), fileStream.fail(), fileStream.bad());
+
+
+		}
 	}
 
 	std::string File::readLine()
@@ -41,7 +66,6 @@ namespace zt::core
 	{
 		fileStream.seekg(0, std::ios::end);
 		std::streamsize size = fileStream.tellg();
-		fileStream.seekg(0, std::ios::beg);
 
 		std::vector<uint8_t> result;
 		result.resize(size);

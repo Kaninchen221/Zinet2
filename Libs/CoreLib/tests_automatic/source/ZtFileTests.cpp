@@ -27,6 +27,7 @@ namespace zt::core::tests
 		file.open(pathToReadOnlyFile, FileOpenMode::Read);
 		isOpen = file.isOpen();
 		ASSERT_TRUE(isOpen);
+		ASSERT_TRUE(file.isOkay());
 	}
 
 	TEST_F(FileTests, ReadLineTest)
@@ -44,8 +45,9 @@ namespace zt::core::tests
 
 	TEST_F(FileTests, ReadDataTest)
 	{
-		file.open(pathToReadOnlyFile, FileOpenMode::Read);
+		file.open(pathToReadOnlyFile, FileOpenMode::Read, true);
 		std::vector<uint8_t> data = file.readData();
+		ASSERT_TRUE(file.isOkay());
 		ASSERT_FALSE(data.empty());
 	}
 

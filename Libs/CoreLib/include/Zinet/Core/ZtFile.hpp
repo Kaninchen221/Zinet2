@@ -30,9 +30,13 @@ namespace zt::core
 		auto& get() const noexcept { return fileStream; }
 		auto& get() noexcept { return fileStream; }
 
-		void open(const std::filesystem::path& filePath, FileOpenMode openMode);
+		void open(const std::filesystem::path& filePath, FileOpenMode openMode, bool binary = false);
 
-		bool isOpen() const;
+		bool isOpen() const noexcept;
+
+		bool isOkay() const noexcept;
+
+		void log() const noexcept;
 
 		std::string readLine();
 

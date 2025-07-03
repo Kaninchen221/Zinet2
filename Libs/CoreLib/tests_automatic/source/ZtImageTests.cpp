@@ -4,6 +4,7 @@
 
 #include "Zinet/Core/ZtImage.hpp"
 #include "Zinet/Core/ZtPaths.hpp"
+#include "Zinet/Core/ZtFile.hpp"
 
 namespace zt::core::tests
 {
@@ -16,30 +17,56 @@ namespace zt::core::tests
 		ASSERT_EQ(image.getSize(), 0);
 	};
 
+	void TestImageIsValid(const Image& image)
+	{
+		ASSERT_TRUE(image.data());
+		ASSERT_EQ(image.getWidth(), 32);
+		ASSERT_EQ(image.getHeight(), 32);
+		ASSERT_EQ(image.getComponents(), 4);
+		ASSERT_EQ(image.getSize(), 4096);
+	}
+
 	class ImageTests : public ::testing::Test
 	{
 	protected:
 
 		Image image;
-		const std::int32_t expectedComponents = 4;
 
 		const std::filesystem::path testFolderPath = Paths::CurrentProjectRootPath() / "test_files";
 		const std::filesystem::path imagePath = testFolderPath / "image.png";
 
 		void SetUp() override
 		{
-			ASSERT_TRUE(image.loadFromFile(imagePath, expectedComponents));
-			ASSERT_TRUE(image.data());
-			ASSERT_EQ(image.getWidth(), 32);
-			ASSERT_EQ(image.getHeight(), 32);
-			ASSERT_EQ(image.getComponents(), expectedComponents);
-			ASSERT_EQ(image.getSize(), 4096);
 		}
 
 		void TearDown() override
 		{
 			image.destroy();
 			TestIsImageReallyInvalid(image);
+		}
+
+		void loadFromFile()
+		{
+			ASSERT_TRUE(image.loadFromFile(imagePath, 4)); 
+			TestImageIsValid(image);
+		}
+
+		void loadFromData()
+		{
+			File file;
+			file.open(imagePath, FileOpenMode::Read, true);
+			ASSERT_TRUE(file.isOpen());
+			ASSERT_TRUE(file.isOkay());
+			auto data = file.readData();
+			
+			if (!file.isOkay())
+			{
+				file.log();
+				FAIL() << "Something bad happened with the file";
+			}
+
+			ASSERT_TRUE(image.loadFromData(data, 4));
+			TestImageIsValid(image);
 		}
 
 		static_assert(std::is_base_of_v<Object, Image>);
@@ -57,13 +84,15 @@ namespace zt::core::tests
 
 	TEST_F(ImageTests, MoveTest)
 	{
+		loadFromFile();
+
 		auto moved = std::move(image);
-		ASSERT_TRUE(moved.data());
-		ASSERT_EQ(moved.getWidth(), 32);
-		ASSERT_EQ(moved.getHeight(), 32);
-		ASSERT_EQ(moved.getComponents(), expectedComponents);
-		ASSERT_EQ(moved.getSize(), 4096);
 
 		TestIsImageReallyInvalid(image);
+	}
+
+	TEST_F(ImageTests, LoadFromData)
+	{
+		loadFromData();
 	}
 }
