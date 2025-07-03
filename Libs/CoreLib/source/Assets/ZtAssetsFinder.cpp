@@ -54,23 +54,23 @@ namespace zt::core::assets
 
 	bool AssetsFinder::isAssetFile(const fs::path& path) const noexcept
 	{
-		return path.extension().string().ends_with(assetFileExtension);
+		return path.extension().generic_string().ends_with(assetFileExtension);
 	}
 
 	fs::path AssetsFinder::createAssetFilePath(const fs::path& filePath) const noexcept
 	{
-		const fs::path result = filePath.string() + "." + assetFileExtension;
+		const fs::path result = filePath.generic_string() + "." + assetFileExtension;
 		return result;
 	}
 
 	fs::path AssetsFinder::createRelativePath(const std::string& folderAsRoot, const fs::path& path) const noexcept
 	{
-		std::string result = path.relative_path().string();
+		std::string result = path.relative_path().generic_string();
 		while (!result.starts_with(folderAsRoot))
 		{
 			if (result.empty())
 			{
-				Logger->error("Can't create relative path with {} as a root folder, path: {}", folderAsRoot, path.string());
+				Logger->error("Can't create relative path with {} as a root folder, path: {}", folderAsRoot, path.generic_string());
 				return {};
 			}
 
@@ -88,11 +88,11 @@ namespace zt::core::assets
 
 		nlohmann::json data;
 		data["hash"] = std::hash<fs::path>{}(assetRelativePath);
-		data["assetRelativePath"] = assetRelativePath.string();
-		data["fileRelativePath"] = fileRelativePath.string();
-		data["fileName"] = fileRelativePath.filename().replace_extension("").string();
+		data["assetRelativePath"] = assetRelativePath.generic_string();
+		data["fileRelativePath"] = fileRelativePath.generic_string();
+		data["fileName"] = fileRelativePath.filename().replace_extension("").generic_string();
 
-		auto extension = fileRelativePath.filename().extension().string();
+		auto extension = fileRelativePath.filename().extension().generic_string();
 		if (!extension.empty())
 		{
 			if (extension.front() == '.')
@@ -103,25 +103,24 @@ namespace zt::core::assets
 		assetFile.write(data.dump(1, '\t'));
 	}
 
-	Asset AssetsFinder::loadAsset(const fs::path& filePath, const fs::path& assetPath) const noexcept
+	AssetsFinder::LoadAssetResult AssetsFinder::loadAsset(const fs::path& filePath, const fs::path& assetPath) const noexcept
 	{
-		Asset asset;
-
 		File file;
 		file.open(filePath, FileOpenMode::Read);
 		if (!file.isOpen())
 		{
-			Logger->error("Couldn't open file, path: {}", filePath.string());
+			Logger->error("Couldn't open file, path: {}", filePath.generic_string());
 			return {};
 		}
 
+		Asset asset;
 		asset.rawData = file.readData();
 		file.close();
 
 		file.open(assetPath, FileOpenMode::Read);
 		if (!file.isOpen())
 		{
-			Logger->error("Couldn't open asset, path: {}", assetPath.string());
+			Logger->error("Couldn't open asset, path: {}", assetPath.generic_string());
 			return {};
 		}
 

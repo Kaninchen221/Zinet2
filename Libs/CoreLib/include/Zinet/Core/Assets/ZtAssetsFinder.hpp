@@ -53,7 +53,8 @@ namespace zt::core::assets
 
 		void createAssetFile(const std::filesystem::path& filePath, const std::filesystem::path& assetPath) const noexcept;
 
-		Asset loadAsset(const fs::path& filePath, const fs::path& assetPath) const noexcept;
+		using LoadAssetResult = std::optional<Asset>;
+		LoadAssetResult loadAsset(const fs::path& filePath, const fs::path& assetPath) const noexcept;
 
 		fs::path rootFolder = Paths::RootPath();
 		std::string contentFolderName = "Content";

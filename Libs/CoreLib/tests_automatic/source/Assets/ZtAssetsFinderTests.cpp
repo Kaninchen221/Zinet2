@@ -89,8 +89,11 @@ namespace zt::core::assets::tests
 		EXPECT_EQ(findAssetsResult.files.size(), 1u);
 		EXPECT_EQ(findAssetsResult.assets.size(), 1u);
 
-		Asset asset = assetsFinder.loadAsset(findAssetsResult.files.front(), findAssetsResult.assets.front());
+		auto optionalAsset = assetsFinder.loadAsset(findAssetsResult.files.front(), findAssetsResult.assets.front());
 
+		ASSERT_TRUE(optionalAsset);
+
+		auto asset = std::move(optionalAsset.value());
 		ASSERT_TRUE(!asset.rawData.empty());
 		ASSERT_TRUE(!asset.metaData.empty());
 

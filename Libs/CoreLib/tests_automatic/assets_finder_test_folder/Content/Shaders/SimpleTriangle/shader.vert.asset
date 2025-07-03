@@ -1,7 +1,7 @@
 {
-	"assetRelativePath": "Content\\Shaders\\SimpleTriangle\\shader.vert.asset",
+	"assetRelativePath": "Content/Shaders/SimpleTriangle/shader.vert.asset",
 	"fileExtension": "vert",
 	"fileName": "shader",
-	"fileRelativePath": "Content\\Shaders\\SimpleTriangle\\shader.vert",
+	"fileRelativePath": "Content/Shaders/SimpleTriangle/shader.vert",
 	"hash": 11814240797036156134
 }
