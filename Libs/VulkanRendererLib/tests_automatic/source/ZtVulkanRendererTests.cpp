@@ -49,7 +49,7 @@ namespace zt::vulkan_renderer::tests
 			window.create(800, 800);
 			window.makeWindowTransparentWhileUsingVulkan();
 
-			renderer.start(window);
+			renderer.init(window);
 
 			imGuiIntegration.init(renderer.getRendererContext(), window);
 

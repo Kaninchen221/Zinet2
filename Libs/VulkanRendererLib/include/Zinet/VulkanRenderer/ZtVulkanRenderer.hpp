@@ -27,7 +27,7 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		bool start(wd::Window& window) noexcept;
+		bool init(wd::Window& window) noexcept;
 
 		void shutdown() noexcept;
 

@@ -2,13 +2,11 @@
 
 #include "Zinet/Gameplay/ZtGameplayLoop.hpp"
 
+#include "Zinet/Core/ZtClock.hpp"
+
 #include <gtest/gtest.h>
 
-#include <vulkan/vulkan.h>
-
-#include <type_traits>
-
-namespace zt::vulkan_renderer::tests
+namespace zt::gameplay::tests
 {
 	class GameplayLoopTests : public ::testing::Test
 	{
@@ -22,10 +20,24 @@ namespace zt::vulkan_renderer::tests
 		{
 		}
 
+		GameplayLoop gameplayLoop;
 	};
 
 	TEST_F(GameplayLoopTests, PassTest)
 	{
-		
+		ASSERT_TRUE(gameplayLoop.init());
+
+		core::Clock turnOffTest;
+		turnOffTest.start();
+
+		while (gameplayLoop.shouldLoop())
+		{
+			if (turnOffTest.getElapsedTime().getAsSeconds() > 0.1f)
+				gameplayLoop.turnOff();
+
+			gameplayLoop.loop();
+		}
+
+		gameplayLoop.shutdown();
 	}
 }

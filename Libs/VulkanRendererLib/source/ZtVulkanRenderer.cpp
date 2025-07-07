@@ -6,7 +6,7 @@
 namespace zt::vulkan_renderer
 {
 
-	bool VulkanRenderer::start(wd::Window& window) noexcept
+	bool VulkanRenderer::init(wd::Window& window) noexcept
 	{
 		window.setWindowResizedCallback(this, WindowResizedCallback);
 
