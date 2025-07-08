@@ -79,7 +79,9 @@ namespace zt::core
 	ConsoleLogger ConsoleLogger::Create(std::string name)
 	{
 		ConsoleLogger logger;
-		logger.internal = spdlog::stdout_color_mt(name);
+		logger.internal = spdlog::get(name);
+		if (!logger)
+			logger.internal = spdlog::stdout_color_mt(name);
 
 		auto sink = std::make_shared<CustomSink>();
 		auto& sinks = logger.internal->sinks();
