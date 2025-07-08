@@ -37,14 +37,18 @@ namespace zt::gameplay
 		const Children& getChildren() const noexcept { return children; }
 
 		template<class NodeHandleT>
-		void addNode(NodeHandleT nodeHandle) noexcept;
+		void addChild(NodeHandleT nodeHandle) noexcept;
 
 		auto begin() const noexcept { return children.begin(); }
 		auto end() const noexcept { return children.end(); }
 
+		void setParent(NodeWeakHandle<Node> newParent) noexcept { parent = newParent; }
+		auto getParent() const noexcept { return parent; }
+
 	protected:
 
 		Children children;
+		NodeWeakHandle<Node> parent;
 
 	};
 
@@ -55,7 +59,7 @@ namespace zt::gameplay
 	}
 
 	template<class NodeHandleT>
-	void Node::addNode(NodeHandleT nodeHandle) noexcept
+	void Node::addChild(NodeHandleT nodeHandle) noexcept
 	{
 		children.push_back(nodeHandle);
 	}
