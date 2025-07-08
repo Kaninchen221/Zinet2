@@ -6,6 +6,14 @@
 
 namespace zt::gameplay
 {
+	class Node;
+
+	template<class NodeT = Node>
+	using NodeHandle = std::shared_ptr<NodeT>;
+
+	template<class NodeT = Node>
+	using NodeWeakHandle = std::weak_ptr<NodeT>;
+
 	class ZINET_GAMEPLAY_API Node
 	{
 	protected:
@@ -17,16 +25,19 @@ namespace zt::gameplay
 		Node() noexcept = default;
 		Node(const Node& other) noexcept = default;
 		Node(Node&& other) noexcept = default;
-		~Node() noexcept = default;
+		virtual ~Node() noexcept = default;
 
 		Node& operator = (const Node& other) noexcept = default;
 		Node& operator = (Node&& other) noexcept = default;
 
+		template<class NodeT = Node>
+		static auto CreateNode() noexcept;
+
 		using Children = std::vector<std::shared_ptr<Node>>;
 		const Children& getChildren() const noexcept { return children; }
 
-		template<class NodeT>
-		std::shared_ptr<Node> addNode() noexcept;
+		template<class NodeHandleT>
+		void addNode(NodeHandleT nodeHandle) noexcept;
 
 		auto begin() const noexcept { return children.begin(); }
 		auto end() const noexcept { return children.end(); }
@@ -38,9 +49,15 @@ namespace zt::gameplay
 	};
 
 	template<class NodeT>
-	std::shared_ptr<Node> Node::addNode() noexcept
+	auto Node::CreateNode() noexcept
 	{
-		return children.emplace_back(new NodeT{});
+		return NodeHandle<NodeT>{ new NodeT{} };
+	}
+
+	template<class NodeHandleT>
+	void Node::addNode(NodeHandleT nodeHandle) noexcept
+	{
+		children.push_back(nodeHandle);
 	}
 
 }

@@ -18,19 +18,26 @@ namespace zt::gameplay::tests
 		{
 		}
 
-		Node node;
+		NodeHandle<Node> node = Node::CreateNode<Node>();
 	};
+
+	TEST_F(NodeTests, PassTest)
+	{}
 
 	TEST_F(NodeTests, ChildrenTest)
 	{
-		std::shared_ptr addedNode = node.addNode<Node>();
-		ASSERT_TRUE(addedNode);
+		NodeHandle<Node> addedNode = Node::CreateNode();
+		ASSERT_EQ(addedNode.use_count(), 1);
 
-		const Node::Children& children = node.getChildren();
+		node->addNode(addedNode);
+		ASSERT_TRUE(addedNode);
+		ASSERT_EQ(addedNode.use_count(), 2);
+
+		const Node::Children& children = node->getChildren();
 		ASSERT_FALSE(children.empty());
 
 		int i = 0;
-		for ([[maybe_unused]] const auto& childNode : node)
+		for ([[maybe_unused]] const auto& childNode : *node)
 		{
 			++i;
 		}
