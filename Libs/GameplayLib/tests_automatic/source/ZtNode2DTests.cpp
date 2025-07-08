@@ -26,6 +26,7 @@ namespace zt::gameplay::tests
 
 	TEST_F(Node2DTests, Test)
 	{
+		[[maybe_unused]]
 		auto& transform = node->transform;
 	}
 }
