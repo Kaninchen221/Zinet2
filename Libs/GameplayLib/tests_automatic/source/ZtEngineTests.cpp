@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Zinet/Gameplay/ZtGameplayLoop.hpp"
+#include "Zinet/Gameplay/ZtEngine.hpp"
 
 #include "Zinet/Core/ZtClock.hpp"
 
@@ -8,7 +8,7 @@
 
 namespace zt::gameplay::tests
 {
-	class GameplayLoopTests : public ::testing::Test
+	class EngineTests : public ::testing::Test
 	{
 	protected:
 
@@ -20,24 +20,24 @@ namespace zt::gameplay::tests
 		{
 		}
 
-		GameplayLoop gameplayLoop;
+		Engine engine;
 	};
 
-	TEST_F(GameplayLoopTests, PassTest)
+	TEST_F(EngineTests, PassTest)
 	{
-		ASSERT_TRUE(gameplayLoop.init());
+		ASSERT_TRUE(engine.init());
 
 		core::Clock turnOffTest;
 		turnOffTest.start();
 
-		while (gameplayLoop.shouldLoop())
+		while (engine.shouldLoop())
 		{
 			if (turnOffTest.getElapsedTime().getAsSeconds() > 0.1f)
-				gameplayLoop.turnOff();
+				engine.turnOff();
 
-			gameplayLoop.loop();
+			engine.loop();
 		}
 
-		gameplayLoop.deinit();
+		engine.deinit();
 	}
 }

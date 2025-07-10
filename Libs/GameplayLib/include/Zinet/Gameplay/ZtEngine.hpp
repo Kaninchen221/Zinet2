@@ -14,21 +14,21 @@
 
 namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API GameplayLoop
+	class ZINET_GAMEPLAY_API Engine
 	{
 	protected:
 
-		inline static auto Logger = core::ConsoleLogger::Create("GameplayLoop");
+		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::Engine");
 
 	public:
 
-		GameplayLoop() noexcept = default;
-		GameplayLoop(const GameplayLoop& other) noexcept = default;
-		GameplayLoop(GameplayLoop&& other) noexcept = default;
-		~GameplayLoop() noexcept = default;
+		Engine() noexcept = default;
+		Engine(const Engine& other) noexcept = default;
+		Engine(Engine&& other) noexcept = default;
+		~Engine() noexcept = default;
 
-		GameplayLoop& operator = (const GameplayLoop& other) noexcept = default;
-		GameplayLoop& operator = (GameplayLoop&& other) noexcept = default;
+		Engine& operator = (const Engine& other) noexcept = default;
+		Engine& operator = (Engine&& other) noexcept = default;
 
 		bool init() noexcept;
 

@@ -1,10 +1,10 @@
-﻿#include "Zinet/Gameplay/ZtGameplayLoop.hpp"
+﻿#include "Zinet/Gameplay/ZtEngine.hpp"
 
 #include "imgui.h"
 
 namespace zt::gameplay
 {
-	bool GameplayLoop::init() noexcept
+	bool Engine::init() noexcept
 	{
 		systemRenderer.init();
 
@@ -13,7 +13,7 @@ namespace zt::gameplay
 		return true;
 	}
 
-	void GameplayLoop::loop() noexcept
+	void Engine::loop() noexcept
 	{
 		windowEvents.pollEvents();
 
@@ -24,7 +24,7 @@ namespace zt::gameplay
 
 	}
 
-	void GameplayLoop::deinit() noexcept
+	void Engine::deinit() noexcept
 	{
 		systemRenderer.deinit();
 	}
