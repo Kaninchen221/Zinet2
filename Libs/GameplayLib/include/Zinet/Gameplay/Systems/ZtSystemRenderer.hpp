@@ -38,9 +38,9 @@ namespace zt::gameplay
 		SystemRenderer& operator = (const SystemRenderer& other) noexcept = default;
 		SystemRenderer& operator = (SystemRenderer&& other) noexcept = default;
 
-		bool init() noexcept override;
+		bool init(EngineContext& engineContext) noexcept override;
 
-		bool deinit() noexcept override;
+		void deinit() noexcept override;
 
 		void addNode(const NodeWeakHandle<NodeT>& node) noexcept;
 

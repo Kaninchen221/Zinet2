@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
+#include "Zinet/Gameplay/ZtEngineContext.hpp"
 
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 
@@ -32,9 +33,9 @@ namespace zt::gameplay
 
 		bool init() noexcept;
 
-		bool shouldLoop() const noexcept { return window.isOpen(); }
+		bool shouldLoop() const noexcept { return engineContext.window.isOpen(); }
 
-		void turnOff() noexcept { window.requestCloseWindow(); }
+		void turnOff() noexcept { engineContext.window.requestCloseWindow(); }
 
 		void loop() noexcept;
 
@@ -42,11 +43,8 @@ namespace zt::gameplay
 
 	protected:
 
-		SystemRenderer systemRenderer;
+		EngineContext engineContext;
 
-		vulkan_renderer::ImGuiIntegration imGuiIntegration;
-		wd::Window window;
-		wd::WindowEvents windowEvents{ window };
 
 	};
 }

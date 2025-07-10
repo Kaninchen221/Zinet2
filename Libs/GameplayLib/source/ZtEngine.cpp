@@ -6,27 +6,20 @@ namespace zt::gameplay
 {
 	bool Engine::init() noexcept
 	{
-		systemRenderer.init();
-
-		//imGuiIntegration.init(renderer.getRendererContext(), window);
+		if (!engineContext.init())
+			return false;
 
 		return true;
 	}
 
 	void Engine::loop() noexcept
 	{
-		windowEvents.pollEvents();
-
-		// Game logic
-
-		// Rendering
-		systemRenderer.update();
-
+		engineContext.loop();
 	}
 
 	void Engine::deinit() noexcept
 	{
-		systemRenderer.deinit();
+		engineContext.deinit();
 	}
 
 }

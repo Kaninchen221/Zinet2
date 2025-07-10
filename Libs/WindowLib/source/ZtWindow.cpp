@@ -14,8 +14,9 @@ namespace zt::wd
 {
 
     Window::~Window() noexcept
-    {
-		destroyWindow();
+	{
+		if (internalWindow)
+			destroyWindow();
     }
 
     bool Window::create(int width, int height)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Zinet/Gameplay/ZtEngineContext.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 
 #include <gtest/gtest.h>
@@ -12,15 +13,16 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
-			ASSERT_TRUE(systemRenderer.init());
+			ASSERT_TRUE(engineContext.init());
 		}
 
 		void TearDown() override
 		{
-			ASSERT_TRUE(systemRenderer.deinit());
+			engineContext.deinit();
 		}
 
-		SystemRenderer systemRenderer;
+		EngineContext engineContext;
+		SystemRenderer& systemRenderer = engineContext.systemRenderer;
 	};
 
 	TEST_F(SystemRendererTests, PassTest)

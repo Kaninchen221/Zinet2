@@ -1,36 +1,24 @@
 ﻿#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
+#include "Zinet/Gameplay/ZtEngineContext.hpp"
 
 namespace zt::gameplay
 {
 
-	bool SystemRenderer::init() noexcept
+	bool SystemRenderer::init(EngineContext& engineContext) noexcept
 	{
-		wd::GLFW::Init(false);
-
-		//wd::Window::SetTransparentFramebuffer(true);
-
-		if (!window.create())
-			return false;
-
-		//window.makeWindowTransparentWhileUsingVulkan();
-
-		if (!renderer.init(window))
+		if (!renderer.init(engineContext.window))
 			return false;
 
 		return true;
 	}
 
-	bool SystemRenderer::deinit() noexcept
+	void SystemRenderer::deinit() noexcept
 	{
 		const auto& device = renderer.getRendererContext().device;
 		device.waitIdle();
 
 		//imGuiIntegration.deinit(renderer.getRendererContext());
 		renderer.deinit();
-		window.destroyWindow();
-		wd::GLFW::Deinit();
-
-		return true;
 	}
 
 	void SystemRenderer::addNode(const NodeWeakHandle<NodeT>& node) noexcept

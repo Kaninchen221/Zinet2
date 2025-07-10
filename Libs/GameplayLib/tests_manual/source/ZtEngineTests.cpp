@@ -20,10 +20,12 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
+			ASSERT_TRUE(engine.init());
 		}
 
 		void TearDown() override
 		{
+			engine.deinit();
 		}
 
 		Engine engine;
@@ -31,6 +33,9 @@ namespace zt::gameplay::tests
 
 	TEST_F(EngineTests, PassTest)
 	{
-
+		while (engine.shouldLoop())
+		{
+			engine.loop();
+		}
 	}
 }
