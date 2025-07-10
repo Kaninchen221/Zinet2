@@ -10,9 +10,6 @@ namespace zt::gameplay
 	template<class NodeType = Node>
 	class System
 	{
-	protected:
-
-		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::System");
 
 	public:
 
@@ -27,7 +24,11 @@ namespace zt::gameplay
 		System& operator = (const System& other) noexcept = default;
 		System& operator = (System&& other) noexcept = default;
 
-		void addNode(const NodeWeakHandle<NodeT>& node) noexcept { nodes.push_back(node); }
+		virtual bool init() noexcept { return true; }
+
+		virtual bool deinit() noexcept { return true; }
+
+		virtual void addNode(const NodeWeakHandle<NodeT>& node) noexcept { nodes.push_back(node); }
 
 		auto& getNodes() noexcept { return nodes; }
 		const auto& getNodes() const noexcept { return nodes; }

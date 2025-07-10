@@ -18,7 +18,7 @@ namespace zt::gameplay::tests
 		{
 		}
 
-		NodeHandle<Node2D> node = Node::CreateNode<Node2D>();
+		NodeHandle<Node2D> node = CreateNode<Node2D>();
 	};
 
 	TEST_F(Node2DTests, PassTest)

@@ -16,7 +16,7 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	void VulkanRenderer::shutdown() noexcept
+	void VulkanRenderer::deinit() noexcept
 	{
 		rendererContext.device.waitIdle();
 

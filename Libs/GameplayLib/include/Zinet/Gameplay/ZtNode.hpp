@@ -14,6 +14,9 @@ namespace zt::gameplay
 	template<class NodeT = Node>
 	using NodeWeakHandle = std::weak_ptr<NodeT>;
 
+	template<class NodeT = Node>
+	static auto CreateNode() noexcept;
+
 	class ZINET_GAMEPLAY_API Node
 	{
 	protected:
@@ -29,9 +32,6 @@ namespace zt::gameplay
 
 		Node& operator = (const Node& other) noexcept = default;
 		Node& operator = (Node&& other) noexcept = default;
-
-		template<class NodeT = Node>
-		static auto CreateNode() noexcept;
 
 		using Children = std::vector<std::shared_ptr<Node>>;
 		const Children& getChildren() const noexcept { return children; }
@@ -53,7 +53,7 @@ namespace zt::gameplay
 	};
 
 	template<class NodeT>
-	auto Node::CreateNode() noexcept
+	auto CreateNode() noexcept
 	{
 		return NodeHandle<NodeT>{ new NodeT{} };
 	}

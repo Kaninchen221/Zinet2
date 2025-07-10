@@ -6,15 +6,9 @@ namespace zt::gameplay
 {
 	bool GameplayLoop::init() noexcept
 	{
-		wd::GLFW::Init(false);
+		systemRenderer.init();
 
-		zt::wd::Window::SetTransparentFramebuffer(true);
-		window.create(800, 800);
-		window.makeWindowTransparentWhileUsingVulkan();
-
-		renderer.init(window);
-
-		imGuiIntegration.init(renderer.getRendererContext(), window);
+		//imGuiIntegration.init(renderer.getRendererContext(), window);
 
 		return true;
 	}
@@ -25,38 +19,14 @@ namespace zt::gameplay
 
 		// Game logic
 
-		//imGuiIntegration.implSpecificNewFrame();
-
-		//ImGui::NewFrame();
-
-		//ImGui::EndFrame();
-
-		//updateUniformBuffersData();
-
-		//renderer.createPipeline(drawInfo);
-		//renderer.getGraphicsPipeline().isValid();
-
-		//renderer.beginFrame();
-
-		//imGuiIntegration.prepareRenderData();
-
-		//renderer.draw(drawInfo);
-
-		//renderer.submit();
-
-		//renderer.endFrame();
+		// Rendering
+		systemRenderer.update();
 
 	}
 
-	void GameplayLoop::shutdown() noexcept
+	void GameplayLoop::deinit() noexcept
 	{
-		const auto& device = renderer.getRendererContext().device;
-		device.waitIdle();
-
-		imGuiIntegration.deinit(renderer.getRendererContext());
-		renderer.shutdown();
-		window.destroyWindow();
-		wd::GLFW::Deinit();
+		systemRenderer.deinit();
 	}
 
 }

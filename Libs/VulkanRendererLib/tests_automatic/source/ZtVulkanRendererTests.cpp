@@ -146,7 +146,7 @@ namespace zt::vulkan_renderer::tests
 
 			imGuiIntegration.deinit(renderer.getRendererContext());
 
-			renderer.shutdown();
+			renderer.deinit();
 
 			window.destroyWindow();
 			wd::GLFW::Deinit();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Zinet/Gameplay/ZtSystem.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystem.hpp"
 
 #include <gtest/gtest.h>
 
@@ -12,10 +12,12 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
+			ASSERT_TRUE(system.init());
 		}
 
 		void TearDown() override
 		{
+			ASSERT_TRUE(system.deinit());
 		}
 
 		using NodeBase = Node;
@@ -24,7 +26,7 @@ namespace zt::gameplay::tests
 
 	TEST_F(SystemTests, NodesTest)
 	{
-		auto node = Node::CreateNode();
+		auto node = CreateNode();
 		system.addNode(node);
 		ASSERT_EQ(node.use_count(), 1);
 

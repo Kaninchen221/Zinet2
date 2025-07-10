@@ -29,7 +29,7 @@ namespace zt::vulkan_renderer
 
 		bool init(wd::Window& window) noexcept;
 
-		void shutdown() noexcept;
+		void deinit() noexcept;
 
 		bool beginFrame() noexcept;
 

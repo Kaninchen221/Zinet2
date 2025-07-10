@@ -38,6 +38,6 @@ namespace zt::gameplay::tests
 			gameplayLoop.loop();
 		}
 
-		gameplayLoop.shutdown();
+		gameplayLoop.deinit();
 	}
 }

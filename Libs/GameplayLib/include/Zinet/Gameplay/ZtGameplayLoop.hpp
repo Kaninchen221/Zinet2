@@ -2,6 +2,8 @@
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 
+#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
+
 #include "Zinet/Core/ZtLogger.hpp"
 
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
@@ -36,11 +38,12 @@ namespace zt::gameplay
 
 		void loop() noexcept;
 
-		void shutdown() noexcept;
+		void deinit() noexcept;
 
 	protected:
 
-		vulkan_renderer::VulkanRenderer renderer;
+		SystemRenderer systemRenderer;
+
 		vulkan_renderer::ImGuiIntegration imGuiIntegration;
 		wd::Window window;
 		wd::WindowEvents windowEvents{ window };

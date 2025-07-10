@@ -18,7 +18,7 @@ namespace zt::gameplay::tests
 		{
 		}
 
-		NodeHandle<Node> node = Node::CreateNode<Node>();
+		NodeHandle<Node> node = CreateNode<Node>();
 	};
 
 	TEST_F(NodeTests, PassTest)
@@ -27,7 +27,7 @@ namespace zt::gameplay::tests
 	TEST_F(NodeTests, ChildrenTest)
 	{
 		{
-			NodeHandle<Node> childNode = Node::CreateNode();
+			NodeHandle<Node> childNode = CreateNode();
 			ASSERT_EQ(childNode.use_count(), 1);
 
 			node->addChild(childNode);
@@ -48,7 +48,7 @@ namespace zt::gameplay::tests
 
 	TEST_F(NodeTests, ParentTest)
 	{
-		auto parent = Node::CreateNode();
+		auto parent = CreateNode();
 		node->setParent(parent);
 		ASSERT_EQ(parent.get(), node->getParent().lock().get());
 	
