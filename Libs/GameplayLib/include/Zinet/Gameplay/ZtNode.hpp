@@ -45,6 +45,8 @@ namespace zt::gameplay
 		void setParent(NodeWeakHandle<Node> newParent) noexcept { parent = newParent; }
 		auto getParent() const noexcept { return parent; }
 
+		virtual void imGui() noexcept {}
+
 	protected:
 
 		Children children;

@@ -14,6 +14,9 @@ namespace zt::gameplay
 		if (!systemRenderer.init(*this))
 			return false;
 
+		if (!systemImGui.init(*this))
+			return false;
+
 		return true;
 	}
 
@@ -21,11 +24,13 @@ namespace zt::gameplay
 	{
 		windowEvents.pollEvents();
 
+		systemImGui.update();
 		systemRenderer.update();
 	}
 
 	void EngineContext::deinit() noexcept
 	{
+		systemImGui.deinit();
 		systemRenderer.deinit();
 
 		window.destroyWindow();

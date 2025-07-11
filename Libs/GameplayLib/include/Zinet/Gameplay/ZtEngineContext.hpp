@@ -3,6 +3,7 @@
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -36,6 +37,7 @@ namespace zt::gameplay
 
 		void deinit() noexcept;
 
+		SystemImGui systemImGui;
 		SystemRenderer systemRenderer;
 
 		vulkan_renderer::ImGuiIntegration imGuiIntegration;

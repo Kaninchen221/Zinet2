@@ -32,11 +32,11 @@ namespace zt::vulkan_renderer
 		ImGuiIntegration& operator = (const ImGuiIntegration& other) noexcept = delete;
 		ImGuiIntegration& operator = (ImGuiIntegration&& other) noexcept = default;
 
-		void init(const RendererContext& rendererContext, wd::Window& window) noexcept;
+		bool init(const RendererContext& rendererContext, wd::Window& window) noexcept;
 
 		void deinit(const RendererContext& rendererContext) noexcept;
 
-		void implSpecificNewFrame() const noexcept;
+		static void ImplSpecificNewFrame() noexcept;
 
 		void prepareRenderData() const noexcept;
 

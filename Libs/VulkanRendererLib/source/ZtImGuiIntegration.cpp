@@ -14,7 +14,7 @@
 
 namespace zt::vulkan_renderer
 {
-	void ImGuiIntegration::init(const RendererContext& rendererContext, wd::Window& window) noexcept
+	bool ImGuiIntegration::init(const RendererContext& rendererContext, wd::Window& window) noexcept
 	{
 		{
 			// Copied from imgui demo
@@ -47,7 +47,11 @@ namespace zt::vulkan_renderer
 
 		ImGui::CreateContext();
 
-		ImGui_ImplGlfw_InitForVulkan(window.getInternal(), true);
+		if (!ImGui_ImplGlfw_InitForVulkan(window.getInternal(), true))
+		{
+			Logger->error("ImGui_ImplGlfw_InitForVulkan returned false");
+			return false;
+		}
 		
 		ImGui_ImplVulkan_InitInfo init_info = {};
 		init_info.Instance = rendererContext.instance.get();
@@ -59,7 +63,11 @@ namespace zt::vulkan_renderer
 		init_info.ImageCount = 3;
 		init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 		
-		ImGui_ImplVulkan_Init(&init_info, rendererContext.renderPass.get());
+		if (!ImGui_ImplVulkan_Init(&init_info, rendererContext.renderPass.get()))
+		{
+			Logger->error("ImGui_ImplVulkan_Init returned false");
+			return false;
+		}
 
 		const auto commands = [](const CommandBuffer& commandBuffer)
 		{
@@ -68,6 +76,8 @@ namespace zt::vulkan_renderer
 		SubmitSingleCommandBufferWaitIdle(rendererContext, commands);
 		
 		ImGui_ImplVulkan_DestroyFontUploadObjects();
+
+		return true;
 	}
 
 	void ImGuiIntegration::deinit(const RendererContext& rendererContext) noexcept
@@ -82,7 +92,7 @@ namespace zt::vulkan_renderer
 		ImGui::Render();
 	}
 
-	void ImGuiIntegration::implSpecificNewFrame() const noexcept
+	void ImGuiIntegration::ImplSpecificNewFrame() noexcept
 	{
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();

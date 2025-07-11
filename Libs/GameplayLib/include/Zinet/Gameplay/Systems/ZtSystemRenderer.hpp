@@ -10,6 +10,7 @@
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
+#include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
 
 #include "Zinet/Window/ZtWindow.hpp"
 
@@ -48,14 +49,15 @@ namespace zt::gameplay
 
 	protected:
 
+		vr::ShaderModule createShaderModule(std::string_view sourceCodeFileName, vr::ShaderType shaderType);
+
+		vr::ImGuiIntegration imGuiIntegration;
 		vr::VulkanRenderer renderer;
-		wd::Window window;
 
 		vr::ShaderModule vertexShaderModule{ nullptr };
 		vr::ShaderModule fragmentShaderModule{ nullptr };
 		vr::Buffer vertexBuffer{ nullptr };
 		vr::Buffer indexBuffer{ nullptr };
-		vr::DrawInfo::Indices indices;
 		vr::DrawInfo drawInfo
 		{
 			.vertexShaderModule = &vertexShaderModule,
