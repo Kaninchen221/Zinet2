@@ -6,7 +6,7 @@
 namespace zt::vulkan_renderer
 {
 
-	bool Framebuffer::create(const Device& device, const RenderPass& renderPass, const ImageView& imageView, const Vector2ui& size) noexcept
+	bool Framebuffer::create(const Device& device, const RenderPass& renderPass, const ImageView& imageView, const Vector2ui& size) ZINET_API_POST
 	{
 		if (isValid())
 			return false;
@@ -38,7 +38,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void Framebuffer::destroy(const Device& device) noexcept
+	void Framebuffer::destroy(const Device& device) ZINET_API_POST
 	{
 		if (isValid())
 		{

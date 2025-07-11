@@ -29,7 +29,7 @@ namespace zt::wd
 		Keyboard& operator = (const Keyboard& other) = default;
 		Keyboard& operator = (Keyboard&& other) = default;
 
-		~Keyboard() noexcept = default;
+		~Keyboard() ZINET_API_POST = default;
 
 		const Window* getWindow() const;
 

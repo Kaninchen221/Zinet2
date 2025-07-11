@@ -25,18 +25,18 @@ namespace zt::core
 		File& operator = (const File& other) = delete;
 		File& operator = (File&& other) = default;
 
-		~File() noexcept;
+		~File() ZINET_API_POST;
 
-		auto& get() const noexcept { return fileStream; }
-		auto& get() noexcept { return fileStream; }
+		auto& get() const ZINET_API_POST { return fileStream; }
+		auto& get() ZINET_API_POST { return fileStream; }
 
 		void open(const std::filesystem::path& filePath, FileOpenMode openMode, bool binary = false);
 
-		bool isOpen() const noexcept;
+		bool isOpen() const ZINET_API_POST;
 
-		bool isOkay() const noexcept;
+		bool isOkay() const ZINET_API_POST;
 
-		void log() const noexcept;
+		void log() const ZINET_API_POST;
 
 		std::string readLine();
 

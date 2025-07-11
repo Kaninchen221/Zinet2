@@ -33,7 +33,7 @@ namespace zt::wd
 		Window& operator = (const Window& other) = default;
 		Window& operator = (Window&& other) = default;
 
-		~Window() noexcept;
+		~Window() ZINET_API_POST;
 
 		bool create(int width = 1024, int height = 1024);
 
@@ -66,9 +66,9 @@ namespace zt::wd
 		static void SetTransparentFramebuffer(bool value);
 
 		/// For Vulkan sometimes it's necessary to call this function too
-		void makeWindowTransparentWhileUsingVulkan() noexcept;
+		void makeWindowTransparentWhileUsingVulkan() ZINET_API_POST;
 
-		Vector2i getFramebufferSize() const noexcept;
+		Vector2i getFramebufferSize() const ZINET_API_POST;
 
 		void setShowWindowBar(bool value);
 
@@ -90,7 +90,7 @@ namespace zt::wd
 		void bindFramebufferSizeCallback();
 	};
 
-	inline Vector2i Window::getFramebufferSize() const noexcept
+	inline Vector2i Window::getFramebufferSize() const ZINET_API_POST
 	{
 		std::int32_t width, height;
 		glfwGetFramebufferSize(internalWindow, &width, &height);

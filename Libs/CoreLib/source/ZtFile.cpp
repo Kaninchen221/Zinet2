@@ -3,7 +3,7 @@
 namespace zt::core
 {
 
-	File::~File() noexcept
+	File::~File() ZINET_API_POST
 	{
 		if (isOpen())
 		{
@@ -22,17 +22,17 @@ namespace zt::core
 		fileStream.open(filePath, stdOpenMode);
 	}
 
-	bool File::isOpen() const noexcept
+	bool File::isOpen() const ZINET_API_POST
 	{
 		return fileStream.is_open();
 	}
 
-	bool File::isOkay() const noexcept
+	bool File::isOkay() const ZINET_API_POST
 	{
 		return fileStream.good() && !fileStream.fail() && !fileStream.bad();
 	}
 
-	void File::log() const noexcept
+	void File::log() const ZINET_API_POST
 	{
 		if (isOkay())
 		{

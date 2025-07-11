@@ -154,7 +154,7 @@ void* operator new (std::size_t size)
 	return ZinetCollectAllocationDebugData::NewPointer(size);
 }
 
-void operator delete(void* pointerToFree) noexcept
+void operator delete(void* pointerToFree) ZINET_API_POST
 {
 	return ZinetCollectAllocationDebugData::Delete(pointerToFree);
 }
@@ -164,7 +164,7 @@ void* operator new[](std::size_t size)
 	return ZinetCollectAllocationDebugData::NewPointer(size);
 }
 
-void operator delete[](void* pointerToFree) noexcept
+void operator delete[](void* pointerToFree) ZINET_API_POST
 {
 	return ZinetCollectAllocationDebugData::Delete(pointerToFree);
 }

@@ -7,7 +7,7 @@
 namespace zt::vulkan_renderer
 {
 
-	bool Texture::create(const Device& device, const VMA& vma, const Vector2ui& size) noexcept
+	bool Texture::create(const Device& device, const VMA& vma, const Vector2ui& size) ZINET_API_POST
 	{
 		const auto format = VK_FORMAT_R8G8B8A8_SRGB; // Good enough, widespread supported format
 
@@ -53,18 +53,18 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	bool Texture::isValid() const noexcept
+	bool Texture::isValid() const ZINET_API_POST
 	{
 		return image.isValid() && imageView.isValid();
 	}
 
-	void Texture::destroy(const Device& device, const VMA& vma) noexcept
+	void Texture::destroy(const Device& device, const VMA& vma) ZINET_API_POST
 	{
 		imageView.destroy(device);
 		image.destroy(vma);
 	}
 
-	void Texture::fillWithImageBuffer(const FillWithImageBufferInput& input) const noexcept
+	void Texture::fillWithImageBuffer(const FillWithImageBufferInput& input) const ZINET_API_POST
 	{
 		const auto& imageOffset = input.imageOffset;
 		const auto& imageExtent = input.imageExtent;

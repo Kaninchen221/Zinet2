@@ -30,7 +30,7 @@ namespace zt::core
 	private:
 
 		ClassDefaultObjectRegistry() = default;
-		~ClassDefaultObjectRegistry() noexcept = default;
+		~ClassDefaultObjectRegistry() ZINET_API_POST = default;
 
 		std::vector<std::unique_ptr<ObjectBase>> CDOList;
 

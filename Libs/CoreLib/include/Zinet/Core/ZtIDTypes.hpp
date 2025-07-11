@@ -22,7 +22,7 @@ namespace zt::core
 		ID& operator = (const ID& other) = default;
 		ID& operator = (ID&& other) = default;
 
-		~ID() noexcept = default;
+		~ID() ZINET_API_POST = default;
 
 		bool operator == (size_t otherNumber) const { return number == otherNumber; }
 		bool operator == (const ID& other) const { return number == other.number; }
@@ -47,7 +47,7 @@ namespace zt::core
 		UniqueID& operator = (const UniqueID& other) = delete;
 		UniqueID& operator = (UniqueID&& other);
 		
-		~UniqueID() noexcept = default;
+		~UniqueID() ZINET_API_POST = default;
 
 		ID createID() const { return ID{ number }; }
 

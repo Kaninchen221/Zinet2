@@ -14,7 +14,7 @@ namespace zt::core
 		ClassInfoBase(const ClassInfoBase& other) = default;
 		ClassInfoBase(ClassInfoBase&& other) = default;
 
-		virtual ~ClassInfoBase() noexcept = default;
+		virtual ~ClassInfoBase() ZINET_API_POST = default;
 
 		ClassInfoBase& operator = (const ClassInfoBase& other) = default;
 		ClassInfoBase& operator = (ClassInfoBase&& other) = default;

@@ -27,25 +27,25 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		bool init(wd::Window& window) noexcept;
+		bool init(wd::Window& window) ZINET_API_POST;
 
-		void deinit() noexcept;
+		void deinit() ZINET_API_POST;
 
-		bool beginFrame() noexcept;
+		bool beginFrame() ZINET_API_POST;
 
-		bool createPipeline(DrawInfo& drawInfo) noexcept;
+		bool createPipeline(DrawInfo& drawInfo) ZINET_API_POST;
 		
-		void draw(const DrawInfo& drawInfo) noexcept;
+		void draw(const DrawInfo& drawInfo) ZINET_API_POST;
 
-		bool submit() noexcept;
+		bool submit() ZINET_API_POST;
 
-		bool endFrame() noexcept;
+		bool endFrame() ZINET_API_POST;
 
-		const auto& getRendererContext() const noexcept { return rendererContext; }
-		auto& getRendererContext() noexcept { return rendererContext; }
+		const auto& getRendererContext() const ZINET_API_POST { return rendererContext; }
+		auto& getRendererContext() ZINET_API_POST { return rendererContext; }
 
-		const auto& getGraphicsPipeline() const noexcept { return graphicsPipeline; }
-		auto& getGraphicsPipeline() noexcept { return graphicsPipeline; }
+		const auto& getGraphicsPipeline() const ZINET_API_POST { return graphicsPipeline; }
+		auto& getGraphicsPipeline() ZINET_API_POST { return graphicsPipeline; }
 
 	protected:
 
@@ -63,7 +63,7 @@ namespace zt::vulkan_renderer
 		VulkanRenderer() = default;
 		VulkanRenderer(const VulkanRenderer& other) = default;
 		VulkanRenderer(VulkanRenderer&& other) = default;
-		~VulkanRenderer() noexcept = default;
+		~VulkanRenderer() ZINET_API_POST = default;
 		
 		VulkanRenderer& operator = (const VulkanRenderer& other) = default;
 		VulkanRenderer& operator = (VulkanRenderer&& other) = default;

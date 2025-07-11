@@ -33,7 +33,7 @@ namespace zt::core::assets
 		Asset() = default;
 		Asset(const Asset& other) = default;
 		Asset(Asset&& other) = default;
-		~Asset() noexcept = default;
+		~Asset() ZINET_API_POST = default;
 		
 		Asset& operator = (const Asset& other) = default;
 		Asset& operator = (Asset&& other) = default;

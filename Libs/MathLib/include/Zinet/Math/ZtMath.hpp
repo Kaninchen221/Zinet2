@@ -27,7 +27,7 @@ namespace zt
 		Math& operator = (const Math& other) = delete;
 		Math& operator = (Math&& other) = delete;
 
-		~Math() noexcept = delete;
+		~Math() ZINET_API_POST = delete;
 
 		template<typename VectorType, typename ArrayType = std::array<typename VectorType::value_type, VectorType::length()>>
 		constexpr static ArrayType FromVectorToArray(const VectorType& vector)

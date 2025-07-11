@@ -27,29 +27,29 @@ namespace zt::vulkan_renderer
 			format{ newFormat }
 		{}
 
-		Image() noexcept = delete;
-		Image(const Image& other) noexcept = delete;
-		Image(Image&& other) noexcept = default;
-		~Image() noexcept = default;
+		Image() ZINET_API_POST = delete;
+		Image(const Image& other) ZINET_API_POST = delete;
+		Image(Image&& other) ZINET_API_POST = default;
+		~Image() ZINET_API_POST = default;
 
-		Image& operator = (const Image& other) noexcept = delete;
-		Image& operator = (Image&& other) noexcept = default;
+		Image& operator = (const Image& other) ZINET_API_POST = delete;
+		Image& operator = (Image&& other) ZINET_API_POST = default;
 
-		static VkImageCreateInfo GetDefaultCreateInfo(const Device& device) noexcept;
+		static VkImageCreateInfo GetDefaultCreateInfo(const Device& device) ZINET_API_POST;
 
-		bool create(const VMA& vma, const VkImageCreateInfo& createInfo) noexcept;
+		bool create(const VMA& vma, const VkImageCreateInfo& createInfo) ZINET_API_POST;
 
-		void destroy(const VMA& vma) noexcept;
+		void destroy(const VMA& vma) ZINET_API_POST;
 
-		VkFormat getFormat() const noexcept { return format; }
+		VkFormat getFormat() const ZINET_API_POST { return format; }
 
-		static VkImageSubresourceRange GetDefaultSubresourceRange() noexcept;
+		static VkImageSubresourceRange GetDefaultSubresourceRange() ZINET_API_POST;
 
 		VkImageMemoryBarrier getDefaultMemoryBarier(
 			VkImageLayout oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
 			VkImageLayout newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 			VkImageSubresourceRange subresourceRange = GetDefaultSubresourceRange()
-			) const noexcept;
+			) const ZINET_API_POST;
 
 	protected:
 

@@ -28,7 +28,7 @@ namespace zt::core
 		Time& operator = (Time&& other) = default;
 		Time& operator = (NumericType nanoseconds);
 
-		~Time() noexcept = default;
+		~Time() ZINET_API_POST = default;
 
 		NumericType getAsNanoseconds() const;
 		NumericType getAsMicroseconds() const;

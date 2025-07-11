@@ -24,21 +24,21 @@ namespace zt::vulkan_renderer
 			  queueFamilyIndex{ newQueueFamilyIndex }
 		{}
 
-		Queue() noexcept = delete;
-		Queue(const Queue& other) noexcept = delete;
-		Queue(Queue&& other) noexcept = default;
-		~Queue() noexcept = default;
+		Queue() ZINET_API_POST = delete;
+		Queue(const Queue& other) ZINET_API_POST = delete;
+		Queue(Queue&& other) ZINET_API_POST = default;
+		~Queue() ZINET_API_POST = default;
 
-		Queue& operator = (const Queue& other) noexcept = delete;
-		Queue& operator = (Queue&& other) noexcept = default;
+		Queue& operator = (const Queue& other) ZINET_API_POST = delete;
+		Queue& operator = (Queue&& other) ZINET_API_POST = default;
 
 		void invalidate() { objectHandle = nullptr; }
 
-		const auto& getQueueFamilyIndex() const noexcept { return queueFamilyIndex; }
+		const auto& getQueueFamilyIndex() const ZINET_API_POST { return queueFamilyIndex; }
 
-		bool submit(const core::STDContainer auto& contiguousContainerSubmitInfos, const Fence& fence = Fence{ nullptr }) const noexcept;
+		bool submit(const core::STDContainer auto& contiguousContainerSubmitInfos, const Fence& fence = Fence{ nullptr }) const ZINET_API_POST;
 
-		bool waitIdle() const noexcept;
+		bool waitIdle() const ZINET_API_POST;
 
 	protected:
 
@@ -46,7 +46,7 @@ namespace zt::vulkan_renderer
 
 	};
 
-	inline bool Queue::submit(const core::STDContainer auto& contiguousContainerSubmitInfos, const Fence& fence) const noexcept
+	inline bool Queue::submit(const core::STDContainer auto& contiguousContainerSubmitInfos, const Fence& fence) const ZINET_API_POST
 	{
 		const auto result = vkQueueSubmit(get(), static_cast<uint32_t>(contiguousContainerSubmitInfos.size()), contiguousContainerSubmitInfos.data(), fence.get());
 		if (result == VK_SUCCESS)

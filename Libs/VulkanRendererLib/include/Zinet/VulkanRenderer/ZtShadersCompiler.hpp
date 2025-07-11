@@ -22,15 +22,15 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		ShadersCompiler() noexcept = default;
-		ShadersCompiler(const ShadersCompiler& other) noexcept = default;
-		ShadersCompiler(ShadersCompiler&& other) noexcept = default;
-		~ShadersCompiler() noexcept = default;
+		ShadersCompiler() ZINET_API_POST = default;
+		ShadersCompiler(const ShadersCompiler& other) ZINET_API_POST = default;
+		ShadersCompiler(ShadersCompiler&& other) ZINET_API_POST = default;
+		~ShadersCompiler() ZINET_API_POST = default;
 
-		ShadersCompiler& operator = (const ShadersCompiler& other) noexcept = default;
-		ShadersCompiler& operator = (ShadersCompiler&& other) noexcept = default;
+		ShadersCompiler& operator = (const ShadersCompiler& other) ZINET_API_POST = default;
+		ShadersCompiler& operator = (ShadersCompiler&& other) ZINET_API_POST = default;
 
-		shaderc::SpvCompilationResult compileFromFile(const std::filesystem::path& filePath, const ShaderType shaderType) const noexcept;
+		shaderc::SpvCompilationResult compileFromFile(const std::filesystem::path& filePath, const ShaderType shaderType) const ZINET_API_POST;
 
 	};
 }

@@ -3,7 +3,7 @@
 namespace zt::gameplay
 {
 
-	void NodeEditor::imGui() noexcept
+	void NodeEditor::imGui() ZINET_API_POST
 	{
 
 	}

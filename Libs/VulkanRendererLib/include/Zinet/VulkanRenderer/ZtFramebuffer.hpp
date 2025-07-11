@@ -31,17 +31,17 @@ namespace zt::vulkan_renderer
 		Framebuffer(HandleType newObjectHandle)
 			: VulkanObject(newObjectHandle) {}
 
-		Framebuffer() noexcept = delete;
-		Framebuffer(const Framebuffer& other) noexcept = delete;
-		Framebuffer(Framebuffer&& other) noexcept = default;
-		~Framebuffer() noexcept = default;
+		Framebuffer() ZINET_API_POST = delete;
+		Framebuffer(const Framebuffer& other) ZINET_API_POST = delete;
+		Framebuffer(Framebuffer&& other) ZINET_API_POST = default;
+		~Framebuffer() ZINET_API_POST = default;
 
-		Framebuffer& operator = (const Framebuffer& other) noexcept = delete;
-		Framebuffer& operator = (Framebuffer&& other) noexcept = default;
+		Framebuffer& operator = (const Framebuffer& other) ZINET_API_POST = delete;
+		Framebuffer& operator = (Framebuffer&& other) ZINET_API_POST = default;
 
-		bool create(const Device& device, const RenderPass& renderPass, const ImageView& imageView, const Vector2ui& size) noexcept;
+		bool create(const Device& device, const RenderPass& renderPass, const ImageView& imageView, const Vector2ui& size) ZINET_API_POST;
 
-		void destroy(const Device& device) noexcept;
+		void destroy(const Device& device) ZINET_API_POST;
 
 	protected:
 

@@ -6,7 +6,7 @@
 namespace zt::vulkan_renderer
 {
 
-	bool VulkanRenderer::init(wd::Window& window) noexcept
+	bool VulkanRenderer::init(wd::Window& window) ZINET_API_POST
 	{
 		window.setWindowResizedCallback(this, WindowResizedCallback);
 
@@ -16,7 +16,7 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	void VulkanRenderer::deinit() noexcept
+	void VulkanRenderer::deinit() ZINET_API_POST
 	{
 		rendererContext.device.waitIdle();
 
@@ -24,7 +24,7 @@ namespace zt::vulkan_renderer
 		rendererContext.destroy();
 	}
 
-	bool VulkanRenderer::beginFrame() noexcept
+	bool VulkanRenderer::beginFrame() ZINET_API_POST
 	{
 		auto& swapChain = rendererContext.swapChain;
 		auto& device = rendererContext.device;
@@ -45,7 +45,7 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	bool VulkanRenderer::createPipeline(DrawInfo& drawInfo) noexcept
+	bool VulkanRenderer::createPipeline(DrawInfo& drawInfo) ZINET_API_POST
 	{
 		if (graphicsPipeline.isValid())
 			return true;
@@ -53,17 +53,17 @@ namespace zt::vulkan_renderer
 		return graphicsPipeline.create(rendererContext, drawInfo);
 	}
 
-	void VulkanRenderer::draw(const DrawInfo& drawInfo) noexcept
+	void VulkanRenderer::draw(const DrawInfo& drawInfo) ZINET_API_POST
 	{
 		graphicsPipeline.draw(rendererContext, drawInfo);
 	}
 
-	bool VulkanRenderer::submit() noexcept
+	bool VulkanRenderer::submit() ZINET_API_POST
 	{
 		return graphicsPipeline.submit(rendererContext);
 	}
 
-	bool VulkanRenderer::endFrame() noexcept
+	bool VulkanRenderer::endFrame() ZINET_API_POST
 	{
 		const auto& swapChain = rendererContext.swapChain;
 		const auto& queue = rendererContext.queue;

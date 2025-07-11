@@ -15,15 +15,15 @@ namespace zt::gameplay
 
 	public:
 
-		NodeEditor() noexcept = default;
-		NodeEditor(const NodeEditor& other) noexcept = default;
-		NodeEditor(NodeEditor&& other) noexcept = default;
-		~NodeEditor() noexcept = default;
+		NodeEditor() ZINET_API_POST = default;
+		NodeEditor(const NodeEditor& other) ZINET_API_POST = default;
+		NodeEditor(NodeEditor&& other) ZINET_API_POST = default;
+		~NodeEditor() ZINET_API_POST = default;
 
-		NodeEditor& operator = (const NodeEditor& other) noexcept = default;
-		NodeEditor& operator = (NodeEditor&& other) noexcept = default;
+		NodeEditor& operator = (const NodeEditor& other) ZINET_API_POST = default;
+		NodeEditor& operator = (NodeEditor&& other) ZINET_API_POST = default;
 
-		void imGui() noexcept override;
+		void imGui() ZINET_API_POST override;
 	};
 
 }

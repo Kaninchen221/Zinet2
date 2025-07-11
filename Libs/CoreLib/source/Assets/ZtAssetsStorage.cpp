@@ -5,7 +5,7 @@
 namespace zt::core::assets
 {
 
-	bool AssetsStorage::storeAssets() noexcept
+	bool AssetsStorage::storeAssets() ZINET_API_POST
 	{
 		const AssetsFinder::FindAssetsInput input
 		{
@@ -40,7 +40,7 @@ namespace zt::core::assets
 		return result;
 	}
 
-	AssetsStorage::GetResult AssetsStorage::get(const AssetsKey& key) noexcept
+	AssetsStorage::GetResult AssetsStorage::get(const AssetsKey& key) ZINET_API_POST
 	{
 		auto findResult = assets.find(key);
 		if (findResult == assets.end())

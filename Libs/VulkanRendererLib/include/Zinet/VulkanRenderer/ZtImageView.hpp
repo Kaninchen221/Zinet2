@@ -24,21 +24,21 @@ namespace zt::vulkan_renderer
 			  format{ newFormat }
 		{}
 
-		ImageView() noexcept = delete;
-		ImageView(const ImageView& other) noexcept = delete;
-		ImageView(ImageView&& other) noexcept = default;
-		~ImageView() noexcept = default;
+		ImageView() ZINET_API_POST = delete;
+		ImageView(const ImageView& other) ZINET_API_POST = delete;
+		ImageView(ImageView&& other) ZINET_API_POST = default;
+		~ImageView() ZINET_API_POST = default;
 
-		ImageView& operator = (const ImageView& other) noexcept = delete;
-		ImageView& operator = (ImageView&& other) noexcept = default;
+		ImageView& operator = (const ImageView& other) ZINET_API_POST = delete;
+		ImageView& operator = (ImageView&& other) ZINET_API_POST = default;
 
-		static VkImageViewCreateInfo GetDefaultCreateInfo(const VkImage& vkImage, VkFormat format) noexcept;
+		static VkImageViewCreateInfo GetDefaultCreateInfo(const VkImage& vkImage, VkFormat format) ZINET_API_POST;
 
-		bool create(const Device& device, const VkImageViewCreateInfo& createInfo) noexcept;
+		bool create(const Device& device, const VkImageViewCreateInfo& createInfo) ZINET_API_POST;
 
-		void destroy(const Device& device) noexcept;
+		void destroy(const Device& device) ZINET_API_POST;
 
-		VkFormat getFormat() const noexcept { return format; }
+		VkFormat getFormat() const ZINET_API_POST { return format; }
 
 	protected:
 

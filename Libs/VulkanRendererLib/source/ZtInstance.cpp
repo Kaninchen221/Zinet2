@@ -6,7 +6,7 @@
 
 namespace zt::vulkan_renderer
 {
-	void Instance::PrintAPIVersion() noexcept
+	void Instance::PrintAPIVersion() ZINET_API_POST
 	{
 		std::uint32_t apiVersion = 0;
 		vkEnumerateInstanceVersion(&apiVersion);
@@ -18,7 +18,7 @@ namespace zt::vulkan_renderer
 		Logger->info("API Version: {} {} {}", major, minor, patch);
 	}
 
-	bool Instance::create() noexcept
+	bool Instance::create() ZINET_API_POST
 	{
 		if (isValid())
 			return false;
@@ -61,7 +61,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void Instance::destroy() noexcept
+	void Instance::destroy() ZINET_API_POST
 	{
 		if (isValid())
 		{
@@ -70,7 +70,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	std::vector<const char*> Instance::getEnabledLayerNames() const noexcept
+	std::vector<const char*> Instance::getEnabledLayerNames() const ZINET_API_POST
 	{
 		if (enableValidationLayers)
 			return { "VK_LAYER_KHRONOS_validation" };
@@ -78,7 +78,7 @@ namespace zt::vulkan_renderer
 			return {};
 	}
 
-	bool Instance::areEnabledLayersSupported() const noexcept
+	bool Instance::areEnabledLayersSupported() const ZINET_API_POST
 	{
 		// TODO: Refactor this
 		std::uint32_t layerCount;
@@ -113,7 +113,7 @@ namespace zt::vulkan_renderer
 		return areAllLayersSupported;
 	}
 
-	std::vector<const char*> Instance::GetGlfwRequiredInstanceExtensions() noexcept
+	std::vector<const char*> Instance::GetGlfwRequiredInstanceExtensions() ZINET_API_POST
 	{
 		if (!wd::GLFW::IsInitialized())
 			return {};
@@ -131,7 +131,7 @@ namespace zt::vulkan_renderer
 		return result;
 	}
 
-	std::vector<const char*> Instance::getRequiredExtensions() const noexcept
+	std::vector<const char*> Instance::getRequiredExtensions() const ZINET_API_POST
 	{
 		auto extensions = GetGlfwRequiredInstanceExtensions();
 
@@ -141,7 +141,7 @@ namespace zt::vulkan_renderer
 		return extensions;
 	}
 
-	std::vector<PhysicalDevice> Instance::getPhysicalDevices() const noexcept
+	std::vector<PhysicalDevice> Instance::getPhysicalDevices() const ZINET_API_POST
 	{
 		std::uint32_t deviceCount = 0;
 		vkEnumeratePhysicalDevices(objectHandle, &deviceCount, nullptr);

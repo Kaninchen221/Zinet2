@@ -4,7 +4,7 @@
 
 namespace zt::vulkan_renderer
 {
-	shaderc::SpvCompilationResult ShadersCompiler::compileFromFile(const std::filesystem::path& filePath, const ShaderType shaderType) const noexcept
+	shaderc::SpvCompilationResult ShadersCompiler::compileFromFile(const std::filesystem::path& filePath, const ShaderType shaderType) const ZINET_API_POST
 	{
 		core::File file;
 		file.open(filePath, core::FileOpenMode::Read);

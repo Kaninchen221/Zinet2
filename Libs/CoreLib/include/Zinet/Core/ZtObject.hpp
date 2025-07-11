@@ -18,7 +18,7 @@ namespace zt::core
 		Object() = default;
 		Object(const Object& other) = default;
 		Object(Object&& other) = default;
-		~Object() noexcept = default;
+		~Object() ZINET_API_POST = default;
 
 		template<class T> // Can't use std::derived_from concept because we use this function with incomplete type
 		static bool RegisterClass();

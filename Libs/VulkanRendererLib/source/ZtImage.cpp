@@ -6,7 +6,7 @@
 
 namespace zt::vulkan_renderer
 {
-	VkImageCreateInfo Image::GetDefaultCreateInfo(const Device& device) noexcept
+	VkImageCreateInfo Image::GetDefaultCreateInfo(const Device& device) ZINET_API_POST
 	{
 		return VkImageCreateInfo
 		{
@@ -28,7 +28,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	bool Image::create(const VMA& vma, const VkImageCreateInfo& createInfo) noexcept
+	bool Image::create(const VMA& vma, const VkImageCreateInfo& createInfo) ZINET_API_POST
 	{
 		if (isValid())
 			return false;
@@ -52,7 +52,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void Image::destroy(const VMA& vma) noexcept
+	void Image::destroy(const VMA& vma) ZINET_API_POST
 	{
 		if (isValid())
 		{
@@ -61,7 +61,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	VkImageSubresourceRange Image::GetDefaultSubresourceRange() noexcept
+	VkImageSubresourceRange Image::GetDefaultSubresourceRange() ZINET_API_POST
 	{
 		return
 		{
@@ -73,7 +73,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	VkImageMemoryBarrier Image::getDefaultMemoryBarier(VkImageLayout oldLayout, VkImageLayout newLayout, VkImageSubresourceRange subresourceRange) const noexcept
+	VkImageMemoryBarrier Image::getDefaultMemoryBarier(VkImageLayout oldLayout, VkImageLayout newLayout, VkImageSubresourceRange subresourceRange) const ZINET_API_POST
 	{
 		return 
 		{

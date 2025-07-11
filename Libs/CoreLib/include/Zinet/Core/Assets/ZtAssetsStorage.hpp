@@ -20,13 +20,13 @@ namespace zt::core::assets
 
 	public:
 
-		bool storeAssets() noexcept;
+		bool storeAssets() ZINET_API_POST;
 
 		using AssetsKey = std::string;
 		using Assets = std::unordered_map<AssetsKey, Asset>;
 
 		using GetResult = Asset*;
-		GetResult get(const AssetsKey& key) noexcept;
+		GetResult get(const AssetsKey& key) ZINET_API_POST;
 
 		AssetsFinder assetsFinder;
 
@@ -43,7 +43,7 @@ namespace zt::core::assets
 		AssetsStorage() = default;
 		AssetsStorage(const AssetsStorage& other) = default;
 		AssetsStorage(AssetsStorage&& other) = default;
-		~AssetsStorage() noexcept = default;
+		~AssetsStorage() ZINET_API_POST = default;
 		
 		AssetsStorage& operator = (const AssetsStorage& other) = default;
 		AssetsStorage& operator = (AssetsStorage&& other) = default;

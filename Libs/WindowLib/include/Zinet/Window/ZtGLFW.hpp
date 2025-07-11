@@ -22,7 +22,7 @@ namespace zt::wd
 		GLFW& operator = (const GLFW& other) = default;
 		GLFW& operator = (GLFW&& other) = default;
 
-		~GLFW() noexcept { Deinit(); };
+		~GLFW() ZINET_API_POST { Deinit(); };
 
 		static bool Init(bool hideWindow = true);
 		static void Deinit();

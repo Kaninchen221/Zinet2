@@ -34,7 +34,7 @@ namespace zt::core
 		Clock() = default;
 		Clock(const Clock& other) = default;
 		Clock(Clock&& other) = default;
-		~Clock() noexcept = default;
+		~Clock() ZINET_API_POST = default;
 		
 		Clock& operator = (const Clock& other) = default;
 		Clock& operator = (Clock&& other) = default;

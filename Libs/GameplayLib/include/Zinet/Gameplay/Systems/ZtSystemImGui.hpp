@@ -18,21 +18,21 @@ namespace zt::gameplay
 
 		using ClassBaseT = System<Node>;
 
-		SystemImGui() noexcept = default;
-		SystemImGui(const SystemImGui& other) noexcept = default;
-		SystemImGui(SystemImGui&& other) noexcept = default;
-		~SystemImGui() noexcept = default;
+		SystemImGui() ZINET_API_POST = default;
+		SystemImGui(const SystemImGui& other) ZINET_API_POST = default;
+		SystemImGui(SystemImGui&& other) ZINET_API_POST = default;
+		~SystemImGui() ZINET_API_POST = default;
 
-		SystemImGui& operator = (const SystemImGui& other) noexcept = default;
-		SystemImGui& operator = (SystemImGui&& other) noexcept = default;
+		SystemImGui& operator = (const SystemImGui& other) ZINET_API_POST = default;
+		SystemImGui& operator = (SystemImGui&& other) ZINET_API_POST = default;
 
-		bool init() noexcept override;
+		bool init() ZINET_API_POST override;
 
-		void deinit() noexcept override;
+		void deinit() ZINET_API_POST override;
 
-		void addNode(const NodeWeakHandle<NodeT>& node) noexcept;
+		void addNode(const NodeWeakHandle<NodeT>& node) ZINET_API_POST;
 
-		void update() noexcept;
+		void update() ZINET_API_POST;
 
 	};
 

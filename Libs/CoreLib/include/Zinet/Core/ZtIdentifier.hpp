@@ -21,7 +21,7 @@ namespace zt::core
 
         ~Identifier() = default;
 
-        size_t getUnderlyingNumber() const noexcept;
+        size_t getUnderlyingNumber() const ZINET_API_POST;
 
     private:
 

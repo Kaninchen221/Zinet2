@@ -23,7 +23,7 @@ namespace zt::wd
 		WindowEvents& operator = (const WindowEvents& other) = default;
 		WindowEvents& operator = (WindowEvents&& other) = default;
 
-		~WindowEvents() noexcept = default;
+		~WindowEvents() ZINET_API_POST = default;
 
 		const Window* getWindow() const { return window; }
 		Window* getWindow() { return window; }

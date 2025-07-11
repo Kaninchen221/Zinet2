@@ -11,7 +11,7 @@
 namespace zt::core::assets
 {
 
-	AssetsFinder::FindAssetsResult AssetsFinder::findAssets(const FindAssetsInput& findAssetsInput) const noexcept
+	AssetsFinder::FindAssetsResult AssetsFinder::findAssets(const FindAssetsInput& findAssetsInput) const ZINET_API_POST
 	{
 		if (!fs::exists(getContentFolderPath()))
 		{
@@ -52,18 +52,18 @@ namespace zt::core::assets
 		return result;
 	}
 
-	bool AssetsFinder::isAssetFile(const fs::path& path) const noexcept
+	bool AssetsFinder::isAssetFile(const fs::path& path) const ZINET_API_POST
 	{
 		return path.extension().generic_string().ends_with(assetFileExtension);
 	}
 
-	fs::path AssetsFinder::createAssetFilePath(const fs::path& filePath) const noexcept
+	fs::path AssetsFinder::createAssetFilePath(const fs::path& filePath) const ZINET_API_POST
 	{
 		const fs::path result = filePath.generic_string() + "." + assetFileExtension;
 		return result;
 	}
 
-	fs::path AssetsFinder::createRelativePath(const std::string& folderAsRoot, const fs::path& path) const noexcept
+	fs::path AssetsFinder::createRelativePath(const std::string& folderAsRoot, const fs::path& path) const ZINET_API_POST
 	{
 		std::string result = path.relative_path().generic_string();
 		while (!result.starts_with(folderAsRoot))
@@ -80,7 +80,7 @@ namespace zt::core::assets
 		return result;
 	}
 
-	void AssetsFinder::createAssetFile(const fs::path& filePath, const fs::path& assetPath) const noexcept
+	void AssetsFinder::createAssetFile(const fs::path& filePath, const fs::path& assetPath) const ZINET_API_POST
 	{
 		auto assetFile = File::CreateFile(assetPath);
 		const auto assetRelativePath = createRelativePath(contentFolderName, assetPath);
@@ -103,7 +103,7 @@ namespace zt::core::assets
 		assetFile.write(data.dump(1, '\t'));
 	}
 
-	AssetsFinder::LoadAssetResult AssetsFinder::loadAsset(const fs::path& filePath, const fs::path& assetPath) const noexcept
+	AssetsFinder::LoadAssetResult AssetsFinder::loadAsset(const fs::path& filePath, const fs::path& assetPath) const ZINET_API_POST
 	{
 		File file;
 		file.open(filePath, FileOpenMode::Read);

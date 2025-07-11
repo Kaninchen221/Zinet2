@@ -7,21 +7,21 @@
 
 namespace zt::gameplay
 {
-	bool SystemImGui::init() noexcept
+	bool SystemImGui::init() ZINET_API_POST
 	{
 		return true;
 	}
 
-	void SystemImGui::deinit() noexcept
+	void SystemImGui::deinit() ZINET_API_POST
 	{
 	}
 
-	void SystemImGui::addNode(const NodeWeakHandle<NodeT>& node) noexcept
+	void SystemImGui::addNode(const NodeWeakHandle<NodeT>& node) ZINET_API_POST
 	{
 		ClassBaseT::addNode(node);
 	}
 
-	void SystemImGui::update() noexcept
+	void SystemImGui::update() ZINET_API_POST
 	{
 		using namespace zt::vulkan_renderer;
 		ImGuiIntegration::ImplSpecificNewFrame();

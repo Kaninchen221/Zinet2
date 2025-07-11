@@ -4,7 +4,7 @@
 
 namespace zt::vulkan_renderer
 {
-	shaderc_shader_kind ShaderTypeToShaderCShaderKind(const ShaderType shaderType) noexcept
+	shaderc_shader_kind ShaderTypeToShaderCShaderKind(const ShaderType shaderType) ZINET_API_POST
 	{
 		switch (shaderType)
 		{
@@ -18,7 +18,7 @@ namespace zt::vulkan_renderer
 		return shaderc_shader_kind::shaderc_glsl_infer_from_source;
 	}
 
-	VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType) noexcept
+	VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType) ZINET_API_POST
 	{
 		switch (shaderType)
 		{

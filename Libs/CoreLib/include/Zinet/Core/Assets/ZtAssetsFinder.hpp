@@ -21,15 +21,15 @@ namespace zt::core::assets
 
 	public:		
 		
-		AssetsFinder() noexcept = default;
-		AssetsFinder(const AssetsFinder& other) noexcept = default;
-		AssetsFinder(AssetsFinder&& other) noexcept = default;
-		~AssetsFinder() noexcept = default;
+		AssetsFinder() ZINET_API_POST = default;
+		AssetsFinder(const AssetsFinder& other) ZINET_API_POST = default;
+		AssetsFinder(AssetsFinder&& other) ZINET_API_POST = default;
+		~AssetsFinder() ZINET_API_POST = default;
 
-		AssetsFinder& operator = (const AssetsFinder& other) noexcept = default;
-		AssetsFinder& operator = (AssetsFinder&& other) noexcept = default;
+		AssetsFinder& operator = (const AssetsFinder& other) ZINET_API_POST = default;
+		AssetsFinder& operator = (AssetsFinder&& other) ZINET_API_POST = default;
 
-		std::filesystem::path getContentFolderPath() const noexcept { return rootFolder / contentFolderName; }
+		std::filesystem::path getContentFolderPath() const ZINET_API_POST { return rootFolder / contentFolderName; }
 
 		struct FindAssetsInput
 		{
@@ -43,18 +43,18 @@ namespace zt::core::assets
 			std::vector<std::filesystem::path> assets;
 		};
 
-		FindAssetsResult findAssets(const FindAssetsInput& findAssetsInput) const noexcept;
+		FindAssetsResult findAssets(const FindAssetsInput& findAssetsInput) const ZINET_API_POST;
 
-		bool isAssetFile(const std::filesystem::path& path) const noexcept;
+		bool isAssetFile(const std::filesystem::path& path) const ZINET_API_POST;
 
-		std::filesystem::path createAssetFilePath(const std::filesystem::path& filePath) const noexcept;
+		std::filesystem::path createAssetFilePath(const std::filesystem::path& filePath) const ZINET_API_POST;
 
-		std::filesystem::path createRelativePath(const std::string& folderAsRoot, const std::filesystem::path& path) const noexcept;
+		std::filesystem::path createRelativePath(const std::string& folderAsRoot, const std::filesystem::path& path) const ZINET_API_POST;
 
-		void createAssetFile(const std::filesystem::path& filePath, const std::filesystem::path& assetPath) const noexcept;
+		void createAssetFile(const std::filesystem::path& filePath, const std::filesystem::path& assetPath) const ZINET_API_POST;
 
 		using LoadAssetResult = std::optional<Asset>;
-		LoadAssetResult loadAsset(const fs::path& filePath, const fs::path& assetPath) const noexcept;
+		LoadAssetResult loadAsset(const fs::path& filePath, const fs::path& assetPath) const ZINET_API_POST;
 
 		fs::path rootFolder = Paths::RootPath();
 		std::string contentFolderName = "Content";

@@ -8,7 +8,7 @@ namespace zt::core
         underlyingNumber = identifier;
     }
 
-    size_t Identifier::getUnderlyingNumber() const noexcept
+    size_t Identifier::getUnderlyingNumber() const ZINET_API_POST
     {
         return underlyingNumber;
     }

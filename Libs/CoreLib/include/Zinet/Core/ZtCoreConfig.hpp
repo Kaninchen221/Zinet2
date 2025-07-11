@@ -75,4 +75,6 @@
 // Uncomment for time tracing info 
 //#define ZINET_TIME_TRACE
 
+#define ZINET_API_POST noexcept
+
 #include "Zinet/Core/ZtDebug.hpp"

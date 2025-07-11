@@ -13,7 +13,7 @@
 namespace zt::wd
 {
 
-    Window::~Window() noexcept
+    Window::~Window() ZINET_API_POST
 	{
 		if (internalWindow)
 			destroyWindow();
@@ -124,7 +124,7 @@ namespace zt::wd
 		glfwSetWindowTitle(internalWindow, title.c_str());
 	}
 
-	void Window::makeWindowTransparentWhileUsingVulkan() noexcept
+	void Window::makeWindowTransparentWhileUsingVulkan() ZINET_API_POST
 	{
 		// TODO: Linux version
 		// Enable transparent framebuffer on windows platform

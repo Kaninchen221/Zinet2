@@ -8,7 +8,7 @@
 namespace zt::vulkan_renderer
 {
 
-	bool CommandBuffer::create(const Device& device, const CommandPool& commandPool) noexcept
+	bool CommandBuffer::create(const Device& device, const CommandPool& commandPool) ZINET_API_POST
 	{
 		if (isValid())
 			return true;
@@ -33,7 +33,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void CommandBuffer::destroy(const Device& device, const CommandPool& commandPool) noexcept
+	void CommandBuffer::destroy(const Device& device, const CommandPool& commandPool) ZINET_API_POST
 	{
 		if (isValid())
 		{
@@ -42,7 +42,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void CommandBuffer::beginRenderPass(const RenderPass& renderPass, const Framebuffer& framebuffer, const VkExtent2D& extent, const Vector2i& offset, const VkClearValue& clearValue) noexcept
+	void CommandBuffer::beginRenderPass(const RenderPass& renderPass, const Framebuffer& framebuffer, const VkExtent2D& extent, const Vector2i& offset, const VkClearValue& clearValue) ZINET_API_POST
 	{
 		const VkRenderPassBeginInfo beginInfo
 		{
@@ -58,7 +58,7 @@ namespace zt::vulkan_renderer
 		vkCmdBeginRenderPass(objectHandle, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
 	}
 
-	void CommandBuffer::bindPipeline(const Pipeline& pipeline) noexcept
+	void CommandBuffer::bindPipeline(const Pipeline& pipeline) ZINET_API_POST
 	{
 		vkCmdBindPipeline(objectHandle, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get());
 	}

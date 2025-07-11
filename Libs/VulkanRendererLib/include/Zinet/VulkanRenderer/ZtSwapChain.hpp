@@ -33,25 +33,25 @@ namespace zt::vulkan_renderer
 			: VulkanObject(newObjectHandle)
 		{}
 
-		SwapChain() noexcept = delete;
-		SwapChain(const SwapChain& other) noexcept = delete;
-		SwapChain(SwapChain&& other) noexcept = default;
-		~SwapChain() noexcept = default;
+		SwapChain() ZINET_API_POST = delete;
+		SwapChain(const SwapChain& other) ZINET_API_POST = delete;
+		SwapChain(SwapChain&& other) ZINET_API_POST = default;
+		~SwapChain() ZINET_API_POST = default;
 
-		SwapChain& operator = (const SwapChain& other) noexcept = delete;
-		SwapChain& operator = (SwapChain&& other) noexcept = default;
+		SwapChain& operator = (const SwapChain& other) ZINET_API_POST = delete;
+		SwapChain& operator = (SwapChain&& other) ZINET_API_POST = default;
 
-		bool create(const Device& device, const PhysicalDevice& physicalDevice, const Surface& surface, const Vector2i& windowFramebufferSize) noexcept;
+		bool create(const Device& device, const PhysicalDevice& physicalDevice, const Surface& surface, const Vector2i& windowFramebufferSize) ZINET_API_POST;
 
-		void destroy(const Device& device) noexcept;
+		void destroy(const Device& device) ZINET_API_POST;
 
-		std::vector<VkImage> getImages(const Device& device) const noexcept;
+		std::vector<VkImage> getImages(const Device& device) const ZINET_API_POST;
 
-		VkFormat getFormat() const noexcept { return format; }
+		VkFormat getFormat() const ZINET_API_POST { return format; }
 
-		VkExtent2D getExtent() const noexcept { return extent; }
+		VkExtent2D getExtent() const ZINET_API_POST { return extent; }
 
-		std::uint32_t acquireNextImage(const Device& device, Semaphore& semaphore) const noexcept;
+		std::uint32_t acquireNextImage(const Device& device, Semaphore& semaphore) const ZINET_API_POST;
 
 	protected:
 

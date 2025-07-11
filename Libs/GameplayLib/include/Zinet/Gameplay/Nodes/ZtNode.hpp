@@ -15,7 +15,7 @@ namespace zt::gameplay
 	using NodeWeakHandle = std::weak_ptr<NodeT>;
 
 	template<class NodeT = Node>
-	static auto CreateNode() noexcept;
+	static auto CreateNode() ZINET_API_POST;
 
 	class ZINET_GAMEPLAY_API Node
 	{
@@ -25,27 +25,27 @@ namespace zt::gameplay
 
 	public:
 
-		Node() noexcept = default;
-		Node(const Node& other) noexcept = default;
-		Node(Node&& other) noexcept = default;
-		virtual ~Node() noexcept = default;
+		Node() ZINET_API_POST = default;
+		Node(const Node& other) ZINET_API_POST = default;
+		Node(Node&& other) ZINET_API_POST = default;
+		virtual ~Node() ZINET_API_POST = default;
 
-		Node& operator = (const Node& other) noexcept = default;
-		Node& operator = (Node&& other) noexcept = default;
+		Node& operator = (const Node& other) ZINET_API_POST = default;
+		Node& operator = (Node&& other) ZINET_API_POST = default;
 
 		using Children = std::vector<std::shared_ptr<Node>>;
-		const Children& getChildren() const noexcept { return children; }
+		const Children& getChildren() const ZINET_API_POST { return children; }
 
 		template<class NodeHandleT>
-		void addChild(NodeHandleT nodeHandle) noexcept;
+		void addChild(NodeHandleT nodeHandle) ZINET_API_POST;
 
-		auto begin() const noexcept { return children.begin(); }
-		auto end() const noexcept { return children.end(); }
+		auto begin() const ZINET_API_POST { return children.begin(); }
+		auto end() const ZINET_API_POST { return children.end(); }
 
-		void setParent(NodeWeakHandle<Node> newParent) noexcept { parent = newParent; }
-		auto getParent() const noexcept { return parent; }
+		void setParent(NodeWeakHandle<Node> newParent) ZINET_API_POST { parent = newParent; }
+		auto getParent() const ZINET_API_POST { return parent; }
 
-		virtual void imGui() noexcept {}
+		virtual void imGui() ZINET_API_POST {}
 
 	protected:
 
@@ -55,13 +55,13 @@ namespace zt::gameplay
 	};
 
 	template<class NodeT>
-	auto CreateNode() noexcept
+	auto CreateNode() ZINET_API_POST
 	{
 		return NodeHandle<NodeT>{ new NodeT{} };
 	}
 
 	template<class NodeHandleT>
-	void Node::addChild(NodeHandleT nodeHandle) noexcept
+	void Node::addChild(NodeHandleT nodeHandle) ZINET_API_POST
 	{
 		children.push_back(nodeHandle);
 	}

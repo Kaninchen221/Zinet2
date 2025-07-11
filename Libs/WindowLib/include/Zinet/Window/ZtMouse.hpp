@@ -25,7 +25,7 @@ namespace zt::wd
 		Mouse& operator = (const Mouse& other) = default;
 		Mouse& operator = (Mouse&& other) = default;
 
-		~Mouse() noexcept = default;
+		~Mouse() ZINET_API_POST = default;
 
 		const Window* getWindow() const { return window; }
 		Window* getWindow() { return window; }
