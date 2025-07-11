@@ -303,7 +303,7 @@ namespace zt::vulkan_renderer::tests
 
 			// Game logic
 
-			imGuiIntegration.implSpecificNewFrame();
+			ImGuiIntegration::ImplSpecificNewFrame();
 
 			ImGui::NewFrame();
 			ImGui::ShowDemoWindow();
