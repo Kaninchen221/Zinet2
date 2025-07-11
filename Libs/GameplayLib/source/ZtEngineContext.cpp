@@ -6,15 +6,17 @@ namespace zt::gameplay
 {
 	bool EngineContext::init() noexcept
 	{
+		instance = this;
+		
 		wd::GLFW::Init(false);
 
 		if (!window.create())
 			return false;
 
-		if (!systemRenderer.init(*this))
+		if (!systemRenderer.init())
 			return false;
 
-		if (!systemImGui.init(*this))
+		if (!systemImGui.init())
 			return false;
 
 		return true;
@@ -35,6 +37,16 @@ namespace zt::gameplay
 
 		window.destroyWindow();
 		wd::GLFW::Deinit();
+
+		instance = nullptr;
+	}
+
+	EngineContext::~EngineContext() noexcept
+	{
+		if (instance)
+		{
+			Logger->error("EngineContext must be manually deinitialized");
+		}
 	}
 
 }

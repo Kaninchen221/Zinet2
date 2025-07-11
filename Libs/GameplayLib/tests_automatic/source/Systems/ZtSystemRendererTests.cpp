@@ -22,7 +22,7 @@ namespace zt::gameplay::tests
 		}
 
 		EngineContext engineContext;
-		SystemRenderer& systemRenderer = engineContext.systemRenderer;
+		SystemRenderer& system = engineContext.systemRenderer;
 	};
 
 	TEST_F(SystemRendererTests, PassTest)
@@ -30,6 +30,6 @@ namespace zt::gameplay::tests
 		auto node = CreateNode<Node2D>();
 		//systemRenderer.addNode(node);
 
-		systemRenderer.update();
+		system.update();
 	}
 }

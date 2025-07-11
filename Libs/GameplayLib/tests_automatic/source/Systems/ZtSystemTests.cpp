@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Zinet/Gameplay/ZtEngineContext.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystem.hpp"
 
 #include <gtest/gtest.h>
@@ -13,15 +12,13 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
-			ASSERT_TRUE(system.init(engineContext));
+			ASSERT_TRUE(system.init());
 		}
 
 		void TearDown() override
 		{
 			system.deinit();
 		}
-
-		EngineContext engineContext;
 
 		using NodeBase = Node;
 		System<Node> system;

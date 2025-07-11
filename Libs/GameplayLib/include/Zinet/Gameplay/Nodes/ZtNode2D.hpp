@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
-#include "Zinet/Gameplay/ZtNode.hpp"
+#include "Zinet/Gameplay/Nodes/ZtNode.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 

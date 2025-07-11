@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
-#include "Zinet/Gameplay/ZtNode2D.hpp"
+#include "Zinet/Gameplay/Nodes/ZtNode2D.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystem.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
@@ -39,7 +39,7 @@ namespace zt::gameplay
 		SystemRenderer& operator = (const SystemRenderer& other) noexcept = default;
 		SystemRenderer& operator = (SystemRenderer&& other) noexcept = default;
 
-		bool init(EngineContext& engineContext) noexcept override;
+		bool init() noexcept override;
 
 		void deinit() noexcept override;
 

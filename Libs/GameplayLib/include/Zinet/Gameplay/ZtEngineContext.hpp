@@ -26,10 +26,12 @@ namespace zt::gameplay
 		EngineContext() noexcept = default;
 		EngineContext(const EngineContext& other) noexcept = default;
 		EngineContext(EngineContext&& other) noexcept = default;
-		~EngineContext() noexcept = default;
+		~EngineContext() noexcept;
 
 		EngineContext& operator = (const EngineContext& other) noexcept = default;
 		EngineContext& operator = (EngineContext&& other) noexcept = default;
+
+		static auto& Get() noexcept { return *instance; }
 
 		bool init() noexcept;
 
@@ -43,6 +45,10 @@ namespace zt::gameplay
 		vulkan_renderer::ImGuiIntegration imGuiIntegration;
 		wd::Window window;
 		wd::WindowEvents windowEvents{ window };
+
+	private:
+
+		inline static EngineContext* instance = nullptr;
 
 	};
 }

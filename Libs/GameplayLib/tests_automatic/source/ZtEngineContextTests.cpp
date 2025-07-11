@@ -24,6 +24,8 @@ namespace zt::gameplay::tests
 	TEST_F(EngineContextTests, PassTest)
 	{
 		ASSERT_TRUE(engineContext.init());
+		auto& instance = EngineContext::Get();
+		ASSERT_TRUE(&instance);
 		engineContext.deinit();
 	}
 }

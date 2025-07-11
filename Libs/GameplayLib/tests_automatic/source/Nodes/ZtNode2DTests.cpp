@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Zinet/Gameplay/ZtNode2D.hpp"
+#include "Zinet/Gameplay/Nodes/ZtNode2D.hpp"
 
 #include <gtest/gtest.h>
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
-#include "Zinet/Gameplay/ZtNode.hpp"
+#include "Zinet/Gameplay/Nodes/ZtNode.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -26,7 +26,7 @@ namespace zt::gameplay
 		System& operator = (const System& other) noexcept = default;
 		System& operator = (System&& other) noexcept = default;
 
-		virtual bool init([[maybe_unused]] EngineContext& engineContext) noexcept { return true; }
+		virtual bool init() noexcept { return true; }
 
 		virtual void deinit() noexcept { }
 

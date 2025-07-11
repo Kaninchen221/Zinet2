@@ -7,7 +7,7 @@
 
 namespace zt::gameplay
 {
-	bool SystemImGui::init([[maybe_unused]] EngineContext& engineContext) noexcept
+	bool SystemImGui::init() noexcept
 	{
 		return true;
 	}

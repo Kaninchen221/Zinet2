@@ -26,8 +26,10 @@ namespace zt::gameplay
 		return shaderModule;
 	}
 
-	bool SystemRenderer::init(EngineContext& engineContext) noexcept
+	bool SystemRenderer::init() noexcept
 	{
+		auto& engineContext = EngineContext::Get();
+
 		if (!renderer.init(engineContext.window))
 			return false;
 
