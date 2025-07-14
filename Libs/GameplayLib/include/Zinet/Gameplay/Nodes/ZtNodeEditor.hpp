@@ -13,7 +13,7 @@ namespace
 
 namespace zt::gameplay
 {
-	struct TextSearchBar
+	struct EditorTextSearchBar
 	{
 		std::string_view show() ZINET_API_POST;
 		std::array<char, 1000> assetsListBuffer{ '\0' };
@@ -25,7 +25,13 @@ namespace zt::gameplay
 		void show() ZINET_API_POST;
 		int selectedAssetIndex = -1;
 		assets::AssetsStorage::AssetsKey selectedAssetKey;
-		TextSearchBar textSearchBar;
+		EditorTextSearchBar textSearchBar;
+	};
+
+	struct EditorMetrics
+	{
+		bool shouldShow = false;
+		void show() ZINET_API_POST;
 	};
 
 	class ZINET_GAMEPLAY_API NodeEditor : public Node
@@ -51,6 +57,7 @@ namespace zt::gameplay
 		void showToolsMenu() ZINET_API_POST;
 
 		EditorAssetsList assetsList;
+		EditorMetrics metrics;
 
 	};
 

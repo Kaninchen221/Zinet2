@@ -7,10 +7,20 @@ namespace zt::gameplay
 {
 	using Path = std::filesystem::path;
 
-	std::string_view TextSearchBar::show() ZINET_API_POST
+	std::string_view EditorTextSearchBar::show() ZINET_API_POST
 	{
 		ImGui::InputText("SearchBar", assetsListBuffer.data(), assetsListBuffer.size());
 		return std::string_view{ assetsListBuffer.begin(), std::ranges::find(assetsListBuffer, '\0') };
+	}
+
+	void EditorMetrics::show() ZINET_API_POST
+	{
+		if (ImGui::Begin("Metrics", &shouldShow))
+		{
+			auto& io = ImGui::GetIO();
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+		}
+		ImGui::End();
 	}
 
 	void EditorAssetsList::show() ZINET_API_POST
@@ -100,12 +110,16 @@ namespace zt::gameplay
 		if (assetsList.shouldShow)
 			assetsList.show();
 
-		//ImGui::ShowDemoWindow();
+		if (metrics.shouldShow)
+			metrics.show();
+
+		ImGui::ShowDemoWindow();
 	}
 
 	void NodeEditor::showToolsMenu() ZINET_API_POST
 	{
-		if (ImGui::MenuItem("Assets List", nullptr, &assetsList.shouldShow)) { }
+		if (ImGui::MenuItem("Assets List", nullptr, &assetsList.shouldShow)) {}
+		if (ImGui::MenuItem("Metrics", nullptr, &metrics.shouldShow)) {}
 	}
 
 }
