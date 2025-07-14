@@ -27,7 +27,6 @@ namespace zt::gameplay
 		ImGuiIntegration::ImplSpecificNewFrame();
 
 		ImGui::NewFrame();
-		ImGui::ShowDemoWindow();
 
 		for (auto& weakNodeHandle : nodes)
 		{

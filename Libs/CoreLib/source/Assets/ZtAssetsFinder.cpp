@@ -13,7 +13,10 @@ namespace zt::core::assets
 
 	AssetsFinder::FindAssetsResult AssetsFinder::findAssets(const FindAssetsInput& findAssetsInput) const ZINET_API_POST
 	{
-		if (!fs::exists(getContentFolderPath()))
+		const auto contentFolderPath = getContentFolderPath();
+		Logger->info("Content folder path: {}", contentFolderPath.generic_string());
+
+		if (!fs::exists(contentFolderPath))
 		{
 			Logger->error("Content folder doesn't exist");
 			return {};
@@ -21,7 +24,7 @@ namespace zt::core::assets
 
 		AssetsFinder::FindAssetsResult result;
 
-		const auto foundFilesPaths = FileFinder::FindFiles(getContentFolderPath(), findAssetsInput.recursive);
+		const auto foundFilesPaths = FileFinder::FindFiles(contentFolderPath, findAssetsInput.recursive);
 
 		result.files.reserve(foundFilesPaths.size());
 		result.assets.reserve(foundFilesPaths.size());

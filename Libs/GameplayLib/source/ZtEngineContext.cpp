@@ -19,6 +19,9 @@ namespace zt::gameplay
 		if (!systemImGui.init())
 			return false;
 
+		if (!assetsStorage.storeAssets())
+			return false;
+
 		return true;
 	}
 

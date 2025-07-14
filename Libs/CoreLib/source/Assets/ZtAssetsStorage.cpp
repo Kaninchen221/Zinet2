@@ -1,6 +1,7 @@
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
 
 #include <ranges>
+#include <algorithm>
 
 namespace zt::core::assets
 {

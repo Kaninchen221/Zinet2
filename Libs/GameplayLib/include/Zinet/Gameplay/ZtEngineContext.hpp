@@ -6,12 +6,19 @@
 #include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/Assets/ZtAssetsFinder.hpp"
+#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
 
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
 #include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
 
 #include "Zinet/Window/ZtWindow.hpp"
 #include "Zinet/Window/ZtWindowEvents.hpp"
+
+namespace
+{
+	namespace assets = zt::core::assets;
+}
 
 namespace zt::gameplay
 {
@@ -45,6 +52,8 @@ namespace zt::gameplay
 		vulkan_renderer::ImGuiIntegration imGuiIntegration;
 		wd::Window window;
 		wd::WindowEvents windowEvents{ window };
+
+		assets::AssetsStorage assetsStorage;
 
 	private:
 

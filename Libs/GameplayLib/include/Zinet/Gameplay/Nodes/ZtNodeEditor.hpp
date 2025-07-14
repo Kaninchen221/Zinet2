@@ -4,9 +4,30 @@
 #include "Zinet/Gameplay/Nodes/ZtNode.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+
+namespace
+{
+	namespace assets = zt::core::assets;
+}
 
 namespace zt::gameplay
 {
+	struct TextSearchBar
+	{
+		std::string_view show() ZINET_API_POST;
+		std::array<char, 1000> assetsListBuffer{ '\0' };
+	};
+
+	struct EditorAssetsList
+	{
+		bool shouldShow = false;
+		void show() ZINET_API_POST;
+		int selectedAssetIndex = -1;
+		assets::AssetsStorage::AssetsKey selectedAssetKey;
+		TextSearchBar textSearchBar;
+	};
+
 	class ZINET_GAMEPLAY_API NodeEditor : public Node
 	{
 	protected:
@@ -24,6 +45,13 @@ namespace zt::gameplay
 		NodeEditor& operator = (NodeEditor&& other) ZINET_API_POST = default;
 
 		void imGui() ZINET_API_POST override;
+
+	protected:
+
+		void showToolsMenu() ZINET_API_POST;
+
+		EditorAssetsList assetsList;
+
 	};
 
 }

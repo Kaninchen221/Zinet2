@@ -94,11 +94,6 @@ namespace zt::gameplay
 		if (drawInfo.instances == 0 && drawInfo.additionalCommands.empty())
 			return;
 
-		ImGui::NewFrame();
-		ImGui::ShowDemoWindow();
-
-		ImGui::EndFrame();
-
 		renderer.createPipeline(drawInfo);
 		renderer.getGraphicsPipeline().isValid();
 

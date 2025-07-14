@@ -23,10 +23,12 @@ namespace zt::core::assets
 		bool storeAssets() ZINET_API_POST;
 
 		using AssetsKey = std::string;
-		using Assets = std::unordered_map<AssetsKey, Asset>;
+		using Assets = std::map<AssetsKey, Asset>;
 
 		using GetResult = Asset*;
 		GetResult get(const AssetsKey& key) ZINET_API_POST;
+
+		auto& getAssets() ZINET_API_POST { return assets; }
 
 		AssetsFinder assetsFinder;
 
