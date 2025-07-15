@@ -55,6 +55,8 @@ namespace zt::gameplay
 
 		assets::AssetsStorage assetsStorage;
 
+		NodeHandle<Node> rootNode;
+
 	private:
 
 		inline static EngineContext* instance = nullptr;

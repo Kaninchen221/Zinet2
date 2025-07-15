@@ -19,6 +19,9 @@ namespace zt::gameplay::tests
 		}
 
 		NodeHandle<Node> node = CreateNode<Node>();
+
+		static_assert(!std::is_default_constructible_v<Node>);
+		static_assert(std::is_constructible_v<Node, const NodeNameView&>);
 	};
 
 	TEST_F(NodeTests, PassTest)

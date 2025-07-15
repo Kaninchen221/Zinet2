@@ -22,7 +22,21 @@ namespace zt::gameplay::tests
 		void SetUp() override
 		{
 			ASSERT_TRUE(engine.init());
-			EngineContext::Get().systemImGui.addNode(editorNode);
+			auto& engineContext = EngineContext::Get();
+			auto& rootNode = engineContext.rootNode;
+
+			auto editorNode = CreateNode<NodeEditor>();
+			editorNode->setName("Editor");
+			rootNode->addChild(editorNode);
+			engineContext.systemImGui.addNode(editorNode);
+
+			auto child = CreateNode();
+			child->setName("Child");
+			rootNode->addChild(child);
+
+			auto childOfChild = CreateNode();
+			childOfChild->setName("Child of child");
+			child->addChild(childOfChild);
 		}
 
 		void TearDown() override
@@ -31,7 +45,6 @@ namespace zt::gameplay::tests
 		}
 
 		Engine engine;
-		NodeHandle<NodeEditor> editorNode = CreateNode<NodeEditor>();
 	};
 
 	TEST_F(EngineTests, PassTest)

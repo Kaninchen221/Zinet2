@@ -7,6 +7,8 @@
 namespace zt::gameplay
 {
 	class Node;
+	using NodeName = std::string;
+	using NodeNameView = std::string_view;
 
 	template<class NodeT = Node>
 	using NodeHandle = std::shared_ptr<NodeT>;
@@ -15,7 +17,7 @@ namespace zt::gameplay
 	using NodeWeakHandle = std::weak_ptr<NodeT>;
 
 	template<class NodeT = Node>
-	static auto CreateNode() ZINET_API_POST;
+	static auto CreateNode(const NodeNameView& name = "DefaultName") ZINET_API_POST;
 
 	class ZINET_GAMEPLAY_API Node
 	{
@@ -25,7 +27,8 @@ namespace zt::gameplay
 
 	public:
 
-		Node() ZINET_API_POST = default;
+		Node() ZINET_API_POST = delete;
+		Node(const NodeNameView& newName) ZINET_API_POST { name = newName; }
 		Node(const Node& other) ZINET_API_POST = default;
 		Node(Node&& other) ZINET_API_POST = default;
 		virtual ~Node() ZINET_API_POST = default;
@@ -34,7 +37,8 @@ namespace zt::gameplay
 		Node& operator = (Node&& other) ZINET_API_POST = default;
 
 		using Children = std::vector<std::shared_ptr<Node>>;
-		const Children& getChildren() const ZINET_API_POST { return children; }
+		auto& getChildren() ZINET_API_POST { return children; }
+		const auto& getChildren() const ZINET_API_POST { return children; }
 
 		template<class NodeHandleT>
 		void addChild(NodeHandleT nodeHandle) ZINET_API_POST;
@@ -46,18 +50,25 @@ namespace zt::gameplay
 		auto getParent() const ZINET_API_POST { return parent; }
 
 		virtual void imGui() ZINET_API_POST {}
+		virtual void imGuiNodeInspect() ZINET_API_POST;
+
+		const auto& getName() const { return name; }
+		void setName(const NodeNameView& newName) { name = newName; }
 
 	protected:
 
 		Children children;
 		NodeWeakHandle<Node> parent;
+		NodeName name;
 
 	};
 
 	template<class NodeT>
-	auto CreateNode() ZINET_API_POST
+	auto CreateNode(const NodeNameView& name) ZINET_API_POST
 	{
-		return NodeHandle<NodeT>{ new NodeT{} };
+		auto node = new NodeT(name);
+		auto nodeHandle = NodeHandle<NodeT>{ node };
+		return nodeHandle;
 	}
 
 	template<class NodeHandleT>

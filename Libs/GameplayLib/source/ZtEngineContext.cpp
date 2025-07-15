@@ -22,6 +22,10 @@ namespace zt::gameplay
 		if (!assetsStorage.storeAssets())
 			return false;
 
+		rootNode = CreateNode();
+		if (rootNode)
+			rootNode->setName("RootNode");
+
 		return true;
 	}
 

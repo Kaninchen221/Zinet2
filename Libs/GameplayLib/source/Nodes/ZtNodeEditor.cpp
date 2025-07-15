@@ -13,16 +13,6 @@ namespace zt::gameplay
 		return std::string_view{ assetsListBuffer.begin(), std::ranges::find(assetsListBuffer, '\0') };
 	}
 
-	void EditorMetrics::show() ZINET_API_POST
-	{
-		if (ImGui::Begin("Metrics", &shouldShow))
-		{
-			auto& io = ImGui::GetIO();
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-		}
-		ImGui::End();
-	}
-
 	void EditorAssetsList::show() ZINET_API_POST
 	{
 		using Path = std::filesystem::path;
@@ -95,6 +85,74 @@ namespace zt::gameplay
 		ImGui::End();
 	}
 
+	void EditorMetrics::show() ZINET_API_POST
+	{
+		if (ImGui::Begin("Metrics", &shouldShow))
+		{
+			auto& io = ImGui::GetIO();
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+		}
+		ImGui::End();
+	}
+
+	void EditorNodesList::show() ZINET_API_POST
+	{
+		if (ImGui::Begin("Nodes List", &shouldShow))
+		{
+			searchSubString = textSearchBar.show();
+			ImGui::Separator();
+
+			auto& engineContext = EngineContext::Get();
+			auto& rootNode = engineContext.rootNode;
+
+			const int deep = 1;
+			generateSelectable(rootNode, deep);
+		}
+		ImGui::End();
+	}
+
+	void EditorNodesList::generateSelectable(NodeHandle<>& node, int deep) ZINET_API_POST
+	{
+		if (!node)
+			return;
+
+		const bool showNode = searchSubString.empty() || node->getName().contains(searchSubString);
+		if (showNode)
+		{
+			if (ImGui::Selectable(node->getName().c_str(), selectedNode == node))
+			{
+				Logger->info("Selected node: {}", node->getName());
+				selectedNode = node;
+			}
+		}
+
+		ImGui::Indent(static_cast<float>(deep) * 4.f);
+
+		for (auto& childNode : node->getChildren())
+		{
+			generateSelectable(childNode, deep + 1);
+		}
+
+		ImGui::Unindent(static_cast<float>(deep) * 4.f);
+	}
+
+	void EditorNodeInspector::show(NodeHandle<> node) ZINET_API_POST
+	{
+		if (ImGui::Begin("Node Inspector"))
+		{
+			if (!node)
+			{
+				ImGui::End();
+				return;
+			}
+
+			ImGui::Text(node->getName().c_str());
+			ImGui::Separator();
+			node->imGuiNodeInspect();
+		}
+		ImGui::End();
+	}
+
 	void NodeEditor::imGui() ZINET_API_POST
 	{
 		if (ImGui::BeginMainMenuBar())
@@ -113,6 +171,14 @@ namespace zt::gameplay
 		if (metrics.shouldShow)
 			metrics.show();
 
+		if (nodesList.shouldShow)
+			nodesList.show();
+		else
+			nodesList.selectedNode = {};
+
+		if (nodesList.selectedNode)
+			nodeInspector.show(nodesList.selectedNode);
+
 		ImGui::ShowDemoWindow();
 	}
 
@@ -120,6 +186,7 @@ namespace zt::gameplay
 	{
 		if (ImGui::MenuItem("Assets List", nullptr, &assetsList.shouldShow)) {}
 		if (ImGui::MenuItem("Metrics", nullptr, &metrics.shouldShow)) {}
+		if (ImGui::MenuItem("Nodes List", nullptr, &nodesList.shouldShow)) {}
 	}
 
 }
