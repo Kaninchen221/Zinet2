@@ -34,7 +34,7 @@ namespace zt::gameplay
 						if (!searchSubString.empty() && !key.contains(searchSubString) && selectedAssetKey != key)
 							continue;
 
-						auto assetName = fmt::format("{}", asset.metaData["fileName"].get<std::string>());
+						auto assetName = fmt::format("{}", asset->metaData.value("fileName", "Couldn't read 'fileName'"));
 						if (ImGui::Selectable(assetName.c_str(), selectedAssetKey == key))
 						{
 							selectedAssetIndex = index;
@@ -64,7 +64,7 @@ namespace zt::gameplay
 
 						if (ImGui::BeginTable("table1", 2, {}/*flags*/))
 						{
-							for (auto& [key, value] : assetIt->second.metaData.items())
+							for (auto& [key, value] : assetIt->second->metaData.items())
 							{
 								ImGui::TableNextRow();
 								ImGui::TableSetColumnIndex(0);
