@@ -56,21 +56,6 @@ namespace zt::wd
 
 		std::string asString() const override;
 
-	public:
-/*GENERATED_CODE_START*/
-		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
-		
-		class ClassInfo : public zt::core::ClassInfoBase
-		{
-		public:
-		
-			std::string_view getClassName() const override { return "Mouse"; }
-		};
-		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
-		
-		
-/*GENERATED_CODE_END*/
-
 	protected:
 
 		Window* window = nullptr;

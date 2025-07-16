@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
-#include "Zinet/Core/ZtFile.hpp"
+#include "Zinet/Core/Assets/ZtAssetText.hpp"
 
 #include <gtest/gtest.h>
 
@@ -31,40 +31,9 @@ namespace zt::core::assets::tests
 		AssetsStorage assetsStorage;
 	};
 
-	struct TextAsset : public Asset
-	{
-		TextAsset() : Asset{ "txt" } {}
-
-		AssetHandle<Asset> createCopy() const ZINET_API_POST override { return std::make_shared<TextAsset>(*this); }
-
-		bool load(const Path& rootPath) ZINET_API_POST override
-		{
-			File file;
-			const auto filePath = rootPath / metaData.value("fileRelativePath", "");
-			file.open(filePath, FileOpenMode::Read);
-			if (!file.isOpen())
-			{
-				Logger->error("Couldn't open file, path: {}", filePath.generic_string());
-				return {};
-			}
-			
-			auto rawData = file.readData();
-			file.close();
-
-			text = std::string{ rawData.begin(), rawData.end() };
-			return true;
-		}
-
-		void unload() ZINET_API_POST override { text.clear(); }
-
-		// Content
-		std::string text;
-
-	};
-
 	TEST_F(AssetsStorageTests, StoreAssetsTest)
 	{
-		assetsStorage.registerAssetClass<TextAsset>();
+		assetsStorage.registerAssetClass<AssetText>();
 
 		bool result = assetsStorage.storeAssets();
 		ASSERT_TRUE(result);
@@ -103,22 +72,5 @@ namespace zt::core::assets::tests
 
 		auto Logger = ConsoleLogger::Create("temp");
 		Logger->info("Asset extension: {}", extension);
-	}
-
-	TEST_F(AssetsStorageTests, TextAssetTest)
-	{
-		assetsStorage.registerAssetClass<TextAsset>();
-
-		bool result = assetsStorage.storeAssets();
-		ASSERT_TRUE(result);
-
-		auto textAsset = assetsStorage.getAs<TextAsset>("Content/placeholder.txt");
-		ASSERT_TRUE(textAsset);
-
-		ASSERT_TRUE(textAsset->load(assetsStorage.assetsFinder.rootFolder));
-		ASSERT_FALSE(textAsset->text.empty());
-
-		textAsset->unload();
-		ASSERT_TRUE(textAsset->text.empty());
 	}
 }

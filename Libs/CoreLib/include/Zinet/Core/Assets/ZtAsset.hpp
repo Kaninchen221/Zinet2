@@ -36,6 +36,8 @@ namespace zt::core::assets
 		Asset& operator = (const Asset& other) ZINET_API_POST = default;
 		Asset& operator = (Asset&& other) ZINET_API_POST = default;
 
+		bool isLoaded() ZINET_API_POST { return loaded; }
+
 		virtual AssetHandle<Asset> createCopy() const ZINET_API_POST { return {}; }
 
 		virtual bool load([[maybe_unused]] const Path& rootPath) ZINET_API_POST { return false; }
@@ -45,6 +47,10 @@ namespace zt::core::assets
 		const auto& getExtension() const ZINET_API_POST { return extension; }
 
 		json metaData;
+
+	protected:
+
+		bool loaded = false;
 
 	private:
 
