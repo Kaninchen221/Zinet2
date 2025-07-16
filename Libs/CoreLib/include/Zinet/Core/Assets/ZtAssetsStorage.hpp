@@ -5,13 +5,13 @@
 #include "Zinet/Core/ZtLogger.hpp"
 
 #include "Zinet/Core/Assets/ZtAssetsFinder.hpp"
+#include "Zinet/Core/Assets/ZtAsset.hpp"
 
 #include <unordered_map>
 #include <tuple>
 
 namespace zt::core::assets
 {
-	ZT_REFLECT_CLASS()
 	class ZINET_CORE_API AssetsStorage : public Object
 	{
 	protected:
@@ -23,12 +23,20 @@ namespace zt::core::assets
 		bool storeAssets() ZINET_API_POST;
 
 		using AssetsKey = std::string;
-		using Assets = std::map<AssetsKey, Asset>;
+		using Assets = std::map<AssetsKey, AssetHandle<Asset>>;
 
-		using GetResult = Asset*;
-		GetResult get(const AssetsKey& key) ZINET_API_POST;
+		template<std::derived_from<Asset> AssetT>
+		void registerAssetClass() ZINET_API_POST;
+
+		AssetHandle<Asset> get(const AssetsKey& key) ZINET_API_POST;
+
+		template<std::derived_from<Asset> AssetT>
+		AssetHandle<AssetT> getAs(const AssetsKey& key) ZINET_API_POST;
 
 		auto& getAssets() ZINET_API_POST { return assets; }
+
+		using LoadMinimalAssetResult = std::optional<Asset>;
+		LoadMinimalAssetResult loadAssetMetaData(const fs::path& assetPath) const ZINET_API_POST;
 
 		AssetsFinder assetsFinder;
 
@@ -36,30 +44,25 @@ namespace zt::core::assets
 
 		Assets assets;
 
-	public:
-/*GENERATED_CODE_START*/
-		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
-		const inline static bool RegisterClassResult = RegisterClass<AssetsStorage>();
-		std::unique_ptr<ObjectBase> createCopy() const override { std::unique_ptr<ObjectBase> result = createCopyInternal<AssetsStorage>(); *result = *this; return result; }
-		
-		AssetsStorage() = default;
-		AssetsStorage(const AssetsStorage& other) = default;
-		AssetsStorage(AssetsStorage&& other) = default;
-		~AssetsStorage() ZINET_API_POST = default;
-		
-		AssetsStorage& operator = (const AssetsStorage& other) = default;
-		AssetsStorage& operator = (AssetsStorage&& other) = default;
-		
-		class ClassInfo : public zt::core::ClassInfoBase
-		{
-		public:
-		
-			std::string_view getClassName() const override { return "AssetsStorage"; }
-		};
-		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
-		
-		
-/*GENERATED_CODE_END*/
+		using AssetClasses = std::vector<std::shared_ptr<Asset>>;
+		AssetClasses assetClasses;
+
 	};
 
+	template<std::derived_from<Asset> AssetT>
+	void AssetsStorage::registerAssetClass() ZINET_API_POST
+	{
+		assetClasses.push_back(std::make_unique<AssetT>());
+	}
+
+	template<std::derived_from<Asset> AssetT>
+	AssetHandle<AssetT> AssetsStorage::getAs(const AssetsKey& key) ZINET_API_POST
+	{
+		auto asset = get(key);
+		if (!asset)
+			return nullptr;
+
+		auto result = std::dynamic_pointer_cast<AssetT>(asset);
+		return result;
+	}
 }

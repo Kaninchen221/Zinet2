@@ -3,6 +3,7 @@
 #include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtObject.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtPaths.hpp"
 
 #include <filesystem>
 
@@ -10,6 +11,11 @@
 
 namespace zt::core::assets
 {
+	class Asset;
+
+	template<std::derived_from<Asset> AssetT = Asset>
+	using AssetHandle = std::shared_ptr<AssetT>;
+
 	ZT_REFLECT_CLASS()
 	class ZINET_CORE_API Asset : public Object
 	{
@@ -19,35 +25,32 @@ namespace zt::core::assets
 
 	public:
 
-		std::vector<uint8_t> rawData;
-
 		using json = nlohmann::json;
+
+		Asset() ZINET_API_POST = default;
+		Asset(std::string_view newExtension) : extension{newExtension} {}
+		Asset(const Asset& other) ZINET_API_POST = default;
+		Asset(Asset&& other) ZINET_API_POST = default;
+		~Asset() ZINET_API_POST = default;
+
+		Asset& operator = (const Asset& other) ZINET_API_POST = default;
+		Asset& operator = (Asset&& other) ZINET_API_POST = default;
+
+		virtual AssetHandle<Asset> createCopy() const ZINET_API_POST { return {}; }
+
+		virtual bool load([[maybe_unused]] const Path& rootPath) ZINET_API_POST { return false; }
+
+		virtual void unload() ZINET_API_POST {}
+
+		const auto& getExtension() const ZINET_API_POST { return extension; }
+
 		json metaData;
 
-	public:
-/*GENERATED_CODE_START*/
-		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
-		const inline static bool RegisterClassResult = RegisterClass<Asset>();
-		std::unique_ptr<ObjectBase> createCopy() const override { std::unique_ptr<ObjectBase> result = createCopyInternal<Asset>(); *result = *this; return result; }
-		
-		Asset() = default;
-		Asset(const Asset& other) = default;
-		Asset(Asset&& other) = default;
-		~Asset() ZINET_API_POST = default;
-		
-		Asset& operator = (const Asset& other) = default;
-		Asset& operator = (Asset&& other) = default;
-		
-		class ClassInfo : public zt::core::ClassInfoBase
-		{
-		public:
-		
-			std::string_view getClassName() const override { return "Asset"; }
-		};
-		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
-		
-		
-/*GENERATED_CODE_END*/
+	private:
+
+		// Config
+		std::string extension = "default_ext";
+
 	};
 
 }

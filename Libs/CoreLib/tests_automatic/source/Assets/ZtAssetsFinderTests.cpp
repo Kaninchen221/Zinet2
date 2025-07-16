@@ -75,33 +75,4 @@ namespace zt::core::assets::tests
 
 		EXPECT_EQ(expectedPath, actualPath);
 	}
-
-	TEST_F(AssetsFinderTests, LoadAssetTest)
-	{
-		AssetsFinder::FindAssetsInput findAssetsInput
-		{
-			.recursive = false,
-			.reimport = false
-		};
-
-		const AssetsFinder::FindAssetsResult findAssetsResult = assetsFinderConst.findAssets(findAssetsInput);
-
-		EXPECT_EQ(findAssetsResult.files.size(), 1u);
-		EXPECT_EQ(findAssetsResult.assets.size(), 1u);
-
-		auto optionalAsset = assetsFinder.loadAsset(findAssetsResult.files.front(), findAssetsResult.assets.front());
-
-		ASSERT_TRUE(optionalAsset);
-
-		auto asset = std::move(optionalAsset.value());
-		ASSERT_TRUE(!asset.rawData.empty());
-		ASSERT_TRUE(!asset.metaData.empty());
-
-		auto extension = asset.metaData["fileExtension"];
-		ASSERT_TRUE(extension.is_string());
-
-		auto Logger = core::ConsoleLogger::Create("temp");
-		Logger->info("Asset extension: {}", extension.get<std::string_view>());
-		Logger->info(std::string_view(reinterpret_cast<char*>(asset.rawData.data()), asset.rawData.size()));
-	}
 }

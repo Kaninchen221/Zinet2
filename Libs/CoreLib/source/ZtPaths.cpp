@@ -3,7 +3,7 @@
 namespace zt::core
 {
 
-	std::filesystem::path Paths::RootPath()
+	Path Paths::RootPath()
 	{
 		return ZINET_ROOT_PATH;
 	}

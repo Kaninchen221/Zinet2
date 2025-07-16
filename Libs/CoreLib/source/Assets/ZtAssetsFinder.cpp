@@ -106,31 +106,4 @@ namespace zt::core::assets
 		assetFile.write(data.dump(1, '\t'));
 	}
 
-	AssetsFinder::LoadAssetResult AssetsFinder::loadAsset(const fs::path& filePath, const fs::path& assetPath) const ZINET_API_POST
-	{
-		File file;
-		file.open(filePath, FileOpenMode::Read);
-		if (!file.isOpen())
-		{
-			Logger->error("Couldn't open file, path: {}", filePath.generic_string());
-			return {};
-		}
-
-		Asset asset;
-		asset.rawData = file.readData();
-		file.close();
-
-		file.open(assetPath, FileOpenMode::Read);
-		if (!file.isOpen())
-		{
-			Logger->error("Couldn't open asset, path: {}", assetPath.generic_string());
-			return {};
-		}
-
-		using json = nlohmann::json;
-		asset.metaData = json::parse(file.readAll());
-
-		return asset;
-	}
-
 }

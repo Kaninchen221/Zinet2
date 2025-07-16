@@ -55,23 +55,6 @@ namespace zt::core
 		std::int32_t width{};
 		std::int32_t height{};
 		std::int32_t components{};
-
-	public:
-/*GENERATED_CODE_START*/
-		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
-		const inline static bool RegisterClassResult = RegisterClass<Image>();
-		std::unique_ptr<ObjectBase> createCopy() const override { std::unique_ptr<ObjectBase> result = createCopyInternal<Image>(); *result = *this; return result; }
-		
-		class ClassInfo : public zt::core::ClassInfoBase
-		{
-		public:
-		
-			std::string_view getClassName() const override { return "Image"; }
-		};
-		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
-		
-		
-/*GENERATED_CODE_END*/
 	};
 
 }

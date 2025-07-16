@@ -9,7 +9,6 @@
 
 namespace zt::core
 {
-	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_DESTRUCTOR, NO_OPERATORS)
 	class ZINET_CORE_API File : public Object
 	{
 	protected:
@@ -56,27 +55,8 @@ namespace zt::core
 
 	protected:
 
-		ZT_REFLECT_MEMBER(ReadOnly)
 		std::fstream fileStream;
 
-	public:
-/*GENERATED_CODE_START*/
-		static_assert(IsObjectClassInherited); // Class using ZT_REFLECT_CLASS should inherit public from Object class
-		const inline static bool RegisterClassResult = RegisterClass<File>();
-		std::unique_ptr<ObjectBase> createCopy() const override { std::unique_ptr<ObjectBase> result = createCopyInternal<File>(); *result = *this; return result; }
-		
-		class ClassInfo : public zt::core::ClassInfoBase
-		{
-		public:
-		
-			std::string_view getClassName() const override { return "File"; }
-		};
-		const zt::core::ClassInfoBase* getClassInfo() const override { static ClassInfo classInfo; return &classInfo; }
-		
-		
-		const decltype(fileStream)& getFileStream() const { return fileStream; }
-		
-/*GENERATED_CODE_END*/
 	};
 
 }

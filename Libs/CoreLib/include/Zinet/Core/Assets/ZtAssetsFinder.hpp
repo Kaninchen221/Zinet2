@@ -53,9 +53,6 @@ namespace zt::core::assets
 
 		void createAssetFile(const std::filesystem::path& filePath, const std::filesystem::path& assetPath) const ZINET_API_POST;
 
-		using LoadAssetResult = std::optional<Asset>;
-		LoadAssetResult loadAsset(const fs::path& filePath, const fs::path& assetPath) const ZINET_API_POST;
-
 		fs::path rootFolder = Paths::RootPath();
 		std::string contentFolderName = "Content";
 		std::string assetFileExtension = "asset";
