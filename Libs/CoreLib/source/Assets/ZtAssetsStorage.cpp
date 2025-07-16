@@ -32,7 +32,7 @@ namespace zt::core::assets
 				if (!assetClass)
 					continue;
 
-				if (assetClass->getExtension() != extensionValue)
+				if (!std::ranges::contains(assetClass->getExtensions(), extensionValue))
 					continue;
 
 				auto asset = assetClass->createCopy();

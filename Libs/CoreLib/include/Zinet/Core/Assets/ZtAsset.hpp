@@ -26,9 +26,10 @@ namespace zt::core::assets
 	public:
 
 		using json = nlohmann::json;
+		using Extensions = std::vector<std::string>;
 
 		Asset() ZINET_API_POST = default;
-		Asset(std::string_view newExtension) : extension{newExtension} {}
+		Asset(Extensions newExtensions) : extensions{newExtensions} {}
 		Asset(const Asset& other) ZINET_API_POST = default;
 		Asset(Asset&& other) ZINET_API_POST = default;
 		~Asset() ZINET_API_POST = default;
@@ -44,7 +45,7 @@ namespace zt::core::assets
 
 		virtual void unload() ZINET_API_POST {}
 
-		const auto& getExtension() const ZINET_API_POST { return extension; }
+		const auto& getExtensions() const ZINET_API_POST { return extensions; }
 
 		json metaData;
 
@@ -55,7 +56,7 @@ namespace zt::core::assets
 	private:
 
 		// Config
-		std::string extension = "default_ext";
+		Extensions extensions = { "default_ext" };
 
 	};
 

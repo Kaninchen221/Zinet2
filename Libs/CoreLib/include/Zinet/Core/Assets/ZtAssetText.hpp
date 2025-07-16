@@ -5,32 +5,23 @@
 
 namespace zt::core::assets
 {
-	struct AssetText : public Asset
+	class ZINET_CORE_API AssetText : public Asset
 	{
-		AssetText() : Asset{ "txt" } {}
+	public:
+
+		AssetText() : Asset{ { "txt" } } {}
+		AssetText(const AssetText& other) ZINET_API_POST = default;
+		AssetText(AssetText&& other) ZINET_API_POST = default;
+		~AssetText() ZINET_API_POST = default;
+
+		AssetText& operator = (const AssetText& other) ZINET_API_POST = default;
+		AssetText& operator = (AssetText&& other) ZINET_API_POST = default;
 
 		AssetHandle<Asset> createCopy() const ZINET_API_POST override { return std::make_shared<AssetText>(*this); }
 
-		bool load(const Path& rootPath) ZINET_API_POST override
-		{
-			File file;
-			const auto filePath = rootPath / metaData.value("fileRelativePath", "");
-			file.open(filePath, FileOpenMode::Read);
-			if (!file.isOpen())
-			{
-				Logger->error("Couldn't open file, path: {}", filePath.generic_string());
-				return {};
-			}
+		bool load(const Path& rootPath) ZINET_API_POST override;
 
-			auto rawData = file.readData();
-			file.close();
-
-			text = std::string{ rawData.begin(), rawData.end() };
-			loaded = true;
-			return true;
-		}
-
-		void unload() ZINET_API_POST override { text.clear(); loaded = false; }
+		void unload() ZINET_API_POST override;
 
 		// Content
 		std::string text;
