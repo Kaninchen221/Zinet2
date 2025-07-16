@@ -30,7 +30,9 @@ namespace zt::gameplay
 
 	public:
 
-		EngineContext() noexcept = default;
+		EngineContext() noexcept {
+			instance = this;
+		};
 		EngineContext(const EngineContext& other) noexcept = default;
 		EngineContext(EngineContext&& other) noexcept = default;
 		~EngineContext() noexcept;

@@ -6,8 +6,6 @@ namespace zt::gameplay
 {
 	bool EngineContext::init() noexcept
 	{
-		instance = this;
-		
 		wd::GLFW::Init(false);
 
 		if (!window.create())

@@ -52,7 +52,8 @@ namespace zt::core::assets
 	template<std::derived_from<Asset> AssetT>
 	void AssetsStorage::registerAssetClass() ZINET_API_POST
 	{
-		assetClasses.push_back(std::make_unique<AssetT>());
+		auto asset = std::make_unique<AssetT>();
+		assetClasses.push_back(std::move(asset));
 	}
 
 	template<std::derived_from<Asset> AssetT>
