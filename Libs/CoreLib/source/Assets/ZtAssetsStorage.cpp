@@ -64,10 +64,6 @@ namespace zt::core::assets
 
 	void AssetsStorage::clear() ZINET_API_POST
 	{
-		for (auto& [key, assetHandle] : assets)
-		{
-			assetHandle.reset();
-		}
 		assets.clear();
 	}
 
@@ -80,7 +76,7 @@ namespace zt::core::assets
 			return nullptr;
 		}
 
-		return findResult->second;
+		return findResult->second.get();
 	}
 
 	AssetsStorage::LoadMinimalAssetResult AssetsStorage::loadAssetMetaData(const fs::path& assetPath) const ZINET_API_POST

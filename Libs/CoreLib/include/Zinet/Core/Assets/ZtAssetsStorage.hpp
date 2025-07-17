@@ -25,7 +25,8 @@ namespace zt::core::assets
 		void clear() ZINET_API_POST;
 
 		using AssetsKey = std::string;
-		using Assets = std::map<AssetsKey, AssetHandle<Asset>>;
+		using AssetPtr = std::shared_ptr<Asset>;
+		using Assets = std::map<AssetsKey, AssetPtr>;
 
 		template<std::derived_from<Asset> AssetT>
 		void registerAssetClass() ZINET_API_POST;
@@ -61,11 +62,11 @@ namespace zt::core::assets
 	template<std::derived_from<Asset> AssetT>
 	AssetHandle<AssetT> AssetsStorage::getAs(const AssetsKey& key) ZINET_API_POST
 	{
-		auto asset = get(key);
-		if (!asset)
+		auto assetHandle = get(key);
+		if (!assetHandle)
 			return nullptr;
 
-		auto result = std::dynamic_pointer_cast<AssetT>(asset);
+		auto result = dynamic_cast<AssetT*>(assetHandle.get());
 		return result;
 	}
 }

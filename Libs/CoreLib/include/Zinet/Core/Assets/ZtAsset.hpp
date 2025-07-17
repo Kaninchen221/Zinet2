@@ -13,8 +13,35 @@ namespace zt::core::assets
 {
 	class Asset;
 
-	template<std::derived_from<Asset> AssetT = Asset>
-	using AssetHandle = std::shared_ptr<AssetT>;
+	template<std::derived_from<Asset> AssetType = Asset>
+	class AssetHandle
+	{
+	public:
+
+		using AssetT = AssetType;
+
+		AssetHandle() ZINET_API_POST = default;
+		AssetHandle(AssetT* newAsset) : asset{ newAsset } {}
+		AssetHandle(const AssetHandle& other) ZINET_API_POST = default;
+		AssetHandle(AssetHandle&& other) ZINET_API_POST = default;
+		~AssetHandle() ZINET_API_POST = default;
+
+		AssetHandle& operator = (const AssetHandle& other) ZINET_API_POST = default;
+		AssetHandle& operator = (AssetHandle&& other) ZINET_API_POST = default;
+
+		bool isValid() const ZINET_API_POST { return asset; }
+
+		operator bool() const ZINET_API_POST { return isValid(); }
+
+		AssetT* operator->() const ZINET_API_POST { return asset; }
+
+		AssetT* get() const ZINET_API_POST { return asset; }
+
+	protected:
+
+		AssetT* asset = nullptr;
+
+	};
 
 	ZT_REFLECT_CLASS()
 	class ZINET_CORE_API Asset : public Object
@@ -27,6 +54,7 @@ namespace zt::core::assets
 
 		using json = nlohmann::json;
 		using Extensions = std::vector<std::string>;
+		using AssetPtr = std::shared_ptr<Asset>;
 
 		Asset() ZINET_API_POST = default;
 		Asset(Extensions newExtensions) : extensions{newExtensions} {}
@@ -39,7 +67,7 @@ namespace zt::core::assets
 
 		bool isLoaded() ZINET_API_POST { return loaded; }
 
-		virtual AssetHandle<Asset> createCopy() const ZINET_API_POST { return {}; }
+		virtual AssetPtr createCopy() const ZINET_API_POST { return {}; }
 
 		virtual bool load([[maybe_unused]] const Path& rootPath) ZINET_API_POST { return false; }
 

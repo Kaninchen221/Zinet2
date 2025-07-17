@@ -17,7 +17,7 @@ namespace zt::core::assets
 		AssetText& operator = (const AssetText& other) ZINET_API_POST = default;
 		AssetText& operator = (AssetText&& other) ZINET_API_POST = default;
 
-		AssetHandle<Asset> createCopy() const ZINET_API_POST override { return std::make_shared<AssetText>(*this); }
+		AssetPtr createCopy() const ZINET_API_POST override { return std::make_unique<AssetText>(*this); }
 
 		bool load(const Path& rootPath) ZINET_API_POST override;
 
