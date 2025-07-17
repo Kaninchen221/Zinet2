@@ -1,7 +1,11 @@
 #pragma once
 
+#include "Zinet/Core/Assets/ZtAssetText.hpp"
+
 #include "Zinet/Gameplay/ZtEngine.hpp"
 #include "Zinet/Gameplay/Nodes/ZtNodeEditor.hpp"
+#include "Zinet/Gameplay/Nodes/ZtNodeSprite.hpp"
+#include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 
 #include <gtest/gtest.h>
 
@@ -21,8 +25,11 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
-			ASSERT_TRUE(engine.init());
 			auto& engineContext = EngineContext::Get();
+			engineContext.assetsStorage.registerAssetClass<core::assets::AssetText>();
+			engineContext.assetsStorage.registerAssetClass<gameplay::assets::AssetTexture>();
+
+			ASSERT_TRUE(engine.init());
 			auto& rootNode = engineContext.rootNode;
 
 			auto editorNode = CreateNode<NodeEditor>();
@@ -37,6 +44,11 @@ namespace zt::gameplay::tests
 			auto childOfChild = CreateNode();
 			childOfChild->setName("Child of child");
 			child->addChild(childOfChild);
+
+			auto sprite = CreateNode<NodeSprite>("Sprite");
+			sprite->texture = engineContext.assetsStorage.get("Content/Textures/image.png");
+			rootNode->addChild(sprite);
+			engineContext.systemRenderer.addNode(sprite);
 		}
 
 		void TearDown() override
