@@ -21,6 +21,8 @@ namespace zt::gameplay
 
 	struct EditorAssetsList
 	{
+		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EditorAssetsList");
+
 		bool shouldShow = false;
 		void show() ZINET_API_POST;
 		int selectedAssetIndex = -1;

@@ -32,25 +32,25 @@ namespace zt::vulkan_renderer
 			: VulkanObject(newObjectHandle)
 		{}
 
-		Device() noexcept = delete;
-		Device(const Device& other) noexcept = delete;
-		Device(Device&& other) noexcept = default;
-		~Device() noexcept = default;
+		Device() ZINET_API_POST = delete;
+		Device(const Device& other) ZINET_API_POST = delete;
+		Device(Device&& other) ZINET_API_POST = default;
+		~Device() ZINET_API_POST = default;
 
-		Device& operator = (const Device& other) noexcept = delete;
-		Device& operator = (Device&& other) noexcept = default;
+		Device& operator = (const Device& other) ZINET_API_POST = delete;
+		Device& operator = (Device&& other) ZINET_API_POST = default;
 
-		bool create(const Instance& instance, const PhysicalDevice& physicalDevice, const Surface& surface) noexcept;
+		bool create(const Instance& instance, const PhysicalDevice& physicalDevice, const Surface& surface) ZINET_API_POST;
 
-		void destroy() noexcept;
+		void destroy() ZINET_API_POST;
 
-		Queue getQueue() noexcept;
+		Queue getQueue() ZINET_API_POST;
 
-		const auto& getQueueFamilyIndex() const noexcept { return queueFamilyIndex; }
+		const auto& getQueueFamilyIndex() const ZINET_API_POST { return queueFamilyIndex; }
 
-		bool waitIdle() const noexcept;
+		bool waitIdle() const ZINET_API_POST;
 
-		bool setDebugName(const IsVulkanObjectT auto& vulkanObject, std::string_view debugName) const noexcept;
+		bool setDebugName(const IsVulkanObjectT auto& vulkanObject, std::string_view debugName, VkObjectType objectType) const ZINET_API_POST;
 
 	protected:
 
@@ -61,7 +61,7 @@ namespace zt::vulkan_renderer
 
 	};
 
-	bool Device::setDebugName([[maybe_unused]] const IsVulkanObjectT auto& vulkanObject, [[maybe_unused]] std::string_view debugName) const noexcept
+	bool Device::setDebugName([[maybe_unused]] const IsVulkanObjectT auto& vulkanObject, [[maybe_unused]] std::string_view debugName, [[maybe_unused]] VkObjectType objectType) const ZINET_API_POST
 	{
 		/// Should be empty for not debug builds
 #		if ZINET_DEBUG
@@ -75,7 +75,7 @@ namespace zt::vulkan_renderer
 		{
 			.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT,
 			.pNext = nullptr,
-			.objectType = VK_OBJECT_TYPE_BUFFER,
+			.objectType = objectType,
 			.objectHandle = uint64_t(vulkanObject.get()),
 			.pObjectName = debugName.data()
 		};

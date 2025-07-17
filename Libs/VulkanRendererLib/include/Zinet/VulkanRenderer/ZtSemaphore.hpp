@@ -20,17 +20,17 @@ namespace zt::vulkan_renderer
 		Semaphore(HandleType newObjectHandle)
 			: VulkanObject(newObjectHandle) {}
 
-		Semaphore() noexcept = delete;
-		Semaphore(const Semaphore& other) noexcept = delete;
-		Semaphore(Semaphore&& other) noexcept = default;
-		~Semaphore() noexcept = default;
+		Semaphore() ZINET_API_POST = delete;
+		Semaphore(const Semaphore& other) ZINET_API_POST = delete;
+		Semaphore(Semaphore&& other) ZINET_API_POST = default;
+		~Semaphore() ZINET_API_POST = default;
 
-		Semaphore& operator = (const Semaphore& other) noexcept = delete;
-		Semaphore& operator = (Semaphore&& other) noexcept = default;
+		Semaphore& operator = (const Semaphore& other) ZINET_API_POST = delete;
+		Semaphore& operator = (Semaphore&& other) ZINET_API_POST = default;
 
-		bool create(const Device& device) noexcept;
+		bool create(const Device& device) ZINET_API_POST;
 
-		void destroy(const Device& device) noexcept;
+		void destroy(const Device& device) ZINET_API_POST;
 
 	};
 }

@@ -44,6 +44,9 @@ namespace zt::vulkan_renderer
 		if (!queue.waitIdle())
 			return false;
 
+		if (!device.waitIdle())
+			return false;
+
 		commandBuffer.destroy(device, commandPool);
 
 		return true;

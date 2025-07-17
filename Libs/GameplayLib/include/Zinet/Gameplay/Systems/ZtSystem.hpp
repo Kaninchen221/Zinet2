@@ -18,22 +18,22 @@ namespace zt::gameplay
 		using NodeT = NodeType;
 		using NodesT = std::vector<NodeWeakHandle<NodeT>>;
 
-		System() noexcept = default;
-		System(const System& other) noexcept = default;
-		System(System&& other) noexcept = default;
-		~System() noexcept = default;
+		System() ZINET_API_POST = default;
+		System(const System& other) ZINET_API_POST = default;
+		System(System&& other) ZINET_API_POST = default;
+		~System() ZINET_API_POST = default;
 
-		System& operator = (const System& other) noexcept = default;
-		System& operator = (System&& other) noexcept = default;
+		System& operator = (const System& other) ZINET_API_POST = default;
+		System& operator = (System&& other) ZINET_API_POST = default;
 
-		virtual bool init() noexcept { return true; }
+		virtual bool init() ZINET_API_POST { return true; }
 
-		virtual void deinit() noexcept { }
+		virtual void deinit() ZINET_API_POST { }
 
-		virtual void addNode(const NodeWeakHandle<NodeT>& node) noexcept { nodes.push_back(node); }
+		virtual void addNode(const NodeWeakHandle<NodeT>& node) ZINET_API_POST { nodes.push_back(node); }
 
-		auto& getNodes() noexcept { return nodes; }
-		const auto& getNodes() const noexcept { return nodes; }
+		auto& getNodes() ZINET_API_POST { return nodes; }
+		const auto& getNodes() const ZINET_API_POST { return nodes; }
 
 	protected:
 

@@ -8,7 +8,7 @@
 namespace zt::vulkan_renderer
 {
 	VkDescriptorSetAllocateInfo DescriptorSets::GetDefaultAllocateInfo(
-		const DescriptorPool& descriptorPool, const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) noexcept
+		const DescriptorPool& descriptorPool, const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) ZINET_API_POST
 	{
 		return VkDescriptorSetAllocateInfo
 		{
@@ -20,7 +20,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	bool DescriptorSets::create(const Device& device, const VkDescriptorSetAllocateInfo& allocateInfo) noexcept
+	bool DescriptorSets::create(const Device& device, const VkDescriptorSetAllocateInfo& allocateInfo) ZINET_API_POST
 	{
 		const auto result = vkAllocateDescriptorSets(device.get(), &allocateInfo, &objectHandle);
 		if (result == VK_SUCCESS)
@@ -35,7 +35,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	VkWriteDescriptorSet DescriptorSets::GetDefaultWriteDescriptorSet() noexcept
+	VkWriteDescriptorSet DescriptorSets::GetDefaultWriteDescriptorSet() ZINET_API_POST
 	{
 		return VkWriteDescriptorSet
 		{
@@ -52,7 +52,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	VkDescriptorBufferInfo DescriptorSets::GetBufferInfo(const Buffer& buffer) noexcept
+	VkDescriptorBufferInfo DescriptorSets::GetBufferInfo(const Buffer& buffer) ZINET_API_POST
 	{
 		return
 		{
@@ -62,7 +62,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	VkDescriptorImageInfo DescriptorSets::GetImageInfo(const ImageView& imageView, const Sampler& sampler) noexcept
+	VkDescriptorImageInfo DescriptorSets::GetImageInfo(const ImageView& imageView, const Sampler& sampler) ZINET_API_POST
 	{
 		return
 		{
@@ -72,7 +72,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	void DescriptorSets::update(const Device& device, const std::vector<VkWriteDescriptorSet>& writeDescriptorSets) const noexcept
+	void DescriptorSets::update(const Device& device, const std::vector<VkWriteDescriptorSet>& writeDescriptorSets) const ZINET_API_POST
 	{
 		vkUpdateDescriptorSets(device.get(), static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
 	}

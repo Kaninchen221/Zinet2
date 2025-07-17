@@ -3,7 +3,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool ShaderModule::create(const Device& device, const shaderc::SpvCompilationResult& compilationResult) noexcept
+	bool ShaderModule::create(const Device& device, const shaderc::SpvCompilationResult& compilationResult) ZINET_API_POST
 	{
 		if (isValid())
 			return false;
@@ -32,7 +32,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	VkPipelineShaderStageCreateInfo ShaderModule::createPipelineShaderStageCreateInfo(const ShaderType shaderType) const noexcept
+	VkPipelineShaderStageCreateInfo ShaderModule::createPipelineShaderStageCreateInfo(const ShaderType shaderType) const ZINET_API_POST
 	{
 		return VkPipelineShaderStageCreateInfo
 		{
@@ -46,7 +46,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	void ShaderModule::destroy(const Device& device) noexcept
+	void ShaderModule::destroy(const Device& device) ZINET_API_POST
 	{
 		if (isValid())
 		{

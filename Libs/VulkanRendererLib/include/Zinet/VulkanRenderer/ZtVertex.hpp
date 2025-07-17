@@ -21,9 +21,9 @@ namespace zt::vulkan_renderer
 		auto operator<=>(const Vertex&) const = default;
 
 		using InputBindingDescription = VkVertexInputBindingDescription;
-		static InputBindingDescription GetInputBindingDescription() noexcept;
+		static InputBindingDescription GetInputBindingDescription() ZINET_API_POST;
 
 		using InputAttributesDescriptions = std::array<VkVertexInputAttributeDescription, 3>;
-		static InputAttributesDescriptions GetInputAttributesDescriptions() noexcept;
+		static InputAttributesDescriptions GetInputAttributesDescriptions() ZINET_API_POST;
 	};
 }

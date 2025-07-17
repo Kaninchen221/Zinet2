@@ -31,21 +31,24 @@ namespace zt::gameplay
 
 		using ClassBaseT = System<Node2D>;
 
-		SystemRenderer() noexcept = default;
-		SystemRenderer(const SystemRenderer& other) noexcept = default;
-		SystemRenderer(SystemRenderer&& other) noexcept = default;
-		~SystemRenderer() noexcept = default;
+		SystemRenderer() ZINET_API_POST = default;
+		SystemRenderer(const SystemRenderer& other) ZINET_API_POST = default;
+		SystemRenderer(SystemRenderer&& other) ZINET_API_POST = default;
+		~SystemRenderer() ZINET_API_POST = default;
 
-		SystemRenderer& operator = (const SystemRenderer& other) noexcept = default;
-		SystemRenderer& operator = (SystemRenderer&& other) noexcept = default;
+		SystemRenderer& operator = (const SystemRenderer& other) ZINET_API_POST = default;
+		SystemRenderer& operator = (SystemRenderer&& other) ZINET_API_POST = default;
 
-		bool init() noexcept override;
+		bool init() ZINET_API_POST override;
 
-		void deinit() noexcept override;
+		void deinit() ZINET_API_POST override;
 
-		void addNode(const NodeWeakHandle<NodeT>& node) noexcept;
+		void addNode(const NodeWeakHandle<NodeT>& node) ZINET_API_POST;
 
-		void update() noexcept;
+		void update() ZINET_API_POST;
+
+		auto& getRenderer() ZINET_API_POST { return renderer; }
+		const auto& getRenderer() const ZINET_API_POST { return renderer; }
 
 	protected:
 

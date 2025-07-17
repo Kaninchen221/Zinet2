@@ -23,19 +23,19 @@ namespace zt::vulkan_renderer
 			: VulkanObject(newObjectHandle)
 		{}
 
-		Sampler() noexcept = delete;
-		Sampler(const Sampler& other) noexcept = delete;
-		Sampler(Sampler&& other) noexcept = default;
-		~Sampler() noexcept = default;
+		Sampler() ZINET_API_POST = delete;
+		Sampler(const Sampler& other) ZINET_API_POST = delete;
+		Sampler(Sampler&& other) ZINET_API_POST = default;
+		~Sampler() ZINET_API_POST = default;
 
-		Sampler& operator = (const Sampler& other) noexcept = delete;
-		Sampler& operator = (Sampler&& other) noexcept = default;
+		Sampler& operator = (const Sampler& other) ZINET_API_POST = delete;
+		Sampler& operator = (Sampler&& other) ZINET_API_POST = default;
 
-		static VkSamplerCreateInfo GetDefaultCreateInfo() noexcept;
+		static VkSamplerCreateInfo GetDefaultCreateInfo() ZINET_API_POST;
 
-		bool create(const Device& device, const VkSamplerCreateInfo& createInfo) noexcept;
+		bool create(const Device& device, const VkSamplerCreateInfo& createInfo) ZINET_API_POST;
 
-		void destroy(const Device& device) noexcept;
+		void destroy(const Device& device) ZINET_API_POST;
 
 	};
 }

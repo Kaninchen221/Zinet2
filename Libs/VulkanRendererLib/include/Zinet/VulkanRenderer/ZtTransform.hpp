@@ -20,26 +20,26 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Transform() noexcept = default;
-		Transform(const Transform& other) noexcept = default;
-		Transform(Transform&& other) noexcept = default;
-		~Transform() noexcept = default;
+		Transform() ZINET_API_POST = default;
+		Transform(const Transform& other) ZINET_API_POST = default;
+		Transform(Transform&& other) ZINET_API_POST = default;
+		~Transform() ZINET_API_POST = default;
 
-		Transform& operator = (const Transform& other) noexcept = default;
-		Transform& operator = (Transform&& other) noexcept = default;
+		Transform& operator = (const Transform& other) ZINET_API_POST = default;
+		Transform& operator = (Transform&& other) ZINET_API_POST = default;
 
 		using MatrixT = glm::mat4;
-		MatrixT getMatrix() const noexcept;
+		MatrixT getMatrix() const ZINET_API_POST;
 
-		void setPosition(const Vector3f& newPosition) noexcept { position = newPosition; }
-		const auto& getPosition() const noexcept { return position; }
+		void setPosition(const Vector3f& newPosition) ZINET_API_POST { position = newPosition; }
+		const auto& getPosition() const ZINET_API_POST { return position; }
 
 		/// Degrees
-		void setRotation(float newRotation) noexcept { rotation = newRotation; }
-		const auto& getRotation() const noexcept { return rotation; }
+		void setRotation(float newRotation) ZINET_API_POST { rotation = newRotation; }
+		const auto& getRotation() const ZINET_API_POST { return rotation; }
 
-		void setScale(const Vector3f& newScale) noexcept { scale = newScale; }
-		const auto& getScale() const noexcept { return scale; }
+		void setScale(const Vector3f& newScale) ZINET_API_POST { scale = newScale; }
+		const auto& getScale() const ZINET_API_POST { return scale; }
 
 		void imGui();
 

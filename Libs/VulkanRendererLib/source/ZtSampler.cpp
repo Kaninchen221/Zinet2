@@ -3,7 +3,7 @@
 
 namespace zt::vulkan_renderer
 {
-	VkSamplerCreateInfo Sampler::GetDefaultCreateInfo() noexcept
+	VkSamplerCreateInfo Sampler::GetDefaultCreateInfo() ZINET_API_POST
 	{
 		return 
 		{
@@ -28,7 +28,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	bool Sampler::create(const Device& device, const VkSamplerCreateInfo& createInfo) noexcept
+	bool Sampler::create(const Device& device, const VkSamplerCreateInfo& createInfo) ZINET_API_POST
 	{
 		if (isValid())
 			return false;
@@ -45,7 +45,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void Sampler::destroy(const Device& device) noexcept
+	void Sampler::destroy(const Device& device) ZINET_API_POST
 	{
 		if (isValid())
 		{

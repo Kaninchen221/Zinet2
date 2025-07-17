@@ -3,7 +3,7 @@
 namespace zt::vulkan_renderer
 {
 
-	VkDescriptorSetLayoutBinding DescriptorSetLayout::GetDefaultUniformLayoutBinding() noexcept
+	VkDescriptorSetLayoutBinding DescriptorSetLayout::GetDefaultUniformLayoutBinding() ZINET_API_POST
 	{
 		return VkDescriptorSetLayoutBinding
 		{
@@ -15,7 +15,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	VkDescriptorSetLayoutBinding DescriptorSetLayout::GetDefaultImageLayoutBinding() noexcept
+	VkDescriptorSetLayoutBinding DescriptorSetLayout::GetDefaultImageLayoutBinding() ZINET_API_POST
 	{
 		return VkDescriptorSetLayoutBinding
 		{
@@ -27,7 +27,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	VkDescriptorSetLayoutCreateInfo DescriptorSetLayout::GetDefaultCreateInfo(const Bindings& bindings) noexcept
+	VkDescriptorSetLayoutCreateInfo DescriptorSetLayout::GetDefaultCreateInfo(const Bindings& bindings) ZINET_API_POST
 	{
 		return VkDescriptorSetLayoutCreateInfo
 		{
@@ -37,7 +37,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	bool DescriptorSetLayout::create(const VkDescriptorSetLayoutCreateInfo& createInfo, const Device& device) noexcept
+	bool DescriptorSetLayout::create(const VkDescriptorSetLayoutCreateInfo& createInfo, const Device& device) ZINET_API_POST
 	{
 		const auto result = vkCreateDescriptorSetLayout(device.get(), &createInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
@@ -51,7 +51,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void DescriptorSetLayout::destroy(const Device& device) noexcept
+	void DescriptorSetLayout::destroy(const Device& device) ZINET_API_POST
 	{
 		if (isValid())
 		{

@@ -10,7 +10,7 @@ namespace zt::vulkan_renderer
 {
 
 	VkPipelineDynamicStateCreateInfo Pipeline::createVkPipelineDynamicStateCreateInfo(
-		const std::vector<VkDynamicState>& dynamicStates) const noexcept
+		const std::vector<VkDynamicState>& dynamicStates) const ZINET_API_POST
 	{
 		return VkPipelineDynamicStateCreateInfo
 		{
@@ -22,7 +22,7 @@ namespace zt::vulkan_renderer
 
 	VkPipelineVertexInputStateCreateInfo Pipeline::createVkPipelineVertexInputStateCreateInfo(
 		const Vertex::InputBindingDescription* bindingDescription,
-		const Vertex::InputAttributesDescriptions* attributesDescriptions) const noexcept
+		const Vertex::InputAttributesDescriptions* attributesDescriptions) const ZINET_API_POST
 	{
 		VkPipelineVertexInputStateCreateInfo createInfo
 		{
@@ -49,7 +49,7 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	VkPipelineInputAssemblyStateCreateInfo Pipeline::createVkPipelineInputAssemblyStateCreateInfo() const noexcept
+	VkPipelineInputAssemblyStateCreateInfo Pipeline::createVkPipelineInputAssemblyStateCreateInfo() const ZINET_API_POST
 	{
 		return VkPipelineInputAssemblyStateCreateInfo
 		{
@@ -60,7 +60,7 @@ namespace zt::vulkan_renderer
 	}
 
 	VkPipelineViewportStateCreateInfo Pipeline::createVkPipelineViewportStateCreateInfo(
-		const VkViewport& viewport, const VkRect2D& scissor) const noexcept
+		const VkViewport& viewport, const VkRect2D& scissor) const ZINET_API_POST
 	{
 		return VkPipelineViewportStateCreateInfo
 		{
@@ -74,7 +74,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	VkPipelineRasterizationStateCreateInfo Pipeline::createVkPipelineRasterizationStateCreateInfo() const noexcept
+	VkPipelineRasterizationStateCreateInfo Pipeline::createVkPipelineRasterizationStateCreateInfo() const ZINET_API_POST
 	{
 		return VkPipelineRasterizationStateCreateInfo
 		{
@@ -94,7 +94,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	VkPipelineMultisampleStateCreateInfo Pipeline::createVkPipelineMultisampleStateCreateInfo() const noexcept
+	VkPipelineMultisampleStateCreateInfo Pipeline::createVkPipelineMultisampleStateCreateInfo() const ZINET_API_POST
 	{
 		return VkPipelineMultisampleStateCreateInfo
 		{
@@ -110,7 +110,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	VkPipelineColorBlendAttachmentState Pipeline::createVkPipelineColorBlendAttachmentState() const noexcept
+	VkPipelineColorBlendAttachmentState Pipeline::createVkPipelineColorBlendAttachmentState() const ZINET_API_POST
 	{
 		return VkPipelineColorBlendAttachmentState
 		{
@@ -126,7 +126,7 @@ namespace zt::vulkan_renderer
 	}
 
 	VkPipelineColorBlendStateCreateInfo Pipeline::createVkPipelineColorBlendStateCreateInfo(
-		const VkPipelineColorBlendAttachmentState& colorBlendAttachmentState) const noexcept
+		const VkPipelineColorBlendAttachmentState& colorBlendAttachmentState) const ZINET_API_POST
 	{
 		return VkPipelineColorBlendStateCreateInfo
 		{
@@ -147,7 +147,7 @@ namespace zt::vulkan_renderer
 		const RenderPass& renderPass,
 		const VkViewport& viewport,
 		const VkRect2D& scissor,
-		const DrawInfo& drawInfo) noexcept
+		const DrawInfo& drawInfo) ZINET_API_POST
 	{
 		if (isValid())
 			return false;
@@ -214,7 +214,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void Pipeline::destroy(const Device& device) noexcept
+	void Pipeline::destroy(const Device& device) ZINET_API_POST
 	{
 		if (isValid())
 		{
@@ -223,7 +223,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	Pipeline::ShadersStages Pipeline::createShadersStages(const DrawInfo& drawInfo) const noexcept
+	Pipeline::ShadersStages Pipeline::createShadersStages(const DrawInfo& drawInfo) const ZINET_API_POST
 	{
 		Pipeline::ShadersStages shadersStages;
 

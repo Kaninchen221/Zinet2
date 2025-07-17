@@ -27,13 +27,13 @@ namespace zt::vulkan_renderer
 			: VulkanObject(newObjectHandle)
 		{}
 
-		Pipeline() noexcept = delete;
-		Pipeline(const Pipeline& other) noexcept = delete;
-		Pipeline(Pipeline&& other) noexcept = default;
-		~Pipeline() noexcept = default;
+		Pipeline() ZINET_API_POST = delete;
+		Pipeline(const Pipeline& other) ZINET_API_POST = delete;
+		Pipeline(Pipeline&& other) ZINET_API_POST = default;
+		~Pipeline() ZINET_API_POST = default;
 
-		Pipeline& operator = (const Pipeline& other) noexcept = delete;
-		Pipeline& operator = (Pipeline&& other) noexcept = default;
+		Pipeline& operator = (const Pipeline& other) ZINET_API_POST = delete;
+		Pipeline& operator = (Pipeline&& other) ZINET_API_POST = default;
 
 		using ShadersStages = std::vector<VkPipelineShaderStageCreateInfo>;
 
@@ -43,34 +43,34 @@ namespace zt::vulkan_renderer
 			const RenderPass& renderPass, 
 			const VkViewport& viewport, 
 			const VkRect2D& scissor, 
-			const DrawInfo& drawInfo) noexcept;
+			const DrawInfo& drawInfo) ZINET_API_POST;
 
-		void destroy(const Device& device) noexcept;
+		void destroy(const Device& device) ZINET_API_POST;
 
-		Pipeline::ShadersStages createShadersStages(const DrawInfo& drawInfo) const noexcept;
-
-		VkPipelineDynamicStateCreateInfo createVkPipelineDynamicStateCreateInfo(
-			const std::vector<VkDynamicState>& dynamicStates) const noexcept;
+		Pipeline::ShadersStages createShadersStages(const DrawInfo& drawInfo) const ZINET_API_POST;
 
 		VkPipelineDynamicStateCreateInfo createVkPipelineDynamicStateCreateInfo(
-			std::vector<VkDynamicState>&& dynamicStates) const noexcept = delete;
+			const std::vector<VkDynamicState>& dynamicStates) const ZINET_API_POST;
+
+		VkPipelineDynamicStateCreateInfo createVkPipelineDynamicStateCreateInfo(
+			std::vector<VkDynamicState>&& dynamicStates) const ZINET_API_POST = delete;
 
 		VkPipelineVertexInputStateCreateInfo createVkPipelineVertexInputStateCreateInfo(
 			const Vertex::InputBindingDescription* bindingDescription,
-			const Vertex::InputAttributesDescriptions* attributesDescriptions) const noexcept;
+			const Vertex::InputAttributesDescriptions* attributesDescriptions) const ZINET_API_POST;
 
-		VkPipelineInputAssemblyStateCreateInfo createVkPipelineInputAssemblyStateCreateInfo() const noexcept;
+		VkPipelineInputAssemblyStateCreateInfo createVkPipelineInputAssemblyStateCreateInfo() const ZINET_API_POST;
 
 		VkPipelineViewportStateCreateInfo createVkPipelineViewportStateCreateInfo(
-			const VkViewport& viewport, const VkRect2D& scissor) const noexcept;
+			const VkViewport& viewport, const VkRect2D& scissor) const ZINET_API_POST;
 
-		VkPipelineRasterizationStateCreateInfo createVkPipelineRasterizationStateCreateInfo() const noexcept;
+		VkPipelineRasterizationStateCreateInfo createVkPipelineRasterizationStateCreateInfo() const ZINET_API_POST;
 
-		VkPipelineMultisampleStateCreateInfo createVkPipelineMultisampleStateCreateInfo() const noexcept;
+		VkPipelineMultisampleStateCreateInfo createVkPipelineMultisampleStateCreateInfo() const ZINET_API_POST;
 
-		VkPipelineColorBlendAttachmentState createVkPipelineColorBlendAttachmentState() const noexcept;
+		VkPipelineColorBlendAttachmentState createVkPipelineColorBlendAttachmentState() const ZINET_API_POST;
 
 		VkPipelineColorBlendStateCreateInfo createVkPipelineColorBlendStateCreateInfo(
-			const VkPipelineColorBlendAttachmentState& colorBlendAttachmentState) const noexcept;
+			const VkPipelineColorBlendAttachmentState& colorBlendAttachmentState) const ZINET_API_POST;
 	};
 }

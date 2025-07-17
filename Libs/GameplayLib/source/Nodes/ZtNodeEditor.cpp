@@ -61,19 +61,13 @@ namespace zt::gameplay
 					auto assetIt = assets.find(selectedAssetKey);
 					if (assetIt != assets.end())
 					{
-
-						if (ImGui::BeginTable("table1", 2, {}/*flags*/))
+						if (assetIt->second)
 						{
-							for (auto& [key, value] : assetIt->second->metaData.items())
-							{
-								ImGui::TableNextRow();
-								ImGui::TableSetColumnIndex(0);
-								ImGui::TextUnformatted(key.c_str());
-								ImGui::TableSetColumnIndex(1);
-								auto valueText = value.dump();
-								ImGui::TextUnformatted(valueText.c_str());
-							}
-							ImGui::EndTable();
+							assetIt->second->imGuiAssetInspect();
+						}
+						else
+						{
+							Logger->warn("Invalid asset in the EditorAssetsList");
 						}
 					}
 

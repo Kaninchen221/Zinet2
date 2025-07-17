@@ -41,13 +41,13 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		RendererContext() noexcept = default;
-		RendererContext(const RendererContext& other) noexcept = delete;
-		RendererContext(RendererContext&& other) noexcept = default;
-		~RendererContext() noexcept = default;
+		RendererContext() ZINET_API_POST = default;
+		RendererContext(const RendererContext& other) ZINET_API_POST = delete;
+		RendererContext(RendererContext&& other) ZINET_API_POST = default;
+		~RendererContext() ZINET_API_POST = default;
 
-		RendererContext& operator = (const RendererContext& other) noexcept = delete;
-		RendererContext& operator = (RendererContext&& other) noexcept = default;
+		RendererContext& operator = (const RendererContext& other) ZINET_API_POST = delete;
+		RendererContext& operator = (RendererContext&& other) ZINET_API_POST = default;
 
 		Instance instance{ nullptr };
 		DebugUtilsMessenger debugUtilsMessenger{ nullptr };
@@ -71,11 +71,11 @@ namespace zt::vulkan_renderer
 
 		RenderPass renderPass{ nullptr };
 
-		bool create(wd::Window& window) noexcept;
+		bool create(wd::Window& window) ZINET_API_POST;
 
-		void destroy() noexcept;
+		void destroy() ZINET_API_POST;
 
-		void windowResized(const Vector2i& size) noexcept;
+		void windowResized(const Vector2i& size) ZINET_API_POST;
 
 	};
 }

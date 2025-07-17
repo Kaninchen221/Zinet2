@@ -4,7 +4,7 @@
 namespace zt::vulkan_renderer
 {
 
-	VkPipelineLayoutCreateInfo PipelineLayout::GetDefaultCreateInfo(const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) noexcept
+	VkPipelineLayoutCreateInfo PipelineLayout::GetDefaultCreateInfo(const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) ZINET_API_POST
 	{
 		return VkPipelineLayoutCreateInfo
 		{
@@ -18,7 +18,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	bool PipelineLayout::create(const Device& device, const VkPipelineLayoutCreateInfo& createInfo) noexcept
+	bool PipelineLayout::create(const Device& device, const VkPipelineLayoutCreateInfo& createInfo) ZINET_API_POST
 	{
 		if (isValid())
 			return false;
@@ -35,7 +35,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void PipelineLayout::destroy(const Device& device) noexcept
+	void PipelineLayout::destroy(const Device& device) ZINET_API_POST
 	{
 		if (isValid())
 		{

@@ -30,45 +30,45 @@ namespace zt::vulkan_renderer
 		CommandBuffer(HandleType newObjectHandle)
 			: VulkanObject(newObjectHandle) {}
 
-		CommandBuffer() noexcept = delete;
-		CommandBuffer(const CommandBuffer& other) noexcept = delete;
-		CommandBuffer(CommandBuffer&& other) noexcept = default;
-		~CommandBuffer() noexcept = default;
+		CommandBuffer() ZINET_API_POST = delete;
+		CommandBuffer(const CommandBuffer& other) ZINET_API_POST = delete;
+		CommandBuffer(CommandBuffer&& other) ZINET_API_POST = default;
+		~CommandBuffer() ZINET_API_POST = default;
 
-		CommandBuffer& operator = (const CommandBuffer& other) noexcept = delete;
-		CommandBuffer& operator = (CommandBuffer&& other) noexcept = default;
+		CommandBuffer& operator = (const CommandBuffer& other) ZINET_API_POST = delete;
+		CommandBuffer& operator = (CommandBuffer&& other) ZINET_API_POST = default;
 
-		bool create(const Device& device, const CommandPool& commandPool) noexcept;
+		bool create(const Device& device, const CommandPool& commandPool) ZINET_API_POST;
 
-		void destroy(const Device& device, const CommandPool& commandPool) noexcept;
+		void destroy(const Device& device, const CommandPool& commandPool) ZINET_API_POST;
 
-		void invalidate() noexcept { objectHandle = nullptr; }
+		void invalidate() ZINET_API_POST { objectHandle = nullptr; }
 
-		bool reset() noexcept;
+		bool reset() ZINET_API_POST;
 
-		bool begin() noexcept;
+		bool begin() ZINET_API_POST;
 		
-		bool end() noexcept;
+		bool end() ZINET_API_POST;
 		
-		void beginRenderPass(const RenderPass& renderPass, const Framebuffer& framebuffer, const VkExtent2D& extent, const Vector2i& offset = { 0, 0 }, const VkClearValue& clearValue = DefaultClearColor) noexcept;
+		void beginRenderPass(const RenderPass& renderPass, const Framebuffer& framebuffer, const VkExtent2D& extent, const Vector2i& offset = { 0, 0 }, const VkClearValue& clearValue = DefaultClearColor) ZINET_API_POST;
 		
-		void endRenderPass() noexcept;
+		void endRenderPass() ZINET_API_POST;
 		
-		void bindPipeline(const Pipeline& pipeline) noexcept;
+		void bindPipeline(const Pipeline& pipeline) ZINET_API_POST;
 		
-		void setViewport(const VkViewport& viewport) noexcept;
+		void setViewport(const VkViewport& viewport) ZINET_API_POST;
 		
-		void setScissor(const VkRect2D& scissor) noexcept;
+		void setScissor(const VkRect2D& scissor) ZINET_API_POST;
 		
 		void draw(std::uint32_t vertexCount,
 			std::uint32_t instanceCount,
 			std::uint32_t firstVertex,
-			std::uint32_t firstInstance) noexcept;
+			std::uint32_t firstInstance) ZINET_API_POST;
 
-		static VkSubmitInfo GetDefaultSubmitInfo() noexcept;
+		static VkSubmitInfo GetDefaultSubmitInfo() ZINET_API_POST;
 	};
 
-	inline bool CommandBuffer::reset() noexcept
+	inline bool CommandBuffer::reset() ZINET_API_POST
 	{
 		const auto result = vkResetCommandBuffer(objectHandle, 0);
 		if (result == VK_SUCCESS)
@@ -82,7 +82,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	inline bool CommandBuffer::begin() noexcept
+	inline bool CommandBuffer::begin() ZINET_API_POST
 	{
 		const VkCommandBufferBeginInfo beginInfo
 		{
@@ -104,7 +104,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	inline bool CommandBuffer::end() noexcept
+	inline bool CommandBuffer::end() ZINET_API_POST
 	{
 		const auto result = vkEndCommandBuffer(objectHandle);
 		if (result == VK_SUCCESS)
@@ -118,27 +118,27 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	inline void CommandBuffer::endRenderPass() noexcept
+	inline void CommandBuffer::endRenderPass() ZINET_API_POST
 	{
 		vkCmdEndRenderPass(objectHandle);
 	}
 
-	inline void CommandBuffer::setViewport(const VkViewport& viewport) noexcept
+	inline void CommandBuffer::setViewport(const VkViewport& viewport) ZINET_API_POST
 	{
 		vkCmdSetViewport(objectHandle, 0, 1, &viewport);
 	}
 
-	inline void CommandBuffer::setScissor(const VkRect2D& scissor) noexcept
+	inline void CommandBuffer::setScissor(const VkRect2D& scissor) ZINET_API_POST
 	{
 		vkCmdSetScissor(objectHandle, 0, 1, &scissor);
 	}
 
-	inline void CommandBuffer::draw(std::uint32_t vertexCount, std::uint32_t instanceCount, std::uint32_t firstVertex, std::uint32_t firstInstance) noexcept
+	inline void CommandBuffer::draw(std::uint32_t vertexCount, std::uint32_t instanceCount, std::uint32_t firstVertex, std::uint32_t firstInstance) ZINET_API_POST
 	{
 		vkCmdDraw(objectHandle, vertexCount, instanceCount, firstVertex, firstInstance);
 	}
 
-	inline VkSubmitInfo CommandBuffer::GetDefaultSubmitInfo() noexcept
+	inline VkSubmitInfo CommandBuffer::GetDefaultSubmitInfo() ZINET_API_POST
 	{
 		return
 		{

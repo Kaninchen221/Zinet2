@@ -16,5 +16,6 @@ generator.linkLibraries = """
     nlohmann_json::nlohmann_json
     glm::glm
     spdlog::spdlog
+    ImGui
     """
 project_generator.add_generator(generator)

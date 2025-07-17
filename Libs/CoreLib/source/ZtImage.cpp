@@ -20,7 +20,7 @@ namespace zt::core
 		return *this;
 	}
 
-	bool Image::loadFromFile(const fs::path& path, int32_t expectedComponents) noexcept
+	bool Image::loadFromFile(const fs::path& path, int32_t expectedComponents) ZINET_API_POST
 	{
 		if (!fs::exists(path))
 		{
@@ -42,7 +42,7 @@ namespace zt::core
 		return true;
 	}
 
-	bool Image::loadFromData(const Data& data, int32_t expectedComponents) noexcept
+	bool Image::loadFromData(const Data& data, int32_t expectedComponents) ZINET_API_POST
 	{
 		if (data.empty())
 		{
@@ -64,7 +64,7 @@ namespace zt::core
 		return true;
 	}
 
-	void Image::destroy() noexcept
+	void Image::destroy() ZINET_API_POST
 	{
 		imageData.reset();
 		width = {};

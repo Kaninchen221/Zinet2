@@ -43,6 +43,9 @@ namespace zt::core::assets::tests
 
 		auto invalidAsset = assetsStorage.get("invalid path");
 		ASSERT_FALSE(invalidAsset);
+
+		assetsStorage.clear();
+		ASSERT_TRUE(assetsStorage.getAssets().empty());
 	}
 
 	TEST_F(AssetsStorageTests, LoadMinimalAssetTest)

@@ -22,17 +22,17 @@ namespace zt::vulkan_renderer
 		DebugUtilsMessenger(HandleType newObjectHandle)
 			: VulkanObject(newObjectHandle) {}
 
-		DebugUtilsMessenger() noexcept = delete;
-		DebugUtilsMessenger(const DebugUtilsMessenger& other) noexcept = delete;
-		DebugUtilsMessenger(DebugUtilsMessenger&& other) noexcept = default;
-		~DebugUtilsMessenger() noexcept = default;
+		DebugUtilsMessenger() ZINET_API_POST = delete;
+		DebugUtilsMessenger(const DebugUtilsMessenger& other) ZINET_API_POST = delete;
+		DebugUtilsMessenger(DebugUtilsMessenger&& other) ZINET_API_POST = default;
+		~DebugUtilsMessenger() ZINET_API_POST = default;
 
-		DebugUtilsMessenger& operator = (const DebugUtilsMessenger& other) noexcept = delete;
-		DebugUtilsMessenger& operator = (DebugUtilsMessenger&& other) noexcept = default;
+		DebugUtilsMessenger& operator = (const DebugUtilsMessenger& other) ZINET_API_POST = delete;
+		DebugUtilsMessenger& operator = (DebugUtilsMessenger&& other) ZINET_API_POST = default;
 
-		bool create(const Instance& instance) noexcept;
+		bool create(const Instance& instance) ZINET_API_POST;
 
-		void destroy(const Instance& instance) noexcept;
+		void destroy(const Instance& instance) ZINET_API_POST;
 	};
 
 	VKAPI_ATTR VkBool32 VKAPI_CALL DebugUtilsMessenger_DebugCallback(

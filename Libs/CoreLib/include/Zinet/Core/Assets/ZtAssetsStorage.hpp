@@ -22,6 +22,8 @@ namespace zt::core::assets
 
 		bool storeAssets() ZINET_API_POST;
 
+		void clear() ZINET_API_POST;
+
 		using AssetsKey = std::string;
 		using Assets = std::map<AssetsKey, AssetHandle<Asset>>;
 

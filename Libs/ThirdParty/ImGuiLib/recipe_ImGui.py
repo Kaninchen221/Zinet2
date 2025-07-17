@@ -10,7 +10,6 @@ generator.includeDirectories = """
     ${VulkanHeaders_INCLUDE_DIRS}
     """
 generator.linkLibraries = """
-    ZinetCore
     glfw
     ${Vulkan_LIBRARIES}
     """

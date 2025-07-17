@@ -36,7 +36,7 @@ namespace zt::vulkan_renderer
 
 			if (!image.create(vma, createInfo))
 			{
-				Logger->error("Couldn't create texture");
+				Logger->error("Couldn't create a texture");
 				return false;
 			}
 		}
@@ -45,7 +45,7 @@ namespace zt::vulkan_renderer
 			const auto createInfo = ImageView::GetDefaultCreateInfo(image.get(), format);
 			if (!imageView.create(device, createInfo))
 			{
-				Logger->error("Couldn't create texture");
+				Logger->error("Couldn't create a texture");
 				return false;
 			}
 		}

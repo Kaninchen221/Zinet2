@@ -18,7 +18,7 @@ namespace zt::vulkan_renderer
 		VkSubpassDescription subpassDescription{};
 		VkRenderPassCreateInfo vkCreateInfo{};
 
-		RenderPassCreateInfo& operator = (const RenderPassCreateInfo& other) noexcept;
+		RenderPassCreateInfo& operator = (const RenderPassCreateInfo& other) ZINET_API_POST;
 	};
 
 	class ZINET_VULKAN_RENDERER_API RenderPass : public VulkanObject<VkRenderPass>
@@ -32,23 +32,23 @@ namespace zt::vulkan_renderer
 		RenderPass(HandleType newObjectHandle)
 			: VulkanObject(newObjectHandle) {}
 
-		RenderPass() noexcept = delete;
-		RenderPass(const RenderPass& other) noexcept = delete;
-		RenderPass(RenderPass&& other) noexcept = default;
-		~RenderPass() noexcept = default;
+		RenderPass() ZINET_API_POST = delete;
+		RenderPass(const RenderPass& other) ZINET_API_POST = delete;
+		RenderPass(RenderPass&& other) ZINET_API_POST = default;
+		~RenderPass() ZINET_API_POST = default;
 
-		RenderPass& operator = (const RenderPass& other) noexcept = delete;
-		RenderPass& operator = (RenderPass&& other) noexcept = default;
+		RenderPass& operator = (const RenderPass& other) ZINET_API_POST = delete;
+		RenderPass& operator = (RenderPass&& other) ZINET_API_POST = default;
 
-		static RenderPassCreateInfo GetPresentCreateInfo(VkFormat format) noexcept;
+		static RenderPassCreateInfo GetPresentCreateInfo(VkFormat format) ZINET_API_POST;
 
-		static RenderPassCreateInfo GetDrawCreateInfo(VkFormat format) noexcept;
+		static RenderPassCreateInfo GetDrawCreateInfo(VkFormat format) ZINET_API_POST;
 
-		bool create(const Device& device, const RenderPassCreateInfo& createInfo) noexcept;
+		bool create(const Device& device, const RenderPassCreateInfo& createInfo) ZINET_API_POST;
 
-		bool recreate(const Device& device) noexcept;
+		bool recreate(const Device& device) ZINET_API_POST;
 
-		void destroy(const Device& device) noexcept;
+		void destroy(const Device& device) ZINET_API_POST;
 
 	protected:
 

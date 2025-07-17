@@ -4,7 +4,7 @@
 namespace zt::vulkan_renderer
 {
 
-	VkDescriptorPoolSize DescriptorPool::GetDefaultDescriptorPoolSize() noexcept
+	VkDescriptorPoolSize DescriptorPool::GetDefaultDescriptorPoolSize() ZINET_API_POST
 	{
 		return VkDescriptorPoolSize
 		{
@@ -13,7 +13,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	VkDescriptorPoolCreateInfo DescriptorPool::GetDefaultCreateInfo(const std::vector<VkDescriptorPoolSize>& poolSizes) noexcept
+	VkDescriptorPoolCreateInfo DescriptorPool::GetDefaultCreateInfo(const std::vector<VkDescriptorPoolSize>& poolSizes) ZINET_API_POST
 	{
 		return VkDescriptorPoolCreateInfo
 		{
@@ -26,7 +26,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	bool DescriptorPool::create(const Device& device, const VkDescriptorPoolCreateInfo& createInfo) noexcept
+	bool DescriptorPool::create(const Device& device, const VkDescriptorPoolCreateInfo& createInfo) ZINET_API_POST
 	{
 		const auto result = vkCreateDescriptorPool(device.get(), &createInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
@@ -40,7 +40,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void DescriptorPool::destroy(const Device& device) noexcept
+	void DescriptorPool::destroy(const Device& device) ZINET_API_POST
 	{
 		if (isValid())
 		{

@@ -9,7 +9,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool Device::create(const Instance& instance, const PhysicalDevice& physicalDevice, const Surface& surface) noexcept
+	bool Device::create(const Instance& instance, const PhysicalDevice& physicalDevice, const Surface& surface) ZINET_API_POST
 	{
 		if (isValid())
 			return false;
@@ -83,7 +83,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void Device::destroy() noexcept
+	void Device::destroy() ZINET_API_POST
 	{
 		if (isValid())
 		{
@@ -92,7 +92,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	Queue Device::getQueue() noexcept
+	Queue Device::getQueue() ZINET_API_POST
 	{
 		if (queueFamilyIndex == InvalidIndex)
 			return Queue{ nullptr, InvalidIndex };
@@ -103,7 +103,7 @@ namespace zt::vulkan_renderer
 		return Queue(queueObjectHandle, queueFamilyIndex);
 	}
 
-	bool Device::waitIdle() const noexcept
+	bool Device::waitIdle() const ZINET_API_POST
 	{
 		const auto result = vkDeviceWaitIdle(objectHandle);
 		if (result == VK_SUCCESS)

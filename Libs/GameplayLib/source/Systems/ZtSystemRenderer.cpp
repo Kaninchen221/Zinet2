@@ -26,7 +26,7 @@ namespace zt::gameplay
 		return shaderModule;
 	}
 
-	bool SystemRenderer::init() noexcept
+	bool SystemRenderer::init() ZINET_API_POST
 	{
 		auto& engineContext = EngineContext::Get();
 
@@ -67,7 +67,7 @@ namespace zt::gameplay
 		return true;
 	}
 
-	void SystemRenderer::deinit() noexcept
+	void SystemRenderer::deinit() ZINET_API_POST
 	{
 		const auto& device = renderer.getRendererContext().device;
 		device.waitIdle();
@@ -82,14 +82,14 @@ namespace zt::gameplay
 		renderer.deinit();
 	}
 
-	void SystemRenderer::addNode(const NodeWeakHandle<NodeT>& node) noexcept
+	void SystemRenderer::addNode(const NodeWeakHandle<NodeT>& node) ZINET_API_POST
 	{
 		ClassBaseT::addNode(node);
 
 		drawInfo.instances = static_cast<uint32_t>(nodes.size());
 	}
 
-	void SystemRenderer::update() noexcept
+	void SystemRenderer::update() ZINET_API_POST
 	{
 		if (drawInfo.instances == 0 && drawInfo.additionalCommands.empty())
 			return;

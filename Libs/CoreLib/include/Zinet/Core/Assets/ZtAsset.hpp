@@ -46,6 +46,8 @@ namespace zt::core::assets
 		virtual void unload() ZINET_API_POST {}
 
 		const auto& getExtensions() const ZINET_API_POST { return extensions; }
+		
+		virtual void imGuiAssetInspect() ZINET_API_POST;
 
 		json metaData;
 

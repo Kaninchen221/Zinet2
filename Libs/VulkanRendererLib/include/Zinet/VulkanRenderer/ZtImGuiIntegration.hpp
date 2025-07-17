@@ -24,23 +24,23 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		ImGuiIntegration() noexcept = default;
-		ImGuiIntegration(const ImGuiIntegration& other) noexcept = delete;
-		ImGuiIntegration(ImGuiIntegration&& other) noexcept = default;
-		~ImGuiIntegration() noexcept = default;
+		ImGuiIntegration() ZINET_API_POST = default;
+		ImGuiIntegration(const ImGuiIntegration& other) ZINET_API_POST = delete;
+		ImGuiIntegration(ImGuiIntegration&& other) ZINET_API_POST = default;
+		~ImGuiIntegration() ZINET_API_POST = default;
 
-		ImGuiIntegration& operator = (const ImGuiIntegration& other) noexcept = delete;
-		ImGuiIntegration& operator = (ImGuiIntegration&& other) noexcept = default;
+		ImGuiIntegration& operator = (const ImGuiIntegration& other) ZINET_API_POST = delete;
+		ImGuiIntegration& operator = (ImGuiIntegration&& other) ZINET_API_POST = default;
 
-		bool init(const RendererContext& rendererContext, wd::Window& window) noexcept;
+		bool init(const RendererContext& rendererContext, wd::Window& window) ZINET_API_POST;
 
-		void deinit(const RendererContext& rendererContext) noexcept;
+		void deinit(const RendererContext& rendererContext) ZINET_API_POST;
 
-		static void ImplSpecificNewFrame() noexcept;
+		static void ImplSpecificNewFrame() ZINET_API_POST;
 
-		void prepareRenderData() const noexcept;
+		void prepareRenderData() const ZINET_API_POST;
 
-		static void DrawCommand(const CommandBuffer& commandBuffer) noexcept;
+		static void DrawCommand(const CommandBuffer& commandBuffer) ZINET_API_POST;
 
 	protected:
 

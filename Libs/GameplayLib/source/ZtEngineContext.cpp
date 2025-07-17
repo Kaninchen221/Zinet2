@@ -4,8 +4,11 @@
 
 namespace zt::gameplay
 {
-	bool EngineContext::init() noexcept
+	bool EngineContext::init() ZINET_API_POST
 	{
+		if (initialized)
+			return true;
+
 		wd::GLFW::Init(false);
 
 		if (!window.create())
@@ -24,10 +27,13 @@ namespace zt::gameplay
 		if (rootNode)
 			rootNode->setName("RootNode");
 
+		instance = this;
+		initialized = true;
+
 		return true;
 	}
 
-	void EngineContext::loop() noexcept
+	void EngineContext::loop() ZINET_API_POST
 	{
 		windowEvents.pollEvents();
 
@@ -35,8 +41,15 @@ namespace zt::gameplay
 		systemRenderer.update();
 	}
 
-	void EngineContext::deinit() noexcept
+	void EngineContext::deinit() ZINET_API_POST
 	{
+		if (!initialized)
+			return;
+
+		destroyNodes(rootNode);
+
+		assetsStorage.clear();
+
 		systemImGui.deinit();
 		systemRenderer.deinit();
 
@@ -46,12 +59,24 @@ namespace zt::gameplay
 		instance = nullptr;
 	}
 
-	EngineContext::~EngineContext() noexcept
+	EngineContext::~EngineContext() ZINET_API_POST
 	{
 		if (instance)
 		{
 			Logger->error("EngineContext must be manually deinitialized");
 		}
+	}
+
+	void EngineContext::destroyNodes(NodeHandle<> node) ZINET_API_POST
+	{
+		if (!node)
+			return;
+
+		for (auto child : node->getChildren())
+		{
+			destroyNodes(child);
+		}
+		node.reset();
 	}
 
 }

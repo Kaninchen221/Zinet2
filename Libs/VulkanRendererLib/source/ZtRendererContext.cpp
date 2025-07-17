@@ -6,7 +6,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool RendererContext::create(wd::Window& window) noexcept
+	bool RendererContext::create(wd::Window& window) ZINET_API_POST
 	{
 		instance.setEnableValidationLayers(true);
 		if (!instance.create())
@@ -93,7 +93,7 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	void RendererContext::destroy() noexcept
+	void RendererContext::destroy() ZINET_API_POST
 	{
 		for (auto& framebuffer : framebuffers)
 			framebuffer.destroy(device);
@@ -118,7 +118,7 @@ namespace zt::vulkan_renderer
 		instance.destroy();
 	}
 
-	void RendererContext::windowResized(const Vector2i& size) noexcept
+	void RendererContext::windowResized(const Vector2i& size) ZINET_API_POST
 	{
 		renderPass.destroy(device);
 		if (!renderPass.recreate(device))

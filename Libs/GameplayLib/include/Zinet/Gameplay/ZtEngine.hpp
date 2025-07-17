@@ -23,23 +23,23 @@ namespace zt::gameplay
 
 	public:
 
-		Engine() noexcept = default;
-		Engine(const Engine& other) noexcept = default;
-		Engine(Engine&& other) noexcept = default;
-		~Engine() noexcept = default;
+		Engine() ZINET_API_POST = default;
+		Engine(const Engine& other) ZINET_API_POST = default;
+		Engine(Engine&& other) ZINET_API_POST = default;
+		~Engine() ZINET_API_POST = default;
 
-		Engine& operator = (const Engine& other) noexcept = default;
-		Engine& operator = (Engine&& other) noexcept = default;
+		Engine& operator = (const Engine& other) ZINET_API_POST = default;
+		Engine& operator = (Engine&& other) ZINET_API_POST = default;
 
-		bool init() noexcept;
+		bool init() ZINET_API_POST;
 
-		bool shouldLoop() const noexcept { return engineContext.window.isOpen(); }
+		bool shouldLoop() const ZINET_API_POST { return engineContext.window.isOpen(); }
 
-		void turnOff() noexcept { engineContext.window.requestCloseWindow(); }
+		void turnOff() ZINET_API_POST { engineContext.window.requestCloseWindow(); }
 
-		void loop() noexcept;
+		void loop() ZINET_API_POST;
 
-		void deinit() noexcept;
+		void deinit() ZINET_API_POST;
 
 	protected:
 

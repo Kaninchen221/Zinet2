@@ -62,6 +62,15 @@ namespace zt::core::assets
 		return result;
 	}
 
+	void AssetsStorage::clear() ZINET_API_POST
+	{
+		for (auto& [key, assetHandle] : assets)
+		{
+			assetHandle.reset();
+		}
+		assets.clear();
+	}
+
 	AssetHandle<Asset> AssetsStorage::get(const AssetsKey& key) ZINET_API_POST
 	{
 		auto findResult = assets.find(key);
@@ -90,4 +99,5 @@ namespace zt::core::assets
 
 		return asset;
 	}
+
 }

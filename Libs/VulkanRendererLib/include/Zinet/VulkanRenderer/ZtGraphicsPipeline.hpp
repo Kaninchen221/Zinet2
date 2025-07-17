@@ -33,23 +33,23 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		GraphicsPipeline() noexcept = default;
-		GraphicsPipeline(const GraphicsPipeline& other) noexcept = delete;
-		GraphicsPipeline(GraphicsPipeline&& other) noexcept = default;
-		~GraphicsPipeline() noexcept = default;
+		GraphicsPipeline() ZINET_API_POST = default;
+		GraphicsPipeline(const GraphicsPipeline& other) ZINET_API_POST = delete;
+		GraphicsPipeline(GraphicsPipeline&& other) ZINET_API_POST = default;
+		~GraphicsPipeline() ZINET_API_POST = default;
 
-		GraphicsPipeline& operator = (const GraphicsPipeline& other) noexcept = delete;
-		GraphicsPipeline& operator = (GraphicsPipeline&& other) noexcept = default;
+		GraphicsPipeline& operator = (const GraphicsPipeline& other) ZINET_API_POST = delete;
+		GraphicsPipeline& operator = (GraphicsPipeline&& other) ZINET_API_POST = default;
 
-		bool create(const RendererContext& rendererContext, DrawInfo& drawInfo) noexcept;
+		bool create(const RendererContext& rendererContext, DrawInfo& drawInfo) ZINET_API_POST;
 
-		void destroy(const RendererContext& rendererContext) noexcept;
+		void destroy(const RendererContext& rendererContext) ZINET_API_POST;
 
-		void draw(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept;
+		void draw(const RendererContext& rendererContext, const DrawInfo& drawInfo) ZINET_API_POST;
 
-		bool submit(const RendererContext& rendererContext) noexcept;
+		bool submit(const RendererContext& rendererContext) ZINET_API_POST;
 
-		bool isValid() const noexcept;
+		bool isValid() const ZINET_API_POST;
 
 		CommandBuffer commandBuffer{ nullptr };
 
@@ -74,16 +74,16 @@ namespace zt::vulkan_renderer
 		void createDescriptorData(
 			DescriptorSetLayout::Bindings& outBindings, 
 			DescriptorPoolSizes& outDescriptorPoolSizes, 
-			DescriptorInfo& descriptorInfo) const noexcept;
+			DescriptorInfo& descriptorInfo) const ZINET_API_POST;
 
-		DescriptorSetLayout createDescriptorSetLayout(const Device& device, DescriptorSetLayout::Bindings& bindings) noexcept;
+		DescriptorSetLayout createDescriptorSetLayout(const Device& device, DescriptorSetLayout::Bindings& bindings) ZINET_API_POST;
 
 		DescriptorSets createDescriptorSet(
 			const Device& device,
 			const DescriptorSetLayout& layout, 
-			std::vector<VkDescriptorSetLayout>& outLayouts) noexcept;
+			std::vector<VkDescriptorSetLayout>& outLayouts) ZINET_API_POST;
 
-		static void UpdateDescriptorSet(const Device& device, const DescriptorInfo& descriptorInfo, const DescriptorSets& descriptorSet) noexcept;
+		static void UpdateDescriptorSet(const Device& device, const DescriptorInfo& descriptorInfo, const DescriptorSets& descriptorSet) ZINET_API_POST;
 
 	};
 }

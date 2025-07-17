@@ -5,21 +5,21 @@
 namespace zt::vulkan_renderer
 {
 
-	VkPhysicalDeviceProperties PhysicalDevice::getVkPhysicalDeviceProperties() const noexcept
+	VkPhysicalDeviceProperties PhysicalDevice::getVkPhysicalDeviceProperties() const ZINET_API_POST
 	{
 		VkPhysicalDeviceProperties properties;
 		vkGetPhysicalDeviceProperties(objectHandle, &properties);
 		return properties;
 	}
 
-	VkPhysicalDeviceFeatures PhysicalDevice::getVkPhysicalDeviceFeatures() const noexcept
+	VkPhysicalDeviceFeatures PhysicalDevice::getVkPhysicalDeviceFeatures() const ZINET_API_POST
 	{
 		VkPhysicalDeviceFeatures features;
 		vkGetPhysicalDeviceFeatures(objectHandle, &features);
 		return features;
 	}
 
-	std::vector<VkQueueFamilyProperties> PhysicalDevice::getVkQueuesFamiliesProperties() const noexcept
+	std::vector<VkQueueFamilyProperties> PhysicalDevice::getVkQueuesFamiliesProperties() const ZINET_API_POST
 	{
 		std::uint32_t count = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(objectHandle, &count, nullptr);
@@ -30,7 +30,7 @@ namespace zt::vulkan_renderer
 		return queueFamilies;
 	}
 
-	std::uint32_t PhysicalDevice::takeQueueFamilyIndexForPresent(std::vector<VkQueueFamilyProperties>& familiesProperties) const noexcept
+	std::uint32_t PhysicalDevice::takeQueueFamilyIndexForPresent(std::vector<VkQueueFamilyProperties>& familiesProperties) const ZINET_API_POST
 	{
 		std::uint32_t index = 0;
 		for (auto& properties : familiesProperties)
@@ -48,7 +48,7 @@ namespace zt::vulkan_renderer
 		return InvalidIndex;
 	}
 
-	std::uint32_t PhysicalDevice::takeQueueFamilyIndexForSurface(std::vector<VkQueueFamilyProperties>& familiesProperties, const Surface& surface) const noexcept
+	std::uint32_t PhysicalDevice::takeQueueFamilyIndexForSurface(std::vector<VkQueueFamilyProperties>& familiesProperties, const Surface& surface) const ZINET_API_POST
 	{
 		std::uint32_t index = 0;
 		for (auto& properties : familiesProperties)
@@ -68,7 +68,7 @@ namespace zt::vulkan_renderer
 		return InvalidIndex;
 	}
 
-	std::uint32_t PhysicalDevice::takeQueueFamilyIndexForPresentAndSurface(std::vector<VkQueueFamilyProperties>& familiesProperties, const Surface& surface) const noexcept
+	std::uint32_t PhysicalDevice::takeQueueFamilyIndexForPresentAndSurface(std::vector<VkQueueFamilyProperties>& familiesProperties, const Surface& surface) const ZINET_API_POST
 	{
 		std::uint32_t index = 0;
 		for (auto& properties : familiesProperties)
@@ -87,14 +87,14 @@ namespace zt::vulkan_renderer
 		return InvalidIndex;
 	}
 
-	bool PhysicalDevice::isQueueFamilySupportingSurface(std::uint32_t index, const Surface& surface) const noexcept
+	bool PhysicalDevice::isQueueFamilySupportingSurface(std::uint32_t index, const Surface& surface) const ZINET_API_POST
 	{
 		VkBool32 surfaceSupport = false;
 		vkGetPhysicalDeviceSurfaceSupportKHR(objectHandle, index, surface.get(), &surfaceSupport);
 		return surfaceSupport;
 	}
 
-	std::vector<VkExtensionProperties> PhysicalDevice::getDeviceExtensionProperties() const noexcept
+	std::vector<VkExtensionProperties> PhysicalDevice::getDeviceExtensionProperties() const ZINET_API_POST
 	{
 		std::uint32_t extensionCount;
 		vkEnumerateDeviceExtensionProperties(objectHandle, nullptr, &extensionCount, nullptr);
@@ -105,7 +105,7 @@ namespace zt::vulkan_renderer
 		return extensions;
 	}
 
-	std::vector<const char*> PhysicalDevice::GetRequiredExtensions() noexcept
+	std::vector<const char*> PhysicalDevice::GetRequiredExtensions() ZINET_API_POST
 	{
 		if (!wd::GLFW::IsInitialized())
 			return {};
@@ -119,14 +119,14 @@ namespace zt::vulkan_renderer
 		return result;
 	}
 	
-	VkSurfaceCapabilitiesKHR PhysicalDevice::getPhysicalDeviceSurfaceCapabilities(const Surface& surface) const noexcept
+	VkSurfaceCapabilitiesKHR PhysicalDevice::getPhysicalDeviceSurfaceCapabilities(const Surface& surface) const ZINET_API_POST
 	{
 		VkSurfaceCapabilitiesKHR surfaceCapabilities;
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(objectHandle, surface.get(), &surfaceCapabilities);
 		return surfaceCapabilities;
 	}
 
-	std::vector<VkSurfaceFormatKHR> PhysicalDevice::getPhysicalDeviceSurfaceFormats(const Surface& surface) const noexcept
+	std::vector<VkSurfaceFormatKHR> PhysicalDevice::getPhysicalDeviceSurfaceFormats(const Surface& surface) const ZINET_API_POST
 	{
 		std::uint32_t count;
 		vkGetPhysicalDeviceSurfaceFormatsKHR(objectHandle, surface.get(), &count, nullptr);
@@ -141,7 +141,7 @@ namespace zt::vulkan_renderer
 		return formats;
 	}
 
-	std::vector<VkPresentModeKHR> PhysicalDevice::getPhysicalDeviceSurfacePresentModes(const Surface& surface) const noexcept
+	std::vector<VkPresentModeKHR> PhysicalDevice::getPhysicalDeviceSurfacePresentModes(const Surface& surface) const ZINET_API_POST
 	{
 		std::uint32_t count;
 		vkGetPhysicalDeviceSurfacePresentModesKHR(objectHandle, surface.get(), &count, nullptr);

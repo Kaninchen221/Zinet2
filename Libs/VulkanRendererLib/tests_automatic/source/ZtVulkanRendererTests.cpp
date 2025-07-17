@@ -91,7 +91,7 @@ namespace zt::vulkan_renderer::tests
 				const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(uniformData);
 				ASSERT_TRUE(uniformBuffer.createBuffer(uniformBufferCreateInfo, vma));
 
-				ASSERT_TRUE(device.setDebugName(uniformBuffer, "UniformBuffer_0"));
+				ASSERT_TRUE(device.setDebugName(uniformBuffer, "UniformBuffer_0", VK_OBJECT_TYPE_BUFFER));
 			}
 
 			{ // #1
@@ -99,7 +99,7 @@ namespace zt::vulkan_renderer::tests
 				const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(uniformData);
 				ASSERT_TRUE(uniformBuffer.createBuffer(uniformBufferCreateInfo, vma));
 
-				ASSERT_TRUE(device.setDebugName(uniformBuffer, "UniformBuffer_1"));
+				ASSERT_TRUE(device.setDebugName(uniformBuffer, "UniformBuffer_1", VK_OBJECT_TYPE_BUFFER));
 			}
 
 			createTexture();

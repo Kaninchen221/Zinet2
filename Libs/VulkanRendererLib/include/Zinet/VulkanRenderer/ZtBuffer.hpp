@@ -32,52 +32,52 @@ namespace zt::vulkan_renderer
 		Buffer(HandleType newObjectHandle)
 			: VulkanObject(newObjectHandle) {}
 
-		Buffer() noexcept = delete;
-		Buffer(const Buffer& other) noexcept = delete;
-		Buffer(Buffer&& other) noexcept = default;
-		~Buffer() noexcept = default;
+		Buffer() ZINET_API_POST = delete;
+		Buffer(const Buffer& other) ZINET_API_POST = delete;
+		Buffer(Buffer&& other) ZINET_API_POST = default;
+		~Buffer() ZINET_API_POST = default;
 
-		Buffer& operator = (const Buffer& other) noexcept = delete;
-		Buffer& operator = (Buffer&& other) noexcept = default;
-
-		template<core::STDContainer ContainerT>
-		static VkBufferCreateInfo GetVertexBufferCreateInfo(const ContainerT& vertices) noexcept;
+		Buffer& operator = (const Buffer& other) ZINET_API_POST = delete;
+		Buffer& operator = (Buffer&& other) ZINET_API_POST = default;
 
 		template<core::STDContainer ContainerT>
-		static VkBufferCreateInfo GetIndexBufferCreateInfo(const ContainerT& indices) noexcept;
+		static VkBufferCreateInfo GetVertexBufferCreateInfo(const ContainerT& vertices) ZINET_API_POST;
+
+		template<core::STDContainer ContainerT>
+		static VkBufferCreateInfo GetIndexBufferCreateInfo(const ContainerT& indices) ZINET_API_POST;
 
 		template<core::NotSTDContainer ObjectT>
-		static VkBufferCreateInfo GetUniformBufferCreateInfo(const ObjectT& data) noexcept;
+		static VkBufferCreateInfo GetUniformBufferCreateInfo(const ObjectT& data) ZINET_API_POST;
 
-		static VkBufferCreateInfo GetImageBufferCreateInfo(const core::Image& image) noexcept;
+		static VkBufferCreateInfo GetImageBufferCreateInfo(const core::Image& image) ZINET_API_POST;
 
-		bool createBuffer(const VkBufferCreateInfo& createInfo, const VMA& vma) noexcept;
-
-		template<core::STDContainer ContainerT>
-		bool fillWithSTDContainer(const ContainerT& contiguousContainer, const VMA& vma) noexcept;
-
-		template<core::NotSTDContainer ObjectT>
-		bool fillWithObject(const ObjectT& object, const VMA& vma) noexcept;
-
-		bool fillWithImage(const core::Image& image, const VMA& vma) noexcept;
+		bool createBuffer(const VkBufferCreateInfo& createInfo, const VMA& vma) ZINET_API_POST;
 
 		template<core::STDContainer ContainerT>
-		bool getDataToSTDContainer(ContainerT& contiguousContainer, const VMA& vma) const noexcept;
+		bool fillWithSTDContainer(const ContainerT& contiguousContainer, const VMA& vma) ZINET_API_POST;
 
 		template<core::NotSTDContainer ObjectT>
-		bool getDataToObject(ObjectT& object, const VMA& vma) const noexcept;
+		bool fillWithObject(const ObjectT& object, const VMA& vma) ZINET_API_POST;
 
-		void destroy(const VMA& vma) noexcept;
+		bool fillWithImage(const core::Image& image, const VMA& vma) ZINET_API_POST;
 
-		std::uint32_t getSize() const noexcept { return size; }
+		template<core::STDContainer ContainerT>
+		bool getDataToSTDContainer(ContainerT& contiguousContainer, const VMA& vma) const ZINET_API_POST;
 
-		VmaAllocation getAllocation() const noexcept { return allocation; }
+		template<core::NotSTDContainer ObjectT>
+		bool getDataToObject(ObjectT& object, const VMA& vma) const ZINET_API_POST;
+
+		void destroy(const VMA& vma) ZINET_API_POST;
+
+		std::uint32_t getSize() const ZINET_API_POST { return size; }
+
+		VmaAllocation getAllocation() const ZINET_API_POST { return allocation; }
 
 	protected:
 
-		VkResult fillWithData(const void* src, size_t srcSize, const VMA& vma) const noexcept;
+		VkResult fillWithData(const void* src, size_t srcSize, const VMA& vma) const ZINET_API_POST;
 
-		VkResult getData(void* dst, size_t dstSize, const VMA& vma) const noexcept;
+		VkResult getData(void* dst, size_t dstSize, const VMA& vma) const ZINET_API_POST;
 
 		VmaAllocation allocation{};
 		std::uint32_t size{};
@@ -85,7 +85,7 @@ namespace zt::vulkan_renderer
 	};
 
 	template<core::STDContainer ContainerT>
-	VkBufferCreateInfo Buffer::GetVertexBufferCreateInfo(const ContainerT& vertices) noexcept
+	VkBufferCreateInfo Buffer::GetVertexBufferCreateInfo(const ContainerT& vertices) ZINET_API_POST
 	{
 		return VkBufferCreateInfo
 		{
@@ -97,7 +97,7 @@ namespace zt::vulkan_renderer
 	}
 
 	template<core::STDContainer ContainerT>
-	VkBufferCreateInfo Buffer::GetIndexBufferCreateInfo(const ContainerT& indices) noexcept
+	VkBufferCreateInfo Buffer::GetIndexBufferCreateInfo(const ContainerT& indices) ZINET_API_POST
 	{
 		return VkBufferCreateInfo
 		{
@@ -109,7 +109,7 @@ namespace zt::vulkan_renderer
 	}
 
 	template<core::NotSTDContainer ObjectT>
-	VkBufferCreateInfo Buffer::GetUniformBufferCreateInfo([[maybe_unused]] const ObjectT& data) noexcept
+	VkBufferCreateInfo Buffer::GetUniformBufferCreateInfo([[maybe_unused]] const ObjectT& data) ZINET_API_POST
 	{
 		return VkBufferCreateInfo
 		{
@@ -121,7 +121,7 @@ namespace zt::vulkan_renderer
 	}
 
 	template<core::STDContainer ContainerT>
-	bool Buffer::fillWithSTDContainer(const ContainerT& stdContainer, const VMA& vma) noexcept
+	bool Buffer::fillWithSTDContainer(const ContainerT& stdContainer, const VMA& vma) ZINET_API_POST
 	{
 		if (!isValid())
 			return false;
@@ -141,7 +141,7 @@ namespace zt::vulkan_renderer
 	}
 
 	template<core::NotSTDContainer ObjectT>
-	bool Buffer::fillWithObject(const ObjectT& object, const VMA& vma) noexcept
+	bool Buffer::fillWithObject(const ObjectT& object, const VMA& vma) ZINET_API_POST
 	{
 		if (!isValid())
 			return false;
@@ -160,7 +160,7 @@ namespace zt::vulkan_renderer
 	}
 
 	template<core::STDContainer ContainerT>
-	bool Buffer::getDataToSTDContainer(ContainerT& stdContainer, const VMA& vma) const noexcept
+	bool Buffer::getDataToSTDContainer(ContainerT& stdContainer, const VMA& vma) const ZINET_API_POST
 	{
 		if (!isValid())
 			return false;
@@ -180,7 +180,7 @@ namespace zt::vulkan_renderer
 	}
 
 	template<core::NotSTDContainer ObjectT>
-	bool Buffer::getDataToObject(ObjectT& object, const VMA& vma) const noexcept
+	bool Buffer::getDataToObject(ObjectT& object, const VMA& vma) const ZINET_API_POST
 	{
 		if (!isValid())
 			return false;

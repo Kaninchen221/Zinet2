@@ -5,7 +5,7 @@
 namespace zt::vulkan_renderer
 {
 
-	bool CommandPool::create(const Device& device, const Queue& queue) noexcept
+	bool CommandPool::create(const Device& device, const Queue& queue) ZINET_API_POST
 	{
 		if (isValid())
 			return false;
@@ -30,7 +30,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void CommandPool::destroy(const Device& device) noexcept
+	void CommandPool::destroy(const Device& device) ZINET_API_POST
 	{
 		if (isValid())
 		{

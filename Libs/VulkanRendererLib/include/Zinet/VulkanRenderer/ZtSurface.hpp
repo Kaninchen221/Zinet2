@@ -27,17 +27,17 @@ namespace zt::vulkan_renderer
 		Surface(HandleType newObjectHandle)
 			: VulkanObject(newObjectHandle) {}
 
-		Surface() noexcept = delete;
-		Surface(const Surface& other) noexcept = delete;
-		Surface(Surface&& other) noexcept = default;
-		~Surface() noexcept = default;
+		Surface() ZINET_API_POST = delete;
+		Surface(const Surface& other) ZINET_API_POST = delete;
+		Surface(Surface&& other) ZINET_API_POST = default;
+		~Surface() ZINET_API_POST = default;
 
-		Surface& operator = (const Surface& other) noexcept = delete;
-		Surface& operator = (Surface&& other) noexcept = default;
+		Surface& operator = (const Surface& other) ZINET_API_POST = delete;
+		Surface& operator = (Surface&& other) ZINET_API_POST = default;
 
-		bool create(const Instance& instance, wd::Window& window) noexcept;
+		bool create(const Instance& instance, wd::Window& window) ZINET_API_POST;
 
-		void destroy(const Instance& instance) noexcept;
+		void destroy(const Instance& instance) ZINET_API_POST;
 
 	};
 }

@@ -7,7 +7,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool GraphicsPipeline::create(const RendererContext& rendererContext, DrawInfo& drawInfo) noexcept
+	bool GraphicsPipeline::create(const RendererContext& rendererContext, DrawInfo& drawInfo) ZINET_API_POST
 	{
 		if (isValid())
 			return false;
@@ -60,7 +60,7 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	void GraphicsPipeline::destroy(const RendererContext& rendererContext) noexcept
+	void GraphicsPipeline::destroy(const RendererContext& rendererContext) ZINET_API_POST
 	{
 		const auto& device = rendererContext.device;
 
@@ -78,7 +78,7 @@ namespace zt::vulkan_renderer
 		commandBuffer.invalidate();
 	}
 
-	void GraphicsPipeline::draw(const RendererContext& rendererContext, const DrawInfo& drawInfo) noexcept
+	void GraphicsPipeline::draw(const RendererContext& rendererContext, const DrawInfo& drawInfo) ZINET_API_POST
 	{
 		auto& swapChain = rendererContext.swapChain;
 		auto& device = rendererContext.device;
@@ -155,7 +155,7 @@ namespace zt::vulkan_renderer
 		commandBuffer.end();
 	}
 
-	bool GraphicsPipeline::submit(const RendererContext& rendererContext) noexcept
+	bool GraphicsPipeline::submit(const RendererContext& rendererContext) ZINET_API_POST
 	{
 		auto& queue = rendererContext.queue;
 		auto& imageAvailableSemaphore = rendererContext.imageAvailableSemaphore;
@@ -193,7 +193,7 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	bool GraphicsPipeline::isValid() const noexcept
+	bool GraphicsPipeline::isValid() const ZINET_API_POST
 	{
 		// Ignore objects related to descriptors
 		return 
@@ -205,7 +205,7 @@ namespace zt::vulkan_renderer
 	void GraphicsPipeline::createDescriptorData(
 		DescriptorSetLayout::Bindings& outBindings, 
 		DescriptorPoolSizes& outDescriptorPoolSizes, 
-		DescriptorInfo& descriptorInfo) const noexcept
+		DescriptorInfo& descriptorInfo) const ZINET_API_POST
 	{
 		auto& uniformBuffer = descriptorInfo.uniformBuffers;
 		if (!uniformBuffer.empty())
@@ -241,7 +241,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	DescriptorSetLayout GraphicsPipeline::createDescriptorSetLayout(const Device& device, DescriptorSetLayout::Bindings& bindings) noexcept
+	DescriptorSetLayout GraphicsPipeline::createDescriptorSetLayout(const Device& device, DescriptorSetLayout::Bindings& bindings) ZINET_API_POST
 	{
 		if (bindings.empty())
 			return DescriptorSetLayout{ nullptr };
@@ -256,7 +256,7 @@ namespace zt::vulkan_renderer
 	DescriptorSets GraphicsPipeline::createDescriptorSet(
 		const Device& device,
 		const DescriptorSetLayout& layout,
-		std::vector<VkDescriptorSetLayout>& outLayouts) noexcept
+		std::vector<VkDescriptorSetLayout>& outLayouts) ZINET_API_POST
 	{
 		DescriptorSets descriptorSet{ nullptr };
 
@@ -274,7 +274,7 @@ namespace zt::vulkan_renderer
 		return std::move(descriptorSet);
 	}
 
-	void GraphicsPipeline::UpdateDescriptorSet(const Device& device, const DescriptorInfo& descriptorInfo, const DescriptorSets& descriptorSet) noexcept
+	void GraphicsPipeline::UpdateDescriptorSet(const Device& device, const DescriptorInfo& descriptorInfo, const DescriptorSets& descriptorSet) ZINET_API_POST
 	{
 		std::vector<VkWriteDescriptorSet> writeDescriptorSets;
 		std::vector<VkDescriptorBufferInfo> descriptorBuffersInfos;

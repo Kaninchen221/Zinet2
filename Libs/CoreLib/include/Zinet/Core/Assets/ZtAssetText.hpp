@@ -23,6 +23,8 @@ namespace zt::core::assets
 
 		void unload() ZINET_API_POST override;
 
+		void imGuiAssetInspect() ZINET_API_POST override;
+
 		// Content
 		std::string text;
 

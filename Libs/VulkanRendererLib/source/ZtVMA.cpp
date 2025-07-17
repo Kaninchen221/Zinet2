@@ -9,7 +9,7 @@
 namespace zt::vulkan_renderer
 {
 
-	bool VMA::create(const Device& device, const PhysicalDevice& physicalDevice, const Instance& instance) noexcept
+	bool VMA::create(const Device& device, const PhysicalDevice& physicalDevice, const Instance& instance) ZINET_API_POST
 	{
 		if (isValid())
 			return false;
@@ -51,7 +51,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void VMA::destroy() noexcept
+	void VMA::destroy() ZINET_API_POST
 	{
 		if (isValid())
 		{

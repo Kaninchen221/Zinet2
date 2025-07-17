@@ -110,7 +110,7 @@ namespace zt::vulkan_renderer::tests
 		ASSERT_TRUE(buffer.isValid());
 
 		std::string_view bufferDebugName = "BufferDebugName";
-		ASSERT_TRUE(device.setDebugName(buffer, bufferDebugName));
+		ASSERT_TRUE(device.setDebugName(buffer, bufferDebugName, VK_OBJECT_TYPE_BUFFER));
 
 		buffer.destroy(vma);
 		vma.destroy();

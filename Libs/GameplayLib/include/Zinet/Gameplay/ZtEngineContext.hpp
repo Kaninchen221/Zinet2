@@ -2,23 +2,19 @@
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 
+#include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetsFinder.hpp"
+
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
-
-#include "Zinet/Core/ZtLogger.hpp"
-#include "Zinet/Core/Assets/ZtAssetsFinder.hpp"
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Gameplay/Nodes/ZtNode.hpp"
 
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
 #include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
 
 #include "Zinet/Window/ZtWindow.hpp"
 #include "Zinet/Window/ZtWindowEvents.hpp"
-
-namespace
-{
-	namespace assets = zt::core::assets;
-}
 
 namespace zt::gameplay
 {
@@ -30,23 +26,23 @@ namespace zt::gameplay
 
 	public:
 
-		EngineContext() noexcept {
+		EngineContext() ZINET_API_POST {
 			instance = this;
 		};
-		EngineContext(const EngineContext& other) noexcept = default;
-		EngineContext(EngineContext&& other) noexcept = default;
-		~EngineContext() noexcept;
+		EngineContext(const EngineContext& other) ZINET_API_POST = default;
+		EngineContext(EngineContext&& other) ZINET_API_POST = default;
+		~EngineContext() ZINET_API_POST;
 
-		EngineContext& operator = (const EngineContext& other) noexcept = default;
-		EngineContext& operator = (EngineContext&& other) noexcept = default;
+		EngineContext& operator = (const EngineContext& other) ZINET_API_POST = default;
+		EngineContext& operator = (EngineContext&& other) ZINET_API_POST = default;
 
-		static auto& Get() noexcept { return *instance; }
+		static auto& Get() ZINET_API_POST { return *instance; }
 
-		bool init() noexcept;
+		bool init() ZINET_API_POST;
 
-		void loop() noexcept;
+		void loop() ZINET_API_POST;
 
-		void deinit() noexcept;
+		void deinit() ZINET_API_POST;
 
 		SystemImGui systemImGui;
 		SystemRenderer systemRenderer;
@@ -55,13 +51,17 @@ namespace zt::gameplay
 		wd::Window window;
 		wd::WindowEvents windowEvents{ window };
 
-		assets::AssetsStorage assetsStorage;
+		core::assets::AssetsStorage assetsStorage;
 
 		NodeHandle<Node> rootNode;
 
 	private:
 
+		void destroyNodes(NodeHandle<> node) ZINET_API_POST;
+
 		inline static EngineContext* instance = nullptr;
+
+		bool initialized = false;
 
 	};
 }

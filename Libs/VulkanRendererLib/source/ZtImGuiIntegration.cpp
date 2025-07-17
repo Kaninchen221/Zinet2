@@ -14,7 +14,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool ImGuiIntegration::init(const RendererContext& rendererContext, wd::Window& window) noexcept
+	bool ImGuiIntegration::init(const RendererContext& rendererContext, wd::Window& window) ZINET_API_POST
 	{
 		{
 			// Copied from imgui demo
@@ -80,25 +80,25 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	void ImGuiIntegration::deinit(const RendererContext& rendererContext) noexcept
+	void ImGuiIntegration::deinit(const RendererContext& rendererContext) ZINET_API_POST
 	{
 		descriptorPool.destroy(rendererContext.device);
 		ImGui_ImplGlfw_Shutdown();
 		ImGui_ImplVulkan_Shutdown();
 	}
 
-	void ImGuiIntegration::prepareRenderData() const noexcept
+	void ImGuiIntegration::prepareRenderData() const ZINET_API_POST
 	{
 		ImGui::Render();
 	}
 
-	void ImGuiIntegration::ImplSpecificNewFrame() noexcept
+	void ImGuiIntegration::ImplSpecificNewFrame() ZINET_API_POST
 	{
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 	}
 
-	void ImGuiIntegration::DrawCommand(const CommandBuffer& commandBuffer) noexcept
+	void ImGuiIntegration::DrawCommand(const CommandBuffer& commandBuffer) ZINET_API_POST
 	{
 		auto drawData = ImGui::GetDrawData();
 		if (drawData)
