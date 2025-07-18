@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <exception>
+
 //---- Define assertion handler. Defaults to calling assert().
 // If your macro uses multiple statements, make sure is enclosed in a 'do { .. } while (0)' block so it can be used as a single statement.
 //#define IM_ASSERT(_EXPR)  MyAssert(_EXPR)
@@ -168,3 +170,15 @@ namespace ImGui
 #   define IMGUI_IMPL_API
 
 #endif
+
+namespace ImGui
+{
+	inline void throwException(bool exprResult) 
+    { 
+        if (!exprResult) 
+        { 
+            throw std::exception("ImGui Assert"); 
+        } 
+    }
+}
+#define IM_ASSERT(_EXPR) do { ImGui::throwException(_EXPR); } while (0)
