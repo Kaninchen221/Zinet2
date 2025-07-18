@@ -23,3 +23,6 @@
 #else
 #	define ZINET_GAMEPLAY_API
 #endif // ZINET_STATIC
+
+// ImGui payload types
+auto constexpr inline static AssetPayloadType = "ASSET";

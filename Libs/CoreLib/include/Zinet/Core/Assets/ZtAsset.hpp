@@ -23,11 +23,11 @@ namespace zt::core::assets
 		AssetHandle() ZINET_API_POST = default;
 		AssetHandle(AssetT* newAsset) : asset{ newAsset } {}
 		AssetHandle(const AssetHandle& other) ZINET_API_POST = default;
-		AssetHandle(AssetHandle&& other) ZINET_API_POST = default;
+		AssetHandle(AssetHandle&& other) ZINET_API_POST { asset = other.asset; other.invalidate(); };
 		~AssetHandle() ZINET_API_POST = default;
 
 		AssetHandle& operator = (const AssetHandle& other) ZINET_API_POST = default;
-		AssetHandle& operator = (AssetHandle&& other) ZINET_API_POST = default;
+		AssetHandle& operator = (AssetHandle&& other) ZINET_API_POST { asset = other.asset; other.invalidate(); return *this; };
 
 		bool isValid() const ZINET_API_POST { return asset; }
 
@@ -36,6 +36,8 @@ namespace zt::core::assets
 		AssetT* operator->() const ZINET_API_POST { return asset; }
 
 		AssetT* get() const ZINET_API_POST { return asset; }
+
+		void invalidate() ZINET_API_POST { asset = nullptr; }
 
 	protected:
 

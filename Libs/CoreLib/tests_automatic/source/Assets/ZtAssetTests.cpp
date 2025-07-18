@@ -38,5 +38,22 @@ namespace zt::core::assets::tests
 		ASSERT_TRUE(assetHandle);
 		ASSERT_TRUE(assetHandle.get());
 		ASSERT_TRUE(assetHandle.operator ->());
+
+		AssetHandle<Asset> second = assetHandle;
+		ASSERT_TRUE(second.isValid());
+		ASSERT_TRUE(assetHandle.isValid());
+
+		second.invalidate();
+		ASSERT_FALSE(second.isValid());
+		second = assetHandle;
+		ASSERT_TRUE(second.isValid());
+
+		assetHandle.invalidate();
+		assetHandle = std::move(second);
+		ASSERT_FALSE(second.isValid());
+		ASSERT_TRUE(assetHandle.isValid());
+
+		AssetHandle<Asset> third = std::move(assetHandle);
+		ASSERT_TRUE(third.isValid());
 	}
 }

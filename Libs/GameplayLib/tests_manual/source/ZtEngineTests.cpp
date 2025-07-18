@@ -46,7 +46,7 @@ namespace zt::gameplay::tests
 			child->addChild(childOfChild);
 
 			auto sprite = CreateNode<NodeSprite>("Sprite");
-			sprite->texture = engineContext.assetsStorage.get("Content/Textures/image.png");
+			sprite->texture = engineContext.assetsStorage.getAs<assets::AssetTexture>("Content/Textures/image.png");
 			rootNode->addChild(sprite);
 			engineContext.systemRenderer.addNode(sprite);
 		}

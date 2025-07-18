@@ -42,6 +42,14 @@ namespace zt::gameplay
 							break;
 						}
 
+						if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+						{
+							void* payloadData = asset.get();
+							ImGui::SetDragDropPayload(AssetPayloadType, &payloadData, sizeof(void*));
+							ImGui::Text(fmt::format("Asset: {}", assetName).c_str());
+							ImGui::EndDragDropSource();
+						}
+
 						++index;
 					}
 					ImGui::EndChild();
