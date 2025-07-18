@@ -35,16 +35,23 @@ namespace zt::gameplay
 	{
 		auto assetDragAndDrop = [&assetHandle = assetHandle]()
 		{
-			// TODO: Allow to drag and drop an asset when source and target has the same type
 			// Target for drag and drop
 			if (ImGui::BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(AssetPayloadType))
 				{
-					AssetT* asset = nullptr;
+					core::assets::Asset* asset = nullptr;
 					std::memcpy(&asset, payload->Data, sizeof(AssetT*));
-					assetHandle = core::assets::AssetHandle<AssetT>{ asset };
-					Logger->info("Drop asset");
+					AssetT* castedAsset = dynamic_cast<AssetT*>(asset);
+					if (castedAsset)
+					{
+						assetHandle = core::assets::AssetHandle<AssetT>{ castedAsset };
+						Logger->info("Set a new asset");
+					}
+					else
+					{
+						Logger->info("Not a compatible type");
+					}
 				}
 
 				ImGui::EndDragDropTarget();
