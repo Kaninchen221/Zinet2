@@ -15,8 +15,12 @@ namespace zt::core::assets
 		if (ImGui::Button("Unload")) { unload(); }
 		ImGui::Separator();
 
-		if (ImGui::BeginTable("table1", 2 /*columns*/, {} /*flags*/))
+		const ImGuiTableFlags tableFlags = {};
+		if (ImGui::BeginTable("table1", 2 /*columns*/, tableFlags))
 		{
+			ImGui::TableSetupColumn("Property Name", ImGuiTableColumnFlags_WidthFixed);
+			ImGui::TableSetupColumn("Property Value", ImGuiTableFlags_SizingStretchProp);
+
 			for (auto& [key, value] : metaData.items())
 			{
 				ImGui::TableNextRow();

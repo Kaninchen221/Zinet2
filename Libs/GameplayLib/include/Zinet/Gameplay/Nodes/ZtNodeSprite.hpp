@@ -78,7 +78,7 @@ namespace zt::gameplay
 		const ImGuiTableFlags tableFlags = {};
 		if (ImGui::BeginTable("propertyTable", 3 /*columns*/, tableFlags))
 		{
-			ImGui::TableSetupColumn("Property name", ImGuiTableColumnFlags_WidthFixed);
+			ImGui::TableSetupColumn("Property Name", ImGuiTableColumnFlags_WidthFixed);
 			ImGui::TableSetupColumn("Asset Name", ImGuiTableFlags_SizingStretchProp);
 			ImGui::TableSetupColumn("Invalidate Button", ImGuiTableColumnFlags_WidthFixed);
 
