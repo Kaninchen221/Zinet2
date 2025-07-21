@@ -51,7 +51,7 @@ namespace zt::core
 		}
 
 		const auto size = static_cast<int>(data.size());
-		stbi_uc* stbiRawDataPtr = stbi_load_from_memory(data.data(), size, &width, &height, &components, expectedComponents);
+		stbi_uc* stbiRawDataPtr = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(data.data()), size, &width, &height, &components, expectedComponents);
 
 		imageData = ImageDataT{ stbiRawDataPtr, stbiFree };
 

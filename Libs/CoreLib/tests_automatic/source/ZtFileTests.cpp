@@ -46,7 +46,7 @@ namespace zt::core::tests
 	TEST_F(FileTests, ReadDataTest)
 	{
 		file.open(pathToReadOnlyFile, FileOpenMode::Read, true);
-		std::vector<uint8_t> data = file.readData();
+		std::vector<std::byte> data = file.readData();
 		ASSERT_TRUE(file.isOkay());
 		ASSERT_FALSE(data.empty());
 	}

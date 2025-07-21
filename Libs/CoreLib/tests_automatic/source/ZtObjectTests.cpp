@@ -2,6 +2,7 @@
 
 #include "Zinet/Core/ZtObject.hpp"
 #include "Zinet/Core/ZtClassDefaultObjectRegistry.hpp"
+#include "Zinet/Core/ZtArchive.hpp"
 
 #include <gtest/gtest.h>
 
@@ -31,5 +32,16 @@ namespace zt::core::tests
 		}
 
 		static_assert(std::is_base_of_v<ObjectBase, Object>);
+
+		Object object;
 	};
+
+	TEST_F(ObjectTests, Test)
+	{
+		const std::string asString = object.asString();
+
+		Archive::BufferT buffer;
+		Archive archive{ &buffer };
+		archive << object;
+	}
 }

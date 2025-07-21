@@ -27,6 +27,9 @@ namespace zt::core
 
 	public:
 
+		static_assert(sizeof(std::byte) == sizeof(stbi_uc));
+		using Data = std::vector<std::byte>;
+
 		Image() = default;
 		Image(const Image& other) = delete;
 		Image(Image&& other) { *this = std::move(other); }
@@ -38,7 +41,6 @@ namespace zt::core
 
 		bool loadFromFile(const fs::path& path, int32_t expectedComponents) ZINET_API_POST;
 
-		using Data = std::vector<uint8_t>;
 		bool loadFromData(const Data& data, int32_t expectedComponents) ZINET_API_POST;
 
 		auto data() const ZINET_API_POST { return imageData.get(); }

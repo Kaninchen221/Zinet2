@@ -42,6 +42,7 @@ Tools/main.temp.cpp
 # Other
 .html
 Scripts/outputs/*.temp
+*.temp
 
 # Codelite
 .codelite

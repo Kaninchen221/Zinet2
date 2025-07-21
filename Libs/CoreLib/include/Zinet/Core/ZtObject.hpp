@@ -10,6 +10,8 @@
 
 namespace zt::core
 {
+	class Archive;
+
 	class ZINET_CORE_API Object : public ObjectBase
 	{
 	public:
@@ -22,6 +24,9 @@ namespace zt::core
 		Object& operator = (const Object& other) ZINET_API_POST = default;
 		Object& operator = (Object&& other) ZINET_API_POST = default;
 
-		virtual std::string asString() const { return {}; }
+		virtual std::string asString() const ZINET_API_POST { return "Object"; }
+
+		virtual void operator << ([[maybe_unused]] Archive& archive) ZINET_API_POST {}
+
 	};
 }

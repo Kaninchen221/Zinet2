@@ -11,7 +11,7 @@ namespace zt::core
 		}
 	}
 
-	void File::open(const std::filesystem::path& filePath, FileOpenMode openMode, bool binary)
+	void File::open(const std::filesystem::path& filePath, FileOpenMode openMode, bool binary) ZINET_API_POST
 	{
 		std::ios_base::openmode stdOpenMode = ToStdOpenMode(openMode);
 		if (binary)
@@ -47,14 +47,14 @@ namespace zt::core
 		}
 	}
 
-	std::string File::readLine()
+	std::string File::readLine() ZINET_API_POST
 	{
 		std::string line;
 		std::getline(fileStream, line);
 		return line;
 	}
 
-	std::string File::readAll()
+	std::string File::readAll() ZINET_API_POST
 	{
 		fileStream.seekg(0);
 		std::string line;
@@ -62,15 +62,15 @@ namespace zt::core
 		return line;
 	}
 
-	std::vector<uint8_t> File::readData()
+	std::vector<File::Byte> File::readData() ZINET_API_POST
 	{
 		fileStream.seekg(0, std::ios::end);
 		std::streamsize size = fileStream.tellg();
 
-		std::vector<uint8_t> result;
+		std::vector<Byte> result;
 		result.resize(size);
 
-		static_assert(sizeof(uint8_t) == sizeof(char));
+		static_assert(sizeof(Byte) == sizeof(char));
 
 		fileStream.seekg(0, std::ios::beg);
 		fileStream.read(reinterpret_cast<char*>(result.data()), size);
@@ -78,12 +78,18 @@ namespace zt::core
 		return result;
 	}
 
-	void File::write(const std::string& string)
+	void File::write(const std::string& string) ZINET_API_POST
 	{
 		fileStream << string;
 	}
 
-	std::ios_base::openmode File::ToStdOpenMode(FileOpenMode openMode)
+	void File::writeData(const std::vector<Byte>& data) ZINET_API_POST
+	{
+		fileStream.seekp(0);
+		fileStream.write(reinterpret_cast<const char*>(data.data()), data.size());
+	}
+
+	std::ios_base::openmode File::ToStdOpenMode(FileOpenMode openMode) ZINET_API_POST
 	{
 		switch (openMode)
 		{
@@ -102,12 +108,12 @@ namespace zt::core
 		}
 	}
 
-	void File::close()
+	void File::close() ZINET_API_POST
 	{
 		fileStream.close();
 	}
 
-	bool File::RemoveFile(const std::filesystem::path& path)
+	bool File::RemoveFile(const std::filesystem::path& path) ZINET_API_POST
 	{
 		if (!std::filesystem::is_regular_file(path))
 		{
@@ -126,7 +132,7 @@ namespace zt::core
 		return true;
 	}
 
-	File File::CreateFile(const std::filesystem::path& path)
+	File File::CreateFile(const std::filesystem::path& path) ZINET_API_POST
 	{
 		if (std::filesystem::exists(path))
 		{
