@@ -22,10 +22,28 @@ namespace zt::core::tests
             archive << d;
         }
 
+        void serialize(JsonArchive& archive)
+        {
+			archive.serialize("i", i);
+			archive.serialize("d", d);
+		}
+
+		void deserialize(JsonArchive& archive)
+		{
+			archive.deserialize("i", i);
+			archive.deserialize("d", d);
+		}
+
         void testValues()
 		{
 			ASSERT_EQ(i, SmallStruct::ExpectedI);
 			ASSERT_EQ(d, SmallStruct::ExpectedD);
+        }
+
+        void changeValues()
+        {
+            i = 654345;
+            d = 54323.213123;
         }
 	};
 
@@ -52,7 +70,7 @@ namespace zt::core::tests
 		Archive::BufferT buffer;
         int expectedInt = 201;
 
-        SmallStruct smallStruct;
+		SmallStruct smallStruct;
 
         float expectedFloat = 21312.123f;
         {
@@ -63,6 +81,8 @@ namespace zt::core::tests
 
             ASSERT_EQ(buffer.size(), sizeof(int) + sizeof(float) + sizeof(SmallStruct));
         }
+
+        smallStruct.changeValues();
 
         {
             InputArchive inputArchive{ &buffer };
@@ -92,7 +112,9 @@ namespace zt::core::tests
             File file;
             file.open(filePath, FileOpenMode::Write, true);
             file.writeData(buffer);
-        }
+		}
+
+		smallStruct.changeValues();
 
         {
             File file;
@@ -101,6 +123,42 @@ namespace zt::core::tests
 
             InputArchive archive{ &buffer };
             archive << smallStruct;
+            smallStruct.testValues();
+        }
+	}
+
+	TEST_F(ArchiveTests, JsonDummyTest)
+	{
+        JsonArchive::BufferT json;
+		const auto filePath = testFolderPath / "archiveTest.temp";
+
+        JsonArchive archive{ &json };
+        const int dummyInt{};
+        archive.serialize("int", dummyInt);
+	}
+
+	TEST_F(ArchiveTests, JsonTest)
+	{
+		JsonArchive::BufferT json;
+		const auto filePath = testFolderPath / "archiveTest.temp";
+
+        SmallStruct smallStruct;
+        const int expectedInt = 2134;
+        { // Serialize
+            JsonArchive archive{ &json };
+            archive.serialize("int", expectedInt);
+            archive.serialize("smallStruct", smallStruct);
+		}
+
+		smallStruct.changeValues();
+
+        { // Deserialize
+            JsonArchive archive{ &json };
+            int actualInt = {};
+			archive.deserialize("int", actualInt);
+			archive.deserialize("smallStruct", smallStruct);
+
+            ASSERT_EQ(expectedInt, actualInt);
             smallStruct.testValues();
         }
 	}

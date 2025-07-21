@@ -5,6 +5,8 @@
 #include <vector>
 #include <iterator>
 
+#include <nlohmann/json.hpp>
+
 namespace zt::core
 {
 	class ZINET_CORE_API Archive 
@@ -14,20 +16,20 @@ namespace zt::core
 		using Byte = std::byte;
 		using BufferT = std::vector<Byte>;
 
-		Archive() = delete;
-		Archive(BufferT* newBuffer) : buffer{ newBuffer } {}
-		Archive(const Archive& other) = default;
-		Archive(Archive&& other) = default;
+		Archive() ZINET_API_POST = delete;
+		Archive(BufferT* newBuffer) ZINET_API_POST : buffer{ newBuffer } {}
+		Archive(const Archive& other) ZINET_API_POST = default;
+		Archive(Archive&& other) ZINET_API_POST = default;
 
-		Archive& operator = (const Archive& other) = default;
-		Archive& operator = (Archive&& other) = default;
+		Archive& operator = (const Archive& other) ZINET_API_POST = default;
+		Archive& operator = (Archive&& other) ZINET_API_POST = default;
 
 		~Archive() ZINET_API_POST = default;
 
 		template<class ObjectT>
 		void operator <<(ObjectT& object) ZINET_API_POST 
 		{
-			constexpr bool requireOperator = requires(ObjectT & object) { object.operator <<(*this); };
+			constexpr bool requireOperator = requires(ObjectT& object) { object.operator <<(*this); };
 			if constexpr (requireOperator)
 			{
 				object.operator <<(*this);
@@ -49,13 +51,13 @@ namespace zt::core
 	{
 	public:
 
-		OutputArchive() = default;
-		OutputArchive(BufferT* newBuffer) : Archive{ newBuffer } {}
-		OutputArchive(const OutputArchive& other) = default;
-		OutputArchive(OutputArchive&& other) = default;
+		OutputArchive() ZINET_API_POST = default;
+		OutputArchive(BufferT* newBuffer) ZINET_API_POST : Archive{ newBuffer } {}
+		OutputArchive(const OutputArchive& other) ZINET_API_POST = default;
+		OutputArchive(OutputArchive&& other) ZINET_API_POST = default;
 
-		OutputArchive& operator = (const OutputArchive& other) = default;
-		OutputArchive& operator = (OutputArchive&& other) = default;
+		OutputArchive& operator = (const OutputArchive& other) ZINET_API_POST = default;
+		OutputArchive& operator = (OutputArchive&& other) ZINET_API_POST = default;
 
 		~OutputArchive() ZINET_API_POST = default;
 
@@ -74,13 +76,13 @@ namespace zt::core
 	{
 	public:
 
-		InputArchive() = default;
-		InputArchive(BufferT* newBuffer, size_t newOffset = 0) : Archive{ newBuffer } { offset = newOffset; }
-		InputArchive(const InputArchive& other) = default;
-		InputArchive(InputArchive&& other) = default;
+		InputArchive() ZINET_API_POST = default;
+		InputArchive(BufferT* newBuffer, size_t newOffset = 0) ZINET_API_POST : Archive{ newBuffer } { offset = newOffset; }
+		InputArchive(const InputArchive& other) ZINET_API_POST = default;
+		InputArchive(InputArchive&& other) ZINET_API_POST = default;
 
-		InputArchive& operator = (const InputArchive& other) = default;
-		InputArchive& operator = (InputArchive&& other) = default;
+		InputArchive& operator = (const InputArchive& other) ZINET_API_POST = default;
+		InputArchive& operator = (InputArchive&& other) ZINET_API_POST = default;
 
 		~InputArchive() ZINET_API_POST = default;
 
@@ -95,4 +97,55 @@ namespace zt::core
 
 		size_t offset = 0;
 	};
+
+	class ZINET_CORE_API JsonArchive
+	{
+	public:
+
+		using BufferT = nlohmann::json;
+
+		JsonArchive() ZINET_API_POST = default;
+		JsonArchive(BufferT* newBuffer) ZINET_API_POST : buffer{ newBuffer } {}
+		JsonArchive(const JsonArchive& other) ZINET_API_POST = default;
+		JsonArchive(JsonArchive&& other) ZINET_API_POST = default;
+
+		JsonArchive& operator = (const JsonArchive& other) ZINET_API_POST = default;
+		JsonArchive& operator = (JsonArchive&& other) ZINET_API_POST = default;
+
+		~JsonArchive() ZINET_API_POST = default;
+
+		template<class ObjectT>
+		void serialize(std::string key, ObjectT& object) ZINET_API_POST
+		{
+			constexpr bool requireSerialize = requires(ObjectT& object) { object.serialize(*this); };
+			if constexpr (requireSerialize)
+			{
+				object.serialize(*this);
+			}
+			else
+			{
+				buffer->operator[](key) = object;
+			}
+		}
+
+		template<class ObjectT>
+		void deserialize(std::string key, ObjectT& object) ZINET_API_POST
+		{
+			constexpr bool requireDeserialize = requires(ObjectT& object) { object.deserialize(*this); };
+			if constexpr (requireDeserialize)
+			{
+				object.deserialize(*this);
+			}
+			else
+			{
+				object = buffer->operator[](key);
+			}
+		}
+
+	protected:
+
+		BufferT* buffer = nullptr;
+
+	};
+
 }
