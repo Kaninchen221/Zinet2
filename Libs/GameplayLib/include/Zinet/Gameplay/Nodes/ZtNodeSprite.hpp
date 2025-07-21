@@ -20,7 +20,7 @@ namespace zt::gameplay
 		using AssetHandleT = core::assets::AssetHandle<AssetT>;
 
 		// Config
-		std::string propertyName = "Property:";
+		std::string propertyName = "PropertyName";
 
 		// Data
 		core::assets::AssetHandle<AssetT> assetHandle;
