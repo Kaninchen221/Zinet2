@@ -24,7 +24,7 @@ namespace zt::gameplay
 
 			// List of assets
 			{
-				if (ImGui::BeginChild("assets panel", ImVec2(150, 0), true))
+				if (ImGui::BeginChild("assets panel", ImVec2(ImGui::GetContentRegionAvail().x / EditorConfig::ListMenuWidthDiv, 0), true))
 				{
 					ImGui::Text("Assets");
 					ImGui::Separator();
@@ -60,7 +60,7 @@ namespace zt::gameplay
 			// Selected asset data
 			{
 				ImGui::BeginGroup();
-				if (ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()))) // Leave room for 1 line below us
+				if (ImGui::BeginChild("item view", ImVec2(0, 0)))
 				{
 					ImGui::Text("Asset Data");
 					ImGui::Separator();
@@ -106,8 +106,25 @@ namespace zt::gameplay
 			auto& engineContext = EngineContext::Get();
 			auto& rootNode = engineContext.rootNode;
 
-			const int deep = 1;
-			generateSelectable(rootNode, deep);
+			if (ImGui::BeginChild("Nodes list", ImVec2(ImGui::GetContentRegionAvail().x / EditorConfig::ListMenuWidthDiv, 0), true))
+			{
+				const int deep = 1;
+				generateSelectable(rootNode, deep);
+			}
+			ImGui::EndChild();
+
+			ImGui::SameLine();
+
+			if (ImGui::BeginChild("Node Inspector", {}, false))
+			{
+				ImGui::Text("Selected Node");
+				ImGui::Separator();
+				if (selectedNode)
+				{
+					selectedNode->imGuiNodeInspect();
+				}
+			}
+			ImGui::EndChild();
 		}
 		ImGui::End();
 	}
@@ -127,29 +144,58 @@ namespace zt::gameplay
 			}
 		}
 
-		ImGui::Indent(static_cast<float>(deep) * 4.f);
+		ImGui::Indent(static_cast<float>(deep) * EditorConfig::IndentMulti);
 
 		for (auto& childNode : node->getChildren())
 		{
 			generateSelectable(childNode, deep + 1);
 		}
 
-		ImGui::Unindent(static_cast<float>(deep) * 4.f);
+		ImGui::Unindent(static_cast<float>(deep) * EditorConfig::IndentMulti);
 	}
 
-	void EditorNodeInspector::show(NodeHandle<> node) ZINET_API_POST
+	void EditorSystemsList::show() ZINET_API_POST
 	{
-		if (ImGui::Begin("Node Inspector"))
+		if (ImGui::Begin("Systems List", &shouldShow))
 		{
-			if (!node)
-			{
-				ImGui::End();
-				return;
-			}
-
-			ImGui::Text(node->getName().c_str());
+			searchSubString = textSearchBar.show();
 			ImGui::Separator();
-			node->imGuiNodeInspect();
+
+			auto& engineContext = EngineContext::Get();
+
+			if (ImGui::BeginChild("Systems", ImVec2(ImGui::GetContentRegionAvail().x / EditorConfig::ListMenuWidthDiv, 0), true))
+			{
+				int32_t systemIndex = 0;
+				for (auto& system : engineContext.getSystems())
+				{
+					const auto& name = system->getName();
+					if (!searchSubString.empty() && !name.contains(searchSubString))
+						continue;
+
+					if (ImGui::Selectable(system->getName().c_str(), selectedSystemIndex == systemIndex))
+					{
+						Logger->info("Selected system: {}", system->getName());
+						selectedSystemIndex = systemIndex;
+					}
+
+					++systemIndex;
+				}
+			}
+			ImGui::EndChild();
+
+			ImGui::SameLine();
+
+			if (ImGui::BeginChild("System Inspector", {}, false))
+			{
+				ImGui::Text("Selected System");
+				ImGui::Separator();
+				if (selectedSystemIndex != invalidSystemIndex)
+				{
+					auto& system = engineContext.getSystems()[selectedSystemIndex];
+					system->imGui();
+				}
+			}
+			ImGui::EndChild();
 		}
 		ImGui::End();
 	}
@@ -174,11 +220,9 @@ namespace zt::gameplay
 
 		if (nodesList.shouldShow)
 			nodesList.show();
-		else
-			nodesList.selectedNode = {};
 
-		if (nodesList.selectedNode)
-			nodeInspector.show(nodesList.selectedNode);
+		if (systemsList.shouldShow)
+			systemsList.show();
 
 		ImGui::ShowDemoWindow();
 	}
@@ -188,6 +232,7 @@ namespace zt::gameplay
 		if (ImGui::MenuItem("Assets List", nullptr, &assetsList.shouldShow)) {}
 		if (ImGui::MenuItem("Metrics", nullptr, &metrics.shouldShow)) {}
 		if (ImGui::MenuItem("Nodes List", nullptr, &nodesList.shouldShow)) {}
+		if (ImGui::MenuItem("Systems List", nullptr, &systemsList.shouldShow)) {}
 	}
 
 }

@@ -8,7 +8,7 @@
 
 namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API SystemImGui : public System<Node>
+	class ZINET_GAMEPLAY_API SystemImGui : public System
 	{
 	protected:
 
@@ -16,9 +16,7 @@ namespace zt::gameplay
 
 	public:
 
-		using ClassBaseT = System<Node>;
-
-		SystemImGui() ZINET_API_POST = default;
+		SystemImGui() ZINET_API_POST : System{ "SystemImGui" } {};
 		SystemImGui(const SystemImGui& other) ZINET_API_POST = default;
 		SystemImGui(SystemImGui&& other) ZINET_API_POST = default;
 		~SystemImGui() ZINET_API_POST = default;
@@ -30,9 +28,7 @@ namespace zt::gameplay
 
 		void deinit() ZINET_API_POST override;
 
-		void addNode(const NodeWeakHandle<NodeT>& node) ZINET_API_POST;
-
-		void update() ZINET_API_POST;
+		void update() ZINET_API_POST override;
 
 	};
 

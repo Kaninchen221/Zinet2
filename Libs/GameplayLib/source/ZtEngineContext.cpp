@@ -14,11 +14,10 @@ namespace zt::gameplay
 		if (!window.create())
 			return false;
 
-		if (!systemRenderer.init())
-			return false;
-
-		if (!systemImGui.init())
-			return false;
+		for (auto& system : systems)
+		{
+			system->init();
+		}
 
 		if (!assetsStorage.storeAssets())
 			return false;
@@ -37,8 +36,10 @@ namespace zt::gameplay
 	{
 		windowEvents.pollEvents();
 
-		systemImGui.update();
-		systemRenderer.update();
+		for (auto& system : systems)
+		{
+			system->update();
+		}
 	}
 
 	void EngineContext::deinit() ZINET_API_POST
@@ -50,8 +51,10 @@ namespace zt::gameplay
 
 		assetsStorage.clear();
 
-		systemImGui.deinit();
-		systemRenderer.deinit();
+		for (auto& system : systems)
+		{
+			system->deinit();
+		}
 
 		window.destroyWindow();
 		wd::GLFW::Deinit();

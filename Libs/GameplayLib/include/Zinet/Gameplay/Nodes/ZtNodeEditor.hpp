@@ -13,6 +13,12 @@ namespace
 
 namespace zt::gameplay
 {
+	struct EditorConfig
+	{
+		inline static float IndentMulti = 4.f;
+		inline static float ListMenuWidthDiv = 4.f;
+	};
+
 	struct EditorTextSearchBar
 	{
 		std::string_view show() ZINET_API_POST;
@@ -42,15 +48,25 @@ namespace zt::gameplay
 
 		bool shouldShow = false;
 		void show() ZINET_API_POST;
+
 		void generateSelectable(NodeHandle<>& node, int deep) ZINET_API_POST;
+
 		NodeHandle<> selectedNode;
 		EditorTextSearchBar textSearchBar;
-		std::string searchSubString;
+		std::string_view searchSubString;
 	};
 
-	struct EditorNodeInspector
+	struct EditorSystemsList
 	{
-		void show(NodeHandle<> node) ZINET_API_POST;
+		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EditorSystemsList");
+
+		bool shouldShow = false;
+		void show() ZINET_API_POST;
+
+		EditorTextSearchBar textSearchBar;
+		std::string_view searchSubString;
+		const int32_t invalidSystemIndex = -1;
+		int32_t selectedSystemIndex = invalidSystemIndex;
 	};
 
 	class ZINET_GAMEPLAY_API NodeEditor : public Node
@@ -79,8 +95,7 @@ namespace zt::gameplay
 		EditorAssetsList assetsList;
 		EditorMetrics metrics;
 		EditorNodesList nodesList;
-		EditorNodeInspector nodeInspector;
-
+		EditorSystemsList systemsList;
 	};
 
 }

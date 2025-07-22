@@ -29,6 +29,9 @@ namespace zt::gameplay::tests
 			engineContext.assetsStorage.registerAssetClass<core::assets::AssetText>();
 			engineContext.assetsStorage.registerAssetClass<gameplay::assets::AssetTexture>();
 
+			engineContext.addSystem<SystemImGui>();
+			engineContext.addSystem<SystemRenderer>();
+
 			ASSERT_TRUE(engine.init());
 			vulkan_renderer::ImGuiIntegration::SetStyle_Dark();
 
@@ -37,7 +40,7 @@ namespace zt::gameplay::tests
 			auto editorNode = CreateNode<NodeEditor>();
 			editorNode->setName("Editor");
 			rootNode->addChild(editorNode);
-			engineContext.systemImGui.addNode(editorNode);
+			engineContext.getSystem<SystemImGui>().addNode(editorNode);
 
 			auto child = CreateNode();
 			child->setName("Child");
@@ -50,7 +53,7 @@ namespace zt::gameplay::tests
 			auto sprite = CreateNode<NodeSprite>("Sprite");
 			sprite->texture = engineContext.assetsStorage.getAs<assets::AssetTexture>("Content/Textures/image.png");
 			rootNode->addChild(sprite);
-			engineContext.systemRenderer.addNode(sprite);
+			engineContext.getSystem<SystemRenderer>().addNode(sprite);
 		}
 
 		void TearDown() override

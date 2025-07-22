@@ -44,8 +44,28 @@ namespace zt::gameplay
 
 		void deinit() ZINET_API_POST;
 
-		SystemImGui systemImGui;
-		SystemRenderer systemRenderer;
+		template<std::derived_from<System> SystemT>
+		void addSystem() ZINET_API_POST
+		{
+			systems.emplace_back(std::make_shared<SystemT>());
+		}
+
+		template<std::derived_from<System> SystemT>
+		SystemT& getSystem() ZINET_API_POST
+		{
+			for (auto& system : systems)
+			{
+				auto ptr = dynamic_cast<SystemT*>(system.get());
+				if (ptr)
+					return *ptr;
+			}
+
+			addSystem<SystemT>();
+			return *dynamic_cast<SystemT*>(systems.back().get());
+		}
+
+		auto& getSystems() ZINET_API_POST { return systems; }
+		const auto& getSystems() const ZINET_API_POST { return systems; }
 
 		vulkan_renderer::ImGuiIntegration imGuiIntegration;
 		wd::Window window;
@@ -62,6 +82,9 @@ namespace zt::gameplay
 		inline static EngineContext* instance = nullptr;
 
 		bool initialized = false;
+
+		using Systems = std::vector<std::shared_ptr<System>>;
+		Systems systems;
 
 	};
 }

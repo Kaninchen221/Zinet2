@@ -28,6 +28,8 @@ namespace zt::gameplay
 
 	bool SystemRenderer::init() ZINET_API_POST
 	{
+		System::init();
+
 		auto& engineContext = EngineContext::Get();
 
 		if (!renderer.init(engineContext.window))
@@ -69,6 +71,8 @@ namespace zt::gameplay
 
 	void SystemRenderer::deinit() ZINET_API_POST
 	{
+		System::deinit();
+
 		const auto& device = renderer.getRendererContext().device;
 		device.waitIdle();
 
@@ -82,15 +86,10 @@ namespace zt::gameplay
 		renderer.deinit();
 	}
 
-	void SystemRenderer::addNode(const NodeWeakHandle<NodeT>& node) ZINET_API_POST
-	{
-		ClassBaseT::addNode(node);
-
-		drawInfo.instances = static_cast<uint32_t>(nodes.size());
-	}
-
 	void SystemRenderer::update() ZINET_API_POST
 	{
+		System::update();
+
 		if (drawInfo.instances == 0 && drawInfo.additionalCommands.empty())
 			return;
 

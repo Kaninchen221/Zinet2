@@ -9,20 +9,19 @@ namespace zt::gameplay
 {
 	bool SystemImGui::init() ZINET_API_POST
 	{
+		System::init();
 		return true;
 	}
 
 	void SystemImGui::deinit() ZINET_API_POST
 	{
-	}
-
-	void SystemImGui::addNode(const NodeWeakHandle<NodeT>& node) ZINET_API_POST
-	{
-		ClassBaseT::addNode(node);
+		System::deinit();
 	}
 
 	void SystemImGui::update() ZINET_API_POST
 	{
+		System::update();
+
 		using namespace zt::vulkan_renderer;
 		ImGuiIntegration::ImplSpecificNewFrame();
 

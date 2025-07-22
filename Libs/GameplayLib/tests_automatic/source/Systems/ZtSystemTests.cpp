@@ -21,8 +21,15 @@ namespace zt::gameplay::tests
 		}
 
 		using NodeBase = Node;
-		System<Node> system;
+		System system{ "System" };
+
+		static_assert(!std::is_default_constructible_v<System>);
 	};
+
+	TEST_F(SystemTests, NameTest)
+	{
+		ASSERT_EQ(system.getName(), "System");
+	}
 
 	TEST_F(SystemTests, NodesTest)
 	{

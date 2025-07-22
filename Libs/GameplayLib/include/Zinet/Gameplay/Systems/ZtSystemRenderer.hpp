@@ -21,7 +21,7 @@ namespace
 
 namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API SystemRenderer : public System<Node2D>
+	class ZINET_GAMEPLAY_API SystemRenderer : public System
 	{
 	protected:
 
@@ -29,9 +29,7 @@ namespace zt::gameplay
 
 	public:
 
-		using ClassBaseT = System<Node2D>;
-
-		SystemRenderer() ZINET_API_POST = default;
+		SystemRenderer() ZINET_API_POST : System{ "SystemRenderer" } {};
 		SystemRenderer(const SystemRenderer& other) ZINET_API_POST = default;
 		SystemRenderer(SystemRenderer&& other) ZINET_API_POST = default;
 		~SystemRenderer() ZINET_API_POST = default;
@@ -43,9 +41,7 @@ namespace zt::gameplay
 
 		void deinit() ZINET_API_POST override;
 
-		void addNode(const NodeWeakHandle<NodeT>& node) ZINET_API_POST;
-
-		void update() ZINET_API_POST;
+		void update() ZINET_API_POST override;
 
 		auto& getRenderer() ZINET_API_POST { return renderer; }
 		const auto& getRenderer() const ZINET_API_POST { return renderer; }

@@ -21,11 +21,25 @@ namespace zt::gameplay::tests
 		EngineContext engineContext;
 	};
 
-	TEST_F(EngineContextTests, PassTest)
+	TEST_F(EngineContextTests, InitTest)
 	{
 		ASSERT_TRUE(engineContext.init());
 		auto& instance = EngineContext::Get();
 		ASSERT_TRUE(&instance);
+		engineContext.deinit();
+	}
+
+	class TestSystem : public System
+	{
+	public:
+		TestSystem() ZINET_API_POST : System{ "TestSystem" } {};
+	};
+
+	TEST_F(EngineContextTests, SystemTest)
+	{
+		ASSERT_TRUE(engineContext.init());
+		engineContext.addSystem<TestSystem>();
+		[[maybe_unused]] TestSystem& system = engineContext.getSystem<TestSystem>();
 		engineContext.deinit();
 	}
 }

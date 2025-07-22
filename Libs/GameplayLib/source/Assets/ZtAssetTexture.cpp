@@ -50,7 +50,7 @@ namespace zt::gameplay::assets
 		}
 
 		auto& engineContext = EngineContext::Get();
-		auto& rendererContext = engineContext.systemRenderer.getRenderer().getRendererContext();
+		auto& rendererContext = engineContext.getSystem<SystemRenderer>().getRenderer().getRendererContext();
 		auto& device = rendererContext.device;
 		auto& vma = rendererContext.vma;
 		auto& queue = rendererContext.queue;
@@ -126,7 +126,7 @@ namespace zt::gameplay::assets
 			return;
 
 		auto& engineContext = EngineContext::Get();
-		auto& rendererContext = engineContext.systemRenderer.getRenderer().getRendererContext();
+		auto& rendererContext = engineContext.getSystem<SystemRenderer>().getRenderer().getRendererContext();
 		auto& device = rendererContext.device;
 		auto& vma = rendererContext.vma;
 		device.waitIdle();
