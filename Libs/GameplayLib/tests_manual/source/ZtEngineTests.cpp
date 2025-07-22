@@ -30,6 +30,8 @@ namespace zt::gameplay::tests
 			engineContext.assetsStorage.registerAssetClass<gameplay::assets::AssetTexture>();
 
 			ASSERT_TRUE(engine.init());
+			vulkan_renderer::ImGuiIntegration::SetStyle_Dark();
+
 			auto& rootNode = engineContext.rootNode;
 
 			auto editorNode = CreateNode<NodeEditor>();

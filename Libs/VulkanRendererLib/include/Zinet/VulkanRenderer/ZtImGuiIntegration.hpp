@@ -42,6 +42,8 @@ namespace zt::vulkan_renderer
 
 		static void DrawCommand(const CommandBuffer& commandBuffer) ZINET_API_POST;
 
+		static void SetStyle_Dark() ZINET_API_POST;
+
 	protected:
 
 		DescriptorPool descriptorPool{ nullptr };
