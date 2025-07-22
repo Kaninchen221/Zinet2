@@ -52,8 +52,8 @@ namespace zt::gameplay
 
 						++index;
 					}
-					ImGui::EndChild();
 				}
+				ImGui::EndChild();
 			}
 			ImGui::SameLine();
 
@@ -78,9 +78,8 @@ namespace zt::gameplay
 							Logger->warn("Invalid asset in the EditorAssetsList");
 						}
 					}
-
-					ImGui::EndChild();
 				}
+				ImGui::EndChild();
 				ImGui::EndGroup();
 			}
 		}

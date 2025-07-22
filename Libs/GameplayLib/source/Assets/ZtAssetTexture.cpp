@@ -148,7 +148,7 @@ namespace zt::gameplay::assets
 
 		ImGui::Separator();
 		ImGui::Text("Texture image:");
-		ImVec2 size = ImVec2(256, 256);
+		ImVec2 size = ImVec2(ImGui::GetContentRegionAvail());
 		ImGui::Image((ImTextureID)descriptorSet.get(), size);
 	}
 
