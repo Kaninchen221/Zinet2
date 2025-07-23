@@ -57,6 +57,7 @@ def install_requirements():
         raise Exception("requirements.txt file doesn't exist")
 
     print(f"requirements.txt path: {requirements_path}")
+    print(f"venv pip path: {find_venv_pip_path()}")
     process = subprocess.run(f"{find_venv_pip_path()} install -r " + str(requirements_path), stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE,
                              shell=True,
