@@ -7,6 +7,8 @@
 #include "Zinet/Gameplay/Nodes/ZtNodeSprite.hpp"
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 
+#include "Zinet/VulkanRenderer/Assets/ZtAssetShader.hpp"
+
 #include <gtest/gtest.h>
 
 namespace zt::gameplay::tests
@@ -28,6 +30,7 @@ namespace zt::gameplay::tests
 			auto& engineContext = EngineContext::Get();
 			engineContext.assetsStorage.registerAssetClass<core::assets::AssetText>();
 			engineContext.assetsStorage.registerAssetClass<gameplay::assets::AssetTexture>();
+			engineContext.assetsStorage.registerAssetClass<vulkan_renderer::assets::AssetShader>();
 
 			engineContext.addSystem<SystemImGui>();
 			engineContext.addSystem<SystemRenderer>();

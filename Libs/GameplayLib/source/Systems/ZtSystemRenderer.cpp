@@ -108,4 +108,12 @@ namespace zt::gameplay
 		renderer.endFrame();
 	}
 
+	void SystemRenderer::imGui() ZINET_API_POST
+	{
+		System::imGui();
+
+		vertexShader.show();
+		fragmentShader.show();
+	}
+
 }

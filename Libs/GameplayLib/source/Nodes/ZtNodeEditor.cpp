@@ -35,7 +35,7 @@ namespace zt::gameplay
 							continue;
 
 						auto assetName = fmt::format("{}", asset->metaData.value("fileName", "Couldn't read 'fileName'"));
-						if (ImGui::Selectable(assetName.c_str(), selectedAssetKey == key))
+						if (ImGui::Selectable(key.c_str(), selectedAssetKey == key))
 						{
 							selectedAssetIndex = index;
 							selectedAssetKey = key;

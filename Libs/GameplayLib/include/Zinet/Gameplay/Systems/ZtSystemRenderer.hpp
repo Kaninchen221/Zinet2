@@ -5,12 +5,14 @@
 #include "Zinet/Gameplay/Systems/ZtSystem.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/Assets/ZtAssetProperty.hpp"
 
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
 #include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
+#include "Zinet/VulkanRenderer/Assets/ZtAssetShader.hpp"
 
 #include "Zinet/Window/ZtWindow.hpp"
 
@@ -43,10 +45,15 @@ namespace zt::gameplay
 
 		void update() ZINET_API_POST override;
 
+		void imGui() ZINET_API_POST override;
+
 		auto& getRenderer() ZINET_API_POST { return renderer; }
 		const auto& getRenderer() const ZINET_API_POST { return renderer; }
 
 	protected:
+
+		core::assets::AssetProperty<vr::assets::AssetShader> vertexShader{ "Vertex Shader" };
+		core::assets::AssetProperty<vr::assets::AssetShader> fragmentShader{ "Fragment Shader" };
 
 		vr::ShaderModule createShaderModule(std::string_view sourceCodeFileName, vr::ShaderType shaderType);
 

@@ -9,7 +9,7 @@ namespace zt::gameplay
 {
 	class EngineContext;
 
-	class System
+	class ZINET_GAMEPLAY_API System
 	{
 
 	public:

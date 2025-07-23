@@ -13,6 +13,8 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
+			engineContext.addSystem<SystemRenderer>();
+
 			ASSERT_TRUE(engineContext.init());
 		}
 
@@ -22,11 +24,11 @@ namespace zt::gameplay::tests
 		}
 
 		EngineContext engineContext;
-		SystemRenderer& system = engineContext.systemRenderer;
 	};
 
 	TEST_F(SystemRendererTests, PassTest)
 	{
+		SystemRenderer& system = engineContext.getSystem<SystemRenderer>();
 		auto node = CreateNode<Node2D>();
 		//systemRenderer.addNode(node);
 
