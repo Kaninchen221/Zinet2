@@ -52,7 +52,7 @@ jobs:
           weston --tty=1 --backend=drm-backend.so --idle-time=0 &
 
       - name: Setup Project
-        run: python3 first_time.py
+        run: python first_time.py
 
       - name: Pytest Tools
         run: ${{ inputs.python_path }} -m pytest Tools/tests
