@@ -7,14 +7,24 @@
 #include <spdlog/sinks/base_sink.h>
 
 #include <iostream>
+#include <memory>
 
 namespace zt::core
 {
+	#pragma warning( suppress : 4661 )
 	class ZINET_CORE_API CustomSink : public spdlog::sinks::base_sink<std::mutex>
 	{
 		inline static std::function<void()> Callback;
 
 	public:
+		CustomSink() = default;
+		CustomSink(const CustomSink& other) = default;
+		CustomSink(CustomSink&& other) = default;
+
+		CustomSink& operator = (const CustomSink& other) ZINET_API_POST = default;
+		CustomSink& operator = (CustomSink&& other) ZINET_API_POST = default;
+
+		~CustomSink() ZINET_API_POST = default;
 
 		static void SetFailTestCallback(std::function<void()> newCallback)
 		{
