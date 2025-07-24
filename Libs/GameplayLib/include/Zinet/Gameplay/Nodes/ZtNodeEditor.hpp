@@ -4,6 +4,7 @@
 #include "Zinet/Gameplay/Nodes/ZtNode.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtObject.hpp"
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
 
 namespace
@@ -13,6 +14,31 @@ namespace
 
 namespace zt::gameplay
 {
+	struct AbstractObject : public core::Object
+	{
+		std::string getDisplayName() override ZINET_API_POST { return "name"; }
+
+		void imGui() override ZINET_API_POST;
+	};
+
+	struct EditorBrowserInspector
+	{
+		void show() ZINET_API_POST;
+	};
+
+	struct EditorBrowserList
+	{
+		void show() ZINET_API_POST;
+	};
+
+	struct EditorBrowser
+	{
+		void show() ZINET_API_POST;
+
+		EditorBrowserList list;
+		EditorBrowserInspector inspector;
+	};
+
 	struct EditorConfig
 	{
 		inline static float IndentMulti = 4.f;
@@ -96,6 +122,7 @@ namespace zt::gameplay
 		EditorMetrics metrics;
 		EditorNodesList nodesList;
 		EditorSystemsList systemsList;
+		EditorBrowser editorBrowserTest;
 	};
 
 }

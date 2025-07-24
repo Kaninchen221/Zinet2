@@ -28,5 +28,8 @@ namespace zt::core
 
 		virtual void operator << ([[maybe_unused]] Archive& archive) ZINET_API_POST {}
 
+		virtual std::string getDisplayName() ZINET_API_POST { return "name"; }
+
+		virtual void imGui() ZINET_API_POST {}
 	};
 }
