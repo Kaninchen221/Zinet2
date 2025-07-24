@@ -94,6 +94,7 @@ namespace zt::core::assets
 		data["assetRelativePath"] = assetRelativePath.generic_string();
 		data["fileRelativePath"] = fileRelativePath.generic_string();
 		data["fileName"] = fileRelativePath.filename().replace_extension("").generic_string();
+		data["fileNameExt"] = fileRelativePath.filename().generic_string();
 
 		auto extension = fileRelativePath.filename().extension().generic_string();
 		if (!extension.empty())

@@ -2,6 +2,7 @@
 	"assetRelativePath": "Content/Shaders/SimpleTriangle/shader.frag.asset",
 	"fileExtension": "frag",
 	"fileName": "shader",
+	"fileNameExt": "shader.frag",
 	"fileRelativePath": "Content/Shaders/SimpleTriangle/shader.frag",
 	"hash": 2154789239408439041
 }
