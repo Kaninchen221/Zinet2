@@ -16,6 +16,14 @@ namespace zt::gameplay
 	// TODO: Constants.hpp?
 	const inline static int InvalidIndex = -1;
 
+	// TODO: Move it to concepts
+	template<class T>
+	constexpr bool IsSmartPointer() 
+	{
+		return requires(T& t) { t.operator -> (); } &&
+		requires(T& t) { t.operator bool(); };
+	}
+
 	struct AbstractObject
 	{
 		std::string displayName = "name";
@@ -50,9 +58,14 @@ namespace zt::gameplay
 		template<class ContainerT>
 		void show(ContainerT& container) ZINET_API_POST;
 
+		// Config
+		std::string title = "Editor Browser";
+
+		// Data
 		EditorBrowserList list;
 		EditorBrowserInspector inspector;
 		EditorSearchBar searchBar;
+		bool isOpen = false;
 	};
 }
 

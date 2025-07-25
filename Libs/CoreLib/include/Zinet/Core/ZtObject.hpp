@@ -17,6 +17,7 @@ namespace zt::core
 	public:
 
 		Object() = default;
+		Object(std::string_view newDisplaName) : displayName{ newDisplaName } {}
 		Object(const Object& other) = default;
 		Object(Object&& other) = default;
 		~Object() ZINET_API_POST = default;
@@ -29,8 +30,13 @@ namespace zt::core
 		virtual void operator << ([[maybe_unused]] Archive& archive) ZINET_API_POST {}
 
 		// TODO: Set the name during creation of the object and test
-		virtual std::string getDisplayName() ZINET_API_POST { return "name"; }
+		virtual std::string getDisplayName() ZINET_API_POST { return displayName; }
 
 		virtual void imGui() ZINET_API_POST {}
+
+	protected:
+
+		std::string displayName;
+
 	};
 }

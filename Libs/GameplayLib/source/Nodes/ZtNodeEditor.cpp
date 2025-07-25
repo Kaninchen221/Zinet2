@@ -162,13 +162,13 @@ namespace zt::gameplay
 				int32_t systemIndex = 0;
 				for (auto& system : engineContext.getSystems())
 				{
-					const auto& name = system->getName();
+					const auto& name = system->getDisplayName();
 					if (!searchSubString.empty() && !name.contains(searchSubString))
 						continue;
 
-					if (ImGui::Selectable(system->getName().c_str(), selectedSystemIndex == systemIndex))
+					if (ImGui::Selectable(system->getDisplayName().c_str(), selectedSystemIndex == systemIndex))
 					{
-						Logger->info("Selected system: {}", system->getName());
+						Logger->info("Selected system: {}", system->getDisplayName());
 						selectedSystemIndex = systemIndex;
 					}
 
@@ -215,11 +215,11 @@ namespace zt::gameplay
 		if (nodesList.shouldShow)
 			nodesList.show();
 
-		if (systemsList.shouldShow)
-			systemsList.show();
-
-		std::vector<AbstractObject> objects{ { "1" }, { "2" }, { "3" }, {"4"}};
-		editorBrowserTest.show(objects);
+		if (systemsList.isOpen)
+		{
+			auto& engineContext = EngineContext::Get();
+			systemsList.show(engineContext.getSystems());
+		}
 
 		ImGui::ShowDemoWindow();
 	}
@@ -229,7 +229,7 @@ namespace zt::gameplay
 		if (ImGui::MenuItem("Assets List", nullptr, &assetsList.shouldShow)) {}
 		if (ImGui::MenuItem("Metrics", nullptr, &metrics.shouldShow)) {}
 		if (ImGui::MenuItem("Nodes List", nullptr, &nodesList.shouldShow)) {}
-		if (ImGui::MenuItem("Systems List", nullptr, &systemsList.shouldShow)) {}
+		if (ImGui::MenuItem("Systems List", nullptr, &systemsList.isOpen)) {}
 	}
 
 }

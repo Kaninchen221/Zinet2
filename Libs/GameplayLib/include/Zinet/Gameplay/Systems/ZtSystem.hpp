@@ -4,12 +4,13 @@
 #include "Zinet/Gameplay/Nodes/ZtNode.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtObject.hpp"
 
 namespace zt::gameplay
 {
 	class EngineContext;
 
-	class ZINET_GAMEPLAY_API System
+	class ZINET_GAMEPLAY_API System : public core::Object
 	{
 
 	public:
@@ -17,7 +18,7 @@ namespace zt::gameplay
 		using Nodes = std::vector<NodeWeakHandle<Node>>;
 
 		System() ZINET_API_POST = delete;
-		System(std::string_view newName) : name{ newName } {}
+		System(std::string_view displayName) : Object{ displayName } {}
 		System(const System& other) ZINET_API_POST = default;
 		System(System&& other) ZINET_API_POST = default;
 		~System() ZINET_API_POST = default;
@@ -31,8 +32,6 @@ namespace zt::gameplay
 
 		virtual void update() ZINET_API_POST {}
 
-		const std::string& getName() ZINET_API_POST { return name; }
-
 		virtual void addNode(const NodeWeakHandle<Node>& node) ZINET_API_POST { nodes.push_back(node); }
 
 		virtual Nodes& getNodes() ZINET_API_POST { return nodes; }
@@ -42,7 +41,6 @@ namespace zt::gameplay
 
 	protected:
 
-		std::string name;
 		Nodes nodes;
 		bool initialized = false;
 

@@ -92,8 +92,7 @@ namespace zt::gameplay
 		EditorAssetsList assetsList;
 		EditorMetrics metrics;
 		EditorNodesList nodesList;
-		EditorSystemsList systemsList;
-		EditorBrowser editorBrowserTest;
+		EditorBrowser systemsList{ "Systems List" };
 	};
 
 }

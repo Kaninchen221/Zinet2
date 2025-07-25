@@ -14,7 +14,15 @@ namespace zt::gameplay
 		{
 			if (selectedIndex != InvalidIndex)
 			{
-				container.at(selectedIndex).imGui();
+				constexpr bool isSmartPointer = IsSmartPointer<typename ContainerT::value_type>();
+				if constexpr (isSmartPointer)
+				{
+					container.at(selectedIndex)->imGui();
+				}
+				else
+				{
+					container.at(selectedIndex).imGui();
+				}
 			}
 
 		}
@@ -26,12 +34,30 @@ namespace zt::gameplay
 	{
 		const ImVec2 size = {};
 		const bool borders = true;
+
 		if (ImGui::BeginChild("List", size, borders))
 		{
 			int selectableIndex = 0;
 			for (auto& object : container)
 			{
-				const auto& displayName = object.getDisplayName();
+				std::string displayName;
+				constexpr bool isSmartPointer = IsSmartPointer<typename ContainerT::value_type>();
+				if constexpr (isSmartPointer)
+				{
+					if (object)
+					{
+						displayName = object->getDisplayName();
+					}
+					else
+					{
+						continue;
+					}
+				}
+				else
+				{
+					displayName = object.getDisplayName();
+				}
+
 				if (!searchText.empty() && !displayName.contains(searchText))
 					continue;
 
@@ -54,22 +80,26 @@ namespace zt::gameplay
 	template<class ContainerT>
 	void EditorBrowser::show(ContainerT& container) ZINET_API_POST
 	{
-		const auto searchText = searchBar.show();
-		ImGui::Separator();
-		const int columns = 2;
-		ImGuiTableFlags flags = ImGuiTableFlags_Resizable;
-		if (ImGui::BeginTable("EditorBrowser", columns, flags))
+		if (ImGui::Begin(title.c_str()))
 		{
-			ImGui::TableSetupColumn("List", ImGuiTableColumnFlags_WidthFixed);
-			ImGui::TableSetupColumn("Inspector", ImGuiTableFlags_SizingStretchProp);
+			const auto searchText = searchBar.show();
+			ImGui::Separator();
+			const int columns = 2;
+			ImGuiTableFlags flags = ImGuiTableFlags_Resizable;
+			if (ImGui::BeginTable("EditorBrowser", columns, flags))
+			{
+				ImGui::TableSetupColumn("List", ImGuiTableColumnFlags_WidthFixed);
+				ImGui::TableSetupColumn("Inspector", ImGuiTableFlags_SizingStretchProp);
 
-			ImGui::TableNextRow();
-			ImGui::TableNextColumn();
-			list.show(container, searchText);
-			ImGui::TableNextColumn();
-			inspector.show(container, list.selectedIndex);
+				ImGui::TableNextRow();
+				ImGui::TableNextColumn();
+				list.show(container, searchText);
+				ImGui::TableNextColumn();
+				inspector.show(container, list.selectedIndex);
 
-			ImGui::EndTable();
+				ImGui::EndTable();
+			}
 		}
+		ImGui::End();
 	}
 }
