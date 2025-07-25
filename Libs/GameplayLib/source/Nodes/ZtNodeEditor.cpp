@@ -3,62 +3,10 @@
 
 #include <imgui.h>
 
+#include "Zinet/Core/ZtPaths.hpp"
+
 namespace zt::gameplay
 {
-	using Path = std::filesystem::path;
-
-	void AbstractObject::imGui()  ZINET_API_POST
-	{
-		ImGui::Text("Inspect content");
-	}
-
-	void EditorBrowserInspector::show() ZINET_API_POST
-	{
-		const ImVec2 size = {};
-		if (ImGui::BeginChild("Inspector", size, true))
-		{
-			ImGui::Text("Inspector of:");
-
-		}
-		ImGui::EndChild();
-	}
-
-	void EditorBrowserList::show() ZINET_API_POST
-	{
-		const ImVec2 size = {};
-		if (ImGui::BeginChild("List", size, true))
-		{
-			ImGui::Text("List of: ");
-
-		}
-		ImGui::EndChild();
-	}
-
-	void EditorBrowser::show() ZINET_API_POST
-	{
-		const int columns = 2;
-		ImGuiTableFlags flags = ImGuiTableFlags_Resizable;
-		if (ImGui::BeginTable("EditorBrowser", columns, flags))
-		{
-			ImGui::TableSetupColumn("List", ImGuiTableColumnFlags_WidthFixed);
-			ImGui::TableSetupColumn("Inspector", ImGuiTableFlags_SizingStretchProp);
-
-			ImGui::TableNextRow();
-			ImGui::TableNextColumn();
-			list.show();
-			ImGui::TableNextColumn();
-			inspector.show();
-
-			ImGui::EndTable();
-		}
-	}
-
-	std::string_view EditorTextSearchBar::show() ZINET_API_POST
-	{
-		ImGui::InputText("SearchBar", assetsListBuffer.data(), assetsListBuffer.size());
-		return std::string_view{ assetsListBuffer.begin(), std::ranges::find(assetsListBuffer, '\0') };
-	}
-
 	void EditorAssetsList::show() ZINET_API_POST
 	{
 		using Path = std::filesystem::path;
@@ -270,7 +218,8 @@ namespace zt::gameplay
 		if (systemsList.shouldShow)
 			systemsList.show();
 
-		editorBrowserTest.show();
+		std::vector<AbstractObject> objects{ { "1" }, { "2" }, { "3" }, {"4"}};
+		editorBrowserTest.show(objects);
 
 		ImGui::ShowDemoWindow();
 	}

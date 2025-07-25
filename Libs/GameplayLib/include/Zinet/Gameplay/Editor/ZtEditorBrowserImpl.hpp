@@ -1,0 +1,75 @@
+#pragma once
+
+#include "Zinet/Core/ZtCoreConfig.hpp"
+
+#include <imgui.h>
+
+namespace zt::gameplay
+{
+	template<class ContainerT>
+	void EditorBrowserInspector::show(ContainerT& container, int selectedIndex) ZINET_API_POST
+	{
+		const ImVec2 size = {};
+		if (ImGui::BeginChild("Inspector", size, true))
+		{
+			if (selectedIndex != InvalidIndex)
+			{
+				container.at(selectedIndex).imGui();
+			}
+
+		}
+		ImGui::EndChild();
+	}
+
+	template<class ContainerT>
+	void EditorBrowserList::show(ContainerT& container, std::string_view searchText) ZINET_API_POST
+	{
+		const ImVec2 size = {};
+		const bool borders = true;
+		if (ImGui::BeginChild("List", size, borders))
+		{
+			int selectableIndex = 0;
+			for (auto& object : container)
+			{
+				const auto& displayName = object.getDisplayName();
+				if (!searchText.empty() && !displayName.contains(searchText))
+					continue;
+
+				ImGui::PushID(selectableIndex);
+				bool isSelected = selectableIndex == selectedIndex;
+				if (ImGui::Selectable(displayName.c_str(), isSelected))
+				{
+					selectedIndex = selectableIndex;
+					Logger->info("Selected: {} Index: {}", displayName, selectedIndex);
+				}
+				ImGui::PopID();
+
+				++selectableIndex;
+			}
+
+		}
+		ImGui::EndChild();
+	}
+
+	template<class ContainerT>
+	void EditorBrowser::show(ContainerT& container) ZINET_API_POST
+	{
+		const auto searchText = searchBar.show();
+		ImGui::Separator();
+		const int columns = 2;
+		ImGuiTableFlags flags = ImGuiTableFlags_Resizable;
+		if (ImGui::BeginTable("EditorBrowser", columns, flags))
+		{
+			ImGui::TableSetupColumn("List", ImGuiTableColumnFlags_WidthFixed);
+			ImGui::TableSetupColumn("Inspector", ImGuiTableFlags_SizingStretchProp);
+
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn();
+			list.show(container, searchText);
+			ImGui::TableNextColumn();
+			inspector.show(container, list.selectedIndex);
+
+			ImGui::EndTable();
+		}
+	}
+}

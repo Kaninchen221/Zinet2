@@ -26,6 +26,7 @@ namespace zt::core
 
 		~CustomSink() ZINET_API_POST = default;
 
+		// TODO: Doesn't work sometimes because of the undefined static order initialization
 		static void SetFailTestCallback(std::function<void()> newCallback)
 		{
 			Callback = newCallback;

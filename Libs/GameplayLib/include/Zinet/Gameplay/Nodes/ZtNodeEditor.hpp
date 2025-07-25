@@ -2,6 +2,8 @@
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 #include "Zinet/Gameplay/Nodes/ZtNode.hpp"
+#include "Zinet/Gameplay/Editor/ZtEditorBrowser.hpp"
+#include "Zinet/Gameplay/Editor/ZtEditorSearchBar.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtObject.hpp"
@@ -14,41 +16,10 @@ namespace
 
 namespace zt::gameplay
 {
-	struct AbstractObject : public core::Object
-	{
-		std::string getDisplayName() override ZINET_API_POST { return "name"; }
-
-		void imGui() override ZINET_API_POST;
-	};
-
-	struct EditorBrowserInspector
-	{
-		void show() ZINET_API_POST;
-	};
-
-	struct EditorBrowserList
-	{
-		void show() ZINET_API_POST;
-	};
-
-	struct EditorBrowser
-	{
-		void show() ZINET_API_POST;
-
-		EditorBrowserList list;
-		EditorBrowserInspector inspector;
-	};
-
 	struct EditorConfig
 	{
 		inline static float IndentMulti = 4.f;
 		inline static float ListMenuWidthDiv = 4.f;
-	};
-
-	struct EditorTextSearchBar
-	{
-		std::string_view show() ZINET_API_POST;
-		std::array<char, 1000> assetsListBuffer{ '\0' };
 	};
 
 	struct EditorAssetsList
@@ -59,7 +30,7 @@ namespace zt::gameplay
 		void show() ZINET_API_POST;
 		int selectedAssetIndex = -1;
 		assets::AssetsStorage::AssetsKey selectedAssetKey;
-		EditorTextSearchBar textSearchBar;
+		EditorSearchBar textSearchBar;
 	};
 
 	struct EditorMetrics
@@ -78,7 +49,7 @@ namespace zt::gameplay
 		void generateSelectable(NodeHandle<>& node, int deep) ZINET_API_POST;
 
 		NodeHandle<> selectedNode;
-		EditorTextSearchBar textSearchBar;
+		EditorSearchBar textSearchBar;
 		std::string_view searchSubString;
 	};
 
@@ -89,7 +60,7 @@ namespace zt::gameplay
 		bool shouldShow = false;
 		void show() ZINET_API_POST;
 
-		EditorTextSearchBar textSearchBar;
+		EditorSearchBar textSearchBar;
 		std::string_view searchSubString;
 		const int32_t invalidSystemIndex = -1;
 		int32_t selectedSystemIndex = invalidSystemIndex;
