@@ -28,7 +28,7 @@ namespace zt::gameplay::tests
 
 	TEST_F(SystemTests, NameTest)
 	{
-		ASSERT_EQ(system.getName(), "System");
+		ASSERT_EQ(system.getDisplayName(), "System");
 	}
 
 	TEST_F(SystemTests, NodesTest)

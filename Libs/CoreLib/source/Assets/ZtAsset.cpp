@@ -5,7 +5,7 @@
 
 namespace zt::core::assets
 {
-	void Asset::imGuiAssetInspect() ZINET_API_POST
+	void Asset::imGui() ZINET_API_POST
 	{
 		const std::string isLoadedText = fmt::format("Is loaded: {}", isLoaded());
 		ImGui::Text(isLoadedText.c_str());

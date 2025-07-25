@@ -24,6 +24,13 @@ namespace zt::gameplay
 		requires(T& t) { t.operator bool(); };
 	}
 
+	// TODO: Move it to concepts
+	template<class T>
+	concept IsPair = requires(T& t) {
+		{ t.first } -> std::same_as<decltype(t.first)>;
+		{ t.second } -> std::same_as<decltype(t.first)>;
+	};
+
 	struct AbstractObject
 	{
 		std::string displayName = "name";

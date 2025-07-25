@@ -50,6 +50,7 @@ namespace zt::gameplay
 					}
 					else
 					{
+						Logger->warn("Found invalid smart pointer");
 						continue;
 					}
 				}
@@ -67,6 +68,19 @@ namespace zt::gameplay
 				{
 					selectedIndex = selectableIndex;
 					Logger->info("Selected: {} Index: {}", displayName, selectedIndex);
+				}
+
+				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+				{
+					void* payloadData;
+					if (isSmartPointer)
+						payloadData = object.get();
+					else
+						payloadData = &object;
+
+					ImGui::SetDragDropPayload(ZinetImGuiPayloadType, &payloadData, sizeof(void*));
+					ImGui::Text(displayName.c_str());
+					ImGui::EndDragDropSource();
 				}
 				ImGui::PopID();
 

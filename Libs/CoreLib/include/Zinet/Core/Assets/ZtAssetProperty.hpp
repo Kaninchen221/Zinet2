@@ -39,7 +39,7 @@ namespace zt::core::assets
 			// Target for drag and drop
 			if (ImGui::BeginDragDropTarget())
 			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(AssetPayloadType))
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(ZinetImGuiPayloadType))
 				{
 					core::assets::Asset* asset = nullptr;
 					std::memcpy(&asset, payload->Data, sizeof(AssetT*));

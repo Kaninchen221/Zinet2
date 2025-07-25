@@ -36,7 +36,8 @@ namespace zt::core::assets
 		template<std::derived_from<Asset> AssetT>
 		AssetHandle<AssetT> getAs(const AssetsKey& key) ZINET_API_POST;
 
-		auto& getAssets() ZINET_API_POST { return assets; }
+		using AssetHandlers = std::vector<AssetHandle<>>;
+		AssetHandlers getAssets() ZINET_API_POST;
 
 		using LoadMinimalAssetResult = std::optional<Asset>;
 		LoadMinimalAssetResult loadAssetMetaData(const fs::path& assetPath) const ZINET_API_POST;

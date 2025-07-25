@@ -28,9 +28,9 @@ namespace zt::core::assets
 		loaded = false; 
 	}
 
-	void AssetText::imGuiAssetInspect() ZINET_API_POST
+	void AssetText::imGui() ZINET_API_POST
 	{
-		Asset::imGuiAssetInspect();
+		Asset::imGui();
 		if (!isLoaded())
 			return;
 

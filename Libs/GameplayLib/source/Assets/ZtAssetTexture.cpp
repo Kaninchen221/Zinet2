@@ -137,9 +137,9 @@ namespace zt::gameplay::assets
 		loaded = false;
 	}
 
-	void AssetTexture::imGuiAssetInspect() ZINET_API_POST
+	void AssetTexture::imGui() ZINET_API_POST
 	{
-		Asset::imGuiAssetInspect();
+		Asset::imGui();
 		if (!isLoaded())
 			return;
 		

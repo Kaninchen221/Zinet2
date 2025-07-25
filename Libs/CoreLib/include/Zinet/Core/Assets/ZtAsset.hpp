@@ -67,6 +67,8 @@ namespace zt::core::assets
 		Asset& operator = (const Asset& other) ZINET_API_POST = default;
 		Asset& operator = (Asset&& other) ZINET_API_POST = default;
 
+		std::string getDisplayName() ZINET_API_POST { return metaData.value("fileNameExt", "fileNameExt_DefaultName"); }
+
 		bool isLoaded() ZINET_API_POST { return loaded; }
 
 		virtual AssetPtr createCopy() const ZINET_API_POST { return {}; }
@@ -77,7 +79,7 @@ namespace zt::core::assets
 
 		const auto& getExtensions() const ZINET_API_POST { return extensions; }
 		
-		virtual void imGuiAssetInspect() ZINET_API_POST;
+		virtual void imGui() ZINET_API_POST;
 
 		json metaData;
 

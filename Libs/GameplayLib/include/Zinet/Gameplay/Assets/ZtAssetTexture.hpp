@@ -34,7 +34,7 @@ namespace zt::gameplay::assets
 
 		void unload() ZINET_API_POST override;
 
-		void imGuiAssetInspect() ZINET_API_POST override;
+		void imGui() ZINET_API_POST override;
 
 		vulkan_renderer::Texture texture;
 		// TODO: AssetTexture should contains an AssetSampler?

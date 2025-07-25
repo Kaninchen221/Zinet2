@@ -7,79 +7,6 @@
 
 namespace zt::gameplay
 {
-	void EditorAssetsList::show() ZINET_API_POST
-	{
-		using Path = std::filesystem::path;
-
-		if (ImGui::Begin("Assets List", &shouldShow))
-		{
-			const auto searchSubString = textSearchBar.show();
-			auto& engineContext = EngineContext::Get();
-
-			// List of assets
-			{
-				if (ImGui::BeginChild("assets panel", ImVec2(ImGui::GetContentRegionAvail().x / EditorConfig::ListMenuWidthDiv, 0), true))
-				{
-					ImGui::Text("Assets");
-					ImGui::Separator();
-					int index = 0;
-					for (auto& [key, asset] : engineContext.assetsStorage.getAssets())
-					{
-						if (!searchSubString.empty() && !key.contains(searchSubString) && selectedAssetKey != key)
-							continue;
-
-						auto assetName = fmt::format("{}", asset->metaData.value("fileName", "Couldn't read 'fileName'"));
-						if (ImGui::Selectable(key.c_str(), selectedAssetKey == key))
-						{
-							selectedAssetIndex = index;
-							selectedAssetKey = key;
-							break;
-						}
-
-						if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-						{
-							void* payloadData = asset.get();
-							ImGui::SetDragDropPayload(AssetPayloadType, &payloadData, sizeof(void*));
-							ImGui::Text(fmt::format("Asset: {}", assetName).c_str());
-							ImGui::EndDragDropSource();
-						}
-
-						++index;
-					}
-				}
-				ImGui::EndChild();
-			}
-			ImGui::SameLine();
-
-			// Selected asset data
-			{
-				ImGui::BeginGroup();
-				if (ImGui::BeginChild("item view", ImVec2(0, 0)))
-				{
-					ImGui::Text("Asset Data");
-					ImGui::Separator();
-
-					auto& assets = engineContext.assetsStorage.getAssets();
-					auto assetIt = assets.find(selectedAssetKey);
-					if (assetIt != assets.end())
-					{
-						if (assetIt->second)
-						{
-							assetIt->second->imGuiAssetInspect();
-						}
-						else
-						{
-							Logger->warn("Invalid asset in the EditorAssetsList");
-						}
-					}
-				}
-				ImGui::EndChild();
-				ImGui::EndGroup();
-			}
-		}
-		ImGui::End();
-	}
-
 	void EditorMetrics::show() ZINET_API_POST
 	{
 		if (ImGui::Begin("Metrics", &shouldShow))
@@ -206,8 +133,12 @@ namespace zt::gameplay
 			ImGui::EndMainMenuBar();
 		}
 
-		if (assetsList.shouldShow)
-			assetsList.show();
+		if (assetsList.isOpen)
+		{
+			auto& engineContext = EngineContext::Get();
+			auto assets = engineContext.assetsStorage.getAssets();
+			assetsList.show(assets);
+		}
 
 		if (metrics.shouldShow)
 			metrics.show();
@@ -226,7 +157,7 @@ namespace zt::gameplay
 
 	void NodeEditor::showToolsMenu() ZINET_API_POST
 	{
-		if (ImGui::MenuItem("Assets List", nullptr, &assetsList.shouldShow)) {}
+		if (ImGui::MenuItem("Assets List", nullptr, &assetsList.isOpen)) {}
 		if (ImGui::MenuItem("Metrics", nullptr, &metrics.shouldShow)) {}
 		if (ImGui::MenuItem("Nodes List", nullptr, &nodesList.shouldShow)) {}
 		if (ImGui::MenuItem("Systems List", nullptr, &systemsList.isOpen)) {}

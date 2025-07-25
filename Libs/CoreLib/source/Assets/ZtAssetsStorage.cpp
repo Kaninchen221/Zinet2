@@ -79,6 +79,16 @@ namespace zt::core::assets
 		return findResult->second.get();
 	}
 
+	AssetsStorage::AssetHandlers AssetsStorage::getAssets() ZINET_API_POST
+	{
+		AssetsStorage::AssetHandlers result;
+		for (auto& asset : assets)
+		{
+			result.emplace_back(asset.second.get());
+		}
+		return result;
+	}
+
 	AssetsStorage::LoadMinimalAssetResult AssetsStorage::loadAssetMetaData(const fs::path& assetPath) const ZINET_API_POST
 	{
 		File file;

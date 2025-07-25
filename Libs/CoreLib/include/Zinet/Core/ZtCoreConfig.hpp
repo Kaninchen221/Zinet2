@@ -78,6 +78,6 @@
 #define ZINET_API_POST
 
 // ImGui payload types
-auto constexpr inline static AssetPayloadType = "ASSET";
+auto constexpr inline static ZinetImGuiPayloadType = "ASSET";
 
 #include "Zinet/Core/ZtDebug.hpp"
