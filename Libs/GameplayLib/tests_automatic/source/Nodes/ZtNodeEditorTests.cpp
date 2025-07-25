@@ -6,7 +6,7 @@
 
 namespace zt::gameplay::tests
 {
-	class NodeNodeEditorTests : public ::testing::Test
+	class NodeEditorTests : public ::testing::Test
 	{
 	protected:
 
@@ -24,6 +24,6 @@ namespace zt::gameplay::tests
 		static_assert(std::is_constructible_v<NodeEditor, const NodeNameView&>);
 	};
 
-	TEST_F(NodeNodeEditorTests, PassTest)
+	TEST_F(NodeEditorTests, PassTest)
 	{}
 }

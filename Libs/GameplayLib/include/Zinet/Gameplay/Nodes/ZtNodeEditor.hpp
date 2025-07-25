@@ -22,17 +22,6 @@ namespace zt::gameplay
 		inline static float ListMenuWidthDiv = 4.f;
 	};
 
-	struct EditorAssetsList
-	{
-		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EditorAssetsList");
-
-		bool shouldShow = false;
-		void show() ZINET_API_POST;
-		int selectedAssetIndex = -1;
-		assets::AssetsStorage::AssetsKey selectedAssetKey;
-		EditorSearchBar textSearchBar;
-	};
-
 	struct EditorMetrics
 	{
 		bool shouldShow = false;
@@ -89,7 +78,7 @@ namespace zt::gameplay
 
 		void showToolsMenu() ZINET_API_POST;
 
-		EditorAssetsList assetsList;
+		EditorBrowser assetsList{ "Assets List" };
 		EditorMetrics metrics;
 		EditorNodesList nodesList;
 		EditorBrowser systemsList{ "Systems List" };

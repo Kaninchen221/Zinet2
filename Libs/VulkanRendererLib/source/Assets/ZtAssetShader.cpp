@@ -29,9 +29,9 @@ namespace zt::vulkan_renderer::assets
 		loaded = false; 
 	}
 
-	void AssetShader::imGuiAssetInspect() ZINET_API_POST
+	void AssetShader::imGui() ZINET_API_POST
 	{
-		Asset::imGuiAssetInspect();
+		Asset::imGui();
 		if (!isLoaded())
 			return;
 

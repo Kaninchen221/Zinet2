@@ -7,7 +7,7 @@
 
 namespace zt::gameplay
 {
-	struct EditorSearchBar
+	struct ZINET_GAMEPLAY_API EditorSearchBar
 	{
 		std::string_view show() ZINET_API_POST;
 
