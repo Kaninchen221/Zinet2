@@ -38,6 +38,7 @@ namespace zt::core::assets::tests
 		ASSERT_TRUE(assetHandle);
 		ASSERT_TRUE(assetHandle.get());
 		ASSERT_TRUE(assetHandle.operator ->());
+		ASSERT_EQ(&assetHandle.operator *(), assetHandle.get());
 
 		AssetHandle<Asset> second = assetHandle;
 		ASSERT_TRUE(second.isValid());

@@ -37,6 +37,8 @@ namespace zt::core::assets
 
 		AssetT* get() const ZINET_API_POST { return asset; }
 
+		AssetT& operator*() ZINET_API_POST { return *asset; }
+
 		void invalidate() ZINET_API_POST { asset = nullptr; }
 
 	protected:
