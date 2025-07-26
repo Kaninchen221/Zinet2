@@ -42,7 +42,7 @@ namespace zt::gameplay
 				ImGui::Separator();
 				if (selectedNode)
 				{
-					selectedNode->imGuiNodeInspect();
+					selectedNode->imGui();
 				}
 			}
 			ImGui::EndChild();
@@ -143,8 +143,12 @@ namespace zt::gameplay
 		if (metrics.shouldShow)
 			metrics.show();
 
-		if (nodesList.shouldShow)
-			nodesList.show();
+		if (nodesList.isOpen)
+		{
+			auto& engineContext = EngineContext::Get();
+			std::vector nodes{ engineContext.rootNode };
+			nodesList.show(nodes, CreateNodeBrowserListElement);
+		}
 
 		if (systemsList.isOpen)
 		{
@@ -159,7 +163,7 @@ namespace zt::gameplay
 	{
 		if (ImGui::MenuItem("Assets List", nullptr, &assetsList.isOpen)) {}
 		if (ImGui::MenuItem("Metrics", nullptr, &metrics.shouldShow)) {}
-		if (ImGui::MenuItem("Nodes List", nullptr, &nodesList.shouldShow)) {}
+		if (ImGui::MenuItem("Nodes List", nullptr, &nodesList.isOpen)) {}
 		if (ImGui::MenuItem("Systems List", nullptr, &systemsList.isOpen)) {}
 	}
 

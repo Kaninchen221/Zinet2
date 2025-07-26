@@ -61,6 +61,8 @@ namespace zt::gameplay
 	struct EditorBrowserList;
 	void CreateObjectBrowserListElement(core::Object& object, EditorBrowserList& list, int elementIndex);
 
+	void CreateNodeBrowserListElement(gameplay::Node& node, EditorBrowserList& list, int elementIndex);
+
 	template<class ObjectT>
 	void CreateDragDropSourceSection(ObjectT& object) ZINET_API_POST;
 
@@ -71,7 +73,7 @@ namespace zt::gameplay
 		template<class ContainerT>
 		void show(ContainerT& container, std::string_view searchText, auto ElementCreator) ZINET_API_POST;
 
-		int selectedIndex = InvalidIndex;
+		int selectedIndex = InvalidIndex; // TODO: Replace with pointer on Object?
 	};
 
 	struct EditorBrowser

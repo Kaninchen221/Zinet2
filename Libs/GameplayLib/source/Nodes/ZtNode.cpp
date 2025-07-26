@@ -1,13 +1,14 @@
 ﻿#include "Zinet/Gameplay/Nodes/ZtNode.hpp"
 
 #include <imgui.h>
+#include <fmt/format.h>
 
 namespace zt::gameplay
 {
 
-	void Node::imGuiNodeInspect() ZINET_API_POST
+	void Node::imGui() ZINET_API_POST
 	{
-		ImGui::Text("imGui Node Inspect");
+		ImGui::Text(fmt::format("Node: {}", getDisplayName()).c_str());
 	}
 
 }

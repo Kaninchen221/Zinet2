@@ -16,4 +16,23 @@ namespace zt::gameplay
 		CreateDragDropSourceSection(object);
 	}
 
+	void CreateNodeBrowserListElement(gameplay::Node& node, EditorBrowserList& list, int elementIndex)
+	{
+		const auto& displayName = node.getDisplayName();
+		bool isSelected = elementIndex == list.selectedIndex;
+		if (ImGui::Selectable(displayName.c_str(), isSelected))
+		{
+			list.selectedIndex = elementIndex;
+			EditorBrowserList::Logger->info("Selected: {} Index: {}", displayName, list.selectedIndex);
+		}
+
+		CreateDragDropSourceSection(node);
+
+		for (auto& child : node.getChildren())
+		{
+			if (child)
+				CreateNodeBrowserListElement(*child, list, elementIndex);
+		}
+	}
+
 }

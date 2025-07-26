@@ -80,7 +80,7 @@ namespace zt::gameplay
 
 		EditorBrowser assetsList{ "Assets List" };
 		EditorMetrics metrics;
-		EditorNodesList nodesList;
+		EditorBrowser nodesList{ "Nodes List" };
 		EditorBrowser systemsList{ "Systems List" };
 	};
 

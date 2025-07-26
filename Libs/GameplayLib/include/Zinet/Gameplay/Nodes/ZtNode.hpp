@@ -3,6 +3,7 @@
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtObject.hpp"
 
 namespace zt::gameplay
 {
@@ -19,7 +20,7 @@ namespace zt::gameplay
 	template<class NodeT = Node>
 	static auto CreateNode(const NodeNameView& name = "DefaultName") ZINET_API_POST;
 
-	class ZINET_GAMEPLAY_API Node
+	class ZINET_GAMEPLAY_API Node : public core::Object
 	{
 	protected:
 
@@ -36,7 +37,7 @@ namespace zt::gameplay
 		Node& operator = (const Node& other) ZINET_API_POST = default;
 		Node& operator = (Node&& other) ZINET_API_POST = default;
 
-		using Children = std::vector<std::shared_ptr<Node>>;
+		using Children = std::vector<NodeHandle<Node>>;
 		auto& getChildren() ZINET_API_POST { return children; }
 		const auto& getChildren() const ZINET_API_POST { return children; }
 
@@ -49,11 +50,12 @@ namespace zt::gameplay
 		void setParent(NodeWeakHandle<Node> newParent) ZINET_API_POST { parent = newParent; }
 		auto getParent() const ZINET_API_POST { return parent; }
 
-		virtual void imGui() ZINET_API_POST {}
-		virtual void imGuiNodeInspect() ZINET_API_POST;
+		virtual void imGui() ZINET_API_POST;
 
 		const auto& getName() const { return name; }
 		void setName(const NodeNameView& newName) { name = newName; }
+
+		std::string getDisplayName() override ZINET_API_POST { return name; }
 
 	protected:
 

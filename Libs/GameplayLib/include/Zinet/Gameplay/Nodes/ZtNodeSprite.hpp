@@ -30,7 +30,7 @@ namespace zt::gameplay
 		NodeSprite& operator = (const NodeSprite& other) ZINET_API_POST = default;
 		NodeSprite& operator = (NodeSprite&& other) ZINET_API_POST = default;
 
-		void imGuiNodeInspect() ZINET_API_POST override;
+		void imGui() ZINET_API_POST override;
 
 		core::assets::AssetProperty<assets::AssetTexture> texture{ "Texture" };
 
