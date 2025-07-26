@@ -14,77 +14,48 @@ namespace zt::gameplay
 		{
 			if (selectedIndex != InvalidIndex)
 			{
-				constexpr bool isSmartPointer = IsSmartPointer<typename ContainerT::value_type>();
-				if constexpr (isSmartPointer)
-				{
-					container.at(selectedIndex)->imGui();
-				}
-				else
-				{
-					container.at(selectedIndex).imGui();
-				}
+				auto& object = ResolveOptionalSmartPointer(container.at(selectedIndex));
+				object.imGui();
 			}
 
 		}
 		ImGui::EndChild();
 	}
 
+	template<class ObjectT>
+	void CreateDragDropSourceSection(ObjectT& object) ZINET_API_POST
+	{
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		{
+			void* payloadData = &object;
+			ImGui::SetDragDropPayload(ZinetImGuiPayloadType, &payloadData, sizeof(void*));
+			ImGui::Text(object.getDisplayName().c_str());
+			ImGui::EndDragDropSource();
+		}
+	}
+
 	template<class ContainerT>
-	void EditorBrowserList::show(ContainerT& container, std::string_view searchText) ZINET_API_POST
+	void EditorBrowserList::show(ContainerT& container, std::string_view searchText, auto elementCreator) ZINET_API_POST
 	{
 		const ImVec2 size = {};
 		const bool borders = true;
 
 		if (ImGui::BeginChild("List", size, borders))
 		{
-			int selectableIndex = 0;
-			for (auto& object : container)
+			int elementIndex = 0;
+			for (auto& containerElement : container)
 			{
-				std::string displayName;
-				constexpr bool isSmartPointer = IsSmartPointer<typename ContainerT::value_type>();
-				if constexpr (isSmartPointer)
-				{
-					if (object)
-					{
-						displayName = object->getDisplayName();
-					}
-					else
-					{
-						Logger->warn("Found invalid smart pointer");
-						continue;
-					}
-				}
-				else
-				{
-					displayName = object.getDisplayName();
-				}
+				auto& object = ResolveOptionalSmartPointer<typename ContainerT::value_type>(containerElement);
+				const auto& displayName = object.getDisplayName();
 
 				if (!searchText.empty() && !displayName.contains(searchText))
 					continue;
 
-				ImGui::PushID(selectableIndex);
-				bool isSelected = selectableIndex == selectedIndex;
-				if (ImGui::Selectable(displayName.c_str(), isSelected))
-				{
-					selectedIndex = selectableIndex;
-					Logger->info("Selected: {} Index: {}", displayName, selectedIndex);
-				}
-
-				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-				{
-					void* payloadData;
-					if (isSmartPointer)
-						payloadData = object.get();
-					else
-						payloadData = &object;
-
-					ImGui::SetDragDropPayload(ZinetImGuiPayloadType, &payloadData, sizeof(void*));
-					ImGui::Text(displayName.c_str());
-					ImGui::EndDragDropSource();
-				}
+				ImGui::PushID(elementIndex);
+				std::invoke(elementCreator, object, *this, elementIndex);
 				ImGui::PopID();
 
-				++selectableIndex;
+				++elementIndex;
 			}
 
 		}
@@ -92,7 +63,7 @@ namespace zt::gameplay
 	}
 
 	template<class ContainerT>
-	void EditorBrowser::show(ContainerT& container) ZINET_API_POST
+	void EditorBrowser::show(ContainerT& container, auto BrowserListElementCreator) ZINET_API_POST
 	{
 		if (ImGui::Begin(title.c_str(), &isOpen))
 		{
@@ -107,7 +78,7 @@ namespace zt::gameplay
 
 				ImGui::TableNextRow();
 				ImGui::TableNextColumn();
-				list.show(container, searchText);
+				list.show(container, searchText, BrowserListElementCreator);
 				ImGui::TableNextColumn();
 				inspector.show(container, list.selectedIndex);
 

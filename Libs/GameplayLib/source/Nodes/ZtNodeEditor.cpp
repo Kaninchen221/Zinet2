@@ -137,7 +137,7 @@ namespace zt::gameplay
 		{
 			auto& engineContext = EngineContext::Get();
 			auto assets = engineContext.assetsStorage.getAssets();
-			assetsList.show(assets);
+			assetsList.show(assets, CreateObjectBrowserListElement);
 		}
 
 		if (metrics.shouldShow)
@@ -149,7 +149,7 @@ namespace zt::gameplay
 		if (systemsList.isOpen)
 		{
 			auto& engineContext = EngineContext::Get();
-			systemsList.show(engineContext.getSystems());
+			systemsList.show(engineContext.getSystems(), CreateObjectBrowserListElement);
 		}
 
 		ImGui::ShowDemoWindow();
