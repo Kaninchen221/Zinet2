@@ -21,7 +21,6 @@ namespace zt::core
 		{ t.operator ->() };
 		{ t.operator bool() };
 	};
-
 	template<class T>
 	concept NotLikeSmartPointer = !LikeSmartPointer<T>;
 
@@ -30,7 +29,6 @@ namespace zt::core
 		t.first;
 		t.second;
 	};
-
 	template<class T>
 	concept NotLikePair = !LikePair<T>;
 }
