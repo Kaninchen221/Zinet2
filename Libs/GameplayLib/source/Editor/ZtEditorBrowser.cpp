@@ -1,38 +1,57 @@
 ﻿#include "Zinet/Gameplay/Editor/ZtEditorBrowser.hpp"
 
+#include "Zinet/Gameplay/Editor/ZtEditorConfig.hpp"
+
 namespace zt::gameplay
 {
+	void EditorBrowserInspector::show(core::Object* object) ZINET_API_POST
+	{
+		const ImVec2 size = {};
+		if (ImGui::BeginChild("Inspector", size, true))
+		{
+			if (object)
+			{
+				object->imGui();
+			}
 
-	void CreateObjectBrowserListElement(core::Object& object, EditorBrowserList& list, int elementIndex)
+		}
+		ImGui::EndChild();
+	}
+
+	void CreateObjectBrowserListElement(core::Object& object, EditorBrowserList& list)
 	{
 		const auto& displayName = object.getDisplayName();
-		bool isSelected = elementIndex == list.selectedIndex;
+		bool isSelected = &object == list.selectedObject;
 		if (ImGui::Selectable(displayName.c_str(), isSelected))
 		{
-			list.selectedIndex = elementIndex;
-			EditorBrowserList::Logger->info("Selected: {} Index: {}", displayName, list.selectedIndex);
+			list.selectedObject = &object;
+			EditorBrowserList::Logger->info("Selected: {}", displayName);
 		}
 
 		CreateDragDropSourceSection(object);
 	}
 
-	void CreateNodeBrowserListElement(gameplay::Node& node, EditorBrowserList& list, int elementIndex)
+	void CreateNodeBrowserListElement(gameplay::Node& node, EditorBrowserList& list)
 	{
 		const auto& displayName = node.getDisplayName();
-		bool isSelected = elementIndex == list.selectedIndex;
+		if (!node.isInspectable)
+			return;
+
+		bool isSelected = &node == list.selectedObject;
 		if (ImGui::Selectable(displayName.c_str(), isSelected))
 		{
-			list.selectedIndex = elementIndex;
-			EditorBrowserList::Logger->info("Selected: {} Index: {}", displayName, list.selectedIndex);
+			list.selectedObject = &node;
+			EditorBrowserList::Logger->info("Selected: {}", displayName);
 		}
 
 		CreateDragDropSourceSection(node);
 
+		ImGui::Indent(EditorConfig::IndentValue);
 		for (auto& child : node.getChildren())
 		{
 			if (child)
-				CreateNodeBrowserListElement(*child, list, elementIndex);
+				CreateNodeBrowserListElement(*child, list);
 		}
+		ImGui::Unindent(EditorConfig::IndentValue);
 	}
-
 }

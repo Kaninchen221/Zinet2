@@ -50,18 +50,17 @@ namespace zt::gameplay
 		void imGui() ZINET_API_POST { auto name = getDisplayName(); ImGui::Text(name.c_str()); }
 	};
 
-	struct EditorBrowserInspector
+	struct ZINET_GAMEPLAY_API EditorBrowserInspector
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EditorBrowserInspector");
 
-		template<class ContainerT>
-		void show(ContainerT& container, int selectedIndex) ZINET_API_POST;
+		void show(core::Object* object = nullptr) ZINET_API_POST;
 	};
 
 	struct EditorBrowserList;
-	void CreateObjectBrowserListElement(core::Object& object, EditorBrowserList& list, int elementIndex);
+	ZINET_GAMEPLAY_API void CreateObjectBrowserListElement(core::Object& object, EditorBrowserList& list);
 
-	void CreateNodeBrowserListElement(gameplay::Node& node, EditorBrowserList& list, int elementIndex);
+	ZINET_GAMEPLAY_API void CreateNodeBrowserListElement(gameplay::Node& node, EditorBrowserList& list);
 
 	template<class ObjectT>
 	void CreateDragDropSourceSection(ObjectT& object) ZINET_API_POST;
@@ -73,7 +72,7 @@ namespace zt::gameplay
 		template<class ContainerT>
 		void show(ContainerT& container, std::string_view searchText, auto ElementCreator) ZINET_API_POST;
 
-		int selectedIndex = InvalidIndex; // TODO: Replace with pointer on Object?
+		core::Object* selectedObject = nullptr;
 	};
 
 	struct EditorBrowser

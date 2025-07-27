@@ -16,43 +16,10 @@ namespace
 
 namespace zt::gameplay
 {
-	struct EditorConfig
-	{
-		inline static float IndentMulti = 4.f;
-		inline static float ListMenuWidthDiv = 4.f;
-	};
-
 	struct EditorMetrics
 	{
 		bool shouldShow = false;
 		void show() ZINET_API_POST;
-	};
-
-	struct EditorNodesList
-	{
-		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EditorNodesList");
-
-		bool shouldShow = false;
-		void show() ZINET_API_POST;
-
-		void generateSelectable(NodeHandle<>& node, int deep) ZINET_API_POST;
-
-		NodeHandle<> selectedNode;
-		EditorSearchBar textSearchBar;
-		std::string_view searchSubString;
-	};
-
-	struct EditorSystemsList
-	{
-		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EditorSystemsList");
-
-		bool shouldShow = false;
-		void show() ZINET_API_POST;
-
-		EditorSearchBar textSearchBar;
-		std::string_view searchSubString;
-		const int32_t invalidSystemIndex = -1;
-		int32_t selectedSystemIndex = invalidSystemIndex;
 	};
 
 	class ZINET_GAMEPLAY_API NodeEditor : public Node
@@ -64,7 +31,7 @@ namespace zt::gameplay
 	public:
 
 		NodeEditor() ZINET_API_POST = delete;
-		NodeEditor(const NodeNameView& newName) ZINET_API_POST : Node{ newName } {}
+		NodeEditor(const NodeNameView& newName) ZINET_API_POST : Node{ newName } { isInspectable = false; }
 		NodeEditor(const NodeEditor& other) ZINET_API_POST = default;
 		NodeEditor(NodeEditor&& other) ZINET_API_POST = default;
 		~NodeEditor() ZINET_API_POST = default;

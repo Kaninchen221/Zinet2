@@ -32,6 +32,7 @@ namespace zt::core
 		// TODO: Set the name during creation of the object and test
 		virtual std::string getDisplayName() ZINET_API_POST { return displayName; }
 
+		bool isInspectable = true;
 		virtual void imGui() ZINET_API_POST {}
 
 	protected:

@@ -6,22 +6,6 @@
 
 namespace zt::gameplay
 {
-	template<class ContainerT>
-	void EditorBrowserInspector::show(ContainerT& container, int selectedIndex) ZINET_API_POST
-	{
-		const ImVec2 size = {};
-		if (ImGui::BeginChild("Inspector", size, true))
-		{
-			if (selectedIndex != InvalidIndex)
-			{
-				auto& object = ResolveOptionalSmartPointer(container.at(selectedIndex));
-				object.imGui();
-			}
-
-		}
-		ImGui::EndChild();
-	}
-
 	template<class ObjectT>
 	void CreateDragDropSourceSection(ObjectT& object) ZINET_API_POST
 	{
@@ -52,7 +36,7 @@ namespace zt::gameplay
 					continue;
 
 				ImGui::PushID(elementIndex);
-				std::invoke(elementCreator, object, *this, elementIndex);
+				std::invoke(elementCreator, object, *this);
 				ImGui::PopID();
 
 				++elementIndex;
@@ -80,7 +64,7 @@ namespace zt::gameplay
 				ImGui::TableNextColumn();
 				list.show(container, searchText, BrowserListElementCreator);
 				ImGui::TableNextColumn();
-				inspector.show(container, list.selectedIndex);
+				inspector.show(list.selectedObject);
 
 				ImGui::EndTable();
 			}
