@@ -16,25 +16,6 @@ namespace zt::gameplay
 	// TODO: Constants.hpp?
 	const inline static int InvalidIndex = -1;
 
-	template<class T>
-	concept LikeSmartPointer = requires(T& t) {
-		{ t.operator ->() };
-		{ t.operator bool() };
-	};
-
-	template<class T>
-	concept NotLikeSmartPointer = !LikeSmartPointer<T>;
-
-	// TODO: Move it to concepts
-	template<class T>
-	concept LikePair = requires(T& t) {
-		{ t.first } -> std::same_as<decltype(t.first)>;
-		{ t.second } -> std::same_as<decltype(t.first)>;
-	};
-
-	template<class T>
-	concept NotLikePair = !LikePair<T>;
-
 	template<LikeSmartPointer InputT>
 	constexpr auto& ResolveOptionalSmartPointer(InputT& object) ZINET_API_POST { return *object; }
 
