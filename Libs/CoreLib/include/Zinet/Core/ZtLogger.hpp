@@ -14,9 +14,14 @@ namespace zt::core
 	#pragma warning( suppress : 4661 )
 	class ZINET_CORE_API CustomSink : public spdlog::sinks::base_sink<std::mutex>
 	{
-		inline static std::function<void()> Callback;
+	public:
+		using CallbackT = std::function<void()>;
+
+	private:
+		inline static CallbackT Callback;
 
 	public:
+
 		CustomSink() = default;
 		CustomSink(const CustomSink& other) = default;
 		CustomSink(CustomSink&& other) = default;
@@ -26,30 +31,13 @@ namespace zt::core
 
 		~CustomSink() ZINET_API_POST = default;
 
-		// TODO: Doesn't work sometimes because of the undefined static order initialization
-		static void SetFailTestCallback(std::function<void()> newCallback)
-		{
-			Callback = newCallback;
-		}
+		static const CallbackT& GetCallback() ZINET_API_POST;
 
-		static bool GetCanFailTest() { return Callback.operator bool(); }
+		static void SetCallback(CallbackT newCallback) ZINET_API_POST;
 
 	protected:
 
-		void sink_it_(const spdlog::details::log_msg& msg) override
-		{
-			if (GetCanFailTest())
-			{
-				bool shouldFail = msg.level == spdlog::level::err ||
-					msg.level == spdlog::level::warn ||
-					msg.level == spdlog::level::critical;
-
-				if (shouldFail)
-				{
-					std::invoke(Callback);
-				}
-			}
-		}
+		void sink_it_(const spdlog::details::log_msg& msg) override ZINET_API_POST;
 
 		void flush_() override
 		{}
