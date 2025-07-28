@@ -22,7 +22,7 @@ namespace zt::gameplay
 	public:
 
 		NodeSprite() ZINET_API_POST = delete;
-		NodeSprite(const NodeNameView& newName) ZINET_API_POST : Node2D{ newName } {}
+		NodeSprite(const std::string_view& newName) ZINET_API_POST : Node2D{ newName } {}
 		NodeSprite(const NodeSprite& other) ZINET_API_POST = default;
 		NodeSprite(NodeSprite&& other) ZINET_API_POST = default;
 		~NodeSprite() ZINET_API_POST = default;

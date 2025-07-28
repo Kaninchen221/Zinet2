@@ -16,7 +16,7 @@ namespace zt::core
 	{
 	public:
 
-		Object() = default;
+		Object() = delete;
 		Object(std::string_view newDisplaName) : displayName{ newDisplaName } {}
 		Object(const Object& other) = default;
 		Object(Object&& other) = default;

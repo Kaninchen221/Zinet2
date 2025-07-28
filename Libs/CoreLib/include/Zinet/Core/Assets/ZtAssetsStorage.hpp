@@ -20,6 +20,14 @@ namespace zt::core::assets
 
 	public:
 
+		AssetsStorage() ZINET_API_POST : Object("AssetsStorage") {}
+		AssetsStorage(const AssetsStorage& other) ZINET_API_POST = default;
+		AssetsStorage(AssetsStorage&& other) ZINET_API_POST = default;
+		~AssetsStorage() ZINET_API_POST = default;
+
+		AssetsStorage& operator = (const AssetsStorage& other) ZINET_API_POST = default;
+		AssetsStorage& operator = (AssetsStorage&& other) ZINET_API_POST = default;
+
 		bool storeAssets() ZINET_API_POST;
 
 		void clear() ZINET_API_POST;

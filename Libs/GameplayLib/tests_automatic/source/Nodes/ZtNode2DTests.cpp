@@ -21,7 +21,7 @@ namespace zt::gameplay::tests
 		NodeHandle<Node2D> node = CreateNode<Node2D>("NodeName");
 
 		static_assert(!std::is_default_constructible_v<Node2D>);
-		static_assert(std::is_constructible_v<Node2D, const NodeNameView&>);
+		static_assert(std::is_constructible_v<Node2D, const std::string_view&>);
 	};
 
 	TEST_F(Node2DTests, PassTest)

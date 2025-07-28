@@ -30,14 +30,13 @@ namespace zt::core
 		static_assert(sizeof(std::byte) == sizeof(stbi_uc));
 		using Data = std::vector<std::byte>;
 
-		Image() = default;
+		Image() : Object("Image") {}
 		Image(const Image& other) = delete;
-		Image(Image&& other) { *this = std::move(other); }
+		Image(Image&& other) : Object("Image") { *this = std::move(other); }
+		~Image() ZINET_API_POST = default;
 
 		Image& operator = (const Image& other) = delete;
 		Image& operator = (Image&& other);
-
-		~Image() ZINET_API_POST = default;
 
 		bool loadFromFile(const fs::path& path, int32_t expectedComponents) ZINET_API_POST;
 

@@ -13,6 +13,14 @@ namespace zt::core
 
 	public:
 
+		Clock() ZINET_API_POST : Object("Clock") {}
+		Clock(const Clock& other) ZINET_API_POST = default;
+		Clock(Clock&& other) ZINET_API_POST = default;
+		~Clock() ZINET_API_POST = default;
+
+		Clock& operator = (const Clock& other) ZINET_API_POST = default;
+		Clock& operator = (Clock&& other) ZINET_API_POST = default;
+
 		using UnderlyingClock = std::chrono::system_clock;
 
 		void start();

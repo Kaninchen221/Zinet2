@@ -18,7 +18,7 @@ namespace zt::gameplay
 	public:
 
 		Node2D() ZINET_API_POST = delete;
-		Node2D(const NodeNameView& newName) ZINET_API_POST : Node{ newName } {}
+		Node2D(const std::string_view& newName) ZINET_API_POST : Node{ newName } {}
 		Node2D(const Node2D& other) ZINET_API_POST = default;
 		Node2D(Node2D&& other) ZINET_API_POST = default;
 		~Node2D() ZINET_API_POST = default;

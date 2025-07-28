@@ -19,7 +19,7 @@ namespace zt::core
 
 		using Byte = std::byte;
 
-		File() ZINET_API_POST = default;
+		File() ZINET_API_POST : Object("Image") {};
 		File(const File& other) ZINET_API_POST = delete;
 		File(File&& other) ZINET_API_POST = default;
 
