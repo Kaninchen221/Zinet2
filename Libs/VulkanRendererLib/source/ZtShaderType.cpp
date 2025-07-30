@@ -32,4 +32,15 @@ namespace zt::vulkan_renderer
 		return {};
 	}
 
+	ShaderType FromStringToShaderType(const std::string& str) ZINET_API_POST
+	{
+		if (str == "vert")
+			return ShaderType::Vertex;
+		else if (str == "frag")
+			return ShaderType::Fragment;
+		else if (str == "comp")
+			return ShaderType::Compute;
+		
+		return ShaderType::Invalid;
+	}
 }

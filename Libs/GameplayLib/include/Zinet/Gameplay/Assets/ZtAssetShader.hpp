@@ -1,18 +1,20 @@
 #pragma once
 
-#include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
+#include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 
-#include "Zinet/Core/Assets/ZtAsset.hpp"
+#include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
+
+#include "Zinet/Core/Assets/ZtAssetText.hpp"
 #include "Zinet/Core/ZtFile.hpp"
 
-namespace zt::vulkan_renderer::assets
+namespace zt::gameplay::assets
 {
-	class ZINET_VULKAN_RENDERER_API AssetShader : public core::assets::Asset
+	class ZINET_GAMEPLAY_API AssetShader : public core::assets::AssetText
 	{
 	public:
 
-		AssetShader() : Asset{ { "frag", "vert" }} {}
-		AssetShader(const AssetShader& other) ZINET_API_POST = default;
+		AssetShader() : AssetText{ { "frag", "vert" }} {}
+		AssetShader(const AssetShader& other) ZINET_API_POST : AssetText{other} {}
 		AssetShader(AssetShader&& other) ZINET_API_POST = default;
 		~AssetShader() ZINET_API_POST = default;
 
@@ -27,9 +29,7 @@ namespace zt::vulkan_renderer::assets
 
 		void imGui() ZINET_API_POST override;
 
-		// Content
-		std::string shaderCode;
-
+		vulkan_renderer::ShaderModule shaderModule{ nullptr };
 	};
 
 }

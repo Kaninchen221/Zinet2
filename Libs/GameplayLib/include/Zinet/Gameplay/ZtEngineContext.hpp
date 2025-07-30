@@ -36,7 +36,7 @@ namespace zt::gameplay
 		EngineContext& operator = (const EngineContext& other) ZINET_API_POST = default;
 		EngineContext& operator = (EngineContext&& other) ZINET_API_POST = default;
 
-		static auto& Get() ZINET_API_POST { return *instance; }
+		static auto& Get() ZINET_API_POST { core::Ensure(instance); return *instance; }
 
 		bool init() ZINET_API_POST;
 

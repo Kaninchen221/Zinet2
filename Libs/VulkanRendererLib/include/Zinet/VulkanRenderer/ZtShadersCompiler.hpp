@@ -30,7 +30,10 @@ namespace zt::vulkan_renderer
 		ShadersCompiler& operator = (const ShadersCompiler& other) ZINET_API_POST = default;
 		ShadersCompiler& operator = (ShadersCompiler&& other) ZINET_API_POST = default;
 
-		shaderc::SpvCompilationResult compileFromFile(const std::filesystem::path& filePath, const ShaderType shaderType) const ZINET_API_POST;
+		shaderc::SpvCompilationResult compileFromFile(const std::filesystem::path& filePath, ShaderType shaderType) const ZINET_API_POST;
+
+		// TODO: Test
+		shaderc::SpvCompilationResult compileFromString(const std::string& source, ShaderType shaderType, const std::string& fileName) const ZINET_API_POST;
 
 	};
 }
