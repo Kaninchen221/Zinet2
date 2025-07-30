@@ -1,24 +1,18 @@
 #pragma once
 
-#include "Zinet/Core/Assets/ZtAssetText.hpp"
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+
+#include <Zinet/Gameplay/Assets/ZtAssetTexture.hpp>
+#include <Zinet/Gameplay/ZtEngineContext.hpp>
 
 #include <gtest/gtest.h>
 
-namespace zt::core::assets::tests
+namespace zt::gameplay::assets::tests
 {
 
-	class AssetTextTests : public ::testing::Test
+	class AssetTextureTests : public ::testing::Test
 	{
 	protected:
-
-		AssetTextTests()
-		{
-		}
-
-		~AssetTextTests() override
-		{
-		}
 
 		void SetUp() override
 		{
@@ -28,26 +22,29 @@ namespace zt::core::assets::tests
 		{
 		}
 
-		AssetText assetText;
 	};
 
-	TEST_F(AssetTextTests, Test)
+	TEST_F(AssetTextureTests, Test)
 	{
-		AssetsStorage assetsStorage;
-		assetsStorage.registerAssetClass<AssetText>();
+		EngineContext engineContext;
+		auto& assetsStorage = engineContext.assetsStorage;
+		assetsStorage.registerAssetClass<AssetTexture>();
 
-		bool result = assetsStorage.storeAssets();
-		ASSERT_TRUE(result);
+		engineContext.addSystem<SystemRenderer>();
 
-		auto textAsset = assetsStorage.getAs<AssetText>("Content/placeholder.txt");
-		ASSERT_TRUE(textAsset);
+		SystemRenderer::UseImGui = false;
+		ASSERT_TRUE(engineContext.init());
 
-		ASSERT_TRUE(textAsset->load(assetsStorage.assetsFinder.rootFolder));
-		ASSERT_TRUE(textAsset->isLoaded());
-		ASSERT_FALSE(textAsset->text.empty());
+		auto asset = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
+		ASSERT_TRUE(asset);
 
-		textAsset->unload();
-		ASSERT_FALSE(textAsset->isLoaded());
-		ASSERT_TRUE(textAsset->text.empty());
+		ASSERT_TRUE(asset->load(assetsStorage.assetsFinder.rootFolder));
+		ASSERT_TRUE(asset->isLoaded());
+
+		asset->unload();
+		ASSERT_FALSE(asset->isLoaded());
+
+		engineContext.deinit();
+		SystemRenderer::UseImGui = true;
 	}
 }

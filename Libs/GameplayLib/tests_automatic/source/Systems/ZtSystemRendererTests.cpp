@@ -13,6 +13,7 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
+			SystemRenderer::UseImGui = false;
 			engineContext.addSystem<SystemRenderer>();
 
 			ASSERT_TRUE(engineContext.init());
@@ -21,6 +22,7 @@ namespace zt::gameplay::tests
 		void TearDown() override
 		{
 			engineContext.deinit();
+			SystemRenderer::UseImGui = true;
 		}
 
 		EngineContext engineContext;
@@ -28,10 +30,11 @@ namespace zt::gameplay::tests
 
 	TEST_F(SystemRendererTests, PassTest)
 	{
-		SystemRenderer& system = engineContext.getSystem<SystemRenderer>();
+		auto system = engineContext.getSystem<SystemRenderer>();
+		ASSERT_TRUE(system);
 		auto node = CreateNode<Node2D>();
 		//systemRenderer.addNode(node);
 
-		system.update();
+		system->update();
 	}
 }

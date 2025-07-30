@@ -173,12 +173,12 @@ namespace ImGui
 
 namespace ImGui
 {
-	inline void throwException(bool exprResult) 
+	inline void throwException(bool exprResult, const char* exprText) 
     { 
         if (!exprResult) 
         { 
-            throw std::exception("ImGui Assert"); 
+            throw std::exception(exprText);
         } 
     }
 }
-#define IM_ASSERT(_EXPR) do { ImGui::throwException(_EXPR); } while (0)
+#define IM_ASSERT(_EXPR) do { ImGui::throwException(_EXPR, #_EXPR); } while (0)

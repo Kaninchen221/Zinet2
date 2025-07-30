@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Zinet/Core/Assets/ZtAsset.hpp"
+#include "Zinet/Core/Assets/ZtAssetText.hpp"
 #include "Zinet/Core/ZtFile.hpp"
 #include "Zinet/Core/ZtPaths.hpp"
 
@@ -17,10 +17,10 @@ namespace
 
 namespace zt::gameplay::assets
 {
-	class ZINET_CORE_API AssetTexture : public Asset
+	class ZINET_CORE_API AssetTexture : public core::assets::Asset
 	{
 	public:
-		AssetTexture() : Asset{ { "png" } } {}
+		AssetTexture(const Extensions& extensions = { "png" }) : core::assets::Asset{ extensions } {}
 		AssetTexture(const AssetTexture& other) ZINET_API_POST { Asset::Asset(other); }
 		AssetTexture(AssetTexture&& other) ZINET_API_POST = default;
 		~AssetTexture() ZINET_API_POST { unload(); }

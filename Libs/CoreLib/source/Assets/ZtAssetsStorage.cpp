@@ -22,7 +22,8 @@ namespace zt::core::assets
 			auto optionalAsset = loadAssetMetaData(assetPath);
 			if (!optionalAsset)
 			{
-				Logger->error("Couldn't load asset, file path: {}, asset path: {}", filePath.generic_string(), assetPath.generic_string());
+				Logger->error("Couldn't load asset, file path: {}, asset path: {}, but continue", filePath.generic_string(), assetPath.generic_string());
+				continue;
 			}
 			auto minimalAsset = std::move(optionalAsset.value());
 
@@ -52,7 +53,7 @@ namespace zt::core::assets
 				}
 				else
 				{
-					Logger->error("Failed to load mnimal asset: {}, but continue", keyValue);
+					Logger->error("Failed to load minimal asset: {}, but continue", keyValue);
 					result = false;
 					continue;
 				}
@@ -96,7 +97,7 @@ namespace zt::core::assets
 		if (!file.isOpen())
 		{
 			Logger->error("Couldn't open asset, path: {}", assetPath.generic_string());
-			return {};
+			return std::nullopt;
 		}
 
 		Asset asset;

@@ -50,7 +50,14 @@ namespace zt::gameplay::assets
 		}
 
 		auto& engineContext = EngineContext::Get();
-		auto& rendererContext = engineContext.getSystem<SystemRenderer>().getRenderer().getRendererContext();
+		auto systemRenderer = engineContext.getSystem<SystemRenderer>();
+		if (!systemRenderer)
+		{
+			Logger->error("System renderer is invalid");
+			return false;
+		}
+
+		auto& rendererContext = systemRenderer->getRenderer().getRendererContext();
 		auto& device = rendererContext.device;
 		auto& vma = rendererContext.vma;
 		auto& queue = rendererContext.queue;
@@ -108,14 +115,6 @@ namespace zt::gameplay::assets
 		}
 		buffer.destroy(vma);
 
-		auto vkDescriptorSet = ImGui_ImplVulkan_AddTexture(
-			sampler.get(),
-			texture.getImageView().get(),
-			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-		);
-
-		descriptorSet = vulkan_renderer::DescriptorSets{ vkDescriptorSet };
-
 		loaded = true;
 		return true;
 	}
@@ -126,7 +125,14 @@ namespace zt::gameplay::assets
 			return;
 
 		auto& engineContext = EngineContext::Get();
-		auto& rendererContext = engineContext.getSystem<SystemRenderer>().getRenderer().getRendererContext();
+		auto systemRenderer = engineContext.getSystem<SystemRenderer>();
+		if (!systemRenderer)
+		{
+			Logger->error("System renderer is invalid");
+			return;
+		}
+
+		auto& rendererContext = systemRenderer->getRenderer().getRendererContext();
 		auto& device = rendererContext.device;
 		auto& vma = rendererContext.vma;
 		device.waitIdle();
@@ -145,6 +151,16 @@ namespace zt::gameplay::assets
 		
 		if (!texture.isValid())
 			return;
+
+		if (!descriptorSet.isValid())
+		{
+			auto vkDescriptorSet = ImGui_ImplVulkan_AddTexture(
+				sampler.get(),
+				texture.getImageView().get(),
+				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+			);
+			descriptorSet = vulkan_renderer::DescriptorSets{ vkDescriptorSet };
+		}
 
 		ImGui::Separator();
 		ImGui::Text("Texture image:");

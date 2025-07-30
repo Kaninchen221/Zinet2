@@ -51,17 +51,16 @@ namespace zt::gameplay
 		}
 
 		template<std::derived_from<System> SystemT>
-		SystemT& getSystem() ZINET_API_POST
+		SystemT* getSystem() ZINET_API_POST
 		{
 			for (auto& system : systems)
 			{
 				auto ptr = dynamic_cast<SystemT*>(system.get());
 				if (ptr)
-					return *ptr;
+					return ptr;
 			}
 
-			addSystem<SystemT>();
-			return *dynamic_cast<SystemT*>(systems.back().get());
+			return nullptr;
 		}
 
 		auto& getSystems() ZINET_API_POST { return systems; }

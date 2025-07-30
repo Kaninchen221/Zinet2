@@ -35,10 +35,13 @@ namespace zt::gameplay
 		if (!renderer.init(engineContext.window))
 			return false;
 
-		if (!imGuiIntegration.init(renderer.getRendererContext(), engineContext.window))
-			return false;
+		if (UseImGui)
+		{
+			if (!imGuiIntegration.init(renderer.getRendererContext(), engineContext.window))
+				return false;
 
-		drawInfo.additionalCommands = { vr::ImGuiIntegration::DrawCommand };
+			drawInfo.additionalCommands = { vr::ImGuiIntegration::DrawCommand };
+		}
 
 		// TODO: Remove that after using assets
 		vertexShaderModule = createShaderModule("shader.vert", vr::ShaderType::Vertex);
@@ -82,7 +85,11 @@ namespace zt::gameplay
 		vertexBuffer.destroy(renderer.getRendererContext().vma);
 		indexBuffer.destroy(renderer.getRendererContext().vma);
 
-		imGuiIntegration.deinit(renderer.getRendererContext());
+		if (UseImGui)
+		{
+			imGuiIntegration.deinit(renderer.getRendererContext());
+		}
+
 		renderer.deinit();
 	}
 

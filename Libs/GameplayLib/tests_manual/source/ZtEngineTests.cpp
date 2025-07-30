@@ -43,7 +43,10 @@ namespace zt::gameplay::tests
 			auto editorNode = CreateNode<NodeEditor>();
 			editorNode->setName("Editor");
 			rootNode->addChild(editorNode);
-			engineContext.getSystem<SystemImGui>().addNode(editorNode);
+
+			auto systemImGui = engineContext.getSystem<SystemImGui>();
+			ASSERT_TRUE(systemImGui);
+			systemImGui->addNode(editorNode);
 
 			auto child = CreateNode();
 			child->setName("Child");
@@ -56,7 +59,10 @@ namespace zt::gameplay::tests
 			auto sprite = CreateNode<NodeSprite>("Sprite");
 			sprite->texture = engineContext.assetsStorage.getAs<assets::AssetTexture>("Content/Textures/image.png");
 			rootNode->addChild(sprite);
-			engineContext.getSystem<SystemRenderer>().addNode(sprite);
+
+			auto systemRenderer = engineContext.getSystem<SystemRenderer>();
+			ASSERT_TRUE(systemRenderer);
+			systemRenderer->addNode(sprite);
 		}
 
 		void TearDown() override

@@ -9,7 +9,7 @@ namespace zt::core::assets
 	{
 	public:
 
-		AssetText() : Asset{ { "txt" } } {}
+		AssetText(const Extensions& extensions = { "txt" }) : Asset{ extensions } {}
 		AssetText(const AssetText& other) ZINET_API_POST = default;
 		AssetText(AssetText&& other) ZINET_API_POST = default;
 		~AssetText() ZINET_API_POST = default;

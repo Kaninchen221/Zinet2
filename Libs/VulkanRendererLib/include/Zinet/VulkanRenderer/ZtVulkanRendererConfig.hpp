@@ -41,3 +41,19 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
+
+#include <exception>
+
+// Override VMA_ASSERT
+namespace zt::vulkan_renderer
+{
+    inline void throwException(bool exprResult, const char* exprText)
+    {
+        if (!exprResult)
+        {
+            throw std::exception(exprText);
+        }
+    }
+}
+
+#define VMA_ASSERT(_EXPR) do { zt::vulkan_renderer::throwException(_EXPR, #_EXPR); } while (0)

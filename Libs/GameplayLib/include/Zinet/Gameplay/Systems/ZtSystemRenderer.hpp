@@ -45,6 +45,8 @@ namespace zt::gameplay
 
 		void update() ZINET_API_POST override;
 
+		inline static bool UseImGui = true;
+
 		void imGui() ZINET_API_POST override;
 
 		auto& getRenderer() ZINET_API_POST { return renderer; }

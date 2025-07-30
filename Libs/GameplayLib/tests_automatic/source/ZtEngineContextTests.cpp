@@ -39,7 +39,8 @@ namespace zt::gameplay::tests
 	{
 		ASSERT_TRUE(engineContext.init());
 		engineContext.addSystem<TestSystem>();
-		[[maybe_unused]] TestSystem& system = engineContext.getSystem<TestSystem>();
+		TestSystem* system = engineContext.getSystem<TestSystem>();
+		ASSERT_TRUE(system);
 		engineContext.deinit();
 	}
 }
