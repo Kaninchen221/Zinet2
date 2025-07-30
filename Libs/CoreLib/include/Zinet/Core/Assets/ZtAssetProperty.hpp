@@ -26,6 +26,12 @@ namespace zt::core::assets
 
 		auto operator = (AssetHandleT otherAssetHandle) ZINET_API_POST { assetHandle = otherAssetHandle; }
 
+		// TODO: Test
+		auto* operator->() ZINET_API_POST { return assetHandle.operator->(); }
+
+		// TODO: Test
+		operator bool() ZINET_API_POST { return assetHandle; }
+
 		void show() ZINET_API_POST;
 	};
 

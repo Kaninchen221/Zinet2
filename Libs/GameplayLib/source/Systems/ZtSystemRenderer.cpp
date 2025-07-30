@@ -7,25 +7,6 @@
 
 namespace zt::gameplay
 {
-	// TODO: Remove that after using assets
-	vr::ShaderModule SystemRenderer::createShaderModule(std::string_view sourceCodeFileName, vr::ShaderType shaderType)
-	{
-		vr::ShadersCompiler shadersCompiler;
-		vr::ShaderModule shaderModule{ nullptr };
-
-		const auto contentFolderPath = core::Paths::CurrentProjectRootPath() / "test_files";
-
-		const auto fullPath = contentFolderPath / sourceCodeFileName;
-		const auto compileResult = shadersCompiler.compileFromFile(fullPath, shaderType);
-		if (compileResult.GetCompilationStatus() != shaderc_compilation_status_success)
-			return shaderModule;
-
-		const auto& device = renderer.getRendererContext().device;
-		shaderModule.create(device, compileResult);
-
-		return shaderModule;
-	}
-
 	bool SystemRenderer::init() ZINET_API_POST
 	{
 		System::init();
@@ -42,10 +23,6 @@ namespace zt::gameplay
 
 			drawInfo.additionalCommands = { vr::ImGuiIntegration::DrawCommand };
 		}
-
-		// TODO: Remove that after using assets
-		vertexShaderModule = createShaderModule("shader.vert", vr::ShaderType::Vertex);
-		fragmentShaderModule = createShaderModule("shader.frag", vr::ShaderType::Fragment);
 
 		const vr::DrawInfo::Vertices vertices = {
 			{{-0.5f, 0.5f, 1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {0.f, 0.f}},
@@ -97,8 +74,18 @@ namespace zt::gameplay
 	{
 		System::update();
 
+		drawInfo.instances = static_cast<uint32_t>(nodes.size());
 		if (drawInfo.instances == 0 && drawInfo.additionalCommands.empty())
 			return;
+
+		if (!vertexShader || !vertexShader.assetHandle->isLoaded())
+			return;
+
+		if (!fragmentShader || !fragmentShader.assetHandle->isLoaded())
+			return;
+
+		drawInfo.vertexShaderModule = &vertexShader.assetHandle->shaderModule;
+		drawInfo.fragmentShaderModule = &fragmentShader.assetHandle->shaderModule;
 
 		renderer.createPipeline(drawInfo);
 		renderer.getGraphicsPipeline().isValid();

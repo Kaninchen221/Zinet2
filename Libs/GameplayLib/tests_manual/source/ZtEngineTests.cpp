@@ -27,9 +27,10 @@ namespace zt::gameplay::tests
 		void SetUp() override
 		{
 			auto& engineContext = EngineContext::Get();
-			engineContext.assetsStorage.registerAssetClass<core::assets::AssetText>();
-			engineContext.assetsStorage.registerAssetClass<gameplay::assets::AssetTexture>();
-			engineContext.assetsStorage.registerAssetClass<gameplay::assets::AssetShader>();
+			auto& assetsStorage = engineContext.assetsStorage;
+			assetsStorage.registerAssetClass<core::assets::AssetText>();
+			assetsStorage.registerAssetClass<gameplay::assets::AssetTexture>();
+			assetsStorage.registerAssetClass<gameplay::assets::AssetShader>();
 
 			engineContext.addSystem<SystemImGui>();
 			engineContext.addSystem<SystemRenderer>();
@@ -56,11 +57,20 @@ namespace zt::gameplay::tests
 			child->addChild(childOfChild);
 
 			auto sprite = CreateNode<NodeSprite>("Sprite");
-			sprite->texture = engineContext.assetsStorage.getAs<assets::AssetTexture>("Content/Textures/image.png");
+			sprite->texture = assetsStorage.getAs<assets::AssetTexture>("Content/Textures/image.png");
+			sprite->texture->load(core::Paths::RootPath());
 			rootNode->addChild(sprite);
 
 			auto systemRenderer = engineContext.getSystem<SystemRenderer>();
 			ASSERT_TRUE(systemRenderer);
+
+			auto shaderVert = assetsStorage.getAs<assets::AssetShader>("Content/Shaders/shader.vert");
+			ASSERT_TRUE(shaderVert->load(core::Paths::RootPath()));
+			systemRenderer->vertexShader = shaderVert;
+
+			auto shaderFrag = assetsStorage.getAs<assets::AssetShader>("Content/Shaders/shader.frag");
+			ASSERT_TRUE(shaderFrag->load(core::Paths::RootPath()));
+			systemRenderer->fragmentShader = shaderFrag;
 			systemRenderer->addNode(sprite);
 		}
 

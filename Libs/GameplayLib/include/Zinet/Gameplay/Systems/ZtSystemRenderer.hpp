@@ -52,12 +52,10 @@ namespace zt::gameplay
 		auto& getRenderer() ZINET_API_POST { return renderer; }
 		const auto& getRenderer() const ZINET_API_POST { return renderer; }
 
-	protected:
-
 		core::assets::AssetProperty<assets::AssetShader> vertexShader{ "Vertex Shader" };
 		core::assets::AssetProperty<assets::AssetShader> fragmentShader{ "Fragment Shader" };
 
-		vr::ShaderModule createShaderModule(std::string_view sourceCodeFileName, vr::ShaderType shaderType);
+	protected:
 
 		vr::ImGuiIntegration imGuiIntegration;
 		vr::VulkanRenderer renderer;
