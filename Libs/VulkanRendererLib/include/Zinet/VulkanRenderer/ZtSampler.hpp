@@ -11,6 +11,20 @@ namespace zt::vulkan_renderer
 {
 	class Device;
 
+	inline VkFilter SamplerTypeFromString(std::string_view str) ZINET_API_POST
+	{
+		if (str == "nearest")
+			return VkFilter::VK_FILTER_NEAREST;
+		else if (str == "linear")
+			return VkFilter::VK_FILTER_LINEAR;
+		else if (str == "cubic")
+			return VkFilter::VK_FILTER_CUBIC_EXT;
+
+		auto Logger = core::ConsoleLogger::Create("SamplerTypeFromString");
+		Logger->warn("Couldn't match str: {} to any filter type, using nearest as default", str);
+		return VkFilter::VK_FILTER_NEAREST;
+	}
+
 	class ZINET_VULKAN_RENDERER_API Sampler : public VulkanObject<VkSampler>
 	{
 	protected:

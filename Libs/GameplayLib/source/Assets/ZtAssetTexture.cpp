@@ -19,7 +19,7 @@ namespace zt::vulkan_renderer
 
 namespace zt::gameplay::assets
 {
-	bool AssetTexture::load([[maybe_unused]] const core::Path& rootPath) ZINET_API_POST
+	bool AssetTexture::load(const core::Path& rootPath) ZINET_API_POST
 	{
 		if (isLoaded())
 			return true;
@@ -73,13 +73,6 @@ namespace zt::gameplay::assets
 
 		auto textureImageViewFileName = fmt::format("Texture {} image view", metaData.value("fileName", "TextureImageFileName"));
 		device.setDebugName(texture.getImageView(), textureImageViewFileName, VK_OBJECT_TYPE_IMAGE_VIEW);
-		
-		auto samplerCreateInfo = vulkan_renderer::Sampler::GetDefaultCreateInfo();
-		if (!sampler.create(device, samplerCreateInfo))
-		{
-			Logger->error("Couldn't create a sampler");
-			return false;
-		}
 
 		vulkan_renderer::Buffer buffer{ nullptr };
 		const auto bufferCreateInfo = vulkan_renderer::Buffer::GetImageBufferCreateInfo(image);
@@ -139,13 +132,21 @@ namespace zt::gameplay::assets
 
 		descriptorSet.invalidate();
 		texture.destroy(device, vma);
-		sampler.destroy(device);
 		loaded = false;
 	}
 
 	void AssetTexture::imGui() ZINET_API_POST
 	{
 		Asset::imGui();
+
+		sampler.show();
+
+		if (!sampler || !sampler->isLoaded())
+		{
+			ImGui::Text("Sampler asset is invalid or not loaded");
+			return;
+		}
+
 		if (!isLoaded())
 			return;
 		
@@ -155,7 +156,7 @@ namespace zt::gameplay::assets
 		if (!descriptorSet.isValid())
 		{
 			auto vkDescriptorSet = ImGui_ImplVulkan_AddTexture(
-				sampler.get(),
+				sampler->sampler.get(),
 				texture.getImageView().get(),
 				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 			);

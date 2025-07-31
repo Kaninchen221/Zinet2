@@ -55,6 +55,8 @@ namespace zt::gameplay
 
 		std::string getDisplayName() override ZINET_API_POST { return name; }
 
+		virtual void update([[maybe_unused]] float deltaTime) ZINET_API_POST {}
+
 	protected:
 
 		Children children;

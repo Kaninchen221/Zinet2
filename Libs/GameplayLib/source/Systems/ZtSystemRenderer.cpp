@@ -74,8 +74,7 @@ namespace zt::gameplay
 	{
 		System::update();
 
-		drawInfo.instances = static_cast<uint32_t>(nodes.size());
-		if (drawInfo.instances == 0 && drawInfo.additionalCommands.empty())
+		if (nodes.size() == 0 && drawInfo.additionalCommands.empty())
 			return;
 
 		if (!vertexShader || !vertexShader.assetHandle->isLoaded())
@@ -86,6 +85,24 @@ namespace zt::gameplay
 
 		drawInfo.vertexShaderModule = &vertexShader.assetHandle->shaderModule;
 		drawInfo.fragmentShaderModule = &fragmentShader.assetHandle->shaderModule;
+
+		drawInfo.pipelineDescriptorInfo = {};
+		drawInfo.drawCallDescriptorInfo = {};
+		drawInfo.instances = 0;
+		for (const auto& weakNode : nodes)
+		{
+			auto node = weakNode.lock();
+			if (!node)
+				continue;
+
+			auto node2D = dynamic_cast<Node2D*>(node.get());
+			if (!node2D)
+				continue;
+
+			drawInfo.pipelineDescriptorInfo += node2D->getPipelineDescriptorInfos();
+			drawInfo.drawCallDescriptorInfo += node2D->getPipelineDescriptorInfos();
+			drawInfo.instances++;
+		}
 
 		renderer.createPipeline(drawInfo);
 		renderer.getGraphicsPipeline().isValid();

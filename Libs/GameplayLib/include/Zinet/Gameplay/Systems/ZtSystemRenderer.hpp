@@ -71,14 +71,7 @@ namespace zt::gameplay
 			.vertexBuffer = &vertexBuffer,
 			.indexBuffer = &indexBuffer,
 			.indexCount = static_cast<uint32_t>(6),
-			.instances = 0,
-			//.pipelineDescriptorInfo = { {}, {} },
-			//.drawCallDescriptorInfo =
-			//{
-			//	.uniformBuffers = { { &uniformBuffers[0] }, { &uniformBuffers[1] } },
-			//	.texturesInfos{}
-			//}//,
-			//.additionalCommands = { ImGuiIntegration::DrawCommand }
+			.instances = 0
 		};
 	};
 

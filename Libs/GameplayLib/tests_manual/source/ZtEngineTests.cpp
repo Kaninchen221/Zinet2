@@ -31,6 +31,7 @@ namespace zt::gameplay::tests
 			assetsStorage.registerAssetClass<core::assets::AssetText>();
 			assetsStorage.registerAssetClass<gameplay::assets::AssetTexture>();
 			assetsStorage.registerAssetClass<gameplay::assets::AssetShader>();
+			assetsStorage.registerAssetClass<gameplay::assets::AssetSampler>();
 
 			engineContext.addSystem<SystemImGui>();
 			engineContext.addSystem<SystemRenderer>();

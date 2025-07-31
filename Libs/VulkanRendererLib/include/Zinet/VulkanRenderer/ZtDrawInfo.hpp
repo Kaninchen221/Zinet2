@@ -36,6 +36,14 @@ namespace zt::vulkan_renderer
 		/// Texture per instance
 		std::vector<TextureInfo> texturesInfos;
 
+		// TODO: Test
+		DescriptorInfo& operator += (const DescriptorInfo& other) ZINET_API_POST
+		{
+			uniformBuffers.append_range(other.uniformBuffers);
+			texturesInfos.append_range(other.texturesInfos);
+			return *this;
+		}
+
 		/// Cached data
 		uint32_t cachedUniformBuffersBinding;
 		uint32_t cachedTexturesBinding;

@@ -6,6 +6,7 @@
 #include "Zinet/Core/ZtLogger.hpp"
 
 #include "Zinet/VulkanRenderer/ZtTransform.hpp"
+#include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
 
 namespace zt::gameplay
 {
@@ -25,6 +26,9 @@ namespace zt::gameplay
 
 		Node2D& operator = (const Node2D& other) ZINET_API_POST = default;
 		Node2D& operator = (Node2D&& other) ZINET_API_POST = default;
+
+		vulkan_renderer::DescriptorInfo getPipelineDescriptorInfos() const ZINET_API_POST;
+		vulkan_renderer::DescriptorInfo getDrawCallDescriptorInfos() const ZINET_API_POST;
 
 		vulkan_renderer::
 		Transform transform;

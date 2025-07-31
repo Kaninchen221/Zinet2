@@ -1,12 +1,17 @@
 #pragma once
 
+#include "Zinet/Gameplay/ZtGameplayConfig.hpp"
+
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
+#include "Zinet/Core/Assets/ZtAssetProperty.hpp"
 #include "Zinet/Core/ZtFile.hpp"
 #include "Zinet/Core/ZtPaths.hpp"
 
 #include "Zinet/VulkanRenderer/ZtTexture.hpp"
 #include "Zinet/VulkanRenderer/ZtSampler.hpp"
 #include "Zinet/VulkanRenderer/ZtDescriptorSets.hpp"
+
+#include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
 
 namespace
 {
@@ -17,7 +22,7 @@ namespace
 
 namespace zt::gameplay::assets
 {
-	class ZINET_CORE_API AssetTexture : public core::assets::Asset
+	class ZINET_GAMEPLAY_API AssetTexture : public core::assets::Asset
 	{
 	public:
 		AssetTexture(const Extensions& extensions = { "png" }) : core::assets::Asset{ extensions } {}
@@ -36,9 +41,10 @@ namespace zt::gameplay::assets
 
 		void imGui() ZINET_API_POST override;
 
+		// TODO: Recreate the descriptor set when the sampler change
+		core::assets::AssetProperty<AssetSampler> sampler{ "Sampler" };
+
 		vulkan_renderer::Texture texture;
-		// TODO: AssetTexture should contains an AssetSampler?
-		vulkan_renderer::Sampler sampler{ nullptr };
 		vulkan_renderer::DescriptorSets descriptorSet{ nullptr };
 	};
 

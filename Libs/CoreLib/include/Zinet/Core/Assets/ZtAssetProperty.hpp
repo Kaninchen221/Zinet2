@@ -22,6 +22,7 @@ namespace zt::core::assets
 		std::string propertyName = "PropertyName";
 
 		// Data
+		// TODO: OnChanged
 		core::assets::AssetHandle<AssetT> assetHandle;
 
 		auto operator = (AssetHandleT otherAssetHandle) ZINET_API_POST { assetHandle = otherAssetHandle; }
