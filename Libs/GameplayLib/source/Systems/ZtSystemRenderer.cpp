@@ -77,31 +77,29 @@ namespace zt::gameplay
 		if (nodes.size() == 0 && drawInfo.additionalCommands.empty())
 			return;
 
-		if (!vertexShader || !vertexShader.assetHandle->isLoaded())
-			return;
-
-		if (!fragmentShader || !fragmentShader.assetHandle->isLoaded())
-			return;
-
-		drawInfo.vertexShaderModule = &vertexShader.assetHandle->shaderModule;
-		drawInfo.fragmentShaderModule = &fragmentShader.assetHandle->shaderModule;
-
-		drawInfo.pipelineDescriptorInfo = {};
-		drawInfo.drawCallDescriptorInfo = {};
-		drawInfo.instances = 0;
-		for (const auto& weakNode : nodes)
+		if (vertexShader && vertexShader.assetHandle->isLoaded() &&
+			fragmentShader && fragmentShader.assetHandle->isLoaded())
 		{
-			auto node = weakNode.lock();
-			if (!node)
-				continue;
+			drawInfo.vertexShaderModule = &vertexShader.assetHandle->shaderModule;
+			drawInfo.fragmentShaderModule = &fragmentShader.assetHandle->shaderModule;
 
-			auto node2D = dynamic_cast<Node2D*>(node.get());
-			if (!node2D)
-				continue;
+			drawInfo.pipelineDescriptorInfo = {};
+			drawInfo.drawCallDescriptorInfo = {};
+			drawInfo.instances = 0;
+			for (const auto& weakNode : nodes)
+			{
+				auto node = weakNode.lock();
+				if (!node)
+					continue;
 
-			drawInfo.pipelineDescriptorInfo += node2D->getPipelineDescriptorInfos();
-			drawInfo.drawCallDescriptorInfo += node2D->getPipelineDescriptorInfos();
-			drawInfo.instances++;
+				auto node2D = dynamic_cast<Node2D*>(node.get());
+				if (!node2D)
+					continue;
+
+				drawInfo.pipelineDescriptorInfo += node2D->getPipelineDescriptorInfos();
+				drawInfo.drawCallDescriptorInfo += node2D->getPipelineDescriptorInfos();
+				drawInfo.instances++;
+			}
 		}
 
 		renderer.createPipeline(drawInfo);
