@@ -83,11 +83,14 @@ namespace zt::core::assets
 		
 		virtual void imGui() ZINET_API_POST;
 
+		bool getAutoLoad() const ZINET_API_POST { return autoLoad; }
+
 		json metaData;
 
 	protected:
 
 		bool loaded = false;
+		bool autoLoad = false;
 
 	private:
 

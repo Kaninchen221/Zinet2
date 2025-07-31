@@ -22,7 +22,7 @@ namespace zt::core::assets
 			auto optionalAsset = loadAssetMetaData(assetPath);
 			if (!optionalAsset)
 			{
-				Logger->error("Couldn't load asset, file path: {}, asset path: {}, but continue", filePath.generic_string(), assetPath.generic_string());
+				Logger->error("Couldn't load asset meta data, file path: {}, asset path: {}, but continue", filePath.generic_string(), assetPath.generic_string());
 				continue;
 			}
 			auto minimalAsset = std::move(optionalAsset.value());
@@ -36,24 +36,39 @@ namespace zt::core::assets
 				if (!std::ranges::contains(assetClass->getExtensions(), extensionValue))
 					continue;
 
-				auto asset = assetClass->createCopy();
-				if (!asset)
+				auto assetClassCopy = assetClass->createCopy();
+				if (!assetClassCopy)
 				{
 					result = false;
 					Logger->warn("createCopy from asset returned invalid asset but continue");
 					continue;
 				}
-				asset->metaData = std::move(minimalAsset.metaData);
+				assetClassCopy->metaData = std::move(minimalAsset.metaData);
 
-				const auto keyValue = asset->metaData.value("fileRelativePath", "");
-				auto [it, success] = assets.insert_or_assign(keyValue, std::move(asset));
+				const auto keyValue = assetClassCopy->metaData.value("fileRelativePath", "");
+				auto [it, success] = assets.insert_or_assign(keyValue, std::move(assetClassCopy));
 				if (success)
 				{
-					Logger->info("Loaded minimal asset: {}", keyValue);
+					Logger->info("Loaded asset meta data: {}", keyValue);
+
+					auto& asset = *it->second;
+					if (asset.getAutoLoad())
+					{
+						if (asset.load(assetsFinder.getRootPath()))
+						{
+							Logger->info("Succesfull auto load asset with key: {}", keyValue);
+						}
+						else
+						{
+							Logger->warn("Failed auto load asset with key: {}", keyValue);
+							result = false;
+							continue;
+						}
+					}
 				}
 				else
 				{
-					Logger->error("Failed to load minimal asset: {}, but continue", keyValue);
+					Logger->warn("Failed to load minimal asset: {}, but continue", keyValue);
 					result = false;
 					continue;
 				}
@@ -65,6 +80,10 @@ namespace zt::core::assets
 
 	void AssetsStorage::clear() ZINET_API_POST
 	{
+		for (auto& asset : assets)
+		{
+			asset.second->unload();
+		}
 		assets.clear();
 	}
 

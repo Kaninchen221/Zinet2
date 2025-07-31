@@ -10,7 +10,7 @@
 
 namespace zt::core::assets
 {
-
+	// TODO: Serialization
 	template<std::derived_from<core::assets::Asset> AssetT>
 	struct AssetProperty
 	{

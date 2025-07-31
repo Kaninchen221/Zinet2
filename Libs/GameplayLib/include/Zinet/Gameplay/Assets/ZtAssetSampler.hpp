@@ -22,12 +22,17 @@ namespace zt::gameplay::assets
 		AssetSampler(const Extensions& extensions = { "sampler" }) : Asset{ extensions } {}
 		AssetSampler(const AssetSampler& other) ZINET_API_POST { Asset::Asset(other); }
 		AssetSampler(AssetSampler&& other) ZINET_API_POST = default;
-		~AssetSampler() ZINET_API_POST { unload(); }
+		~AssetSampler() ZINET_API_POST = default;
 
 		AssetSampler& operator = (const AssetSampler& other) ZINET_API_POST { Asset::operator =(other); return *this; }
 		AssetSampler& operator = (AssetSampler&& other) ZINET_API_POST = default;
 
-		AssetPtr createCopy() const ZINET_API_POST override { return std::make_shared<AssetSampler>(*this); }
+		AssetPtr createCopy() const ZINET_API_POST override 
+		{ 
+			auto copy = std::make_shared<AssetSampler>(*this);
+			copy->autoLoad = true;
+			return copy;
+		}
 
 		bool load(const core::Path& rootPath) ZINET_API_POST override;
 

@@ -36,7 +36,7 @@ namespace zt::gameplay::assets::tests
 		auto asset = assetsStorage.getAs<AssetSampler>("Content/Samplers/linear.sampler");
 		ASSERT_TRUE(asset);
 
-		ASSERT_TRUE(asset->load(assetsStorage.assetsFinder.rootFolder));
+		//ASSERT_TRUE(asset->load(assetsStorage.assetsFinder.rootFolder));
 		ASSERT_TRUE(asset->isLoaded());
 
 		asset->unload();
