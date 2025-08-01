@@ -42,7 +42,7 @@ namespace zt::gameplay::assets::tests
 		auto asset = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.vert");
 		ASSERT_TRUE(asset);
 
-		ASSERT_TRUE(asset->load(assetsStorage.assetsFinder.rootFolder));
+		ASSERT_TRUE(asset->load(assetsStorage.assetsFinder.getRootPath()));
 		ASSERT_TRUE(asset->isLoaded());
 		ASSERT_FALSE(asset->text.empty());
 

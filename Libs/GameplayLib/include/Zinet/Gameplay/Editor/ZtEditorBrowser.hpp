@@ -15,9 +15,6 @@
 
 namespace zt::gameplay
 {
-	// TODO: Constants.hpp?
-	const inline static int InvalidIndex = -1;
-
 	template<core::LikeSmartPointer InputT>
 	constexpr auto& ResolveOptionalSmartPointer(InputT& object) ZINET_API_POST { return *object; }
 

@@ -32,6 +32,7 @@ namespace zt::core::assets
 			}
 
 			ImGui::EndTable();
+			ImGui::Separator();
 		}
 	}
 

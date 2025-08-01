@@ -38,7 +38,7 @@ namespace zt::gameplay::assets::tests
 		auto asset = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
 		ASSERT_TRUE(asset);
 
-		ASSERT_TRUE(asset->load(assetsStorage.assetsFinder.rootFolder));
+		ASSERT_TRUE(asset->load(assetsStorage.assetsFinder.getRootPath()));
 		ASSERT_TRUE(asset->isLoaded());
 
 		asset->unload();

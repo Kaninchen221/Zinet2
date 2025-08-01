@@ -53,6 +53,8 @@ namespace zt::core::assets
 
 		void createAssetFile(const std::filesystem::path& filePath, const std::filesystem::path& assetPath) const ZINET_API_POST;
 
+		void setRootPath(const Path& path) ZINET_API_POST { rootFolder = path; }
+
 		const auto& getRootPath() const ZINET_API_POST { return rootFolder; }
 		const auto& getContentFolderName() const ZINET_API_POST { return contentFolderName; }
 		const auto& getAssetFileExtension() const ZINET_API_POST { return assetFileExtension; }

@@ -57,7 +57,7 @@ namespace zt::core::assets::tests
 		};
 
 		AssetsFinder assetsFinder;
-		assetsFinder.rootFolder = Paths::CurrentProjectRootPath() / "assets_finder_test_folder";
+		assetsFinder.setRootPath(Paths::CurrentProjectRootPath() / "assets_finder_test_folder");
 		const AssetsFinder::FindAssetsResult findAssetsResult = assetsFinder.findAssets(findAssetsInput);
 
 		EXPECT_EQ(findAssetsResult.files.size(), 1u);

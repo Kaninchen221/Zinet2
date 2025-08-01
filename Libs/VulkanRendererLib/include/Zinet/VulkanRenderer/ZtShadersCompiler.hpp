@@ -32,7 +32,6 @@ namespace zt::vulkan_renderer
 
 		shaderc::SpvCompilationResult compileFromFile(const std::filesystem::path& filePath, ShaderType shaderType) const ZINET_API_POST;
 
-		// TODO: Test
 		shaderc::SpvCompilationResult compileFromString(const std::string& source, ShaderType shaderType, const std::string& fileName) const ZINET_API_POST;
 
 	};

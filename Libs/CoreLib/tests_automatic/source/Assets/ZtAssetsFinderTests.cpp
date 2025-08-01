@@ -21,7 +21,7 @@ namespace zt::core::assets::tests
 
 		void SetUp() override
 		{
-			assetsFinder.rootFolder = Paths::CurrentProjectRootPath() / "assets_finder_test_folder";
+			assetsFinder.setRootPath(Paths::CurrentProjectRootPath() / "assets_finder_test_folder");
 		}
 
 		void TearDown() override

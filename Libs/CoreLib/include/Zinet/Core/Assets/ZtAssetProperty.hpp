@@ -11,32 +11,30 @@
 namespace zt::core::assets
 {
 	// TODO: Serialization
-	template<std::derived_from<core::assets::Asset> AssetT>
+	template<std::derived_from<Asset> AssetT>
 	struct AssetProperty
 	{
-		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EditorAssetProperty");
+		inline static auto Logger = ConsoleLogger::Create("zt::gameplay::EditorAssetProperty");
 
-		using AssetHandleT = core::assets::AssetHandle<AssetT>;
+		using AssetHandleT = assets::AssetHandle<AssetT>;
 
 		// Config
 		std::string propertyName = "PropertyName";
 
 		// Data
 		// TODO: OnChanged
-		core::assets::AssetHandle<AssetT> assetHandle;
+		assets::AssetHandle<AssetT> assetHandle;
 
 		auto operator = (AssetHandleT otherAssetHandle) ZINET_API_POST { assetHandle = otherAssetHandle; }
 
-		// TODO: Test
 		auto* operator->() ZINET_API_POST { return assetHandle.operator->(); }
 
-		// TODO: Test
 		operator bool() ZINET_API_POST { return assetHandle; }
 
 		void show() ZINET_API_POST;
 	};
 
-	template<std::derived_from<core::assets::Asset> AssetT>
+	template<std::derived_from<Asset> AssetT>
 	void AssetProperty<AssetT>::show() ZINET_API_POST
 	{
 		ImGui::PushID(this);
