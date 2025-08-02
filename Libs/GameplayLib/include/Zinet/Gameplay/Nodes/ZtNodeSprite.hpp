@@ -32,7 +32,7 @@ namespace zt::gameplay
 
 		void imGui() ZINET_API_POST override;
 
-		core::assets::AssetProperty<assets::AssetTexture> texture{ "Texture" };
+		core::AssetProperty<AssetTexture> texture{ "Texture" };
 
 	};
 }

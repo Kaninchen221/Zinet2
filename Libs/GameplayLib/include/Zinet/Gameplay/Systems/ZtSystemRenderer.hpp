@@ -56,8 +56,8 @@ namespace zt::gameplay
 		void setCameraNode(NodeHandle<NodeCamera> newCamera) ZINET_API_POST { camera = newCamera; }
 		auto getCameraNode() const ZINET_API_POST { return camera; }
 
-		core::assets::AssetProperty<assets::AssetShader> vertexShader{ "Vertex Shader" };
-		core::assets::AssetProperty<assets::AssetShader> fragmentShader{ "Fragment Shader" };
+		core::AssetProperty<AssetShader> vertexShader{ "Vertex Shader" };
+		core::AssetProperty<AssetShader> fragmentShader{ "Fragment Shader" };
 
 	protected:
 

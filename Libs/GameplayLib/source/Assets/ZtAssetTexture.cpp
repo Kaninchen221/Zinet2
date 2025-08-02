@@ -17,7 +17,7 @@ namespace zt::vulkan_renderer
 	class CommandBuffer;
 }
 
-namespace zt::gameplay::assets
+namespace zt::gameplay
 {
 	bool AssetTexture::load(const core::Path& rootPath) ZINET_API_POST
 	{

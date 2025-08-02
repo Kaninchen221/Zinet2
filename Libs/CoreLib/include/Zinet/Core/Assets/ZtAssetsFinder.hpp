@@ -9,7 +9,7 @@
 
 #include <filesystem>
 
-namespace zt::core::assets
+namespace zt::core
 {
 	namespace fs = std::filesystem;
 

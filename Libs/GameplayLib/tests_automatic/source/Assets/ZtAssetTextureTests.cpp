@@ -7,7 +7,7 @@
 
 #include <gtest/gtest.h>
 
-namespace zt::gameplay::assets::tests
+namespace zt::gameplay::tests
 {
 
 	class AssetTextureTests : public ::testing::Test

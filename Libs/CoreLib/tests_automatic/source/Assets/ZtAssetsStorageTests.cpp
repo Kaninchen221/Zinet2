@@ -5,7 +5,7 @@
 
 #include <gtest/gtest.h>
 
-namespace zt::core::assets::tests
+namespace zt::core::tests
 {
 
 	class AssetsStorageTests : public ::testing::Test

@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <tuple>
 
-namespace zt::core::assets
+namespace zt::core
 {
 	class ZINET_CORE_API AssetsStorage : public Object
 	{

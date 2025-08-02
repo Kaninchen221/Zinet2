@@ -3,7 +3,7 @@
 #include "Zinet/Core/Assets/ZtAsset.hpp"
 #include "Zinet/Core/ZtFile.hpp"
 
-namespace zt::core::assets
+namespace zt::core
 {
 	class ZINET_CORE_API AssetText : public Asset
 	{

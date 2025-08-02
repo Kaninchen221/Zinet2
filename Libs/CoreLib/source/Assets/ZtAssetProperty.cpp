@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 
-namespace zt::core::assets
+namespace zt::core
 {
 
 }

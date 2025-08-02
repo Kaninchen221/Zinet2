@@ -4,7 +4,7 @@
 #include <ranges>
 #include <algorithm>
 
-namespace zt::core::assets
+namespace zt::core
 {
 
 	bool AssetsStorage::storeAssets() ZINET_API_POST

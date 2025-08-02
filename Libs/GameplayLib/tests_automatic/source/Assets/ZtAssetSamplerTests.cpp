@@ -5,7 +5,7 @@
 
 #include <gtest/gtest.h>
 
-namespace zt::gameplay::assets::tests
+namespace zt::gameplay::tests
 {
 
 	class AssetSamplerTests : public ::testing::Test

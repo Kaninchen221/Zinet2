@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 
-namespace zt::core::assets
+namespace zt::core
 {
 	bool AssetText::load(const Path& rootPath) ZINET_API_POST
 	{

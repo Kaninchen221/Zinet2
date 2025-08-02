@@ -9,12 +9,12 @@
 
 namespace
 {
-	using Asset = zt::core::assets::Asset;
+	using Asset = zt::core::Asset;
 	template<class AssetT = Asset>
-	using AssetHandle = zt::core::assets::AssetHandle<AssetT>;
+	using AssetHandle = zt::core::AssetHandle<AssetT>;
 }
 
-namespace zt::gameplay::assets
+namespace zt::gameplay
 {
 	class ZINET_GAMEPLAY_API AssetSampler : public Asset
 	{

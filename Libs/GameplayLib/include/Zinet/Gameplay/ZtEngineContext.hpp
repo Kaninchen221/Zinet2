@@ -70,7 +70,7 @@ namespace zt::gameplay
 		wd::Window window;
 		wd::WindowEvents windowEvents{ window };
 
-		core::assets::AssetsStorage assetsStorage;
+		core::AssetsStorage assetsStorage;
 
 		NodeHandle<Node> rootNode;
 

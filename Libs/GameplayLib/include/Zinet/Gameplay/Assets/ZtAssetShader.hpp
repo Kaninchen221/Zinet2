@@ -7,9 +7,9 @@
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
 #include "Zinet/Core/ZtFile.hpp"
 
-namespace zt::gameplay::assets
+namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API AssetShader : public core::assets::AssetText
+	class ZINET_GAMEPLAY_API AssetShader : public core::AssetText
 	{
 	public:
 

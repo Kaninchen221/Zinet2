@@ -6,7 +6,7 @@
 
 #include <imgui.h>
 
-namespace zt::gameplay::assets
+namespace zt::gameplay
 {
 	using namespace vulkan_renderer;
 

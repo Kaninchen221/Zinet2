@@ -15,17 +15,17 @@
 
 namespace
 {
-	using Asset = zt::core::assets::Asset;
+	using Asset = zt::core::Asset;
 	template<class AssetT = Asset>
-	using AssetHandle = zt::core::assets::AssetHandle<AssetT>;
+	using AssetHandle = zt::core::AssetHandle<AssetT>;
 }
 
-namespace zt::gameplay::assets
+namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API AssetTexture : public core::assets::Asset
+	class ZINET_GAMEPLAY_API AssetTexture : public core::Asset
 	{
 	public:
-		AssetTexture(const Extensions& extensions = { "png" }) : core::assets::Asset{ extensions } {}
+		AssetTexture(const Extensions& extensions = { "png" }) : core::Asset{ extensions } {}
 		AssetTexture(const AssetTexture& other) ZINET_API_POST { Asset::Asset(other); }
 		AssetTexture(AssetTexture&& other) ZINET_API_POST = default;
 		~AssetTexture() ZINET_API_POST = default;
@@ -42,7 +42,7 @@ namespace zt::gameplay::assets
 		void imGui() ZINET_API_POST override;
 
 		// TODO: Recreate the descriptor set when the sampler change
-		core::assets::AssetProperty<AssetSampler> sampler{ "Sampler" };
+		core::AssetProperty<AssetSampler> sampler{ "Sampler" };
 
 		vulkan_renderer::Texture texture;
 		vulkan_renderer::DescriptorSets descriptorSet{ nullptr };

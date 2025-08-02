@@ -8,7 +8,7 @@
 #include <chrono>
 #include <filesystem>
 
-namespace zt::core::assets
+namespace zt::core
 {
 
 	AssetsFinder::FindAssetsResult AssetsFinder::findAssets(const FindAssetsInput& findAssetsInput) const ZINET_API_POST

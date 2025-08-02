@@ -8,7 +8,7 @@
 
 #include <imgui.h>
 
-namespace zt::core::assets
+namespace zt::core
 {
 	// TODO: Serialization
 	template<std::derived_from<Asset> AssetT>
@@ -16,14 +16,14 @@ namespace zt::core::assets
 	{
 		inline static auto Logger = ConsoleLogger::Create("zt::gameplay::EditorAssetProperty");
 
-		using AssetHandleT = assets::AssetHandle<AssetT>;
+		using AssetHandleT = AssetHandle<AssetT>;
 
 		// Config
 		std::string propertyName = "PropertyName";
 
 		// Data
 		// TODO: OnChanged
-		assets::AssetHandle<AssetT> assetHandle;
+		AssetHandle<AssetT> assetHandle;
 
 		auto operator = (AssetHandleT otherAssetHandle) ZINET_API_POST { assetHandle = otherAssetHandle; }
 
@@ -46,12 +46,12 @@ namespace zt::core::assets
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(ZinetImGuiPayloadType))
 				{
-					core::assets::Asset* asset = nullptr;
+					core::Asset* asset = nullptr;
 					std::memcpy(&asset, payload->Data, sizeof(AssetT*));
 					AssetT* castedAsset = dynamic_cast<AssetT*>(asset);
 					if (castedAsset)
 					{
-						assetHandle = core::assets::AssetHandle<AssetT>{ castedAsset };
+						assetHandle = core::AssetHandle<AssetT>{ castedAsset };
 						Logger->info("Set a new asset");
 					}
 					else

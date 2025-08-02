@@ -7,7 +7,7 @@
 
 #include <gtest/gtest.h>
 
-namespace zt::gameplay::assets::tests
+namespace zt::gameplay::tests
 {
 
 	class AssetShaderTests : public ::testing::Test
@@ -28,7 +28,7 @@ namespace zt::gameplay::assets::tests
 	{
 		SystemRenderer::UseImGui = false;
 
-		core::assets::AssetsStorage assetsStorage;
+		core::AssetsStorage assetsStorage;
 		assetsStorage.registerAssetClass<AssetShader>();
 
 		EngineContext engineContext;

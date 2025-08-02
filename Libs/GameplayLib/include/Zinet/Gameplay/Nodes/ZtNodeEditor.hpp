@@ -9,11 +9,6 @@
 #include "Zinet/Core/ZtObject.hpp"
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
 
-namespace
-{
-	namespace assets = zt::core::assets;
-}
-
 namespace zt::gameplay
 {
 	struct EditorMetrics

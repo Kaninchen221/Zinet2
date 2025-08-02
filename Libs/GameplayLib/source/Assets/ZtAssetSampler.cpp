@@ -1,7 +1,7 @@
 #include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
 
-namespace zt::gameplay::assets
+namespace zt::gameplay
 {
 	bool AssetSampler::load(const core::Path& rootPath) ZINET_API_POST
 	{

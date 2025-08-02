@@ -3,7 +3,7 @@
 #include <fmt/format.h>
 #include <imgui.h>
 
-namespace zt::core::assets
+namespace zt::core
 {
 	void Asset::imGui() ZINET_API_POST
 	{
