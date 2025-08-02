@@ -118,6 +118,7 @@ namespace zt::core::assets
 		}
 
 		ImGui::PopID();
+		ImGui::Separator();
 	}
 
 }

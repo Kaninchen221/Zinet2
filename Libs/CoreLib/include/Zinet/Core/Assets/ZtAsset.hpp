@@ -9,6 +9,7 @@
 
 #include <nlohmann/json.hpp>
 
+// TODO: Remove namespace assets
 namespace zt::core::assets
 {
 	class Asset;

@@ -20,7 +20,7 @@ namespace zt::vulkan_renderer
 	{
 #		if ZINET_USE_IMGUI
 
-		if (ImGui::CollapsingHeader("Camera"))
+		if (ImGui::CollapsingHeader("Properties"))
 		{
 			if (ImGui::Button("Reset camera"))
 			{

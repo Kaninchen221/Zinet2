@@ -73,6 +73,20 @@ namespace zt::gameplay::tests
 			ASSERT_TRUE(shaderFrag->load(core::Paths::RootPath()));
 			systemRenderer->fragmentShader = shaderFrag;
 			systemRenderer->addNode(sprite);
+
+			auto nodeCamera = CreateNode<NodeCamera>("Camera");
+			auto& camera = nodeCamera->getCamera();
+			camera.setPosition(Vector3f(0.00001, 0, 150));
+			camera.setLookingAt(Vector3f(0.0f, 0.0f, 0.0f));
+			camera.setUpVector(Vector3f(0, 1, 0));
+
+			auto& window = engineContext.window;
+			auto windowSize = window.getSize();
+			camera.setFieldOfView(45.f);
+			camera.setAspectRatio(windowSize.x / static_cast<float>(windowSize.y));
+			camera.setClipping(Vector2f{ 0.0000001f, 10000000.0f });
+
+			systemRenderer->setCameraNode(nodeCamera);
 		}
 
 		void TearDown() override

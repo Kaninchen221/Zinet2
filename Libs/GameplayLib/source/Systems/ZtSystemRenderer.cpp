@@ -123,6 +123,8 @@ namespace zt::gameplay
 
 		vertexShader.show();
 		fragmentShader.show();
+		if (camera)
+			camera->imGui();
 	}
 
 }

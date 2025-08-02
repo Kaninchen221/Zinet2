@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
+#include "Zinet/Gameplay/Nodes/ZtNodeCamera.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 
 #include <gtest/gtest.h>
@@ -34,6 +35,10 @@ namespace zt::gameplay::tests
 		ASSERT_TRUE(system);
 		auto node = CreateNode<Node2D>();
 		//systemRenderer.addNode(node);
+
+		auto cameraNode = CreateNode<NodeCamera>("Camera");
+		system->setCameraNode(cameraNode);
+		ASSERT_EQ(cameraNode.get(), system->getCameraNode().get());
 
 		system->update();
 	}
