@@ -29,7 +29,12 @@ namespace zt::core
 
 	bool File::isOkay() const ZINET_API_POST
 	{
-		return fileStream.good() && !fileStream.fail() && !fileStream.bad();
+		bool good = fileStream.good();
+		bool eof = fileStream.eof();
+		bool fail = fileStream.fail();
+		bool bad = fileStream.bad();
+		bool result = (good || eof) && !fail && !bad;
+		return result;
 	}
 
 	void File::log() const ZINET_API_POST

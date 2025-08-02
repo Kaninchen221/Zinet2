@@ -28,6 +28,7 @@ namespace zt::gameplay
 
 		virtual bool init() ZINET_API_POST { initialized = true; return true; }
 
+		// TODO: should return bool
 		virtual void deinit() ZINET_API_POST { initialized = false; }
 
 		virtual void update() ZINET_API_POST {}

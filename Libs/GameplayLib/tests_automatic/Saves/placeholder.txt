@@ -1,0 +1,2 @@
+Placeholder file for git
+This folder needs exist for tests

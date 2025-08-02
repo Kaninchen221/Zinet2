@@ -104,7 +104,7 @@ namespace zt::core
 
 		using BufferT = nlohmann::json;
 
-		JsonArchive() ZINET_API_POST = default;
+		JsonArchive() ZINET_API_POST = delete;
 		JsonArchive(BufferT* newBuffer) ZINET_API_POST : buffer{ newBuffer } {}
 		JsonArchive(const JsonArchive& other) ZINET_API_POST = default;
 		JsonArchive(JsonArchive&& other) ZINET_API_POST = default;

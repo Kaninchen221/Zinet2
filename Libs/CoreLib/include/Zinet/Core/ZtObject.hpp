@@ -11,6 +11,7 @@
 namespace zt::core
 {
 	class Archive;
+	class JsonArchive;
 
 	class ZINET_CORE_API Object : public ObjectBase
 	{
@@ -28,6 +29,10 @@ namespace zt::core
 		virtual std::string asString() const ZINET_API_POST { return "Object"; }
 
 		virtual void operator << ([[maybe_unused]] Archive& archive) ZINET_API_POST {}
+
+		virtual bool serialize([[maybe_unused]] JsonArchive& archive) ZINET_API_POST { return true; }
+
+		virtual bool deserialize([[maybe_unused]] JsonArchive& archive) ZINET_API_POST { return true; }
 
 		virtual std::string getDisplayName() ZINET_API_POST { return displayName; }
 
