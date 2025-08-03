@@ -22,6 +22,7 @@ namespace zt::vulkan_renderer
 
 		if (ImGui::CollapsingHeader("Properties"))
 		{
+			ImGui::Indent();
 			if (ImGui::Button("Reset camera"))
 			{
 				position = Vector3f{ 0, 0, 150 };
@@ -57,6 +58,7 @@ namespace zt::vulkan_renderer
 				position.y -= 10;
 				lookingAt.y -= 10;
 			}
+			ImGui::Unindent();
 		}
 
 #		endif 

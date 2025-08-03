@@ -41,11 +41,7 @@
 #	define ZINET_LINUX 0
 #endif // __linux__
 
-#if ZINET_DEBUG
-#	define ZINET_USE_IMGUI 1
-#else
-#	define ZINET_USE_IMGUI 0
-#endif // ZINET_DEBUG
+#define ZINET_USE_IMGUI 1
 
 #ifndef ZINET_STATIC
 
