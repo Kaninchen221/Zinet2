@@ -32,7 +32,8 @@ namespace zt::core
 	public:
 
 		using BaseClassT = BaseClassType;
-		using Names = std::vector<std::string_view>;
+		using KeyT = std::string;
+		using Classes = std::map<KeyT, std::shared_ptr<BaseClassType>>;
 
 		ClassRegistry() ZINET_API_POST = default;
 		ClassRegistry(const ClassRegistry& other) ZINET_API_POST = default;
@@ -43,33 +44,24 @@ namespace zt::core
 		ClassRegistry& operator = (ClassRegistry&& other) ZINET_API_POST = default;
 
 		template<std::derived_from<BaseClassT> ClassT>
-		void registerClass(const Names& names) ZINET_API_POST
+		void registerClass(const KeyT& name) ZINET_API_POST
 		{
-			ClassInfo<BaseClassT> classInfo
-			{
-				.names = names,
-				.cdo = std::make_unique<ClassT>()
-			};
-
-			classes.push_back(classInfo);
+			cdos.insert({ name, std::make_shared<ClassT>() });
 		}
 
-		const auto& getClasses() const ZINET_API_POST { return classes; }
+		const auto& getCDOs() const ZINET_API_POST { return cdos; }
 
-		auto getClassByName(std::string_view name) ZINET_API_POST
+		std::shared_ptr<BaseClassT> getClassByName(const std::string& name) ZINET_API_POST
 		{
-			for (const auto& classInfo : classes)
-			{
-				if (std::ranges::contains(classInfo.names, name))
-					return classInfo.cdo;
-			}
+			if (auto result = cdos.find(name); result != cdos.end())
+				return result->second;
 
 			return std::shared_ptr<BaseClassT>{};
 		}
 
 	protected:
 
-		std::vector<ClassInfo<BaseClassT>> classes;
+		Classes cdos;
 
 	};
 

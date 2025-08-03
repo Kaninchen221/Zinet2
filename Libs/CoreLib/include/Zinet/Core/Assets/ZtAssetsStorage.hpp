@@ -3,6 +3,7 @@
 #include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtObject.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtClassRegistry.hpp"
 
 #include "Zinet/Core/Assets/ZtAssetsFinder.hpp"
 #include "Zinet/Core/Assets/ZtAsset.hpp"
@@ -56,17 +57,14 @@ namespace zt::core
 
 		Assets assets;
 		
-		// TODO: Use ClassRegistry
-		using AssetClasses = std::vector<std::shared_ptr<Asset>>;
-		AssetClasses assetClasses;
+		ClassRegistry<Asset> classRegistry;
 
 	};
 
 	template<std::derived_from<Asset> AssetT>
 	void AssetsStorage::registerAssetClass(const std::string& name) ZINET_API_POST
 	{
-		auto handle = CreateObject<AssetT>(name);
-		assetClasses.push_back(std::move(handle));
+		classRegistry.registerClass<AssetT>({ name });
 	}
 
 	template<std::derived_from<Asset> AssetT>

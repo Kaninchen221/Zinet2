@@ -28,15 +28,15 @@ namespace zt::core
 			auto minimalAsset = std::move(optionalAsset.value());
 
 			const auto extensionValue = minimalAsset.metaData.value("fileExtension", "");
-			for (const auto& assetClass : assetClasses)
+			for (const auto& [name, cdo] : classRegistry.getCDOs())
 			{
-				if (!assetClass)
+				if (!cdo)
 					continue;
 
-				if (!std::ranges::contains(assetClass->getExtensions(), extensionValue))
+				if (!std::ranges::contains(cdo->getExtensions(), extensionValue))
 					continue;
 
-				auto assetClassCopy = assetClass->createCopy();
+				auto assetClassCopy = cdo->createCopy();
 				if (!assetClassCopy)
 				{
 					result = false;

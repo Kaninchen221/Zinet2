@@ -11,8 +11,7 @@ namespace zt::core::tests
 	{
 	protected:
 
-		using ClassRegistry = ClassRegistry<Object>;
-		ClassRegistry classRegistry;
+		ClassRegistry<Object> classRegistry;
 	};
 
 	class ClassType : public Object
@@ -22,11 +21,10 @@ namespace zt::core::tests
 
 	TEST_F(ClassRegistryTests, Pass)
 	{
-		classRegistry.registerClass<ClassType>({ "ClassType0", "type0" });
-		classRegistry.registerClass<ClassType>({ "ClassType1", "type1" });
-		ASSERT_FALSE(classRegistry.getClasses().empty());
+		classRegistry.registerClass<ClassType>("ClassType0");
+		ASSERT_FALSE(classRegistry.getCDOs().empty());
 
-		auto cdo = classRegistry.getClassByName("type1");
+		auto cdo = classRegistry.getClassByName("ClassType0");
 		ASSERT_TRUE(cdo);
 	}
 }
