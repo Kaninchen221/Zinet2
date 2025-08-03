@@ -6,6 +6,7 @@
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtPaths.hpp"
 #include "Zinet/Core/ZtArchive.hpp"
+#include "Zinet/Core/ZtFile.hpp"
 
 namespace zt::gameplay
 {
