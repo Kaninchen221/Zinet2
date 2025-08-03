@@ -17,7 +17,7 @@ namespace zt::gameplay
 
 	public:
 
-		SystemSave() ZINET_API_POST : System{ "SystemSave" } {};
+		SystemSave() ZINET_API_POST = default;
 		SystemSave(const SystemSave& other) ZINET_API_POST = default;
 		SystemSave(SystemSave&& other) ZINET_API_POST = default;
 		~SystemSave() ZINET_API_POST = default;

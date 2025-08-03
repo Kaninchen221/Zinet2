@@ -29,7 +29,7 @@ namespace zt::gameplay::tests
 		SystemRenderer::UseImGui = false;
 
 		core::AssetsStorage assetsStorage;
-		assetsStorage.registerAssetClass<AssetShader>();
+		assetsStorage.registerAssetClass<AssetShader>("AssetShader");
 
 		EngineContext engineContext;
 		engineContext.addSystem<SystemRenderer>();

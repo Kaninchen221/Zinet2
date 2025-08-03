@@ -8,6 +8,8 @@
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
 
+#include "Zinet/Gameplay/Systems/ZtSystemSave.hpp"
+
 #include <gtest/gtest.h>
 
 namespace zt::gameplay::tests
@@ -28,36 +30,34 @@ namespace zt::gameplay::tests
 		{
 			auto& engineContext = EngineContext::Get();
 			auto& assetsStorage = engineContext.assetsStorage;
-			assetsStorage.registerAssetClass<core::AssetText>();
-			assetsStorage.registerAssetClass<gameplay::AssetTexture>();
-			assetsStorage.registerAssetClass<gameplay::AssetShader>();
-			assetsStorage.registerAssetClass<gameplay::AssetSampler>();
+			assetsStorage.registerAssetClass<core::AssetText>("AssetText");
+			assetsStorage.registerAssetClass<gameplay::AssetTexture>("AssetTexture");
+			assetsStorage.registerAssetClass<gameplay::AssetShader>("AssetShader");
+			assetsStorage.registerAssetClass<gameplay::AssetSampler>("AssetSampler");
 
-			engineContext.addSystem<SystemImGui>();
-			engineContext.addSystem<SystemRenderer>();
+			engineContext.addSystem<SystemImGui>("SystemImGui");
+			engineContext.addSystem<SystemRenderer>("SystemRenderer");
+			engineContext.addSystem<SystemSave>("SystemSave");
 
 			ASSERT_TRUE(engine.init());
 			vulkan_renderer::ImGuiIntegration::SetStyle_Dark();
 
 			auto& rootNode = engineContext.rootNode;
 
-			auto editorNode = CreateNode<NodeEditor>();
-			editorNode->setName("Editor");
+			auto editorNode = CreateObject<NodeEditor>("Editor");
 			rootNode->addChild(editorNode);
 
 			auto systemImGui = engineContext.getSystem<SystemImGui>();
 			ASSERT_TRUE(systemImGui);
 			systemImGui->addNode(editorNode);
 
-			auto child = CreateNode();
-			child->setName("Child");
+			auto child = CreateObject<Node>("Child");
 			rootNode->addChild(child);
 
-			auto childOfChild = CreateNode();
-			childOfChild->setName("Child of child");
+			auto childOfChild = CreateObject<Node>("Child of child");
 			child->addChild(childOfChild);
 
-			auto sprite = CreateNode<NodeSprite>("Sprite");
+			auto sprite = CreateObject<NodeSprite>("Sprite");
 			sprite->texture = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
 			sprite->texture->load(core::Paths::RootPath());
 			rootNode->addChild(sprite);
@@ -74,7 +74,7 @@ namespace zt::gameplay::tests
 			systemRenderer->fragmentShader = shaderFrag;
 			systemRenderer->addNode(sprite);
 
-			auto nodeCamera = CreateNode<NodeCamera>("Camera");
+			auto nodeCamera = CreateObject<NodeCamera>("Camera");
 			auto& camera = nodeCamera->getCamera();
 			camera.setPosition(Vector3f(0.00001, 0, 150));
 			camera.setLookingAt(Vector3f(0.0f, 0.0f, 0.0f));

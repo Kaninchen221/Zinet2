@@ -27,12 +27,12 @@ namespace zt::gameplay
 
 		ImGui::NewFrame();
 
-		for (auto& weakNodeHandle : nodes)
+		for (auto& weakObjectHandle : nodes)
 		{
-			if (!weakNodeHandle.expired())
+			if (!weakObjectHandle.expired())
 			{
-				auto nodeHandle = weakNodeHandle.lock();
-				nodeHandle->imGui();
+				auto ObjectHandle = weakObjectHandle.lock();
+				ObjectHandle->imGui();
 			}
 		}
 

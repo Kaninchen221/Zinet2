@@ -29,17 +29,11 @@ namespace zt::gameplay::tests
 		engineContext.deinit();
 	}
 
-	class TestSystem : public System
-	{
-	public:
-		TestSystem() ZINET_API_POST : System{ "TestSystem" } {};
-	};
-
 	TEST_F(EngineContextTests, SystemTest)
 	{
 		ASSERT_TRUE(engineContext.init());
-		engineContext.addSystem<TestSystem>();
-		TestSystem* system = engineContext.getSystem<TestSystem>();
+		engineContext.addSystem<System>();
+		System* system = engineContext.getSystem<System>();
 		ASSERT_TRUE(system);
 		engineContext.deinit();
 	}

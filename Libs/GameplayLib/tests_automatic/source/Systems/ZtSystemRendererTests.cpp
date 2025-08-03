@@ -33,10 +33,10 @@ namespace zt::gameplay::tests
 	{
 		auto system = engineContext.getSystem<SystemRenderer>();
 		ASSERT_TRUE(system);
-		auto node = CreateNode<Node2D>();
+		auto node = CreateObject<Node2D>("node2d");
 		//systemRenderer.addNode(node);
 
-		auto cameraNode = CreateNode<NodeCamera>("Camera");
+		auto cameraNode = CreateObject<NodeCamera>("Camera");
 		system->setCameraNode(cameraNode);
 		ASSERT_EQ(cameraNode.get(), system->getCameraNode().get());
 

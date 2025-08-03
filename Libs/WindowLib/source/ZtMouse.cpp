@@ -8,8 +8,7 @@
 namespace zt::wd
 {
 	Mouse::Mouse(Window& newWindow)
-		: core::Object{ "Mouse" },
-		window{ &newWindow }
+		: window{ &newWindow }
 	{
 
 	}

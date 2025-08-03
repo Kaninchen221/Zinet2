@@ -60,8 +60,8 @@ namespace zt::core
 		using Extensions = std::vector<std::string>;
 		using AssetPtr = std::shared_ptr<Asset>;
 
-		Asset() ZINET_API_POST : Object("Asset") {}
-		Asset(const Extensions& newExtensions) : Object("Image"), extensions{newExtensions} {}
+		Asset() ZINET_API_POST = default;
+		Asset(const Extensions& newExtensions) : extensions{newExtensions} {}
 		Asset(const Asset& other) ZINET_API_POST = default;
 		Asset(Asset&& other) ZINET_API_POST = default;
 		~Asset() ZINET_API_POST = default;

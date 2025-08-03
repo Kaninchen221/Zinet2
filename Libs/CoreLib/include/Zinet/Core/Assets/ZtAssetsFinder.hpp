@@ -21,7 +21,7 @@ namespace zt::core
 
 	public:		
 		
-		AssetsFinder() ZINET_API_POST : Object("AssetsFinder") {}
+		AssetsFinder() ZINET_API_POST = default;
 		AssetsFinder(const AssetsFinder& other) ZINET_API_POST = default;
 		AssetsFinder(AssetsFinder&& other) ZINET_API_POST = default;
 		~AssetsFinder() ZINET_API_POST = default;

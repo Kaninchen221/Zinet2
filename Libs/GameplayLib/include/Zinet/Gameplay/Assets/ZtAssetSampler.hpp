@@ -20,7 +20,7 @@ namespace zt::gameplay
 	{
 	public:
 		AssetSampler(const Extensions& extensions = { "sampler" }) : Asset{ extensions } {}
-		AssetSampler(const AssetSampler& other) ZINET_API_POST { Asset::Asset(other); }
+		AssetSampler(const AssetSampler& other) ZINET_API_POST : Asset(other) {}
 		AssetSampler(AssetSampler&& other) ZINET_API_POST = default;
 		~AssetSampler() ZINET_API_POST = default;
 

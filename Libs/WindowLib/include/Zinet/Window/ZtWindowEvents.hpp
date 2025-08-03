@@ -16,7 +16,7 @@ namespace zt::wd
 	public:
 
 		WindowEvents() = delete;
-		WindowEvents(Window& newWindow) : core::Object{ "WindowEvents" }, window{&newWindow}, keyboard{newWindow}, mouse{newWindow} {}
+		WindowEvents(Window& newWindow) : window{&newWindow}, keyboard{newWindow}, mouse{newWindow} {}
 		WindowEvents(const WindowEvents& other) = default;
 		WindowEvents(WindowEvents&& other) = default;
 

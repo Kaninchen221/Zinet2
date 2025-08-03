@@ -18,10 +18,7 @@ namespace zt::gameplay::tests
 		{
 		}
 
-		NodeHandle<NodeEditor> node = CreateNode<NodeEditor>();
-
-		static_assert(!std::is_default_constructible_v<NodeEditor>);
-		static_assert(std::is_constructible_v<NodeEditor, const std::string_view&>);
+		ObjectHandle<NodeEditor> node = CreateObject<NodeEditor>("node");
 	};
 
 	TEST_F(NodeEditorTests, PassTest)

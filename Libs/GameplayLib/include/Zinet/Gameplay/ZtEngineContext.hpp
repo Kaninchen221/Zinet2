@@ -45,9 +45,10 @@ namespace zt::gameplay
 		void deinit() ZINET_API_POST;
 
 		template<std::derived_from<System> SystemT>
-		void addSystem() ZINET_API_POST
+		void addSystem(const std::string& name) ZINET_API_POST
 		{
-			systems.emplace_back(std::make_shared<SystemT>());
+			auto system = CreateObject<SystemT>(name);
+			systems.emplace_back(system);
 		}
 
 		template<std::derived_from<System> SystemT>
@@ -72,11 +73,11 @@ namespace zt::gameplay
 
 		core::AssetsStorage assetsStorage;
 
-		NodeHandle<Node> rootNode;
+		ObjectHandle<Node> rootNode;
 
 	private:
 
-		void destroyNodes(NodeHandle<> node) ZINET_API_POST;
+		void destroyNodes(ObjectHandle<Node> node) ZINET_API_POST;
 
 		inline static EngineContext* instance = nullptr;
 

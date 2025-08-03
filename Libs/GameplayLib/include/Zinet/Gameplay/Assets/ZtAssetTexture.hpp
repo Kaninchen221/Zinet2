@@ -26,7 +26,7 @@ namespace zt::gameplay
 	{
 	public:
 		AssetTexture(const Extensions& extensions = { "png" }) : core::Asset{ extensions } {}
-		AssetTexture(const AssetTexture& other) ZINET_API_POST { Asset::Asset(other); }
+		AssetTexture(const AssetTexture& other) ZINET_API_POST : core::Asset(other) {}
 		AssetTexture(AssetTexture&& other) ZINET_API_POST = default;
 		~AssetTexture() ZINET_API_POST = default;
 

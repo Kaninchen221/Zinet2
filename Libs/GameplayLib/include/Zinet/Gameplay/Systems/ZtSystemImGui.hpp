@@ -16,7 +16,7 @@ namespace zt::gameplay
 
 	public:
 
-		SystemImGui() ZINET_API_POST : System{ "SystemImGui" } {};
+		SystemImGui() ZINET_API_POST = default;
 		SystemImGui(const SystemImGui& other) ZINET_API_POST = default;
 		SystemImGui(SystemImGui&& other) ZINET_API_POST = default;
 		~SystemImGui() ZINET_API_POST = default;

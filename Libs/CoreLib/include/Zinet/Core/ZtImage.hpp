@@ -23,16 +23,16 @@ namespace zt::core
 	{
 	protected:
 
-		inline static auto Logger = core::ConsoleLogger::Create("Image");
+		inline static auto Logger = core::ConsoleLogger::Create("zt::core::Image");
 
 	public:
 
 		static_assert(sizeof(std::byte) == sizeof(stbi_uc));
 		using Data = std::vector<std::byte>;
 
-		Image() : Object("Image") {}
+		Image() = default;
 		Image(const Image& other) = delete;
-		Image(Image&& other) : Object("Image") { *this = std::move(other); }
+		Image(Image&& other) { *this = std::move(other); }
 		~Image() ZINET_API_POST = default;
 
 		Image& operator = (const Image& other) = delete;

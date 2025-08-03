@@ -27,7 +27,7 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		VulkanRenderer() : core::Object{ "VulkanRenderer" } {}
+		VulkanRenderer() = default;
 		VulkanRenderer(const VulkanRenderer& other) = default;
 		VulkanRenderer(VulkanRenderer&& other) = default;
 		~VulkanRenderer() ZINET_API_POST = default;

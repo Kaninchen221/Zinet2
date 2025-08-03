@@ -19,8 +19,7 @@ namespace zt::gameplay
 
 		using CameraT = vulkan_renderer::Camera;
 
-		NodeCamera() ZINET_API_POST = delete;
-		NodeCamera(const std::string_view& newName) ZINET_API_POST : Node{ newName } {}
+		NodeCamera() ZINET_API_POST = default;
 		NodeCamera(const NodeCamera& other) ZINET_API_POST = default;
 		NodeCamera(NodeCamera&& other) ZINET_API_POST = default;
 		~NodeCamera() ZINET_API_POST = default;

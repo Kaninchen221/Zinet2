@@ -18,16 +18,8 @@ namespace zt::gameplay::tests
 		{
 		}
 
-		NodeHandle<NodeSprite> node = CreateNode<NodeSprite>("NodeName");
-
-		static_assert(!std::is_default_constructible_v<NodeSprite>);
-		static_assert(std::is_constructible_v<NodeSprite, const std::string_view&>);
+		ObjectHandle<NodeSprite> node = CreateObject<NodeSprite>("NodeName");
 	};
-
-	TEST_F(NodeSpriteTests, PassTest)
-	{
-		ASSERT_EQ(node->getName(), "NodeName");
-	}
 
 	TEST_F(NodeSpriteTests, Test)
 	{

@@ -20,7 +20,7 @@ namespace zt::core
 
 	public:
 
-		AssetsStorage() ZINET_API_POST : Object("AssetsStorage") {}
+		AssetsStorage() ZINET_API_POST = default;
 		AssetsStorage(const AssetsStorage& other) ZINET_API_POST = default;
 		AssetsStorage(AssetsStorage&& other) ZINET_API_POST = default;
 		~AssetsStorage() ZINET_API_POST = default;
@@ -37,7 +37,7 @@ namespace zt::core
 		using Assets = std::map<AssetsKey, AssetPtr>;
 
 		template<std::derived_from<Asset> AssetT>
-		void registerAssetClass() ZINET_API_POST;
+		void registerAssetClass(const std::string& name) ZINET_API_POST;
 
 		AssetHandle<Asset> get(const AssetsKey& key) ZINET_API_POST;
 
@@ -55,17 +55,18 @@ namespace zt::core
 	protected:
 
 		Assets assets;
-
+		
+		// TODO: Use ClassRegistry
 		using AssetClasses = std::vector<std::shared_ptr<Asset>>;
 		AssetClasses assetClasses;
 
 	};
 
 	template<std::derived_from<Asset> AssetT>
-	void AssetsStorage::registerAssetClass() ZINET_API_POST
+	void AssetsStorage::registerAssetClass(const std::string& name) ZINET_API_POST
 	{
-		auto asset = std::make_unique<AssetT>();
-		assetClasses.push_back(std::move(asset));
+		auto handle = CreateObject<AssetT>(name);
+		assetClasses.push_back(std::move(handle));
 	}
 
 	template<std::derived_from<Asset> AssetT>

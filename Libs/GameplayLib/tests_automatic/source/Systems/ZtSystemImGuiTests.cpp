@@ -46,7 +46,7 @@ namespace zt::gameplay::tests
 
 	TEST_F(SystemImGuiTests, PassTest)
 	{
-		auto node = CreateNode<Node>();
+		auto node = CreateObject<Node>("node");
 		system.addNode(node);
 
 		system.update();

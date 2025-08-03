@@ -15,10 +15,9 @@ namespace zt::gameplay
 
 	public:
 
-		using Nodes = std::vector<NodeWeakHandle<Node>>;
+		using Nodes = std::vector<ObjectWeakHandle<Node>>;
 
-		System() ZINET_API_POST = delete;
-		System(std::string_view displayName) : Object{ displayName } {}
+		System() ZINET_API_POST = default;
 		System(const System& other) ZINET_API_POST = default;
 		System(System&& other) ZINET_API_POST = default;
 		~System() ZINET_API_POST = default;
@@ -33,7 +32,7 @@ namespace zt::gameplay
 
 		virtual void update() ZINET_API_POST {}
 
-		virtual void addNode(const NodeWeakHandle<Node>& node) ZINET_API_POST { nodes.push_back(node); }
+		virtual void addNode(const ObjectWeakHandle<Node>& node) ZINET_API_POST { nodes.push_back(node); }
 
 		virtual Nodes& getNodes() ZINET_API_POST { return nodes; }
 		virtual const Nodes& getNodes() const ZINET_API_POST { return nodes; }

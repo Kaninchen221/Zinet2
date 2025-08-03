@@ -13,7 +13,7 @@ namespace zt::core
 
 	public:
 
-		Clock() ZINET_API_POST : Object("Clock") {}
+		Clock() ZINET_API_POST = default;
 		Clock(const Clock& other) ZINET_API_POST = default;
 		Clock(Clock&& other) ZINET_API_POST = default;
 		~Clock() ZINET_API_POST = default;

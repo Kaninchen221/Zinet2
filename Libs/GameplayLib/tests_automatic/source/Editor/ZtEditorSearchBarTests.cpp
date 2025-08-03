@@ -1,12 +1,10 @@
 #pragma once
 
-#include "Zinet/Gameplay/Nodes/ZtNodeEditor.hpp"
-
 #include <gtest/gtest.h>
 
 namespace zt::gameplay::tests
 {
-	class NodeNodeEditorTests : public ::testing::Test
+	class EditorSearchBarTests : public ::testing::Test
 	{
 	protected:
 
@@ -18,12 +16,8 @@ namespace zt::gameplay::tests
 		{
 		}
 
-		NodeHandle<NodeEditor> node = CreateNode<NodeEditor>();
-
-		static_assert(!std::is_default_constructible_v<NodeEditor>);
-		static_assert(std::is_constructible_v<NodeEditor, const std::string_view&>);
 	};
 
-	TEST_F(NodeNodeEditorTests, PassTest)
+	TEST_F(EditorSearchBarTests, PassTest)
 	{}
 }

@@ -21,19 +21,14 @@ namespace zt::gameplay::tests
 		}
 
 		using NodeBase = Node;
-		System system{ "System" };
+		System system;
 
-		static_assert(!std::is_default_constructible_v<System>);
+		static_assert(std::is_default_constructible_v<System>);
 	};
-
-	TEST_F(SystemTests, NameTest)
-	{
-		ASSERT_EQ(system.getDisplayName(), "System");
-	}
 
 	TEST_F(SystemTests, NodesTest)
 	{
-		auto node = CreateNode();
+		auto node = CreateObject<Node>("node");
 		system.addNode(node);
 		ASSERT_EQ(node.use_count(), 1);
 

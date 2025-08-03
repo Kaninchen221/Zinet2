@@ -52,6 +52,7 @@ namespace zt::core
 					Logger->info("Loaded asset meta data: {}", keyValue);
 
 					auto& asset = *it->second;
+					asset.setDisplayName(keyValue);
 					if (asset.getAutoLoad())
 					{
 						if (asset.load(assetsFinder.getRootPath()))

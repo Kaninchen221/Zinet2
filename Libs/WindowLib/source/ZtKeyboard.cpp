@@ -6,8 +6,7 @@ namespace zt::wd
 {
 
 	Keyboard::Keyboard(Window& newWindow)
-		: core::Object{ "Keyboard" },
-		window{ &newWindow }
+		: window{ &newWindow }
 	{
 	}
 

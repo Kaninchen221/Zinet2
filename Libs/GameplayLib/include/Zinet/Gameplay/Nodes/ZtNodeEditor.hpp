@@ -25,8 +25,7 @@ namespace zt::gameplay
 
 	public:
 
-		NodeEditor() ZINET_API_POST = delete;
-		NodeEditor(const std::string_view& newName) ZINET_API_POST : Node{ newName } { isInspectable = false; }
+		NodeEditor() ZINET_API_POST = default;
 		NodeEditor(const NodeEditor& other) ZINET_API_POST = default;
 		NodeEditor(NodeEditor&& other) ZINET_API_POST = default;
 		~NodeEditor() ZINET_API_POST = default;

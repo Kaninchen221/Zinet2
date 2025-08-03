@@ -22,9 +22,7 @@ namespace zt::gameplay
 		if (!assetsStorage.storeAssets())
 			return false;
 
-		rootNode = CreateNode();
-		if (rootNode)
-			rootNode->setName("RootNode");
+		rootNode = CreateObject<Node>("RootNode");
 
 		instance = this;
 		initialized = true;
@@ -70,7 +68,7 @@ namespace zt::gameplay
 		}
 	}
 
-	void EngineContext::destroyNodes(NodeHandle<> node) ZINET_API_POST
+	void EngineContext::destroyNodes(ObjectHandle<Node> node) ZINET_API_POST
 	{
 		if (!node)
 			return;

@@ -32,7 +32,7 @@ namespace zt::gameplay
 
 	public:
 
-		SystemRenderer() ZINET_API_POST : System{ "SystemRenderer" } {};
+		SystemRenderer() ZINET_API_POST = default;
 		SystemRenderer(const SystemRenderer& other) ZINET_API_POST = default;
 		SystemRenderer(SystemRenderer&& other) ZINET_API_POST = default;
 		~SystemRenderer() ZINET_API_POST = default;
@@ -53,7 +53,7 @@ namespace zt::gameplay
 		auto& getRenderer() ZINET_API_POST { return renderer; }
 		const auto& getRenderer() const ZINET_API_POST { return renderer; }
 
-		void setCameraNode(NodeHandle<NodeCamera> newCamera) ZINET_API_POST { camera = newCamera; }
+		void setCameraNode(ObjectHandle<NodeCamera> newCamera) ZINET_API_POST { camera = newCamera; }
 		auto getCameraNode() const ZINET_API_POST { return camera; }
 
 		core::AssetProperty<AssetShader> vertexShader{ "Vertex Shader" };
@@ -64,7 +64,7 @@ namespace zt::gameplay
 		vr::ImGuiIntegration imGuiIntegration;
 		vr::VulkanRenderer renderer;
 		
-		NodeHandle<NodeCamera> camera;
+		ObjectHandle<NodeCamera> camera;
 
 		vr::ShaderModule vertexShaderModule{ nullptr };
 		vr::ShaderModule fragmentShaderModule{ nullptr };

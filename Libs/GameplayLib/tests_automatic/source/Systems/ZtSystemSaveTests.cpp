@@ -25,8 +25,6 @@ namespace zt::gameplay::tests
 		{
 		public:
 
-			NodeTest(std::string_view name) : Node{ name } {}
-
 			bool serialize(core::JsonArchive& archive) ZINET_API_POST 
 			{
 				archive.serialize("Value", value);
@@ -45,7 +43,7 @@ namespace zt::gameplay::tests
 		SystemSave system;
 		system.setSaveFolderPath(core::Paths::CurrentProjectRootPath() / "Saves");
 
-		auto node = CreateNode<NodeTest>();
+		auto node = CreateObject<NodeTest>("NodeTest");
 		system.addNode(node);
 
 		node->value = 404;
