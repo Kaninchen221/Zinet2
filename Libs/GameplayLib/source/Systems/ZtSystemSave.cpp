@@ -44,19 +44,15 @@ namespace zt::gameplay
 			file.write(archiveDump);
 		}
 
-		if (!file.isOkay() || !file.isOpen())
-		{
-			Logger->error("Something goes wrong with file");
-			file.log();
+		if (!checkFile(file))
 			return false;
-		}
 
 		return true;
 	}
 
 	bool SystemSave::putFileIntoArchive() ZINET_API_POST
 	{
-		Logger->info("Load {} nodes", nodes.size());
+		Logger->info("Put file into archive", nodes.size());
 
 		if (!checkSaveFolderPath())
 			return false;
@@ -77,11 +73,14 @@ namespace zt::gameplay
 			Logger->info(currentArchiveBuffer.dump(1, '\t'));
 		}
 
-		if (!file.isOkay() || !file.isOpen())
-		{
-			Logger->error("Something goes wrong with file");
+		if (!checkFile(file))
 			return false;
-		}
+
+		return true;
+	}
+
+	bool SystemSave::recreateNodesFromArchive() ZINET_API_POST
+	{
 
 		return true;
 	}
@@ -91,6 +90,17 @@ namespace zt::gameplay
 		if (!fs::exists(saveFolderPath))
 		{
 			Logger->error("Save folder doesn't exist: {}", saveFolderPath.generic_string());
+			return false;
+		}
+
+		return true;
+	}
+
+	bool SystemSave::checkFile(const core::File& file) ZINET_API_POST
+	{
+		if (!file.isOkay() || !file.isOpen())
+		{
+			Logger->error("Something goes wrong with file");
 			return false;
 		}
 

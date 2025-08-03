@@ -32,7 +32,7 @@ namespace zt::gameplay::tests
 		assetsStorage.registerAssetClass<AssetShader>("AssetShader");
 
 		EngineContext engineContext;
-		engineContext.addSystem<SystemRenderer>();
+		engineContext.addSystem<SystemRenderer>("SystemRenderer");
 
 		engineContext.init();
 

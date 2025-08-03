@@ -28,7 +28,7 @@ namespace zt::gameplay::tests
 		auto& assetsStorage = engineContext.assetsStorage;
 		assetsStorage.registerAssetClass<AssetSampler>("AssetSampler");
 
-		engineContext.addSystem<SystemRenderer>();
+		engineContext.addSystem<SystemRenderer>("SystemRenderer");
 
 		SystemRenderer::UseImGui = false;
 		ASSERT_TRUE(engineContext.init());

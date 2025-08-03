@@ -13,16 +13,6 @@
 namespace zt::core
 {
 	template<std::derived_from<Object> BaseClassType>
-	struct ClassInfo
-	{
-		using Names = std::vector<std::string_view>;
-		using ClassDefaultObject = std::shared_ptr<BaseClassType>;
-
-		Names names;
-		ClassDefaultObject cdo;
-	};
-
-	template<std::derived_from<Object> BaseClassType>
 	class ClassRegistry : public Object
 	{
 	protected:

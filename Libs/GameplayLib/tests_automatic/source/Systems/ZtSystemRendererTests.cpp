@@ -15,7 +15,7 @@ namespace zt::gameplay::tests
 		void SetUp() override
 		{
 			SystemRenderer::UseImGui = false;
-			engineContext.addSystem<SystemRenderer>();
+			engineContext.addSystem<SystemRenderer>("SystemRenderer");
 
 			ASSERT_TRUE(engineContext.init());
 		}

@@ -37,6 +37,7 @@ namespace zt::gameplay
 		void clearCurrentBuffer() ZINET_API_POST { currentArchiveBuffer = {}; }
 
 		virtual bool putFileIntoArchive() ZINET_API_POST;
+		virtual bool recreateNodesFromArchive() ZINET_API_POST;
 
 		void setSaveFolderPath(const core::Path& path) ZINET_API_POST { saveFolderPath = path; }
 		const auto& getSaveFolderPath() const ZINET_API_POST { return saveFolderPath; }
@@ -44,6 +45,7 @@ namespace zt::gameplay
 	protected:
 
 		bool checkSaveFolderPath() ZINET_API_POST;
+		bool checkFile(const core::File& file) ZINET_API_POST;
 
 		core::Path getSaveFilePath() ZINET_API_POST { return saveFolderPath / "save_0.temp"; }
 

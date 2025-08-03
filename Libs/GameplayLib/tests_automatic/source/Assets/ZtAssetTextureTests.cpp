@@ -30,7 +30,7 @@ namespace zt::gameplay::tests
 		auto& assetsStorage = engineContext.assetsStorage;
 		assetsStorage.registerAssetClass<AssetTexture>("AssetTexture");
 
-		engineContext.addSystem<SystemRenderer>();
+		engineContext.addSystem<SystemRenderer>("SystemRenderer");
 
 		SystemRenderer::UseImGui = false;
 		ASSERT_TRUE(engineContext.init());

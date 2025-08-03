@@ -3,6 +3,7 @@
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtClassRegistry.hpp"
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
 #include "Zinet/Core/Assets/ZtAssetsFinder.hpp"
 
@@ -74,6 +75,8 @@ namespace zt::gameplay
 		core::AssetsStorage assetsStorage;
 
 		ObjectHandle<Node> rootNode;
+
+		core::ClassRegistry<core::Object> classRegistry;
 
 	private:
 
