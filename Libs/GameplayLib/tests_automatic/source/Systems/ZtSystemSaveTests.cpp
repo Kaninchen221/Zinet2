@@ -10,6 +10,7 @@ namespace zt::gameplay::tests
 	class NodeTest : public Node
 	{
 	public:
+		virtual std::string getClassName() const ZINET_API_POST { return "zt::gameplay::tests::NodeTest"; }
 
 		bool serialize(core::JsonArchive& archive) override ZINET_API_POST
 		{
@@ -37,7 +38,7 @@ namespace zt::gameplay::tests
 		{
 			engineContext.addSystem<SystemSave>("SystemSave");
 
-			engineContext.classRegistry.registerClass<NodeTest>("NodeTestClassName");
+			engineContext.classRegistry.registerClass<NodeTest>();
 
 			engineContext.init();
 		}

@@ -30,10 +30,10 @@ namespace zt::gameplay::tests
 		{
 			auto& engineContext = EngineContext::Get();
 			auto& assetsStorage = engineContext.assetsStorage;
-			assetsStorage.registerAssetClass<core::AssetText>("AssetText");
-			assetsStorage.registerAssetClass<gameplay::AssetTexture>("AssetTexture");
-			assetsStorage.registerAssetClass<gameplay::AssetShader>("AssetShader");
-			assetsStorage.registerAssetClass<gameplay::AssetSampler>("AssetSampler");
+			assetsStorage.registerAssetClass<core::AssetText>();
+			assetsStorage.registerAssetClass<gameplay::AssetTexture>();
+			assetsStorage.registerAssetClass<gameplay::AssetShader>();
+			assetsStorage.registerAssetClass<gameplay::AssetSampler>();
 
 			engineContext.addSystem<SystemImGui>("SystemImGui");
 			engineContext.addSystem<SystemRenderer>("SystemRenderer");

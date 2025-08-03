@@ -17,6 +17,8 @@ namespace zt::core
 		AssetText& operator = (const AssetText& other) ZINET_API_POST = default;
 		AssetText& operator = (AssetText&& other) ZINET_API_POST = default;
 
+		std::string getClassName() const ZINET_API_POST override { return "zt::core::AssetText"; }
+
 		AssetPtr createCopy() const ZINET_API_POST override { return std::make_unique<AssetText>(*this); }
 
 		bool load(const Path& rootPath) ZINET_API_POST override;

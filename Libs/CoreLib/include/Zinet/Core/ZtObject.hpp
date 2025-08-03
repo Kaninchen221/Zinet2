@@ -35,6 +35,8 @@ namespace zt::core
 
 		virtual bool deserialize([[maybe_unused]] JsonArchive& archive) ZINET_API_POST { return true; }
 
+		virtual std::string getClassName() const ZINET_API_POST { return "zt::core::Object"; }
+
 		void setDisplayName(std::string_view newDisplayName) ZINET_API_POST { displayName = newDisplayName; }
 		const auto& getDisplayName() const ZINET_API_POST { return displayName; }
 

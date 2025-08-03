@@ -31,8 +31,8 @@ namespace zt::gameplay
 		{
 			if (!weakObjectHandle.expired())
 			{
-				auto ObjectHandle = weakObjectHandle.lock();
-				ObjectHandle->imGui();
+				auto objectHandle = weakObjectHandle.lock();
+				objectHandle->imGui();
 			}
 		}
 

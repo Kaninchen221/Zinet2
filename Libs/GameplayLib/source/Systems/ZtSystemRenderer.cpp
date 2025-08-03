@@ -123,8 +123,8 @@ namespace zt::gameplay
 
 		vertexShader.show();
 		fragmentShader.show();
-		if (camera)
-			camera->imGui();
+		//if (camera) // TODO: imGui from camera is causing crash
+		//	camera->imGui();
 	}
 
 }

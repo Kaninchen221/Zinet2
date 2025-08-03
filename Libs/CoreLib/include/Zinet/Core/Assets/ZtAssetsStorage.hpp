@@ -38,7 +38,7 @@ namespace zt::core
 		using Assets = std::map<AssetsKey, AssetPtr>;
 
 		template<std::derived_from<Asset> AssetT>
-		void registerAssetClass(const std::string& name) ZINET_API_POST;
+		void registerAssetClass() ZINET_API_POST;
 
 		AssetHandle<Asset> get(const AssetsKey& key) ZINET_API_POST;
 
@@ -62,9 +62,9 @@ namespace zt::core
 	};
 
 	template<std::derived_from<Asset> AssetT>
-	void AssetsStorage::registerAssetClass(const std::string& name) ZINET_API_POST
+	void AssetsStorage::registerAssetClass() ZINET_API_POST
 	{
-		classRegistry.registerClass<AssetT>({ name });
+		classRegistry.registerClass<AssetT>();
 	}
 
 	template<std::derived_from<Asset> AssetT>

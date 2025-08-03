@@ -28,7 +28,7 @@ namespace zt::gameplay::tests
 	{
 		EngineContext engineContext;
 		auto& assetsStorage = engineContext.assetsStorage;
-		assetsStorage.registerAssetClass<AssetTexture>("AssetTexture");
+		assetsStorage.registerAssetClass<AssetTexture>();
 
 		engineContext.addSystem<SystemRenderer>("SystemRenderer");
 

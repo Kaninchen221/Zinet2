@@ -34,9 +34,11 @@ namespace zt::core
 		ClassRegistry& operator = (ClassRegistry&& other) ZINET_API_POST = default;
 
 		template<std::derived_from<BaseClassT> ClassT>
-		void registerClass(const KeyT& name) ZINET_API_POST
+		void registerClass() ZINET_API_POST
 		{
-			cdos.insert({ name, std::make_shared<ClassT>() });
+			auto cdo = std::make_shared<ClassT>();
+			auto className = cdo->getClassName();
+			cdos.insert({ std::string(className), cdo });
 		}
 
 		const auto& getCDOs() const ZINET_API_POST { return cdos; }

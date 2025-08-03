@@ -33,6 +33,8 @@ namespace zt::gameplay
 		AssetTexture& operator = (const AssetTexture& other) ZINET_API_POST { Asset::operator =(other); return *this; }
 		AssetTexture& operator = (AssetTexture&& other) ZINET_API_POST = default;
 
+		std::string getClassName() const ZINET_API_POST override { return "zt::gameplay::AssetTexture"; }
+
 		AssetPtr createCopy() const ZINET_API_POST override { return std::make_shared<AssetTexture>(*this); }
 
 		bool load(const core::Path& rootPath) ZINET_API_POST override;
