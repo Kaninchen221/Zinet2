@@ -29,7 +29,7 @@ namespace zt::gameplay
 
 		std::string getClassName() const ZINET_API_POST override { return "zt::gameplay::AssetSampler"; }
 
-		AssetPtr createCopy() const ZINET_API_POST override 
+		ObjectPtr createCopy() const ZINET_API_POST override 
 		{ 
 			auto copy = std::make_shared<AssetSampler>(*this);
 			copy->autoLoad = true;

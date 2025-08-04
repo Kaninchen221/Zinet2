@@ -15,16 +15,17 @@ namespace zt::core::tests
 	};
 
 	class ClassType : public Object
-	{ 
-
+	{
+	public:
+		virtual std::string getClassName() const ZINET_API_POST { return "zt::core::tests::ClassType"; }
 	};
 
 	TEST_F(ClassRegistryTests, Pass)
 	{
-		classRegistry.registerClass<ClassType>("ClassType0");
+		classRegistry.registerClass<ClassType>();
 		ASSERT_FALSE(classRegistry.getCDOs().empty());
 
-		auto cdo = classRegistry.getClassByName("ClassType0");
+		auto cdo = classRegistry.getClassByName("zt::core::tests::ClassType");
 		ASSERT_TRUE(cdo);
 	}
 }

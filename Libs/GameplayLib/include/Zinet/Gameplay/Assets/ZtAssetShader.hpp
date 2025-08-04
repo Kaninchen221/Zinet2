@@ -23,7 +23,7 @@ namespace zt::gameplay
 
 		std::string getClassName() const ZINET_API_POST override { return "zt::gameplay::AssetShader"; }
 
-		AssetPtr createCopy() const ZINET_API_POST override { return std::make_unique<AssetShader>(*this); }
+		ObjectPtr createCopy() const ZINET_API_POST override { return std::make_unique<AssetShader>(*this); }
 
 		bool load(const core::Path& rootPath) ZINET_API_POST override;
 

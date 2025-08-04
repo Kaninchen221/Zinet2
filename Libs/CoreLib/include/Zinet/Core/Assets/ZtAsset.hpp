@@ -4,6 +4,7 @@
 #include "Zinet/Core/ZtObject.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtPaths.hpp"
+#include "Zinet/Core/ZtArchive.hpp"
 
 #include <filesystem>
 
@@ -56,9 +57,7 @@ namespace zt::core
 
 	public:
 
-		using json = nlohmann::json;
 		using Extensions = std::vector<std::string>;
-		using AssetPtr = std::shared_ptr<Asset>;
 
 		Asset() ZINET_API_POST = default;
 		Asset(const Extensions& newExtensions) : extensions{newExtensions} {}
@@ -73,8 +72,6 @@ namespace zt::core
 
 		bool isLoaded() ZINET_API_POST { return loaded; }
 
-		virtual AssetPtr createCopy() const ZINET_API_POST { return {}; }
-
 		virtual bool load([[maybe_unused]] const Path& rootPath) ZINET_API_POST { return false; }
 
 		virtual void unload() ZINET_API_POST {}
@@ -85,7 +82,7 @@ namespace zt::core
 
 		bool getAutoLoad() const ZINET_API_POST { return autoLoad; }
 
-		json metaData;
+		Json metaData;
 
 	protected:
 

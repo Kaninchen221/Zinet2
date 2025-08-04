@@ -98,11 +98,13 @@ namespace zt::core
 		size_t offset = 0;
 	};
 
+	using Json = nlohmann::json;
+
 	class ZINET_CORE_API JsonArchive
 	{
 	public:
 
-		using BufferT = nlohmann::json;
+		using BufferT = Json;
 
 		JsonArchive() ZINET_API_POST = delete;
 		JsonArchive(BufferT* newBuffer) ZINET_API_POST : buffer{ newBuffer } {}
@@ -115,7 +117,7 @@ namespace zt::core
 		~JsonArchive() ZINET_API_POST = default;
 
 		template<class ObjectT>
-		void serialize(std::string key, ObjectT& object) ZINET_API_POST
+		void serialize(std::string key, ObjectT&& object) ZINET_API_POST
 		{
 			constexpr bool requireSerialize = requires(ObjectT& object) { object.serialize(*this); };
 			if constexpr (requireSerialize)
@@ -141,6 +143,8 @@ namespace zt::core
 				object = buffer->operator[](key);
 			}
 		}
+
+		auto* getBuffer() ZINET_API_POST { return buffer; }
 
 	protected:
 

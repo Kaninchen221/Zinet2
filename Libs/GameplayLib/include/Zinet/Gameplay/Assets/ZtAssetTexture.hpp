@@ -35,7 +35,7 @@ namespace zt::gameplay
 
 		std::string getClassName() const ZINET_API_POST override { return "zt::gameplay::AssetTexture"; }
 
-		AssetPtr createCopy() const ZINET_API_POST override { return std::make_shared<AssetTexture>(*this); }
+		ObjectPtr createCopy() const ZINET_API_POST override { return std::make_shared<AssetTexture>(*this); }
 
 		bool load(const core::Path& rootPath) ZINET_API_POST override;
 

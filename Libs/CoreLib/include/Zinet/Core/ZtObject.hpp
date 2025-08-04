@@ -19,6 +19,8 @@ namespace zt::core
 	{
 	public:
 
+		using ObjectPtr = std::shared_ptr<Object>;
+
 		Object() = default;
 		Object(const Object& other) = default;
 		Object(Object&& other) = default;
@@ -26,6 +28,8 @@ namespace zt::core
 
 		Object& operator = (const Object& other) ZINET_API_POST = default;
 		Object& operator = (Object&& other) ZINET_API_POST = default;
+
+		virtual ObjectPtr createCopy() const ZINET_API_POST { return {}; }
 
 		virtual std::string asString() const ZINET_API_POST { return "Object"; }
 
@@ -42,6 +46,8 @@ namespace zt::core
 
 		bool isInspectable = true;
 		virtual void imGui() ZINET_API_POST {}
+
+		bool isSaveable = false;
 
 	protected:
 

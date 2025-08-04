@@ -19,7 +19,7 @@ namespace zt::core
 
 		std::string getClassName() const ZINET_API_POST override { return "zt::core::AssetText"; }
 
-		AssetPtr createCopy() const ZINET_API_POST override { return std::make_unique<AssetText>(*this); }
+		ObjectPtr createCopy() const ZINET_API_POST override { return std::make_unique<AssetText>(*this); }
 
 		bool load(const Path& rootPath) ZINET_API_POST override;
 

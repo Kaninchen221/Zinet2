@@ -36,8 +36,8 @@ namespace zt::core
 				if (!std::ranges::contains(cdo->getExtensions(), extensionValue))
 					continue;
 
-				auto assetClassCopy = cdo->createCopy();
-				if (!assetClassCopy)
+				auto assetClassCopy = std::dynamic_pointer_cast<Asset>(cdo->createCopy());
+				if (assetClassCopy)
 				{
 					result = false;
 					Logger->warn("createCopy from asset returned invalid asset but continue");

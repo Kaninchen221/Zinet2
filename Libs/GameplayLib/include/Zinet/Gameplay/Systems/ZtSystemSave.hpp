@@ -32,18 +32,22 @@ namespace zt::gameplay
 
 		void imGui() ZINET_API_POST override { System::imGui(); }
 
-		virtual bool createArchiveFromNodes() ZINET_API_POST;
+		virtual bool createArchiveFromNodes(ObjectHandle<Node> node) ZINET_API_POST;
 		virtual bool putArchiveIntoFile() ZINET_API_POST;
 
 		void clearCurrentBuffer() ZINET_API_POST { currentArchiveBuffer = {}; }
 
 		virtual bool putFileIntoArchive() ZINET_API_POST;
-		virtual bool recreateNodesFromArchive() ZINET_API_POST;
+		virtual ObjectHandle<Node> recreateNodesFromArchive() ZINET_API_POST;
 
 		void setSaveFolderPath(const core::Path& path) ZINET_API_POST { saveFolderPath = path; }
 		const auto& getSaveFolderPath() const ZINET_API_POST { return saveFolderPath; }
 
 	protected:
+
+		bool serializeNode(ObjectHandle<Node> nodeHandle, core::JsonArchive& archive, int nodeNumber) ZINET_API_POST;
+
+		ObjectHandle<Node> traverse(core::Json& json, ObjectHandle<Node> parentNode) ZINET_API_POST;
 
 		bool checkSaveFolderPath() ZINET_API_POST;
 		bool checkFile(const core::File& file) ZINET_API_POST;
@@ -55,6 +59,8 @@ namespace zt::gameplay
 
 		// Config
 		core::Path saveFolderPath;
+		std::string nodeKey = "node_";
+		std::string classNameKey = "className";
 
 	};
 

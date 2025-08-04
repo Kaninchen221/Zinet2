@@ -10,23 +10,35 @@ namespace zt::gameplay::tests
 	class NodeTest : public Node
 	{
 	public:
+
+		NodeTest() : Node{} { isSaveable = true; }
+
 		virtual std::string getClassName() const ZINET_API_POST { return "zt::gameplay::tests::NodeTest"; }
+
+		ObjectPtr createCopy() const ZINET_API_POST override { return std::make_unique<NodeTest>(*this); }
 
 		bool serialize(core::JsonArchive& archive) override ZINET_API_POST
 		{
+			Node::serialize(archive);
+
 			archive.serialize("Value", value);
+			archive.serialize("Value2", value2);
 
 			return true;
 		}
 
 		bool deserialize(core::JsonArchive& archive) override ZINET_API_POST
 		{
+			Node::deserialize(archive);
+
 			archive.deserialize("Value", value);
+			archive.deserialize("Value2", value2);
 
 			return true;
 		}
 
 		int value = 0;
+		int value2 = 0;
 
 	};
 
@@ -38,6 +50,7 @@ namespace zt::gameplay::tests
 		{
 			engineContext.addSystem<SystemSave>("SystemSave");
 
+			engineContext.classRegistry.registerClass<Node>();
 			engineContext.classRegistry.registerClass<NodeTest>();
 
 			engineContext.init();
@@ -56,17 +69,59 @@ namespace zt::gameplay::tests
 		SystemSave system;
 		system.setSaveFolderPath(core::Paths::CurrentProjectRootPath() / "Saves");
 
-		auto node = CreateObject<NodeTest>("NodeTestName");
-		system.addNode(node);
+		auto& rootNode = engineContext.rootNode;
 
-		node->value = 404;
+		const int nodeTest1Value = 404;
+		const int nodeTest2Value = 68;
+		const int nodeTest3Value2 = 2138;
 
-		ASSERT_TRUE(system.createArchiveFromNodes());
+		{
+			auto node = CreateObject<NodeTest>("NodeTest1");
+			rootNode->addChild(node);
+			node->value = nodeTest1Value;
+
+			auto childNode = CreateObject<NodeTest>("NodeTest3");
+			node->addChild(childNode);
+			childNode->value2 = nodeTest3Value2;
+		}
+
+		{
+			auto node = CreateObject<NodeTest>("NodeTest2");
+			rootNode->addChild(node);
+			node->value = nodeTest2Value;
+		}
+
+		ASSERT_TRUE(system.createArchiveFromNodes(rootNode));
 		ASSERT_TRUE(system.putArchiveIntoFile());
 
+		rootNode = {};
 		system.clearCurrentBuffer();
 
 		ASSERT_TRUE(system.putFileIntoArchive());
-		ASSERT_TRUE(system.recreateNodesFromArchive());
+		rootNode = system.recreateNodesFromArchive();
+		ASSERT_TRUE(engineContext.rootNode);
+
+		auto& children = rootNode->getChildren();
+		ASSERT_EQ(children.size(), 2);
+		
+		{
+			auto nodeTest1 = std::dynamic_pointer_cast<NodeTest>(children[0]);
+			ASSERT_TRUE(nodeTest1);
+			ASSERT_EQ(nodeTest1->value, nodeTest1Value);
+
+			auto& nodeTest1Children = nodeTest1->getChildren();
+			ASSERT_EQ(nodeTest1Children.size(), 1);
+
+			auto nodeTest3 = std::dynamic_pointer_cast<NodeTest>(nodeTest1Children[0]);
+			ASSERT_TRUE(nodeTest3);
+			ASSERT_EQ(nodeTest3->value2, nodeTest3Value2);
+		}
+
+		{
+			auto nodeTest2 = std::dynamic_pointer_cast<NodeTest>(children[1]);
+			ASSERT_TRUE(nodeTest2);
+			ASSERT_EQ(nodeTest2->value, nodeTest2Value);
+		}
+
 	}
 }

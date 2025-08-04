@@ -34,8 +34,8 @@ namespace zt::core
 		void clear() ZINET_API_POST;
 
 		using AssetsKey = std::string;
-		using AssetPtr = std::shared_ptr<Asset>;
-		using Assets = std::map<AssetsKey, AssetPtr>;
+		using ObjectPtr = std::shared_ptr<Asset>;
+		using Assets = std::map<AssetsKey, ObjectPtr>;
 
 		template<std::derived_from<Asset> AssetT>
 		void registerAssetClass() ZINET_API_POST;
