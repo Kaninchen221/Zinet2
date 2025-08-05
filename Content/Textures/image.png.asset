@@ -1,4 +1,5 @@
 {
+	"Sampler": "Content/Samplers/linear.sampler",
 	"assetRelativePath": "Content/Textures/image.png.asset",
 	"fileExtension": "png",
 	"fileName": "image",

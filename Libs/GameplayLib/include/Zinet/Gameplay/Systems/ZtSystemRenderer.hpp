@@ -5,9 +5,9 @@
 #include "Zinet/Gameplay/Nodes/ZtNodeCamera.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystem.hpp"
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
+#include "Zinet/Gameplay/Assets/ZtAssetProperty.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
-#include "Zinet/Core/Assets/ZtAssetProperty.hpp"
 
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
@@ -56,8 +56,8 @@ namespace zt::gameplay
 		void setCameraNode(ObjectHandle<NodeCamera> newCamera) ZINET_API_POST { camera = newCamera; }
 		auto getCameraNode() const ZINET_API_POST { return camera; }
 
-		core::AssetProperty<AssetShader> vertexShader{ "Vertex Shader" };
-		core::AssetProperty<AssetShader> fragmentShader{ "Fragment Shader" };
+		AssetProperty<AssetShader> vertexShader{ "Vertex Shader" };
+		AssetProperty<AssetShader> fragmentShader{ "Fragment Shader" };
 
 	protected:
 

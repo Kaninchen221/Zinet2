@@ -100,8 +100,6 @@ namespace zt::gameplay
 	{
 		Logger->info("Recreate nodes from archive");
 
-		//core::JsonArchive archive{ &currentArchiveBuffer };
-
 		return traverse(*currentArchiveBuffer.begin(), {});
 	}
 
@@ -121,7 +119,7 @@ namespace zt::gameplay
 				Logger->error("CDO is invalid");
 				return {};
 			}
-
+			
 			childNode = dynamic_pointer_cast<Node>(cdo->createCopy());
 			if (!childNode)
 			{

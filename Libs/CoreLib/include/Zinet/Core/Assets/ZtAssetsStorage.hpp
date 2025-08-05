@@ -31,7 +31,7 @@ namespace zt::core
 
 		bool storeAssets() ZINET_API_POST;
 
-		void clear() ZINET_API_POST;
+		void unloadAssets() ZINET_API_POST;
 
 		using AssetsKey = std::string;
 		using ObjectPtr = std::shared_ptr<Asset>;

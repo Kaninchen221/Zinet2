@@ -140,7 +140,9 @@ namespace zt::core
 			}
 			else
 			{
-				object = buffer->operator[](key);
+				auto findIt = buffer->find(key);
+				if (findIt != buffer->end())
+					object = *findIt;
 			}
 		}
 

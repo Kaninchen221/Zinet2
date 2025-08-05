@@ -3,6 +3,7 @@
 #include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtClassDefaultObjectRegistry.hpp"
 #include "Zinet/Core/ZtObjectBase.hpp"
+#include "Zinet/Core/ZtLogger.hpp"
 
 #include <vector>
 #include <memory>
@@ -41,7 +42,7 @@ namespace zt::core
 
 		virtual std::string getClassName() const ZINET_API_POST { return "zt::core::Object"; }
 
-		void setDisplayName(std::string_view newDisplayName) ZINET_API_POST { displayName = newDisplayName; }
+		void setDisplayName(const std::string& newDisplayName) ZINET_API_POST { displayName = newDisplayName; }
 		const auto& getDisplayName() const ZINET_API_POST { return displayName; }
 
 		bool isInspectable = true;
@@ -56,7 +57,7 @@ namespace zt::core
 	};
 }
 
-/// Not in "core" namespace beause used too often
+/// Not in "core" namespace because used too often
 namespace zt 
 {
 	template<class NodeT = core::Object>
@@ -66,16 +67,17 @@ namespace zt
 	using ObjectWeakHandle = std::weak_ptr<NodeT>;
 
 	template<std::derived_from<core::Object> ObjectT>
-	auto CreateObject(std::string name) ZINET_API_POST
+	auto CreateObject(const std::string& name) ZINET_API_POST
 	{
-		static size_t Counter = 0;
-		if (Counter > 0)
-			name = fmt::format("{}_{}", name, Counter);
-		++Counter;
+		auto object = std::make_shared<ObjectT>();
+		if (!object)
+		{
+			auto logger = core::ConsoleLogger::Create("CreateObject");
+			logger->error("Couldn't create an object, name: {}", name);
+			return ObjectHandle<ObjectT>{};
+		}
 
-		auto object = new ObjectT();
 		object->setDisplayName(name);
-		auto handle = ObjectHandle<ObjectT>{ object };
-		return handle;
+		return object;
 	}
 }

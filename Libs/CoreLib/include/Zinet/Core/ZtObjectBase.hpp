@@ -17,7 +17,7 @@ namespace zt::core
 		ObjectBase() = default;
 		ObjectBase(const ObjectBase& other) = default;
 		ObjectBase(ObjectBase&& other) = default;
-		virtual ~ObjectBase() ZINET_API_POST = default;
+		virtual ~ObjectBase() noexcept = default;
 
 		ObjectBase& operator = (const ObjectBase& other) = default;
 		ObjectBase& operator = (ObjectBase&& other) = default;

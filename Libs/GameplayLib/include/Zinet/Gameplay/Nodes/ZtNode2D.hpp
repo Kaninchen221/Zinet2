@@ -29,8 +29,7 @@ namespace zt::gameplay
 		vulkan_renderer::DescriptorInfo getPipelineDescriptorInfos() const ZINET_API_POST;
 		vulkan_renderer::DescriptorInfo getDrawCallDescriptorInfos() const ZINET_API_POST;
 
-		vulkan_renderer::
-		Transform transform;
+		vulkan_renderer::Transform transform;
 
 	};
 

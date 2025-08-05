@@ -1,4 +1,4 @@
-﻿#include "Zinet/Gameplay/Nodes/ZtNodeSprite.hpp"
+#include "Zinet/Gameplay/Nodes/ZtNodeSprite.hpp"
 
 namespace zt::gameplay
 {

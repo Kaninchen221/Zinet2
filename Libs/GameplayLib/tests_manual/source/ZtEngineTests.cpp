@@ -3,12 +3,15 @@
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
 
 #include "Zinet/Gameplay/ZtEngine.hpp"
+
 #include "Zinet/Gameplay/Nodes/ZtNodeEditor.hpp"
 #include "Zinet/Gameplay/Nodes/ZtNodeSprite.hpp"
+
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
 
 #include "Zinet/Gameplay/Systems/ZtSystemSave.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
 
 #include <gtest/gtest.h>
 
@@ -53,7 +56,7 @@ namespace zt::gameplay::tests
 
 			auto child = CreateObject<Node>("Child");
 			rootNode->addChild(child);
-
+			
 			auto childOfChild = CreateObject<Node>("Child of child");
 			child->addChild(childOfChild);
 

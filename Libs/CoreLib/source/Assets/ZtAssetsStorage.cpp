@@ -37,7 +37,7 @@ namespace zt::core
 					continue;
 
 				auto assetClassCopy = std::dynamic_pointer_cast<Asset>(cdo->createCopy());
-				if (assetClassCopy)
+				if (!assetClassCopy)
 				{
 					result = false;
 					Logger->warn("createCopy from asset returned invalid asset but continue");
@@ -52,6 +52,10 @@ namespace zt::core
 					Logger->info("Loaded asset meta data: {}", keyValue);
 
 					auto& asset = *it->second;
+
+					core::JsonArchive metaDataArchive{ &asset.metaData };
+					asset.deserialize(metaDataArchive);
+
 					asset.setDisplayName(keyValue);
 					if (asset.getAutoLoad())
 					{
@@ -79,11 +83,27 @@ namespace zt::core
 		return result;
 	}
 
-	void AssetsStorage::clear() ZINET_API_POST
+	void AssetsStorage::unloadAssets() ZINET_API_POST
 	{
-		for (auto& asset : assets)
+		for (auto& [key, asset] : assets)
 		{
-			asset.second->unload();
+			auto& metaData = asset->metaData;
+
+			core::JsonArchive metaDataArchive{ &metaData };
+			asset->serialize(metaDataArchive);
+
+			const auto rootPath = assetsFinder.getRootPath();
+			const auto metaDataFilePath = rootPath / metaData["assetRelativePath"];
+			File assetFile;
+			assetFile.open(metaDataFilePath, FileOpenMode::Write);
+			assetFile.write(metaData.dump(1, '\t'));
+			if (!assetFile.isOkay())
+			{
+				Logger->error("Something goes wrong with asset file but continue");
+			}
+			assetFile.close();
+
+			asset->unload();
 		}
 		assets.clear();
 	}

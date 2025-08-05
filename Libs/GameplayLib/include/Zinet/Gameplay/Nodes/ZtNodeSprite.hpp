@@ -3,9 +3,9 @@
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 #include "Zinet/Gameplay/Nodes/ZtNode2D.hpp"
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
+#include "Zinet/Gameplay/Assets/ZtAssetProperty.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
-#include "Zinet/Core/Assets/ZtAssetProperty.hpp"
 
 #include "Zinet/VulkanRenderer/ZtTransform.hpp"
 
@@ -31,7 +31,7 @@ namespace zt::gameplay
 
 		void imGui() ZINET_API_POST override;
 
-		core::AssetProperty<AssetTexture> texture{ "Texture" };
+		AssetProperty<AssetTexture> texture{ "Texture" };
 
 	};
 }

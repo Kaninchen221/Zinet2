@@ -48,7 +48,7 @@ namespace zt::gameplay
 
 		destroyNodes(rootNode);
 
-		assetsStorage.clear();
+		assetsStorage.unloadAssets();
 
 		for (auto& system : systems)
 		{
@@ -69,12 +69,12 @@ namespace zt::gameplay
 		}
 	}
 
-	void EngineContext::destroyNodes(ObjectHandle<Node> node) ZINET_API_POST
+	void EngineContext::destroyNodes(ObjectHandle<Node>& node) ZINET_API_POST
 	{
 		if (!node)
 			return;
 
-		for (auto child : node->getChildren())
+		for (auto& child : node->getChildren())
 		{
 			destroyNodes(child);
 		}

@@ -1,29 +1,30 @@
 #pragma once
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
+#include "Zinet/Core/Assets/ZtAsset.hpp"
+#include "Zinet/Core/ZtLogger.hpp"
+
+#include "Zinet/Gameplay/ZtEngineContext.hpp"
 
 #include <concepts>
 
-#include "Zinet/Core/Assets/ZtAsset.hpp"
-
 #include <imgui.h>
 
-namespace zt::core
+namespace zt::gameplay
 {
-	// TODO: Serialization
-	template<std::derived_from<Asset> AssetT>
+	template<std::derived_from<core::Asset> AssetT>
 	struct AssetProperty
 	{
-		inline static auto Logger = ConsoleLogger::Create("zt::gameplay::EditorAssetProperty");
+		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::AssetProperty");
 
-		using AssetHandleT = AssetHandle<AssetT>;
+		using AssetHandleT = typename core::AssetHandle<AssetT>;
 
 		// Config
 		std::string propertyName = "PropertyName";
 
 		// Data
 		// TODO: OnChanged
-		AssetHandle<AssetT> assetHandle;
+		core::AssetHandle<AssetT> assetHandle;
 
 		auto operator = (AssetHandleT otherAssetHandle) ZINET_API_POST { assetHandle = otherAssetHandle; }
 
@@ -31,10 +32,37 @@ namespace zt::core
 
 		operator bool() ZINET_API_POST { return assetHandle; }
 
+		bool serialize(core::JsonArchive& archive) ZINET_API_POST;
+
+		bool deserialize(core::JsonArchive& archive) ZINET_API_POST;
+
 		void show() ZINET_API_POST;
 	};
 
-	template<std::derived_from<Asset> AssetT>
+	template<std::derived_from<core::Asset> AssetT>
+	bool AssetProperty<AssetT>::serialize(core::JsonArchive& archive) ZINET_API_POST
+	{
+		if (assetHandle)
+			archive.serialize(propertyName, assetHandle->metaData.value("fileRelativePath", "invalid relative path"));
+
+		return true;
+	}
+
+	template<std::derived_from<core::Asset> AssetT>
+	bool AssetProperty<AssetT>::deserialize(core::JsonArchive& archive) ZINET_API_POST
+	{
+		std::string assetKey;
+		archive.deserialize(propertyName, assetKey);
+		if (!assetKey.empty())
+		{
+			auto& engineContext = EngineContext::Get();
+			assetHandle = engineContext.assetsStorage.getAs<AssetT>(assetKey);
+		}
+
+		return true;
+	}
+
+	template<std::derived_from<core::Asset> AssetT>
 	void AssetProperty<AssetT>::show() ZINET_API_POST
 	{
 		ImGui::PushID(this);

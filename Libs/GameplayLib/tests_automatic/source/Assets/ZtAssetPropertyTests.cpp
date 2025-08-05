@@ -1,17 +1,17 @@
 #pragma once
 
-#include "Zinet/Core/Assets/ZtAssetProperty.hpp"
+#include "Zinet/Gameplay/Assets/ZtAssetProperty.hpp"
 
 #include <gtest/gtest.h>
 
-namespace zt::core::tests
+namespace zt::gameplay::tests
 {
 
 	class AssetPropertyTests : public ::testing::Test
 	{
 	protected:
 
-		AssetProperty<Asset> assetProperty{ "Property Name" };
+		AssetProperty<core::Asset> assetProperty{ "Property Name" };
 	};
 
 	TEST_F(AssetPropertyTests, Test)

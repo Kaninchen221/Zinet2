@@ -7,12 +7,8 @@
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
 #include "Zinet/Core/Assets/ZtAssetsFinder.hpp"
 
-#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
 #include "Zinet/Gameplay/Nodes/ZtNode.hpp"
-
-#include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
-#include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystem.hpp"
 
 #include "Zinet/Window/ZtWindow.hpp"
 #include "Zinet/Window/ZtWindowEvents.hpp"
@@ -68,7 +64,6 @@ namespace zt::gameplay
 		auto& getSystems() ZINET_API_POST { return systems; }
 		const auto& getSystems() const ZINET_API_POST { return systems; }
 
-		vulkan_renderer::ImGuiIntegration imGuiIntegration;
 		wd::Window window;
 		wd::WindowEvents windowEvents{ window };
 
@@ -80,7 +75,7 @@ namespace zt::gameplay
 
 	private:
 
-		void destroyNodes(ObjectHandle<Node> node) ZINET_API_POST;
+		void destroyNodes(ObjectHandle<Node>& node) ZINET_API_POST;
 
 		inline static EngineContext* instance = nullptr;
 

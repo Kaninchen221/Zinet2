@@ -1,4 +1,5 @@
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
 
 #include "Zinet/Core/ZtFile.hpp"
@@ -167,6 +168,28 @@ namespace zt::gameplay
 		ImGui::Text("Texture image:");
 		ImVec2 size = ImVec2(ImGui::GetContentRegionAvail());
 		ImGui::Image((ImTextureID)descriptorSet.get(), size);
+	}
+
+	bool AssetTexture::serialize(core::JsonArchive& archive)  ZINET_API_POST
+	{
+		if (!Asset::serialize(archive))
+			return false;
+
+		if (!sampler.serialize(archive))
+			return false;
+
+		return true;
+	}
+
+	bool AssetTexture::deserialize(core::JsonArchive& archive)  ZINET_API_POST
+	{
+		if (!Asset::deserialize(archive))
+			return false;
+
+		if (!sampler.deserialize(archive))
+			return false;
+
+		return true;
 	}
 
 }

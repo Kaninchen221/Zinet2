@@ -1,5 +1,8 @@
 #include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
+
+#include "Zinet/Core/ZtFile.hpp"
 
 namespace zt::gameplay
 {

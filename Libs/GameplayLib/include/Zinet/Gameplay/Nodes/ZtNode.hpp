@@ -11,14 +11,14 @@ namespace zt::gameplay
 	{
 	protected:
 
-		inline static auto Logger = core::ConsoleLogger::Create("Node");
+		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::Node");
 
 	public:
 
 		Node() ZINET_API_POST = default;
 		Node(const Node& other) ZINET_API_POST = default;
 		Node(Node&& other) ZINET_API_POST = default;
-		virtual ~Node() ZINET_API_POST = default;
+		~Node() ZINET_API_POST = default;
 
 		Node& operator = (const Node& other) ZINET_API_POST = default;
 		Node& operator = (Node&& other) ZINET_API_POST = default;

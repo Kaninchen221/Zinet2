@@ -38,7 +38,7 @@ namespace zt::core
 		{
 			auto cdo = std::make_shared<ClassT>();
 			auto className = cdo->getClassName();
-			cdos.insert({ std::string(className), cdo });
+			cdos.insert({ className, cdo });
 		}
 
 		const auto& getCDOs() const ZINET_API_POST { return cdos; }
