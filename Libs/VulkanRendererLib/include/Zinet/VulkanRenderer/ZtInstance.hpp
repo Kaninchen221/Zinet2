@@ -56,7 +56,7 @@ namespace zt::vulkan_renderer
 
 	protected:
 
-		bool enableValidationLayers = false;
+		bool enableValidationLayers = true;
 
 	};
 }

@@ -8,12 +8,18 @@ namespace zt::vulkan_renderer
 {
 	bool RendererContext::create(wd::Window& window) ZINET_API_POST
 	{
-		instance.setEnableValidationLayers(true);
 		if (!instance.create())
 			return false;
 
-		if (!debugUtilsMessenger.create(instance))
-			return false;
+		if (instance.getEnableValidationLayers())
+		{
+			if (!debugUtilsMessenger.create(instance))
+				return false;
+		}
+		else
+		{
+			Logger->info("Skip creating debug utils messenger because instance has enable validation layers = false");
+		}
 
 		auto physicalDevices = instance.getPhysicalDevices();
 		if (physicalDevices.empty())

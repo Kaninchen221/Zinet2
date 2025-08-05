@@ -13,6 +13,7 @@ namespace zt::gameplay
 
 		auto& engineContext = EngineContext::Get();
 
+		renderer.getRendererContext().instance.setEnableValidationLayers(false);
 		if (!renderer.init(engineContext.window))
 			return false;
 

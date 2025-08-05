@@ -67,7 +67,7 @@ namespace zt::vulkan_renderer
 #		if ZINET_DEBUG
 		if (!setDebugUtilsObjectName)
 		{
-			Logger->error("Ptr to function 'vkSetDebugUtilsObjectNameEXT' is invalid");
+			Logger->info("Ptr to function 'vkSetDebugUtilsObjectNameEXT' is invalid, most probably because validation layers are turned off");
 			return false;
 		}
 

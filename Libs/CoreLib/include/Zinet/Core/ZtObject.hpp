@@ -66,6 +66,7 @@ namespace zt
 	template<class NodeT = core::Object>
 	using ObjectWeakHandle = std::weak_ptr<NodeT>;
 
+	// TODO: Don't use std smart pointers in code
 	template<std::derived_from<core::Object> ObjectT>
 	auto CreateObject(const std::string& name) ZINET_API_POST
 	{
