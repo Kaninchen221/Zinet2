@@ -62,20 +62,21 @@ namespace zt::vulkan_renderer
 		init_info.MinImageCount = 3;
 		init_info.ImageCount = 3;
 		init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+		init_info.RenderPass = rendererContext.renderPass.get();
 		
-		if (!ImGui_ImplVulkan_Init(&init_info, rendererContext.renderPass.get()))
+		if (!ImGui_ImplVulkan_Init(&init_info))
 		{
 			Logger->error("ImGui_ImplVulkan_Init returned false");
 			return false;
 		}
 
-		const auto commands = [](const CommandBuffer& commandBuffer)
-		{
-			ImGui_ImplVulkan_CreateFontsTexture(commandBuffer.get());
-		};
-		SubmitSingleCommandBufferWaitIdle(rendererContext, commands);
+		//const auto commands = [](const CommandBuffer& commandBuffer)
+		//{
+		//	ImGui_ImplVulkan_CreateFontsTexture(commandBuffer.get());
+		//};
+		//SubmitSingleCommandBufferWaitIdle(rendererContext, commands);
 		
-		ImGui_ImplVulkan_DestroyFontUploadObjects();
+		//ImGui_ImplVulkan_DestroyFontUploadObjects();
 
 		return true;
 	}
@@ -136,7 +137,6 @@ namespace zt::vulkan_renderer
 		style.GrabRounding = 0.0f;
 		style.TabRounding = 0.0f;
 		style.TabBorderSize = 0.0f;
-		style.TabMinWidthForCloseButton = 0.0f;
 		style.ColorButtonPosition = ImGuiDir_Right;
 		style.ButtonTextAlign = ImVec2(0.5f, 0.5f);
 		style.SelectableTextAlign = ImVec2(0.0f, 0.0f);

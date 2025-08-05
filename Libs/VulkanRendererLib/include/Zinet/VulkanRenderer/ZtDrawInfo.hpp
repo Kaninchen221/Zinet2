@@ -44,8 +44,8 @@ namespace zt::vulkan_renderer
 		}
 
 		/// Cached data
-		uint32_t cachedUniformBuffersBinding;
-		uint32_t cachedTexturesBinding;
+		uint32_t cachedUniformBuffersBinding{};
+		uint32_t cachedTexturesBinding{};
 	};
 
 	struct ZINET_VULKAN_RENDERER_API DrawInfo

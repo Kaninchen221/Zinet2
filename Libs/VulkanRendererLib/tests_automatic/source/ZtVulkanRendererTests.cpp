@@ -171,7 +171,7 @@ namespace zt::vulkan_renderer::tests
 			alignas(16) glm::mat4 view;
 			alignas(16) glm::mat4 projection;
 		};
-		UniformData uniformData;
+		UniformData uniformData{};
 
 		Texture texture;
 		Sampler sampler{ nullptr };

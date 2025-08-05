@@ -2,6 +2,7 @@
 
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
 

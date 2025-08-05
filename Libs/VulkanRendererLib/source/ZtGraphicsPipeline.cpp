@@ -250,7 +250,7 @@ namespace zt::vulkan_renderer
 		DescriptorSetLayout descriptorSetLayout{ nullptr };
 		descriptorSetLayout.create(descriptorSetLayoutCreateInfo, device);
 
-		return std::move(descriptorSetLayout);
+		return descriptorSetLayout;
 	}
 
 	DescriptorSets GraphicsPipeline::createDescriptorSet(
@@ -271,7 +271,7 @@ namespace zt::vulkan_renderer
 			}
 		}
 
-		return std::move(descriptorSet);
+		return descriptorSet;
 	}
 
 	void GraphicsPipeline::UpdateDescriptorSet(const Device& device, const DescriptorInfo& descriptorInfo, const DescriptorSets& descriptorSet) ZINET_API_POST

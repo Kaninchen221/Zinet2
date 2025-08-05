@@ -70,7 +70,7 @@ namespace zt::vulkan_renderer
 
 	inline bool CommandBuffer::reset() ZINET_API_POST
 	{
-		const auto result = vkResetCommandBuffer(objectHandle, 0);
+		const auto result = vkResetCommandBuffer(objectHandle, VkCommandBufferResetFlags{});
 		if (result == VK_SUCCESS)
 		{
 			return true;

@@ -30,7 +30,7 @@ namespace zt::vulkan_renderer::tests
 		{
 		}
 
-		Vertex vertex;
+		Vertex vertex{};
 
 		static_assert(std::is_default_constructible_v<Vertex>);
 		static_assert(std::is_copy_constructible_v<Vertex>);

@@ -4,6 +4,7 @@
 
 #include <Zinet/Gameplay/Assets/ZtAssetTexture.hpp>
 #include <Zinet/Gameplay/ZtEngineContext.hpp>
+#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 
 #include <gtest/gtest.h>
 

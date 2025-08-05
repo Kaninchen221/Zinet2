@@ -43,7 +43,7 @@ namespace zt::core
 					Logger->warn("createCopy from asset returned invalid asset but continue");
 					continue;
 				}
-				assetClassCopy->metaData = std::move(minimalAsset.metaData);
+				assetClassCopy->metaData = minimalAsset.metaData;
 
 				const auto keyValue = assetClassCopy->metaData.value("fileRelativePath", "");
 				auto [it, success] = assets.insert_or_assign(keyValue, std::move(assetClassCopy));
