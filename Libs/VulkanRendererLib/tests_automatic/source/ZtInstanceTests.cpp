@@ -58,13 +58,13 @@ namespace zt::vulkan_renderer::tests
 	{
 		std::vector<const char*> requiredExtensions = instance.getRequiredExtensions();
 		ASSERT_TRUE(core::Contains(requiredExtensions, std::string_view(VK_KHR_SURFACE_EXTENSION_NAME)));
-		ASSERT_FALSE(core::Contains(requiredExtensions, std::string_view(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)));
+		ASSERT_TRUE(core::Contains(requiredExtensions, std::string_view(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)));
 
-		instance.setEnableValidationLayers(true);
-		ASSERT_TRUE(instance.getEnableValidationLayers());
+		instance.setEnableValidationLayers(false);
+		ASSERT_FALSE(instance.getEnableValidationLayers());
 
 		requiredExtensions = instance.getRequiredExtensions();
-		ASSERT_TRUE(core::Contains(requiredExtensions, std::string_view(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)));
+		ASSERT_FALSE(core::Contains(requiredExtensions, std::string_view(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)));
 	}
 
 	TEST(Instance, GetGlfwRequiredInstanceExtensionsTest)
@@ -83,6 +83,7 @@ namespace zt::vulkan_renderer::tests
 	{
 		Instance instance{ nullptr };
 
+		instance.setEnableValidationLayers(false);
 		ASSERT_TRUE(instance.getEnabledLayerNames().empty());
 
 		instance.setEnableValidationLayers(true);
