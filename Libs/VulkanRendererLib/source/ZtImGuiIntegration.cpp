@@ -70,22 +70,17 @@ namespace zt::vulkan_renderer
 			return false;
 		}
 
-		//const auto commands = [](const CommandBuffer& commandBuffer)
-		//{
-		//	ImGui_ImplVulkan_CreateFontsTexture(commandBuffer.get());
-		//};
-		//SubmitSingleCommandBufferWaitIdle(rendererContext, commands);
-		
-		//ImGui_ImplVulkan_DestroyFontUploadObjects();
-
 		return true;
 	}
 
 	void ImGuiIntegration::deinit(const RendererContext& rendererContext) ZINET_API_POST
 	{
-		descriptorPool.destroy(rendererContext.device);
-		ImGui_ImplGlfw_Shutdown();
+		rendererContext.device.waitIdle();
+
 		ImGui_ImplVulkan_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
+		descriptorPool.destroy(rendererContext.device);
 	}
 
 	void ImGuiIntegration::prepareRenderData() const ZINET_API_POST
