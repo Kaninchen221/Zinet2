@@ -10,7 +10,8 @@
 	#include <signal.h>
 #endif // ZINET_GCC
 
-namespace zt::core
+/// Not in "core" namespace because used too often
+namespace zt
 {
 
 #if ZINET_DEBUG

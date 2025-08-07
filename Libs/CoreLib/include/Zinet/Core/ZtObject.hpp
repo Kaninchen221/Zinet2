@@ -42,7 +42,7 @@ namespace zt::core
 
 		virtual std::string getClassName() const ZINET_API_POST { return "zt::core::Object"; }
 
-		void setDisplayName(const std::string& newDisplayName) ZINET_API_POST { displayName = newDisplayName; }
+		void setDisplayName(const std::string_view newDisplayName) ZINET_API_POST { displayName = newDisplayName; }
 		const auto& getDisplayName() const ZINET_API_POST { return displayName; }
 
 		bool isInspectable = true;
