@@ -68,7 +68,7 @@ namespace zt::core
 		std::unique_ptr<Object> object;
 	};
 
-	template<std::derived_from<Object> ObjectType = Object>
+	template<std::derived_from<Object> ObjectType = Object, bool StrongRef = true>
 	class ObjectHandle
 	{
 		inline static auto Logger = ConsoleLogger::Create("zt::core::ObjectHandle");
@@ -81,16 +81,11 @@ namespace zt::core
 		ObjectHandle(ObjectRefCounter* newObjectRefCounter) ZINET_API_POST 
 		{ 
 			objectRefCounter = newObjectRefCounter; 
-			if (objectRefCounter)
-				objectRefCounter->increment();
+			increment();
 		}
 		ObjectHandle(const ObjectHandle& other) ZINET_API_POST { *this = other; }
 		ObjectHandle(ObjectHandle&& other) ZINET_API_POST { *this = other; }
-		~ObjectHandle() noexcept
-		{
-			if (objectRefCounter)
-				objectRefCounter->decrement();
-		}
+		~ObjectHandle() noexcept { decrement(); }
 
 		ObjectHandle& operator = (const ObjectHandle& other) ZINET_API_POST 
 		{
@@ -102,7 +97,7 @@ namespace zt::core
 			}
 
 			objectRefCounter = other.objectRefCounter;
-			objectRefCounter->increment();
+			increment();
 			return *this;
 		}
 		ObjectHandle& operator = (ObjectHandle&& other) ZINET_API_POST
@@ -126,22 +121,42 @@ namespace zt::core
 			return objectRefCounter->get(); 
 		}
 
-		void invalidate() ZINET_API_POST 
-		{ 
-			if (objectRefCounter)
+		size_t getRefCount() const ZINET_API_POST { return objectRefCounter ? objectRefCounter->getRefCount() : 0; }
+
+		void invalidate() ZINET_API_POST { decrement(); objectRefCounter = nullptr; }
+
+		auto createWeakHandle() ZINET_API_POST 
+		{
+			return ObjectHandle<ObjectT, false>(objectRefCounter);
+		}
+
+	protected:
+
+		inline void increment() ZINET_API_POST 
+		{
+			if constexpr (StrongRef)
 			{
-				objectRefCounter->decrement();
-				objectRefCounter = nullptr;
+				if (objectRefCounter)
+					objectRefCounter->increment();
 			}
 		}
 
-		size_t getRefCount() const ZINET_API_POST { return objectRefCounter ? objectRefCounter->getRefCount() : 0; }
-
-	protected:
+		inline void decrement() ZINET_API_POST 
+		{
+			if constexpr (StrongRef)
+			{
+				if (objectRefCounter)
+					objectRefCounter->decrement();
+			}
+		}
 
 		ObjectRefCounter* objectRefCounter;
 
 	};
+
+	/// Doesn't increment/decrement ref count
+	template<std::derived_from<Object> ObjectT = Object>
+	using ObjectWeakHandle = ObjectHandle<ObjectT, false>;
 
 	class ZINET_CORE_API ObjectsStorage
 	{

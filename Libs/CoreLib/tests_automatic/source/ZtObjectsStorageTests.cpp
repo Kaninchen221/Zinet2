@@ -24,7 +24,21 @@ namespace zt::core::tests
 		ASSERT_TRUE(objectHandle);
 		ASSERT_EQ(objectHandle.getRefCount(), 1);
 
-		{
+		{ /// Check weak handle doesn't affect ref count
+			ObjectWeakHandle<Object> weakHandle = objectHandle.createWeakHandle();
+			ASSERT_TRUE(weakHandle.get());
+			ASSERT_TRUE(weakHandle.isValid());
+			ASSERT_TRUE(weakHandle);
+			ASSERT_EQ(weakHandle.getRefCount(), 1);
+
+			weakHandle.invalidate();
+			ASSERT_FALSE(weakHandle.get());
+			ASSERT_FALSE(weakHandle.isValid());
+			ASSERT_FALSE(weakHandle);
+			ASSERT_EQ(weakHandle.getRefCount(), 0);
+		}
+
+		{ /// Check strong handle affect ref count
 			auto secondHandle = objectHandle;
 			ASSERT_EQ(secondHandle.get(), objectHandle.get());
 
