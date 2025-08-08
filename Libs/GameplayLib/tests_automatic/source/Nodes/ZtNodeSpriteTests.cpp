@@ -18,7 +18,8 @@ namespace zt::gameplay::tests
 		{
 		}
 
-		ObjectHandle<NodeSprite> node = CreateObject<NodeSprite>("NodeName");
+		core::ObjectsStorage objectsStorage;
+		ObjectHandle<NodeSprite> node = objectsStorage.createObject<NodeSprite>("node");
 	};
 
 	TEST_F(NodeSpriteTests, Test)

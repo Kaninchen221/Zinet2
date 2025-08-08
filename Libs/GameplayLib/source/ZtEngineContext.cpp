@@ -78,7 +78,8 @@ namespace zt::gameplay
 		{
 			destroyNodes(child);
 		}
-		node.reset();
+		node.invalidate();
+		// TODO: Invalidate? Or we should be able to destroy obejcts?
 	}
 
 }

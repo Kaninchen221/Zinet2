@@ -2,6 +2,8 @@
 
 #include "Zinet/Gameplay/Nodes/ZtNode.hpp"
 
+#include "Zinet/Core/ZtObjectsStorage.hpp"
+
 #include <gtest/gtest.h>
 
 namespace zt::gameplay::tests
@@ -18,7 +20,8 @@ namespace zt::gameplay::tests
 		{
 		}
 
-		ObjectHandle<Node> node = CreateObject<Node>("Node");
+		core::ObjectsStorage objectsStorage;
+		ObjectHandle<Node> node = objectsStorage.createObject<Node>("TestNode");
 	};
 
 	TEST_F(NodeTests, PassTest)
@@ -27,12 +30,12 @@ namespace zt::gameplay::tests
 	TEST_F(NodeTests, ChildrenTest)
 	{
 		{
-			ObjectHandle<Node> childNode = CreateObject<Node>("ChildNode");
-			ASSERT_EQ(childNode.use_count(), 1);
+			ObjectHandle<Node> childNode = objectsStorage.createObject<Node>("ChildNode");
+			ASSERT_EQ(childNode.getRefCount(), 1);
 
 			node->addChild(childNode);
 			ASSERT_TRUE(childNode);
-			ASSERT_EQ(childNode.use_count(), 2);
+			ASSERT_EQ(childNode.getRefCount(), 2);
 		}
 
 		const Node::Children& children = node->getChildren();
@@ -48,10 +51,10 @@ namespace zt::gameplay::tests
 
 	TEST_F(NodeTests, ParentTest)
 	{
-		auto parent = CreateObject<Node>("parent");
-		node->setParent(parent);
-		ASSERT_EQ(parent.get(), node->getParent().lock().get());
+		auto parent = objectsStorage.createObject<Node>("parent");
+		node->setParent(parent.createWeakHandle());
+		ASSERT_EQ(parent.get(), node->getParent().get());
 	
-		ASSERT_EQ(parent.use_count(), 1);
+		ASSERT_EQ(parent.getRefCount(), 1);
 	}
 }

@@ -2,6 +2,8 @@
 
 #include "Zinet/Gameplay/Systems/ZtSystem.hpp"
 
+#include "Zinet/Core/ZtObjectsStorage.hpp"
+
 #include <gtest/gtest.h>
 
 namespace zt::gameplay::tests
@@ -28,9 +30,10 @@ namespace zt::gameplay::tests
 
 	TEST_F(SystemTests, NodesTest)
 	{
-		auto node = CreateObject<Node>("node");
-		system.addNode(node);
-		ASSERT_EQ(node.use_count(), 1);
+		core::ObjectsStorage objectsStorage;
+		ObjectHandle<Node> node = objectsStorage.createObject<Node>("node");
+		system.addNode(node.createWeakHandle());
+		ASSERT_EQ(node.getRefCount(), 1);
 
 		ASSERT_EQ(system.getNodes().size(), 1);
 	}

@@ -4,6 +4,7 @@
 
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtClassRegistry.hpp"
+#include "Zinet/Core/ZtObjectsStorage.hpp"
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
 #include "Zinet/Core/Assets/ZtAssetsFinder.hpp"
 
@@ -42,11 +43,7 @@ namespace zt::gameplay
 		void deinit() ZINET_API_POST;
 
 		template<std::derived_from<System> SystemT>
-		void addSystem(const std::string& name) ZINET_API_POST
-		{
-			auto system = CreateObject<SystemT>(name);
-			systems.emplace_back(system);
-		}
+		void addSystem(const std::string_view& displayName) ZINET_API_POST;
 
 		template<std::derived_from<System> SystemT>
 		SystemT* getSystem() ZINET_API_POST
@@ -69,6 +66,8 @@ namespace zt::gameplay
 
 		core::AssetsStorage assetsStorage;
 
+		core::ObjectsStorage objectsStorage;
+
 		ObjectHandle<Node> rootNode;
 
 		core::ClassRegistry<core::Object> classRegistry;
@@ -81,8 +80,29 @@ namespace zt::gameplay
 
 		bool initialized = false;
 
-		using Systems = std::vector<std::shared_ptr<System>>;
+		using Systems = std::vector<ObjectHandle<System>>;
 		Systems systems;
 
 	};
+}
+
+/// Not in "core" namespace because used too often
+namespace zt
+{
+	template<std::derived_from<core::Object> ObjectT>
+	auto CreateObject(const std::string_view& displayName) ZINET_API_POST
+	{
+		auto& engineContext = gameplay::EngineContext::Get();
+		return engineContext.objectsStorage.createObject<ObjectT>(displayName);
+	}
+}
+
+namespace zt::gameplay
+{
+	template<std::derived_from<System> SystemT>
+	void EngineContext::addSystem(const std::string_view& displayName) ZINET_API_POST
+	{
+		auto system = CreateObject<SystemT>(displayName);
+		systems.emplace_back(system);
+	}
 }

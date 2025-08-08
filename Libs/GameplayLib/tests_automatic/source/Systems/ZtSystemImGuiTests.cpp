@@ -7,6 +7,8 @@
 
 #include "Zinet/Window/ZtWindow.hpp"
 
+#include "Zinet/Core/ZtObjectsStorage.hpp"
+
 #include <gtest/gtest.h>
 
 namespace
@@ -46,8 +48,9 @@ namespace zt::gameplay::tests
 
 	TEST_F(SystemImGuiTests, PassTest)
 	{
-		auto node = CreateObject<Node>("node");
-		system.addNode(node);
+		core::ObjectsStorage objectsStorage;
+		auto node = objectsStorage.createObject<Node>("node");
+		system.addNode(node.createWeakHandle());
 
 		system.update();
 	}

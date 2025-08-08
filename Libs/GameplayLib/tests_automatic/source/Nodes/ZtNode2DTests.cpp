@@ -2,6 +2,8 @@
 
 #include "Zinet/Gameplay/Nodes/ZtNode2D.hpp"
 
+#include "Zinet/Core/ZtObjectsStorage.hpp"
+
 #include <gtest/gtest.h>
 
 namespace zt::gameplay::tests
@@ -18,7 +20,8 @@ namespace zt::gameplay::tests
 		{
 		}
 
-		ObjectHandle<Node2D> node = CreateObject<Node2D>("NodeName");
+		core::ObjectsStorage objectsStorage;
+		ObjectHandle<Node2D> node = objectsStorage.createObject<Node2D>("TestNode");
 
 		static_assert(std::is_default_constructible_v<Node2D>);
 	};

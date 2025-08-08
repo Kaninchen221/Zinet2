@@ -96,69 +96,69 @@ namespace zt::gameplay
 		return true;
 	}
 
-	ObjectHandle<Node> SystemSave::recreateNodesFromArchive() ZINET_API_POST
-	{
-		Logger->info("Recreate nodes from archive");
+	//std::shared_ptr<Node> SystemSave::recreateNodesFromArchive() ZINET_API_POST
+	//{
+	//	Logger->info("Recreate nodes from archive");
+	//
+	//	return traverse(*currentArchiveBuffer.begin(), {});
+	//}
 
-		return traverse(*currentArchiveBuffer.begin(), {});
-	}
-
-	ObjectHandle<Node> SystemSave::traverse(core::Json& json, ObjectHandle<Node> parentNode) ZINET_API_POST
-	{
-		ObjectHandle<Node> childNode;
-		auto className = json.find(classNameKey);
-		if (className != json.end())
-		{
-			auto& engineContext = EngineContext::Get();
-			auto classNameValue = className->get<std::string>();
-			Logger->info("Create node of class: {}", classNameValue);
-
-			auto cdo = engineContext.classRegistry.getClassByName(classNameValue);
-			if (!cdo)
-			{
-				Logger->error("CDO is invalid");
-				return {};
-			}
-			
-			childNode = dynamic_pointer_cast<Node>(cdo->createCopy());
-			if (!childNode)
-			{
-				Logger->error("Couldn't cast copy of cdo to Node type");
-				return {};
-			}
-		}
-		else
-		{
-			Logger->error("Couldn't find class name");
-			return {};
-		}
-
-		if (parentNode)
-			parentNode->addChild(childNode);
-
-		core::JsonArchive archive( &json );
-		childNode->deserialize(archive);
-
-		if (json.is_object()) {
-			for (auto it = json.begin(); it != json.end(); ++it) 
-			{
-				if (it.key().starts_with(nodeKey))
-				{
-					Logger->info("Found node object: {}", it.key());
-					traverse(*it, childNode);
-				}
-			}
-		}
-		else if (json.is_array()) 
-		{
-			Logger->error("Save file shouldn't contain any array");
-		}
-		else {
-			// Ignore
-		}
-
-		return childNode;
-	}
+	//std::shared_ptr<Node> SystemSave::traverse(core::Json& json, std::shared_ptr<Node> parentNode) ZINET_API_POST
+	//{
+	//	std::shared_ptr<Node> childNode;
+	//	auto className = json.find(classNameKey);
+	//	if (className != json.end())
+	//	{
+	//		auto& engineContext = EngineContext::Get();
+	//		auto classNameValue = className->get<std::string>();
+	//		Logger->info("Create node of class: {}", classNameValue);
+	//
+	//		auto cdo = engineContext.classRegistry.getClassByName(classNameValue);
+	//		if (!cdo)
+	//		{
+	//			Logger->error("CDO is invalid");
+	//			return {};
+	//		}
+	//		
+	//		childNode = dynamic_pointer_cast<Node>(cdo->createCopy());
+	//		if (!childNode)
+	//		{
+	//			Logger->error("Couldn't cast copy of cdo to Node type");
+	//			return {};
+	//		}
+	//	}
+	//	else
+	//	{
+	//		Logger->error("Couldn't find class name");
+	//		return {};
+	//	}
+	//
+	//	if (parentNode)
+	//		parentNode->addChild(childNode);
+	//
+	//	core::JsonArchive archive( &json );
+	//	childNode->deserialize(archive);
+	//
+	//	if (json.is_object()) {
+	//		for (auto it = json.begin(); it != json.end(); ++it) 
+	//		{
+	//			if (it.key().starts_with(nodeKey))
+	//			{
+	//				Logger->info("Found node object: {}", it.key());
+	//				traverse(*it, childNode);
+	//			}
+	//		}
+	//	}
+	//	else if (json.is_array()) 
+	//	{
+	//		Logger->error("Save file shouldn't contain any array");
+	//	}
+	//	else {
+	//		// Ignore
+	//	}
+	//
+	//	return childNode;
+	//}
 
 	bool SystemSave::checkSaveFolderPath() ZINET_API_POST
 	{

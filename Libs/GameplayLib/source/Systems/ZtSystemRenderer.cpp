@@ -87,9 +87,8 @@ namespace zt::gameplay
 			drawInfo.pipelineDescriptorInfo = {};
 			drawInfo.drawCallDescriptorInfo = {};
 			drawInfo.instances = 0;
-			for (const auto& weakNode : nodes)
+			for (const auto& node : nodes)
 			{
-				auto node = weakNode.lock();
 				if (!node)
 					continue;
 

@@ -38,7 +38,8 @@ namespace zt::gameplay
 		void clearCurrentBuffer() ZINET_API_POST { currentArchiveBuffer = {}; }
 
 		virtual bool putFileIntoArchive() ZINET_API_POST;
-		virtual ObjectHandle<Node> recreateNodesFromArchive() ZINET_API_POST;
+	
+		//virtual std::shared_ptr<Node> recreateNodesFromArchive() ZINET_API_POST;
 
 		void setSaveFolderPath(const core::Path& path) ZINET_API_POST { saveFolderPath = path; }
 		const auto& getSaveFolderPath() const ZINET_API_POST { return saveFolderPath; }
@@ -47,7 +48,7 @@ namespace zt::gameplay
 
 		bool serializeNode(ObjectHandle<Node> nodeHandle, core::JsonArchive& archive, int nodeNumber) ZINET_API_POST;
 
-		ObjectHandle<Node> traverse(core::Json& json, ObjectHandle<Node> parentNode) ZINET_API_POST;
+		//std::shared_ptr<Node> traverse(core::Json& json, std::shared_ptr<Node> parentNode) ZINET_API_POST;
 
 		bool checkSaveFolderPath() ZINET_API_POST;
 		bool checkFile(const core::File& file) ZINET_API_POST;

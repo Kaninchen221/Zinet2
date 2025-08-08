@@ -2,6 +2,8 @@
 
 #include "Zinet/Gameplay/Nodes/ZtNodeEditor.hpp"
 
+#include "Zinet/Core/ZtObjectsStorage.hpp"
+
 #include <gtest/gtest.h>
 
 namespace zt::gameplay::tests
@@ -18,7 +20,8 @@ namespace zt::gameplay::tests
 		{
 		}
 
-		ObjectHandle<NodeEditor> node = CreateObject<NodeEditor>("node");
+		core::ObjectsStorage objectsStorage;
+		ObjectHandle<Node> node = objectsStorage.createObject<Node>("node");
 	};
 
 	TEST_F(NodeEditorTests, PassTest)

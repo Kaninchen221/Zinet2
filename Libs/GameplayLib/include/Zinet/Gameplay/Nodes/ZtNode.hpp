@@ -31,8 +31,7 @@ namespace zt::gameplay
 		auto& getChildren() ZINET_API_POST { return children; }
 		const auto& getChildren() const ZINET_API_POST { return children; }
 
-		template<class ObjectHandleT>
-		void addChild(ObjectHandleT ObjectHandle) ZINET_API_POST;
+		void addChild(ObjectHandle<Node> ObjectHandle) ZINET_API_POST { children.push_back(ObjectHandle); }
 
 		auto begin() const ZINET_API_POST { return children.begin(); }
 		auto end() const ZINET_API_POST { return children.end(); }
@@ -54,11 +53,5 @@ namespace zt::gameplay
 		ObjectWeakHandle<Node> parent;
 
 	};
-
-	template<class ObjectHandleT>
-	void Node::addChild(ObjectHandleT ObjectHandle) ZINET_API_POST
-	{
-		children.push_back(ObjectHandle);
-	}
 
 }

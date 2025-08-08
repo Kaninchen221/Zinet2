@@ -22,17 +22,16 @@ namespace zt::gameplay
 	{
 		System::update();
 
-		using namespace zt::vulkan_renderer;
+		vulkan_renderer::
 		ImGuiIntegration::ImplSpecificNewFrame();
 
 		ImGui::NewFrame();
 
-		for (auto& weakObjectHandle : nodes)
+		for (auto& node : nodes)
 		{
-			if (!weakObjectHandle.expired())
+			if (node.isValid())
 			{
-				auto objectHandle = weakObjectHandle.lock();
-				objectHandle->imGui();
+				node->imGui();
 			}
 		}
 

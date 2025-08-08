@@ -15,8 +15,24 @@ namespace zt::core::tests
 
 	};
 
-	TEST_F(ObjectsStorageTests, SimpleTest)
+	class TestObject : public core::Object
 	{
+	public:
+
+		TestObject() {}
+		~TestObject() {}
+
+		/// Test if we could create ObjectHandle<TestObject in Node class
+		using Nodes = std::vector<ObjectHandle<TestObject>>;
+		Nodes nodes;
+
+	};
+
+	TEST_F(ObjectsStorageTests, ComplexTest)
+	{
+		ObjectHandle<TestObject> node;
+		ASSERT_FALSE(node.get());
+
 		const std::string_view displayName = "Test Object";
 		ObjectHandle<Object> objectHandle = objectsStorage.createObject<Object>(displayName);
 		ASSERT_TRUE(objectHandle.get());
@@ -51,5 +67,15 @@ namespace zt::core::tests
 		ASSERT_FALSE(objectHandle.isValid());
 		ASSERT_FALSE(objectHandle);
 		ASSERT_EQ(objectHandle.getRefCount(), 0);
+	}
+
+	TEST_F(ObjectsStorageTests, DerivedToBaseTest)
+	{
+		const std::string_view displayName = "Test Object";
+		ObjectHandle<TestObject> node = objectsStorage.createObject<TestObject>(displayName);
+		ASSERT_TRUE(node);
+
+		ObjectHandle<Object> object = node;
+		ASSERT_TRUE(object);
 	}
 }
