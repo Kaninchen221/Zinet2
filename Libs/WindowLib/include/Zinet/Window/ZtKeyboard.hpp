@@ -14,7 +14,6 @@ namespace zt::wd
 {
 	class Window;
 
-	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_DESTRUCTOR, NO_OPERATORS, NO_CREATE_COPY, NO_REGISTER_CLASS)
 	class ZINET_WINDOW_LAYER_API Keyboard : core::Object
 	{
 		inline static zt::core::ConsoleLogger Logger = zt::core::ConsoleLogger::Create("Keyboard");

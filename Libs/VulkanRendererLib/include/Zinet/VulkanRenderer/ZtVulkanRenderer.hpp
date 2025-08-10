@@ -18,7 +18,7 @@ namespace zt::vulkan_renderer
 {
 	struct DrawInfo;
 
-	ZT_REFLECT_CLASS()
+	
 	class ZINET_VULKAN_RENDERER_API VulkanRenderer : public core::Object
 	{
 	protected:

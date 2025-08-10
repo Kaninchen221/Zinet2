@@ -18,7 +18,6 @@ namespace zt::core
 
 	inline constexpr auto stbiFree = [](stbi_uc* ptr) { std::free(ptr); };
 
-	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_DESTRUCTOR, NO_OPERATORS)
 	class ZINET_CORE_API Image : public Object
 	{
 	protected:

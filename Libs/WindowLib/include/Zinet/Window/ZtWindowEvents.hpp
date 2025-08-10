@@ -8,7 +8,6 @@ namespace zt::wd
 {
 	class Window;
 
-	ZT_REFLECT_CLASS(NO_CONSTRUCTORS, NO_DESTRUCTOR, NO_OPERATORS)
 	class ZINET_WINDOW_LAYER_API WindowEvents : public core::Object
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("Logger");

@@ -3,14 +3,6 @@
 #pragma warning(disable:4251) // Ignore warning: STD doesn't have dllexport/dllimport
 #pragma warning(disable:4275) // Ignore warning: Vulkan RAII doesn't have dllexport/dllimport
 
-// Reflection macros
-#define ZT_GENERATED_BODY(...)
-#define ZT_REFLECT_NAMESPACE(...)
-#define ZT_REFLECT_CLASS(...)
-#define ZT_REFLECT_METHOD(...)
-#define ZT_REFLECT_MEMBER(...)
-#define ZT_REFLECT_STRUCT(...)
-
 #ifdef _DEBUG
 #	define ZINET_DEBUG 1
 #else
