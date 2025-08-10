@@ -48,7 +48,6 @@ namespace zt::core
 
 	};
 
-	ZT_REFLECT_CLASS()
 	class ZINET_CORE_API Asset : public Object
 	{
 	protected:
