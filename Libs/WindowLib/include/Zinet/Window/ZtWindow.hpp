@@ -15,7 +15,7 @@ namespace zt::wd
 	{
 	public:
 
-		using WindowResizedCallback = std::function<void(void*, const Vector2i&)>;
+		using WindowResizedCallback = void (*)(void*, const Vector2i&);
 
 	private:
 
@@ -26,19 +26,19 @@ namespace zt::wd
 
 	public:
 
-		Window() = default;
-		Window(const Window& other) = default;
-		Window(Window&& other) = default;
+		Window() noexcept = default;
+		Window(const Window& other) noexcept = default;
+		Window(Window&& other) noexcept = default;
 
-		Window& operator = (const Window& other) = default;
-		Window& operator = (Window&& other) = default;
+		Window& operator = (const Window& other) noexcept = default;
+		Window& operator = (Window&& other) noexcept = default;
 
-		~Window() ZINET_API_POST;
+		~Window() noexcept;
 
 		bool create(int width = 1024, int height = 1024);
 
-		GLFWwindow* getInternal() { return internalWindow; }
-		const GLFWwindow* getInternal() const { return internalWindow; }
+		GLFWwindow* getInternal() noexcept { return internalWindow; }
+		const GLFWwindow* getInternal() const noexcept { return internalWindow; }
 
 		bool isOpen() const;
 
@@ -48,8 +48,8 @@ namespace zt::wd
 
 		void setWindowEvents(WindowEvents* newEvent) { windowEvents = newEvent; }
 
-		const WindowEvents& getWindowEvents() const { return *windowEvents; }
-		WindowEvents& getWindowEvents() { return *windowEvents; }
+		const WindowEvents& getWindowEvents() const noexcept { return *windowEvents; }
+		WindowEvents& getWindowEvents() noexcept { return *windowEvents; }
 
 		bool isMinimized() const;
 
@@ -57,18 +57,18 @@ namespace zt::wd
 
 		void setWindowResizedCallback(void* userPointer, WindowResizedCallback callback);
 
-		WindowResizedCallback getWindowResizedCallback() const { return windowResizedCallback; }
+		WindowResizedCallback getWindowResizedCallback() const noexcept { return windowResizedCallback; }
 
-		void* getWindowResizedCallbackUserPointer() { return windowResizedCallbackUserPointer; }
+		void* getWindowResizedCallbackUserPointer() noexcept { return windowResizedCallbackUserPointer; }
 
 		void swapBuffers();
 
 		static void SetTransparentFramebuffer(bool value);
 
 		/// For Vulkan sometimes it's necessary to call this function too
-		void makeWindowTransparentWhileUsingVulkan() ZINET_API_POST;
+		void makeWindowTransparentWhileUsingVulkan();
 
-		Vector2i getFramebufferSize() const ZINET_API_POST;
+		Vector2i getFramebufferSize() const;
 
 		void setShowWindowBar(bool value);
 
@@ -90,7 +90,7 @@ namespace zt::wd
 		void bindFramebufferSizeCallback();
 	};
 
-	inline Vector2i Window::getFramebufferSize() const ZINET_API_POST
+	inline Vector2i Window::getFramebufferSize() const
 	{
 		std::int32_t width, height;
 		glfwGetFramebufferSize(internalWindow, &width, &height);
@@ -142,7 +142,7 @@ namespace zt::wd
 		}
 		else
 		{
-			Logger->error("Can't bind user pointer: {} : Is callback valid: {}", userPointer, callback.operator bool());
+			Logger->error("Can't bind user pointer: {} : Is callback valid: {}", userPointer, static_cast<bool>(callback));
 		}
 	}
 }

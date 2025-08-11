@@ -90,7 +90,7 @@ namespace zt::wd::tests
 
 	TEST_F(WindowTests, SetWindowResizedCallback)
 	{
-		struct S { static void Callback(void* userPointer, const Vector2ui&) { if (!userPointer) FAIL() << "userPointer must be not nullptr"; } };
+		struct S { static void Callback(void* userPointer, const Vector2i&) { if (!userPointer) FAIL() << "userPointer must be not nullptr"; } };
 		S s;
 		window.setWindowResizedCallback(&s, &S::Callback);
 

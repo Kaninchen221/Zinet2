@@ -8,19 +8,19 @@
 namespace zt::wd
 {
 	Mouse::Mouse(Window& newWindow)
-		: window{ &newWindow }
+		: data{ .window = &newWindow }
 	{
 
 	}
 
 	bool Mouse::isPressed(MouseButton mouseButton) const
 	{
-		return glfwGetMouseButton(window->getInternal(), static_cast<int>(mouseButton)) == static_cast<int>(MouseButtonEventType::Pressed);
+		return glfwGetMouseButton(data.window->getInternal(), static_cast<int>(mouseButton)) == static_cast<int>(MouseButtonEventType::Pressed);
 	}
 
 	bool Mouse::isReleased(MouseButton mouseButton) const
 	{
-		return glfwGetMouseButton(window->getInternal(), static_cast<int>(mouseButton)) == static_cast<int>(MouseButtonEventType::Released);
+		return glfwGetMouseButton(data.window->getInternal(), static_cast<int>(mouseButton)) == static_cast<int>(MouseButtonEventType::Released);
 	}
 
 	void Mouse::ButtonCallback(GLFWwindow* glfwWindow, int button, int action, int mods)
@@ -34,8 +34,8 @@ namespace zt::wd
 
 	void Mouse::bindCallbacks()
 	{
-		glfwSetMouseButtonCallback(window->getInternal(), &Mouse::ButtonCallback);
-		glfwSetCursorPosCallback(window->getInternal(), &Mouse::PositionCallback);
+		glfwSetMouseButtonCallback(data.window->getInternal(), &Mouse::ButtonCallback);
+		glfwSetCursorPosCallback(data.window->getInternal(), &Mouse::PositionCallback);
 	}
 
 	void Mouse::PositionCallback(GLFWwindow* glfwWindow, double positionX, double positionY)
@@ -51,7 +51,7 @@ namespace zt::wd
 		MousePositionEvent positionEvent{};
 		positionEvent.position.x = positionX;
 		positionEvent.position.y = positionY;
-		positionEvents.insert(positionEvents.begin(), positionEvent);
+		data.positionEvents.insert(data.positionEvents.begin(), positionEvent);
 	}
 
 	void Mouse::pushButtonEvent(int button, int action, [[maybe_unused]] int mods)
@@ -59,20 +59,20 @@ namespace zt::wd
 		MouseButtonEvent buttonEvent;
 		buttonEvent.type = static_cast<MouseButtonEventType>(action);
 		buttonEvent.button = static_cast<MouseButton>(button);
-		buttonsEvents.insert(buttonsEvents.begin(), buttonEvent);
+		data.buttonsEvents.insert(data.buttonsEvents.begin(), buttonEvent);
 	}
 
 	void Mouse::clearEvents()
 	{
-		buttonsEvents.clear();
-		positionEvents.clear();
+		data.buttonsEvents.clear();
+		data.positionEvents.clear();
 	}
 
 	std::string Mouse::asString() const
 	{
 		std::string result = "Mouse events:\n";
 		result += "Button events:\n";
-		for (const auto& buttonEvent : buttonsEvents)
+		for (const auto& buttonEvent : data.buttonsEvents)
 		{
 			result += fmt::format("Event type: {}, key: {}\n",
 				static_cast<std::int32_t>(buttonEvent.type),
@@ -80,7 +80,7 @@ namespace zt::wd
 		}
 
 		result += "\nMouse events:\n";
-		for (const auto& positionEvent : positionEvents)
+		for (const auto& positionEvent : data.positionEvents)
 		{
 			result += fmt::format("Position event x: {}, y: {}\n",
 				positionEvent.position.x,

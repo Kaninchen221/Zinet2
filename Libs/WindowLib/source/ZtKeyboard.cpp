@@ -6,39 +6,39 @@ namespace zt::wd
 {
 
 	Keyboard::Keyboard(Window& newWindow)
-		: window{ &newWindow }
+		: data{ .window = &newWindow }
 	{
 	}
 
-	const Window* Keyboard::getWindow() const
+	const Window* Keyboard::getWindow() const noexcept
 	{
-		return window;
+		return data.window;
 	}
 
-	const std::vector<KeyboardEvent>& Keyboard::getEvents() const
+	const std::vector<KeyboardEvent>& Keyboard::getEvents() const noexcept
 	{
-		return events;
+		return data.events;
 	}
 
 	bool Keyboard::isPressed(KeyboardKey key) const
 	{
-		return glfwGetKey(window->getInternal(), static_cast<int>(key)) == static_cast<int>(KeyboardEventType::Pressed);
+		return glfwGetKey(data.window->getInternal(), static_cast<int>(key)) == static_cast<int>(KeyboardEventType::Pressed);
 	}
 
 	bool Keyboard::isReleased(KeyboardKey key) const
 	{
-		return glfwGetKey(window->getInternal(), static_cast<int>(key)) == static_cast<int>(KeyboardEventType::Released);
+		return glfwGetKey(data.window->getInternal(), static_cast<int>(key)) == static_cast<int>(KeyboardEventType::Released);
 	}
 
 	void Keyboard::bindCallbacks()
 	{
-		if (window == nullptr)
+		if (data.window == nullptr)
 		{
 			Logger->error("Can't bind callbacks when window is nullptr");
 			return;
 		}
 
-		glfwSetKeyCallback(window->getInternal(), Keyboard::KeyCallback);
+		glfwSetKeyCallback(data.window->getInternal(), Keyboard::KeyCallback);
 	}
 
 	void Keyboard::pushEvent(KeyboardKey key, [[maybe_unused]] std::int32_t scanCode, KeyboardEventType type, KeyboardMods mods)
@@ -47,13 +47,13 @@ namespace zt::wd
 		keyboardEvent.type = type;
 		keyboardEvent.key = key;
 		keyboardEvent.mods = mods;
-		events.insert(events.begin(), keyboardEvent);
+		data.events.insert(data.events.begin(), keyboardEvent);
 	}
 
 	std::string Keyboard::asString() const
 	{
 		std::string result = "Keyboard events:\n";
-		for (const auto& event : events)
+		for (const auto& event : data.events)
 		{
 			result += fmt::format("Event type: {}, key: {} mods: {} \n", 
 				static_cast<std::int32_t>(event.type), 

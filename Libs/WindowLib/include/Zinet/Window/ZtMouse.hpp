@@ -19,27 +19,27 @@ namespace zt::wd
 		Mouse() = delete;
 		Mouse(Window& newWindow);
 		Mouse(const Mouse& other) = default;
-		Mouse(Mouse&& other) = default;
+		Mouse(Mouse&& other) noexcept = default;
 
 		Mouse& operator = (const Mouse& other) = default;
-		Mouse& operator = (Mouse&& other) = default;
+		Mouse& operator = (Mouse&& other) noexcept = default;
 
-		~Mouse() ZINET_API_POST = default;
+		~Mouse() noexcept = default;
 
-		const Window* getWindow() const { return window; }
-		Window* getWindow() { return window; }
+		const Window* getWindow() const noexcept { return data.window; }
+		Window* getWindow() noexcept { return data.window; }
 
 		bool isPressed(MouseButton mouseButton) const;
 
 		bool isReleased(MouseButton mouseButton) const;
 
-		Vector2d getMousePosition() const;
+		Vector2d getMousePosition() const noexcept;
 
 		Vector2d getMousePositionNorm() const;
 
-		const std::vector<MouseButtonEvent>& getButtonsEvents() const { return buttonsEvents; }
+		const std::vector<MouseButtonEvent>& getButtonsEvents() const noexcept { return data.buttonsEvents; }
 
-		const std::vector<MousePositionEvent>& getPositionEvents() const { return positionEvents; }
+		const std::vector<MousePositionEvent>& getPositionEvents() const noexcept { return data.positionEvents; }
 
 		void bindCallbacks();
 
@@ -57,23 +57,27 @@ namespace zt::wd
 
 	protected:
 
-		Window* window = nullptr;
-		std::vector<MouseButtonEvent> buttonsEvents;
-		std::vector<MousePositionEvent> positionEvents;
+		struct Data
+		{
+			Window* window = nullptr;
+			std::vector<MouseButtonEvent> buttonsEvents;
+			std::vector<MousePositionEvent> positionEvents;
+		};
+		Data data;
 
 	};
 
-	inline Vector2d Mouse::getMousePosition() const
+	inline Vector2d Mouse::getMousePosition() const noexcept
 	{
 		Vector2d position;
-		glfwGetCursorPos(window->getInternal(), &position.x, &position.y);
+		glfwGetCursorPos(data.window->getInternal(), &position.x, &position.y);
 		return position;
 	}
 
 	inline Vector2d Mouse::getMousePositionNorm() const
 	{
 		const auto mousePosition = getMousePosition();
-		const auto windowSize = window->getSize();
+		const auto windowSize = data.window->getSize();
 		return
 		{
 			mousePosition.x / windowSize.x,

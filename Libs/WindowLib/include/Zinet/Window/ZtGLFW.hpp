@@ -16,13 +16,13 @@ namespace zt::wd
 	public:
 
 		GLFW() { Init(); }
-		GLFW(const GLFW& other) = default;
-		GLFW(GLFW&& other) = default;
+		GLFW(const GLFW& other) noexcept = default;
+		GLFW(GLFW&& other) noexcept = default;
 
-		GLFW& operator = (const GLFW& other) = default;
-		GLFW& operator = (GLFW&& other) = default;
+		GLFW& operator = (const GLFW& other) noexcept = default;
+		GLFW& operator = (GLFW&& other) noexcept = default;
 
-		~GLFW() ZINET_API_POST { Deinit(); };
+		~GLFW() { Deinit(); }
 
 		static bool Init(bool hideWindow = true);
 		static void Deinit();

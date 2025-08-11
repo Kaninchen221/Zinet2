@@ -37,7 +37,7 @@ namespace zt::core
 
 	protected:
 
-		void sink_it_(const spdlog::details::log_msg& msg) override;
+		ZINET_CORE_API void sink_it_(const spdlog::details::log_msg& msg) override;
 
 		void flush_() override {}
 

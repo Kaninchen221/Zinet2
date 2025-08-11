@@ -17,23 +17,23 @@ namespace zt::wd
 		WindowEvents() = delete;
 		WindowEvents(Window& newWindow) : window{&newWindow}, keyboard{newWindow}, mouse{newWindow} {}
 		WindowEvents(const WindowEvents& other) = default;
-		WindowEvents(WindowEvents&& other) = default;
+		WindowEvents(WindowEvents&& other) noexcept = default;
 
 		WindowEvents& operator = (const WindowEvents& other) = default;
-		WindowEvents& operator = (WindowEvents&& other) = default;
+		WindowEvents& operator = (WindowEvents&& other) noexcept = default;
 
-		~WindowEvents() ZINET_API_POST = default;
+		~WindowEvents() noexcept = default;
 
-		const Window* getWindow() const { return window; }
-		Window* getWindow() { return window; }
+		const Window* getWindow() const noexcept { return window; }
+		Window* getWindow() noexcept { return window; }
 
 		void pollEvents();
 
-		Keyboard& getKeyboard() { return keyboard; }
-		const Keyboard& getKeyboard() const { return keyboard; }
+		Keyboard& getKeyboard() noexcept { return keyboard; }
+		const Keyboard& getKeyboard() const noexcept { return keyboard; }
 
-		Mouse& getMouse() { return mouse; }
-		const Mouse& getMouse() const { return mouse; }
+		Mouse& getMouse() noexcept { return mouse; }
+		const Mouse& getMouse() const noexcept { return mouse; }
 
 		void bindCallbacks();
 

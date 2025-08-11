@@ -6,7 +6,7 @@
 
 namespace zt::wd
 {
-	struct ZINET_WINDOW_LAYER_API MousePositionEvent
+	struct MousePositionEvent
 	{
 		Vector2d position;
 	};
