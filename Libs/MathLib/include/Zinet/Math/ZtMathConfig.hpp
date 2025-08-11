@@ -18,14 +18,14 @@
 #	endif // ZINET_WINDOWS
 
 #	ifdef ZINET_LIB
-#		define ZINET_MATH_LAYER_API ZINET_API_EXPORT
+#		define ZINET_MATH_API ZINET_API_EXPORT
 #	else
-#		define ZINET_MATH_LAYER_API ZINET_API_IMPORT
+#		define ZINET_MATH_API ZINET_API_IMPORT
 #	endif // ZINET_LIB
 
 
 #else
 
-#	define ZINET_MATH_LAYER_API
+#	define ZINET_MATH_API
 
 #endif

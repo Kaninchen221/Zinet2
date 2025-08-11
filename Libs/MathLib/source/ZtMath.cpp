@@ -1,9 +1,11 @@
 #include "Zinet/Math/ZtMath.hpp"
 
-namespace zt
+namespace zt::math
 {
 
-	void Math::INeedGeneratedLib() const
-	{}
+	void GenerateLib()
+	{
+
+	}
 
 }
