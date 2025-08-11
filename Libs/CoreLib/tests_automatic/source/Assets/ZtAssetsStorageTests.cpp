@@ -68,9 +68,9 @@ namespace zt::core::tests
 		ASSERT_TRUE(optionalAsset);
 
 		auto asset = std::move(optionalAsset.value());
-		ASSERT_TRUE(!asset.metaData.empty());
+		ASSERT_TRUE(!asset.getMetaData().empty());
 
-		auto extension = asset.metaData.value("fileExtension", "");
+		auto extension = asset.getMetaData().value("fileExtension", "");
 		ASSERT_FALSE(extension.empty());
 
 		auto Logger = ConsoleLogger::Create("temp");

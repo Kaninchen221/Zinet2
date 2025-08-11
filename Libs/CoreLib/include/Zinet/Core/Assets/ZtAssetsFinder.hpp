@@ -13,7 +13,7 @@ namespace zt::core
 {
 	namespace fs = std::filesystem;
 
-	class ZINET_CORE_API AssetsFinder : public Object
+	class AssetsFinder : public Object
 	{
 	protected:
 
@@ -21,15 +21,15 @@ namespace zt::core
 
 	public:		
 		
-		AssetsFinder() ZINET_API_POST = default;
-		AssetsFinder(const AssetsFinder& other) ZINET_API_POST = default;
-		AssetsFinder(AssetsFinder&& other) ZINET_API_POST = default;
-		~AssetsFinder() ZINET_API_POST = default;
+		ZINET_CORE_API AssetsFinder() = default;
+		ZINET_CORE_API AssetsFinder(const AssetsFinder& other) = default;
+		ZINET_CORE_API AssetsFinder(AssetsFinder&& other) noexcept = default;
+		ZINET_CORE_API ~AssetsFinder() noexcept = default;
 
-		AssetsFinder& operator = (const AssetsFinder& other) ZINET_API_POST = default;
-		AssetsFinder& operator = (AssetsFinder&& other) ZINET_API_POST = default;
+		ZINET_CORE_API AssetsFinder& operator = (const AssetsFinder& other) = default;
+		ZINET_CORE_API AssetsFinder& operator = (AssetsFinder&& other) noexcept = default;
 
-		std::filesystem::path getContentFolderPath() const ZINET_API_POST { return rootFolder / contentFolderName; }
+		ZINET_CORE_API std::filesystem::path getContentFolderPath() const { return rootFolder / contentFolderName; }
 
 		struct FindAssetsInput
 		{
@@ -43,21 +43,21 @@ namespace zt::core
 			std::vector<std::filesystem::path> assets;
 		};
 
-		FindAssetsResult findAssets(const FindAssetsInput& findAssetsInput) const ZINET_API_POST;
+		ZINET_CORE_API FindAssetsResult findAssets(const FindAssetsInput& findAssetsInput) const;
 
-		bool isAssetFile(const std::filesystem::path& path) const ZINET_API_POST;
+		ZINET_CORE_API bool isAssetFile(const std::filesystem::path& path) const;
 
-		std::filesystem::path createAssetFilePath(const std::filesystem::path& filePath) const ZINET_API_POST;
+		ZINET_CORE_API std::filesystem::path createAssetFilePath(const std::filesystem::path& filePath) const;
 
-		std::filesystem::path createRelativePath(const std::string& folderAsRoot, const std::filesystem::path& path) const ZINET_API_POST;
+		ZINET_CORE_API std::filesystem::path createRelativePath(const std::string& folderAsRoot, const std::filesystem::path& path) const;
 
-		void createAssetFile(const std::filesystem::path& filePath, const std::filesystem::path& assetPath) const ZINET_API_POST;
+		ZINET_CORE_API void createAssetFile(const std::filesystem::path& filePath, const std::filesystem::path& assetPath) const;
 
-		void setRootPath(const Path& path) ZINET_API_POST { rootFolder = path; }
+		ZINET_CORE_API void setRootPath(const Path& path) { rootFolder = path; }
 
-		const auto& getRootPath() const ZINET_API_POST { return rootFolder; }
-		const auto& getContentFolderName() const ZINET_API_POST { return contentFolderName; }
-		const auto& getAssetFileExtension() const ZINET_API_POST { return assetFileExtension; }
+		const auto& getRootPath() const noexcept { return rootFolder; }
+		const auto& getContentFolderName() const noexcept { return contentFolderName; }
+		const auto& getAssetFileExtension() const noexcept { return assetFileExtension; }
 
 	protected:
 

@@ -17,7 +17,7 @@ namespace zt::core::tests
 	class ClassType : public Object
 	{
 	public:
-		virtual std::string getClassName() const ZINET_API_POST { return "zt::core::tests::ClassType"; }
+		virtual std::string getClassName() const { return "zt::core::tests::ClassType"; }
 	};
 
 	TEST_F(ClassRegistryTests, Pass)

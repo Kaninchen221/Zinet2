@@ -9,7 +9,7 @@
 
 namespace zt::core
 {
-	class ZINET_CORE_API File : public Object
+	class File : public Object
 	{
 	protected:
 
@@ -19,43 +19,43 @@ namespace zt::core
 
 		using Byte = std::byte;
 
-		File() ZINET_API_POST = default;
-		File(const File& other) ZINET_API_POST = delete;
-		File(File&& other) ZINET_API_POST = default;
+		ZINET_CORE_API File() = default;
+		ZINET_CORE_API File(const File& other) = delete;
+		ZINET_CORE_API File(File&& other) noexcept = default;
 
-		File& operator = (const File& other) ZINET_API_POST = delete;
-		File& operator = (File&& other) ZINET_API_POST = default;
+		ZINET_CORE_API File& operator = (const File& other) = delete;
+		ZINET_CORE_API File& operator = (File&& other) noexcept = default;
 
-		~File() ZINET_API_POST;
+		ZINET_CORE_API ~File();
 
-		auto& get() const ZINET_API_POST { return fileStream; }
-		auto& get() ZINET_API_POST { return fileStream; }
+		ZINET_CORE_API auto& get() const noexcept { return fileStream; }
+		ZINET_CORE_API auto& get() noexcept { return fileStream; }
 
-		void open(const std::filesystem::path& filePath, FileOpenMode openMode, bool binary = false) ZINET_API_POST;
+		ZINET_CORE_API void open(const std::filesystem::path& filePath, FileOpenMode openMode, bool binary = false);
 
-		bool isOpen() const ZINET_API_POST;
+		ZINET_CORE_API bool isOpen() const noexcept;
 
-		bool isOkay() const ZINET_API_POST;
+		ZINET_CORE_API bool isOkay() const noexcept;
 
-		void log() const ZINET_API_POST;
+		ZINET_CORE_API void log() const;
 
-		std::string readLine() ZINET_API_POST;
+		ZINET_CORE_API std::string readLine();
 
-		std::string readAll() ZINET_API_POST;
+		ZINET_CORE_API std::string readAll();
 
-		std::vector<Byte> readData() ZINET_API_POST;
+		ZINET_CORE_API std::vector<Byte> readData();
 
-		void write(const std::string& string) ZINET_API_POST;
+		ZINET_CORE_API void write(const std::string& string);
 
-		void writeData(const std::vector<Byte>& data) ZINET_API_POST;
+		ZINET_CORE_API void writeData(const std::vector<Byte>& data);
 
-		static std::ios_base::openmode ToStdOpenMode(FileOpenMode openMode) ZINET_API_POST;
+		ZINET_CORE_API static std::ios_base::openmode ToStdOpenMode(FileOpenMode openMode) noexcept;
 
-		void close() ZINET_API_POST;
+		ZINET_CORE_API void close();
 
-		static bool RemoveFile(const std::filesystem::path& path) ZINET_API_POST;
+		ZINET_CORE_API static bool RemoveFile(const std::filesystem::path& path);
 
-		static File CreateFile(const std::filesystem::path& path) ZINET_API_POST;
+		ZINET_CORE_API static File CreateFile(const std::filesystem::path& path);
 
 	protected:
 

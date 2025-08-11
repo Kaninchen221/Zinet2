@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Zinet/Core/ZtObject.hpp"
-#include "Zinet/Core/ZtClassDefaultObjectRegistry.hpp"
 #include "Zinet/Core/ZtArchive.hpp"
 
 #include <gtest/gtest.h>

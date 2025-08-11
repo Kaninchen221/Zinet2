@@ -4,19 +4,19 @@
 namespace zt::core
 {
 
-	void Clock::start()
+	void Clock::start() noexcept
 	{
 		savedTimePoint = UnderlyingClock::now();
 	}
 
-	Time Clock::restart()
+	Time Clock::restart() noexcept
 	{
 		Time elapsedTime = getElapsedTime();
 		savedTimePoint = UnderlyingClock::now();
 		return elapsedTime;
 	}
 
-	Time Clock::getElapsedTime() const
+	Time Clock::getElapsedTime() const noexcept
 	{
 		using Duration = std::chrono::duration<UnderlyingClock::rep, UnderlyingClock::period>;
 

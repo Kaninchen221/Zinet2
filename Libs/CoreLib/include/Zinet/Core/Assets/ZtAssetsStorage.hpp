@@ -13,7 +13,7 @@
 
 namespace zt::core
 {
-	class ZINET_CORE_API AssetsStorage : public Object
+	class AssetsStorage : public Object
 	{
 	protected:
 
@@ -21,35 +21,35 @@ namespace zt::core
 
 	public:
 
-		AssetsStorage() ZINET_API_POST = default;
-		AssetsStorage(const AssetsStorage& other) ZINET_API_POST = default;
-		AssetsStorage(AssetsStorage&& other) ZINET_API_POST = default;
-		~AssetsStorage() ZINET_API_POST = default;
-
-		AssetsStorage& operator = (const AssetsStorage& other) ZINET_API_POST = default;
-		AssetsStorage& operator = (AssetsStorage&& other) ZINET_API_POST = default;
-
-		bool storeAssets() ZINET_API_POST;
-
-		void unloadAssets() ZINET_API_POST;
-
 		using AssetsKey = std::string;
 		using ObjectPtr = std::shared_ptr<Asset>;
 		using Assets = std::map<AssetsKey, ObjectPtr>;
-
-		template<std::derived_from<Asset> AssetT>
-		void registerAssetClass() ZINET_API_POST;
-
-		AssetHandle<Asset> get(const AssetsKey& key) ZINET_API_POST;
-
-		template<std::derived_from<Asset> AssetT>
-		AssetHandle<AssetT> getAs(const AssetsKey& key) ZINET_API_POST;
-
 		using AssetHandlers = std::vector<AssetHandle<>>;
-		AssetHandlers getAssets() ZINET_API_POST;
-
 		using LoadMinimalAssetResult = std::optional<Asset>;
-		LoadMinimalAssetResult loadAssetMetaData(const fs::path& assetPath) const ZINET_API_POST;
+
+		ZINET_CORE_API AssetsStorage() = default;
+		ZINET_CORE_API AssetsStorage(const AssetsStorage& other) = default;
+		ZINET_CORE_API AssetsStorage(AssetsStorage&& other) noexcept = default;
+		ZINET_CORE_API ~AssetsStorage() noexcept = default;
+
+		ZINET_CORE_API AssetsStorage& operator = (const AssetsStorage& other) = default;
+		ZINET_CORE_API AssetsStorage& operator = (AssetsStorage&& other) noexcept = default;
+
+		ZINET_CORE_API bool storeAssets();
+
+		ZINET_CORE_API void unloadAssets();
+
+		template<std::derived_from<Asset> AssetT>
+		void registerAssetClass();
+
+		ZINET_CORE_API AssetHandle<Asset> get(const AssetsKey& key);
+
+		template<std::derived_from<Asset> AssetT>
+		AssetHandle<AssetT> getAs(const AssetsKey& key);
+
+		ZINET_CORE_API AssetHandlers getAssets();
+
+		ZINET_CORE_API LoadMinimalAssetResult loadAssetMetaData(const fs::path& assetPath) const;
 
 		AssetsFinder assetsFinder;
 
@@ -62,13 +62,13 @@ namespace zt::core
 	};
 
 	template<std::derived_from<Asset> AssetT>
-	void AssetsStorage::registerAssetClass() ZINET_API_POST
+	void AssetsStorage::registerAssetClass()
 	{
 		classRegistry.registerClass<AssetT>();
 	}
 
 	template<std::derived_from<Asset> AssetT>
-	AssetHandle<AssetT> AssetsStorage::getAs(const AssetsKey& key) ZINET_API_POST
+	AssetHandle<AssetT> AssetsStorage::getAs(const AssetsKey& key)
 	{
 		auto assetHandle = get(key);
 		if (!assetHandle)

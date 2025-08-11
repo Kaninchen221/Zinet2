@@ -4,7 +4,7 @@
 
 namespace zt::core
 {
-	bool AssetText::load(const Path& rootPath) ZINET_API_POST
+	bool AssetText::load(const Path& rootPath)
 	{
 		File file;
 		const auto filePath = rootPath / metaData.value("fileRelativePath", "");
@@ -22,13 +22,13 @@ namespace zt::core
 		return true;
 	}
 
-	void AssetText::unload() ZINET_API_POST
+	void AssetText::unload()
 	{ 
 		text.clear(); 
 		loaded = false; 
 	}
 
-	void AssetText::imGui() ZINET_API_POST
+	void AssetText::imGui()
 	{
 		Asset::imGui();
 		if (!isLoaded())

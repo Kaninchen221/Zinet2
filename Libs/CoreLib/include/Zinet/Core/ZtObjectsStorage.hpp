@@ -8,7 +8,7 @@
 
 namespace zt::core
 {
-	class ZINET_CORE_API ObjectsStorage
+	class ObjectsStorage
 	{
 	protected:
 
@@ -18,16 +18,16 @@ namespace zt::core
 
 		using Objects = std::list<ObjectRefCounter>;
 
-		ObjectsStorage() ZINET_API_POST = default;
-		ObjectsStorage(const ObjectsStorage& other) ZINET_API_POST = delete;
-		ObjectsStorage(ObjectsStorage&& other) ZINET_API_POST = default;
-		~ObjectsStorage() noexcept = default;
+		ZINET_CORE_API ObjectsStorage() noexcept = default;
+		ZINET_CORE_API ObjectsStorage(const ObjectsStorage& other) noexcept = delete;
+		ZINET_CORE_API ObjectsStorage(ObjectsStorage&& other) noexcept = default;
+		ZINET_CORE_API ~ObjectsStorage() noexcept = default;
 
-		ObjectsStorage& operator = (const ObjectsStorage& other) ZINET_API_POST = delete;
-		ObjectsStorage& operator = (ObjectsStorage&& other) ZINET_API_POST = default;
+		ZINET_CORE_API ObjectsStorage& operator = (const ObjectsStorage& other) noexcept = delete;
+		ZINET_CORE_API ObjectsStorage& operator = (ObjectsStorage&& other) noexcept = default;
 
 		template<std::derived_from<Object> ObjectT>
-		ObjectHandle<ObjectT> createObject(const std::string_view displayName) ZINET_API_POST;
+		ObjectHandle<ObjectT> createObject(const std::string_view displayName);
 
 	protected:
 
@@ -36,7 +36,7 @@ namespace zt::core
 	};
 
 	template<std::derived_from<Object> ObjectT> 
-	ObjectHandle<ObjectT> ObjectsStorage::createObject(const std::string_view displayName) ZINET_API_POST
+	ObjectHandle<ObjectT> ObjectsStorage::createObject(const std::string_view displayName)
 	{
 		Logger->info("Creating object with display name '{}'", displayName);
 

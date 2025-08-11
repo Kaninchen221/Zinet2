@@ -10,7 +10,7 @@ namespace zt::core::tests
 {
 	void TestIsImageReallyInvalid(const Image& image)
 	{
-		ASSERT_FALSE(image.data());
+		ASSERT_FALSE(image.getData());
 		ASSERT_EQ(image.getWidth(), 0);
 		ASSERT_EQ(image.getHeight(), 0);
 		ASSERT_EQ(image.getComponents(), 0);
@@ -19,7 +19,7 @@ namespace zt::core::tests
 
 	void TestImageIsValid(const Image& image)
 	{
-		ASSERT_TRUE(image.data());
+		ASSERT_TRUE(image.getData());
 		ASSERT_EQ(image.getWidth(), 32);
 		ASSERT_EQ(image.getHeight(), 32);
 		ASSERT_EQ(image.getComponents(), 4);

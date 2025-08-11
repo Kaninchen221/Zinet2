@@ -10,10 +10,8 @@ class ZinetConan(ConanFile):
     requires = [
         "gtest/1.15.0@",
         "spdlog/1.14.1@",
-        "plf_colony/7.06@",
         "glfw/3.4@",
         "stb/cci.20240531@",
-        "pybind11/2.9.1@",
         "nlohmann_json/3.10.5@",
         "glm/0.9.9.5@",
         #"glslang/11.7.0@", shaderc already has glslang in dependencies
@@ -24,8 +22,18 @@ class ZinetConan(ConanFile):
     generators = ["CMakeToolchain", "CMakeDeps"]
     default_options = {
         "gtest/*:shared": True,
-        "glfw/*:shared": True
+        "glfw/*:shared": True,
+        "spdlog/*:shared": True,
+        "stb/*:shared": True,
+        "nlohmann_json/*:shared": True,
+        "glm/*:shared": True,
+        "shaderc/*:shared": True,
+        "vulkan-memory-allocator/*:shared": True
     }
+    
+    def configure(self):
+        self.options["spdlog"].header_only = False
+        self.options["spdlog"].shared = True
 
     if get_system() == SystemInfo.Linux:
         default_options["glfw/*:with_wayland"] = True

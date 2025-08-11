@@ -7,9 +7,10 @@
 
 namespace zt::core
 {
-	Image& Image::operator=(Image&& other)
+	Image& Image::operator=(Image&& other) noexcept
 	{
-		imageData = std::move(other.imageData);
+		data = std::move(other.data);
+		other.data = {};
 		width = other.width;
 		other.width = {};
 		height = other.height;
@@ -20,20 +21,20 @@ namespace zt::core
 		return *this;
 	}
 
-	bool Image::loadFromFile(const fs::path& path, int32_t expectedComponents) ZINET_API_POST
+	bool Image::loadFromFile(const Path& path, int32_t expectedComponents)
 	{
-		if (!fs::exists(path))
+		using namespace std::filesystem;
+
+		if (!exists(path))
 		{
 			Logger->error("Can't load image from file, path doesn't exists: {}", path.string());
 			return false;
 		}
 
 		const auto pathAsString = path.string();
-		stbi_uc* stbiRawDataPtr = stbi_load(pathAsString.c_str(), &width, &height, &components, expectedComponents);
+		data = stbi_load(pathAsString.c_str(), &width, &height, &components, expectedComponents);
 
-		imageData = ImageDataT{ stbiRawDataPtr, stbiFree };
-
-		if (!imageData)
+		if (!data)
 		{
 			Logger->error("Couldn't load image from file, stbi returned nullptr, error message: {}", stbi_failure_reason());
 			return false;
@@ -42,20 +43,18 @@ namespace zt::core
 		return true;
 	}
 
-	bool Image::loadFromData(const Data& data, int32_t expectedComponents) ZINET_API_POST
+	bool Image::loadFromData(const Data& rawData, int32_t expectedComponents)
 	{
-		if (data.empty())
+		if (rawData.empty())
 		{
 			Logger->error("Data is empty");
 			return false;
 		}
 
-		const auto size = static_cast<int>(data.size());
-		stbi_uc* stbiRawDataPtr = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(data.data()), size, &width, &height, &components, expectedComponents);
+		const auto size = static_cast<int>(rawData.size());
+		data = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(rawData.data()), size, &width, &height, &components, expectedComponents);
 
-		imageData = ImageDataT{ stbiRawDataPtr, stbiFree };
-
-		if (!imageData)
+		if (!data)
 		{
 			Logger->error("Couldn't load image from data, stbi returned nullptr, error message: {}", stbi_failure_reason());
 			return false;
@@ -64,9 +63,13 @@ namespace zt::core
 		return true;
 	}
 
-	void Image::destroy() ZINET_API_POST
+	void Image::destroy() noexcept
 	{
-		imageData.reset();
+		if (!data)
+			return;
+
+		stbi_image_free(data);
+		data = {};
 		width = {};
 		height = {};
 		components = {};

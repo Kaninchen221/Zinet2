@@ -11,7 +11,7 @@
 namespace zt::core
 {
 
-	AssetsFinder::FindAssetsResult AssetsFinder::findAssets(const FindAssetsInput& findAssetsInput) const ZINET_API_POST
+	AssetsFinder::FindAssetsResult AssetsFinder::findAssets(const FindAssetsInput& findAssetsInput) const
 	{
 		const auto contentFolderPath = getContentFolderPath();
 		Logger->info("Content folder path: {}", contentFolderPath.generic_string());
@@ -55,18 +55,18 @@ namespace zt::core
 		return result;
 	}
 
-	bool AssetsFinder::isAssetFile(const fs::path& path) const ZINET_API_POST
+	bool AssetsFinder::isAssetFile(const fs::path& path) const
 	{
 		return path.extension().generic_string().ends_with(assetFileExtension);
 	}
 
-	fs::path AssetsFinder::createAssetFilePath(const fs::path& filePath) const ZINET_API_POST
+	fs::path AssetsFinder::createAssetFilePath(const fs::path& filePath) const
 	{
 		const fs::path result = filePath.generic_string() + "." + assetFileExtension;
 		return result;
 	}
 
-	fs::path AssetsFinder::createRelativePath(const std::string& folderAsRoot, const fs::path& path) const ZINET_API_POST
+	fs::path AssetsFinder::createRelativePath(const std::string& folderAsRoot, const fs::path& path) const
 	{
 		std::string result = path.relative_path().generic_string();
 		while (!result.starts_with(folderAsRoot))
@@ -83,7 +83,7 @@ namespace zt::core
 		return result;
 	}
 
-	void AssetsFinder::createAssetFile(const fs::path& filePath, const fs::path& assetPath) const ZINET_API_POST
+	void AssetsFinder::createAssetFile(const fs::path& filePath, const fs::path& assetPath) const
 	{
 		auto assetFile = File::CreateFile(assetPath);
 		const auto assetRelativePath = createRelativePath(contentFolderName, assetPath);

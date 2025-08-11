@@ -8,24 +8,23 @@
 
 namespace zt::core
 {
-	class ZINET_CORE_API Clock : public Object
+	class Clock : public Object
 	{
-
 	public:
-
-		Clock() ZINET_API_POST = default;
-		Clock(const Clock& other) ZINET_API_POST = default;
-		Clock(Clock&& other) ZINET_API_POST = default;
-		~Clock() ZINET_API_POST = default;
-
-		Clock& operator = (const Clock& other) ZINET_API_POST = default;
-		Clock& operator = (Clock&& other) ZINET_API_POST = default;
 
 		using UnderlyingClock = std::chrono::system_clock;
 
-		void start();
-		Time restart();
-		Time getElapsedTime() const;
+		ZINET_CORE_API Clock() noexcept = default;
+		ZINET_CORE_API Clock(const Clock& other) noexcept = default;
+		ZINET_CORE_API Clock(Clock&& other) noexcept = default;
+		ZINET_CORE_API ~Clock() noexcept = default;
+
+		ZINET_CORE_API Clock& operator = (const Clock& other) noexcept = default;
+		ZINET_CORE_API Clock& operator = (Clock&& other) noexcept = default;
+
+		ZINET_CORE_API void start() noexcept;
+		ZINET_CORE_API Time restart() noexcept;
+		ZINET_CORE_API Time getElapsedTime() const noexcept;
 
 	private:
 

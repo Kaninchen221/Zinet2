@@ -25,25 +25,25 @@ namespace zt::core
 		using KeyT = std::string;
 		using Classes = std::map<KeyT, std::shared_ptr<BaseClassType>>;
 
-		ClassRegistry() ZINET_API_POST = default;
-		ClassRegistry(const ClassRegistry& other) ZINET_API_POST = default;
-		ClassRegistry(ClassRegistry&& other) ZINET_API_POST = default;
-		~ClassRegistry() ZINET_API_POST = default;
+		ClassRegistry() = default;
+		ClassRegistry(const ClassRegistry& other) = default;
+		ClassRegistry(ClassRegistry&& other) noexcept = default;
+		~ClassRegistry() noexcept = default;
 
-		ClassRegistry& operator = (const ClassRegistry& other) ZINET_API_POST = default;
-		ClassRegistry& operator = (ClassRegistry&& other) ZINET_API_POST = default;
+		ClassRegistry& operator = (const ClassRegistry& other) = default;
+		ClassRegistry& operator = (ClassRegistry&& other) noexcept = default;
 
 		template<std::derived_from<BaseClassT> ClassT>
-		void registerClass() ZINET_API_POST
+		void registerClass()
 		{
 			auto cdo = std::make_shared<ClassT>();
 			auto className = cdo->getClassName();
 			cdos.insert({ className, cdo });
 		}
 
-		const auto& getCDOs() const ZINET_API_POST { return cdos; }
+		const auto& getCDOs() const noexcept { return cdos; }
 
-		std::shared_ptr<BaseClassT> getClassByName(const std::string& name) ZINET_API_POST
+		std::shared_ptr<BaseClassT> getClassByName(const std::string& name)
 		{
 			if (auto result = cdos.find(name); result != cdos.end())
 				return result->second;
@@ -58,5 +58,3 @@ namespace zt::core
 	};
 
 }
-
-#include "Zinet/Core/ZtClassRegistryImpl.hpp"

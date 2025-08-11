@@ -3,6 +3,7 @@
 #include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtObject.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtPaths.hpp"
 
 #include <filesystem>
 #include <memory>
@@ -11,13 +12,6 @@
 
 namespace zt::core
 {
-	namespace
-	{
-		namespace fs = std::filesystem;
-	}
-
-	inline constexpr auto stbiFree = [](stbi_uc* ptr) { std::free(ptr); };
-
 	class ZINET_CORE_API Image : public Object
 	{
 	protected:
@@ -29,30 +23,29 @@ namespace zt::core
 		static_assert(sizeof(std::byte) == sizeof(stbi_uc));
 		using Data = std::vector<std::byte>;
 
-		Image() = default;
+		Image() noexcept = default;
 		Image(const Image& other) = delete;
-		Image(Image&& other) { *this = std::move(other); }
-		~Image() ZINET_API_POST = default;
+		Image(Image&& other) noexcept { *this = std::move(other); }
+		~Image() noexcept { destroy(); }
 
 		Image& operator = (const Image& other) = delete;
-		Image& operator = (Image&& other);
+		Image& operator = (Image&& other) noexcept;
 
-		bool loadFromFile(const fs::path& path, int32_t expectedComponents) ZINET_API_POST;
+		bool loadFromFile(const Path& path, int32_t expectedComponents);
 
-		bool loadFromData(const Data& data, int32_t expectedComponents) ZINET_API_POST;
+		bool loadFromData(const Data& rawData, int32_t expectedComponents);
 
-		auto data() const ZINET_API_POST { return imageData.get(); }
-		auto getWidth() const ZINET_API_POST { return width; }
-		auto getHeight() const ZINET_API_POST { return height; }
-		auto getComponents() const ZINET_API_POST { return components; }
-		auto getSize() const ZINET_API_POST { return width * height * components; }
+		auto getData() const noexcept { return data; }
+		auto getWidth() const noexcept { return width; }
+		auto getHeight() const noexcept { return height; }
+		auto getComponents() const noexcept { return components; }
+		auto getSize() const noexcept { return width * height * components; }
 
-		void destroy() ZINET_API_POST;
+		void destroy() noexcept;
 
 	protected:
 
-		using ImageDataT = std::unique_ptr<stbi_uc, std::remove_const_t<decltype(stbiFree)>>;
-		ImageDataT imageData;
+		stbi_uc* data{};
 		std::int32_t width{};
 		std::int32_t height{};
 		std::int32_t components{};

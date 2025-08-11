@@ -16,18 +16,18 @@ namespace zt::core
 		using Byte = std::byte;
 		using BufferT = std::vector<Byte>;
 
-		Archive() ZINET_API_POST = delete;
-		Archive(BufferT* newBuffer) ZINET_API_POST : buffer{ newBuffer } {}
-		Archive(const Archive& other) ZINET_API_POST = default;
-		Archive(Archive&& other) ZINET_API_POST = default;
+		Archive() = delete;
+		Archive(BufferT* newBuffer) noexcept : buffer{ newBuffer } {}
+		Archive(const Archive& other) noexcept = delete;
+		Archive(Archive&& other) noexcept = default;
 
-		Archive& operator = (const Archive& other) ZINET_API_POST = default;
-		Archive& operator = (Archive&& other) ZINET_API_POST = default;
+		Archive& operator = (const Archive& other) noexcept = default;
+		Archive& operator = (Archive&& other) noexcept = default;
 
-		~Archive() ZINET_API_POST = default;
+		~Archive() noexcept = default;
 
 		template<class ObjectT>
-		void operator <<(ObjectT& object) ZINET_API_POST 
+		void operator <<(ObjectT& object) 
 		{
 			constexpr bool requireOperator = requires(ObjectT& object) { object.operator <<(*this); };
 			if constexpr (requireOperator)
@@ -42,7 +42,7 @@ namespace zt::core
 
 	protected:
 
-		virtual void internal([[maybe_unused]] Byte* objectAddress, [[maybe_unused]] size_t objectSize) ZINET_API_POST {}
+		virtual void internal([[maybe_unused]] Byte* objectAddress, [[maybe_unused]] size_t objectSize) {}
 
 		BufferT* buffer = nullptr;
 	};
@@ -51,19 +51,19 @@ namespace zt::core
 	{
 	public:
 
-		OutputArchive() ZINET_API_POST = default;
-		OutputArchive(BufferT* newBuffer) ZINET_API_POST : Archive{ newBuffer } {}
-		OutputArchive(const OutputArchive& other) ZINET_API_POST = default;
-		OutputArchive(OutputArchive&& other) ZINET_API_POST = default;
+		OutputArchive() noexcept = default;
+		OutputArchive(BufferT* newBuffer) noexcept : Archive{ newBuffer } {}
+		OutputArchive(const OutputArchive& other) noexcept = delete;
+		OutputArchive(OutputArchive&& other) noexcept = default;
 
-		OutputArchive& operator = (const OutputArchive& other) ZINET_API_POST = default;
-		OutputArchive& operator = (OutputArchive&& other) ZINET_API_POST = default;
+		OutputArchive& operator = (const OutputArchive& other) noexcept = delete;
+		OutputArchive& operator = (OutputArchive&& other) noexcept = default;
 
-		~OutputArchive() ZINET_API_POST = default;
+		~OutputArchive() noexcept = default;
 
 	protected:
 
-		void internal(Byte* objectAddress, size_t objectSize) ZINET_API_POST override
+		void internal(Byte* objectAddress, size_t objectSize) override
 		{
 			buffer->resize(buffer->size() + objectSize);
 
@@ -76,19 +76,19 @@ namespace zt::core
 	{
 	public:
 
-		InputArchive() ZINET_API_POST = default;
-		InputArchive(BufferT* newBuffer, size_t newOffset = 0) ZINET_API_POST : Archive{ newBuffer } { offset = newOffset; }
-		InputArchive(const InputArchive& other) ZINET_API_POST = default;
-		InputArchive(InputArchive&& other) ZINET_API_POST = default;
+		InputArchive() noexcept = default;
+		InputArchive(BufferT* newBuffer, size_t newOffset = 0) noexcept : Archive{ newBuffer } { offset = newOffset; }
+		InputArchive(const InputArchive& other) noexcept = delete;
+		InputArchive(InputArchive&& other) noexcept = default;
 
-		InputArchive& operator = (const InputArchive& other) ZINET_API_POST = default;
-		InputArchive& operator = (InputArchive&& other) ZINET_API_POST = default;
+		InputArchive& operator = (const InputArchive& other) noexcept = delete;
+		InputArchive& operator = (InputArchive&& other) noexcept = default;
 
-		~InputArchive() ZINET_API_POST = default;
+		~InputArchive() noexcept = default;
 
 	protected:
 
-		void internal(Byte* objectAddress, size_t objectSize) ZINET_API_POST override
+		void internal(Byte* objectAddress, size_t objectSize) override
 		{
 			auto source = buffer->begin() + offset;
 			std::memcpy(objectAddress, std::to_address(source), objectSize);
@@ -106,18 +106,18 @@ namespace zt::core
 
 		using BufferT = Json;
 
-		JsonArchive() ZINET_API_POST = delete;
-		JsonArchive(BufferT* newBuffer) ZINET_API_POST : buffer{ newBuffer } {}
-		JsonArchive(const JsonArchive& other) ZINET_API_POST = default;
-		JsonArchive(JsonArchive&& other) ZINET_API_POST = default;
+		JsonArchive() noexcept = delete;
+		JsonArchive(BufferT* newBuffer) noexcept : buffer{ newBuffer } {}
+		JsonArchive(const JsonArchive& other) noexcept = delete;
+		JsonArchive(JsonArchive&& other) noexcept = default;
 
-		JsonArchive& operator = (const JsonArchive& other) ZINET_API_POST = default;
-		JsonArchive& operator = (JsonArchive&& other) ZINET_API_POST = default;
+		JsonArchive& operator = (const JsonArchive& other) noexcept = delete;
+		JsonArchive& operator = (JsonArchive&& other) noexcept = default;
 
-		~JsonArchive() ZINET_API_POST = default;
+		~JsonArchive() noexcept = default;
 
 		template<class ObjectT>
-		void serialize(std::string key, ObjectT&& object) ZINET_API_POST
+		void serialize(std::string key, ObjectT&& object)
 		{
 			constexpr bool requireSerialize = requires(ObjectT& object) { object.serialize(*this); };
 			if constexpr (requireSerialize)
@@ -131,7 +131,7 @@ namespace zt::core
 		}
 
 		template<class ObjectT>
-		void deserialize(std::string key, ObjectT& object) ZINET_API_POST
+		void deserialize(std::string key, ObjectT& object)
 		{
 			constexpr bool requireDeserialize = requires(ObjectT& object) { object.deserialize(*this); };
 			if constexpr (requireDeserialize)
@@ -146,7 +146,7 @@ namespace zt::core
 			}
 		}
 
-		auto* getBuffer() ZINET_API_POST { return buffer; }
+		auto* getBuffer() noexcept { return buffer; }
 
 	protected:
 

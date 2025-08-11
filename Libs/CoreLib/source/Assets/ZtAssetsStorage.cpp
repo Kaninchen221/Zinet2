@@ -6,8 +6,7 @@
 
 namespace zt::core
 {
-
-	bool AssetsStorage::storeAssets() ZINET_API_POST
+	bool AssetsStorage::storeAssets()
 	{
 		const AssetsFinder::FindAssetsInput input
 		{
@@ -27,7 +26,7 @@ namespace zt::core
 			}
 			auto minimalAsset = std::move(optionalAsset.value());
 
-			const auto extensionValue = minimalAsset.metaData.value("fileExtension", "");
+			const auto extensionValue = minimalAsset.getMetaData().value("fileExtension", "");
 			for (const auto& [name, cdo] : classRegistry.getCDOs())
 			{
 				if (!cdo)
@@ -43,9 +42,9 @@ namespace zt::core
 					Logger->warn("createCopy from asset returned invalid asset but continue");
 					continue;
 				}
-				assetClassCopy->metaData = minimalAsset.metaData;
+				assetClassCopy->setMetaData(minimalAsset.getMetaData());
 
-				const auto keyValue = assetClassCopy->metaData.value("fileRelativePath", "");
+				const auto keyValue = assetClassCopy->getMetaData().value("fileRelativePath", "");
 				auto [it, success] = assets.insert_or_assign(keyValue, std::move(assetClassCopy));
 				if (success)
 				{
@@ -53,7 +52,7 @@ namespace zt::core
 
 					auto& asset = *it->second;
 
-					core::JsonArchive metaDataArchive{ &asset.metaData };
+					core::JsonArchive metaDataArchive{ &asset.getMetaData() };
 					asset.deserialize(metaDataArchive);
 
 					asset.setDisplayName(keyValue);
@@ -83,11 +82,11 @@ namespace zt::core
 		return result;
 	}
 
-	void AssetsStorage::unloadAssets() ZINET_API_POST
+	void AssetsStorage::unloadAssets()
 	{
 		for (auto& [key, asset] : assets)
 		{
-			auto& metaData = asset->metaData;
+			auto& metaData = asset->getMetaData();
 
 			core::JsonArchive metaDataArchive{ &metaData };
 			asset->serialize(metaDataArchive);
@@ -108,7 +107,7 @@ namespace zt::core
 		assets.clear();
 	}
 
-	AssetHandle<Asset> AssetsStorage::get(const AssetsKey& key) ZINET_API_POST
+	AssetHandle<Asset> AssetsStorage::get(const AssetsKey& key)
 	{
 		auto findResult = assets.find(key);
 		if (findResult == assets.end())
@@ -120,7 +119,7 @@ namespace zt::core
 		return findResult->second.get();
 	}
 
-	AssetsStorage::AssetHandlers AssetsStorage::getAssets() ZINET_API_POST
+	AssetsStorage::AssetHandlers AssetsStorage::getAssets()
 	{
 		AssetsStorage::AssetHandlers result;
 		for (auto& asset : assets)
@@ -130,7 +129,7 @@ namespace zt::core
 		return result;
 	}
 
-	AssetsStorage::LoadMinimalAssetResult AssetsStorage::loadAssetMetaData(const fs::path& assetPath) const ZINET_API_POST
+	AssetsStorage::LoadMinimalAssetResult AssetsStorage::loadAssetMetaData(const fs::path& assetPath) const
 	{
 		File file;
 		file.open(assetPath, FileOpenMode::Read);
@@ -142,7 +141,7 @@ namespace zt::core
 
 		Asset asset;
 		using json = nlohmann::json;
-		asset.metaData = json::parse(file.readAll());
+		asset.setMetaData(json::parse(file.readAll()));
 
 		return asset;
 	}

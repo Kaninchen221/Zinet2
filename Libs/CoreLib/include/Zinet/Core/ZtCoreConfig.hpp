@@ -1,7 +1,8 @@
 #pragma once
 
-#pragma warning(disable:4251) // Ignore warning: STD doesn't have dllexport/dllimport
+//#pragma warning(disable:4251) // Ignore warning: STD doesn't have dllexport/dllimport
 #pragma warning(disable:4275) // Ignore warning: Vulkan RAII doesn't have dllexport/dllimport
+
 
 #ifdef _DEBUG
 #	define ZINET_DEBUG 1
@@ -62,8 +63,6 @@
 
 // Uncomment for time tracing info 
 //#define ZINET_TIME_TRACE
-
-#define ZINET_API_POST
 
 // ImGui payload types
 auto constexpr inline static ZinetImGuiPayloadType = "ASSET";

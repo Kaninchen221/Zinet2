@@ -2,10 +2,6 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
-#include "Zinet/Core/Reflection/ZtClassInfoBase.hpp"
-
-#include <memory>
-
 namespace zt::core
 {
 	class ClassInfoBase;
@@ -14,13 +10,13 @@ namespace zt::core
 	{
 	public:
 
-		ObjectBase() = default;
-		ObjectBase(const ObjectBase& other) = default;
-		ObjectBase(ObjectBase&& other) = default;
+		ObjectBase() noexcept = default;
+		ObjectBase(const ObjectBase& other) noexcept = default;
+		ObjectBase(ObjectBase&& other) noexcept = default;
 		virtual ~ObjectBase() noexcept = default;
 
-		ObjectBase& operator = (const ObjectBase& other) = default;
-		ObjectBase& operator = (ObjectBase&& other) = default;
+		ObjectBase& operator = (const ObjectBase& other) noexcept = default;
+		ObjectBase& operator = (ObjectBase&& other) noexcept = default;
 
 	};
 }

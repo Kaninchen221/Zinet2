@@ -21,26 +21,24 @@ namespace zt::core
 
 		using AssetT = AssetType;
 
-		AssetHandle() ZINET_API_POST = default;
+		AssetHandle() noexcept = default;
 		AssetHandle(AssetT* newAsset) : asset{ newAsset } {}
-		AssetHandle(const AssetHandle& other) ZINET_API_POST = default;
-		AssetHandle(AssetHandle&& other) ZINET_API_POST { asset = other.asset; other.invalidate(); };
-		~AssetHandle() ZINET_API_POST = default;
+		AssetHandle(const AssetHandle& other) noexcept = default;
+		AssetHandle(AssetHandle&& other) noexcept { asset = other.asset; other.invalidate(); };
+		~AssetHandle() noexcept = default;
 
-		AssetHandle& operator = (const AssetHandle& other) ZINET_API_POST = default;
-		AssetHandle& operator = (AssetHandle&& other) ZINET_API_POST { asset = other.asset; other.invalidate(); return *this; };
+		AssetHandle& operator = (const AssetHandle& other) = default;
+		AssetHandle& operator = (AssetHandle&& other) noexcept { asset = other.asset; other.invalidate(); return *this; };
 
-		bool isValid() const ZINET_API_POST { return asset; }
+		bool isValid() const noexcept { return asset; }
 
-		operator bool() const ZINET_API_POST { return isValid(); }
+		operator bool() const noexcept { return isValid(); }
 
-		AssetT* operator->() const ZINET_API_POST { return asset; }
+		AssetT* operator->() const noexcept { return asset; }
 
-		AssetT* get() const ZINET_API_POST { return asset; }
+		AssetT* get() const noexcept { return asset; }
 
-		AssetT& operator*() ZINET_API_POST { return *asset; }
-
-		void invalidate() ZINET_API_POST { asset = nullptr; }
+		void invalidate() noexcept { asset = nullptr; }
 
 	protected:
 
@@ -48,7 +46,7 @@ namespace zt::core
 
 	};
 
-	class ZINET_CORE_API Asset : public Object
+	class Asset : public Object
 	{
 	protected:
 
@@ -58,39 +56,41 @@ namespace zt::core
 
 		using Extensions = std::vector<std::string>;
 
-		Asset() ZINET_API_POST = default;
-		Asset(const Extensions& newExtensions) : extensions{newExtensions} {}
-		Asset(const Asset& other) ZINET_API_POST = default;
-		Asset(Asset&& other) ZINET_API_POST = default;
-		~Asset() ZINET_API_POST = default;
+		ZINET_CORE_API Asset() = default;
+		ZINET_CORE_API Asset(const Extensions& newExtensions) : extensions{ newExtensions } {}
+		ZINET_CORE_API Asset(const Asset& other) = default;
+		ZINET_CORE_API Asset(Asset&& other) noexcept = default;
+		ZINET_CORE_API ~Asset() noexcept = default;
 
-		Asset& operator = (const Asset& other) ZINET_API_POST = default;
-		Asset& operator = (Asset&& other) ZINET_API_POST = default;
+		ZINET_CORE_API Asset& operator = (const Asset& other) = default;
+		ZINET_CORE_API Asset& operator = (Asset&& other) noexcept = default;
 
-		std::string getDisplayName() ZINET_API_POST { return metaData.value("fileNameExt", "fileNameExt_DefaultName"); }
+		ZINET_CORE_API std::string getDisplayName() { return metaData.value("fileNameExt", "fileNameExt_DefaultName"); }
 
-		bool isLoaded() ZINET_API_POST { return loaded; }
+		ZINET_CORE_API bool isLoaded() noexcept { return loaded; }
 
-		virtual bool load([[maybe_unused]] const Path& rootPath) ZINET_API_POST { return false; }
+		ZINET_CORE_API virtual bool load([[maybe_unused]] const Path& rootPath) { return false; }
 
-		virtual void unload() ZINET_API_POST {}
+		ZINET_CORE_API virtual void unload() {}
 
-		const auto& getExtensions() const ZINET_API_POST { return extensions; }
+		ZINET_CORE_API const auto& getExtensions() const noexcept { return extensions; }
 		
-		virtual void imGui() ZINET_API_POST;
+		ZINET_CORE_API virtual void imGui();
 
-		bool getAutoLoad() const ZINET_API_POST { return autoLoad; }
+		ZINET_CORE_API bool getAutoLoad() const noexcept { return autoLoad; }
 
-		Json metaData;
+		ZINET_CORE_API auto& getMetaData() noexcept { return metaData; }
+		void setMetaData(auto&& newMetaData) { metaData = newMetaData; }
 
 	protected:
 
 		bool loaded = false;
 		bool autoLoad = false;
 
+		Json metaData;
+
 	private:
 
-		// Config
 		Extensions extensions = { "default_ext" };
 
 	};

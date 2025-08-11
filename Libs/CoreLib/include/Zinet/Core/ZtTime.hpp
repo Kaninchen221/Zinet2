@@ -13,67 +13,67 @@ namespace zt::core
 
 		using NumericType = float;
 
-		inline static const NumericType NanosecondsInMicrosecond = 1000.f;
-		inline static const NumericType MicrosecondsInMillisecond = 1000.f;
-		inline static const NumericType MillisecondsInSecond = 1000.f;
-		inline static const NumericType SecondsInMinute = 60.f;
-		inline static const NumericType MinutesInHour = 60.f;
+		inline static constexpr NumericType NanosecondsInMicrosecond = 1000.f;
+		inline static constexpr NumericType MicrosecondsInMillisecond = 1000.f;
+		inline static constexpr NumericType MillisecondsInSecond = 1000.f;
+		inline static constexpr NumericType SecondsInMinute = 60.f;
+		inline static constexpr NumericType MinutesInHour = 60.f;
 
-		Time();
-		Time(const Time& other) = default;
-		Time(Time&& other) = default;
-		Time(NumericType nanoseconds);
+		Time() noexcept;
+		Time(const Time& other) noexcept = default;
+		Time(Time&& other) noexcept = default;
+		Time(NumericType nanoseconds) noexcept;
 
-		Time& operator = (const Time& other) = default;
-		Time& operator = (Time&& other) = default;
-		Time& operator = (NumericType nanoseconds);
+		Time& operator = (const Time& other) noexcept = default;
+		Time& operator = (Time&& other) noexcept = default;
+		Time& operator = (NumericType nanoseconds) noexcept;
 
-		~Time() ZINET_API_POST = default;
+		~Time() noexcept = default;
 
-		NumericType getAsNanoseconds() const;
-		NumericType getAsMicroseconds() const;
-		NumericType getAsMilliseconds() const;
-		NumericType getAsSeconds() const;
-		NumericType getAsMinutes() const;
-		NumericType getAsHours() const;
+		NumericType getAsNanoseconds() const noexcept;
+		NumericType getAsMicroseconds() const noexcept;
+		NumericType getAsMilliseconds() const noexcept;
+		NumericType getAsSeconds() const noexcept;
+		NumericType getAsMinutes() const noexcept;
+		NumericType getAsHours() const noexcept;
 
-		static Time FromNanoseconds(NumericType nanoseconds);
-		static Time FromMicroseconds(NumericType microseconds);
-		static Time FromMilliseconds(NumericType milliseconds);
-		static Time FromSeconds(NumericType seconds);
-		static Time FromMinutes(NumericType minutes);
-		static Time FromHours(NumericType hours);
+		static Time FromNanoseconds(NumericType nanoseconds) noexcept;
+		static Time FromMicroseconds(NumericType microseconds) noexcept;
+		static Time FromMilliseconds(NumericType milliseconds) noexcept;
+		static Time FromSeconds(NumericType seconds) noexcept;
+		static Time FromMinutes(NumericType minutes) noexcept;
+		static Time FromHours(NumericType hours) noexcept;
 
-		auto operator <=> (const Time& other) const = default;
+		auto operator <=> (const Time& other) const noexcept = default;
 
-		friend Time operator - (const Time& first, const Time& second);
-		Time& operator -= (const Time& other);
+		friend Time operator - (const Time& first, const Time& second) noexcept;
+		Time& operator -= (const Time& other) noexcept;
 
-		friend Time operator + (const Time& first, const Time& second);
-		Time& operator += (const Time& other);
+		friend Time operator + (const Time& first, const Time& second) noexcept;
+		Time& operator += (const Time& other) noexcept;
 
 	private:
 
 		NumericType timeAsNanoseconds = 0.f;
 	};
 
-	inline Time operator - (const Time& first, const Time& second)
+	inline Time operator - (const Time& first, const Time& second) noexcept
 	{
 		return Time{ first.timeAsNanoseconds - second.timeAsNanoseconds };
 	}
 
-	inline Time& Time::operator-=(const Time& other)
+	inline Time& Time::operator-=(const Time& other) noexcept
 	{
 		timeAsNanoseconds -= other.timeAsNanoseconds;
 		return *this;
 	}
 
-	inline Time operator + (const Time& first, const Time& second)
+	inline Time operator + (const Time& first, const Time& second) noexcept
 	{
 		return Time{ first.timeAsNanoseconds + second.timeAsNanoseconds };
 	}
 
-	inline Time& Time::operator+=(const Time& other)
+	inline Time& Time::operator+=(const Time& other) noexcept
 	{
 		timeAsNanoseconds += other.timeAsNanoseconds;
 		return *this;

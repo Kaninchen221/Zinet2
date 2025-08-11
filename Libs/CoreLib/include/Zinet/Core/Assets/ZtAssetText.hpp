@@ -5,27 +5,27 @@
 
 namespace zt::core
 {
-	class ZINET_CORE_API AssetText : public Asset
+	class AssetText : public Asset
 	{
 	public:
 
-		AssetText(const Extensions& extensions = { "txt" }) : Asset{ extensions } {}
-		AssetText(const AssetText& other) ZINET_API_POST = default;
-		AssetText(AssetText&& other) ZINET_API_POST = default;
-		~AssetText() ZINET_API_POST = default;
+		ZINET_CORE_API AssetText(const Extensions& extensions = { "txt" }) : Asset{ extensions } {}
+		ZINET_CORE_API AssetText(const AssetText& other) = default;
+		ZINET_CORE_API AssetText(AssetText&& other) noexcept = default;
+		ZINET_CORE_API ~AssetText() noexcept = default;
 
-		AssetText& operator = (const AssetText& other) ZINET_API_POST = default;
-		AssetText& operator = (AssetText&& other) ZINET_API_POST = default;
+		ZINET_CORE_API AssetText& operator = (const AssetText& other) = default;
+		ZINET_CORE_API AssetText& operator = (AssetText&& other) noexcept = default;
 
-		std::string getClassName() const ZINET_API_POST override { return "zt::core::AssetText"; }
+		ZINET_CORE_API std::string getClassName() const override { return "zt::core::AssetText"; }
 
-		ObjectPtr createCopy() const ZINET_API_POST override { return std::make_unique<AssetText>(*this); }
+		ZINET_CORE_API ObjectPtr createCopy() const override { return std::make_unique<AssetText>(*this); }
 
-		bool load(const Path& rootPath) ZINET_API_POST override;
+		ZINET_CORE_API bool load(const Path& rootPath) override;
 
-		void unload() ZINET_API_POST override;
+		ZINET_CORE_API void unload() override;
 
-		void imGui() ZINET_API_POST override;
+		ZINET_CORE_API void imGui() override;
 
 		// Content
 		std::string text;

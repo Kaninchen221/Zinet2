@@ -11,11 +11,11 @@
 
 namespace zt::core
 {
-	#pragma warning( suppress : 4661 )
-	class ZINET_CORE_API CustomSink : public spdlog::sinks::base_sink<std::mutex>
+	// TODO: Rename to SimpleCallbackSink
+	class CustomSink : public spdlog::sinks::base_sink<std::mutex>
 	{
 	public:
-		using CallbackT = std::function<void()>;
+		using CallbackT = void(*)();
 
 	private:
 		inline static CallbackT Callback;
@@ -23,24 +23,23 @@ namespace zt::core
 	public:
 
 		CustomSink() = default;
-		CustomSink(const CustomSink& other) = default;
-		CustomSink(CustomSink&& other) = default;
+		CustomSink(const CustomSink& other) = delete;
+		CustomSink(CustomSink&& other) = delete;
 
-		CustomSink& operator = (const CustomSink& other) ZINET_API_POST = default;
-		CustomSink& operator = (CustomSink&& other) ZINET_API_POST = default;
+		CustomSink& operator = (const CustomSink& other) = delete;
+		CustomSink& operator = (CustomSink&& other) = delete;
 
-		~CustomSink() ZINET_API_POST = default;
+		~CustomSink() noexcept = default;
 
-		static const CallbackT& GetCallback() ZINET_API_POST;
+		ZINET_CORE_API static const CallbackT& GetCallback() noexcept;
 
-		static void SetCallback(CallbackT newCallback) ZINET_API_POST;
+		ZINET_CORE_API static void SetCallback(CallbackT newCallback) noexcept;
 
 	protected:
 
-		void sink_it_(const spdlog::details::log_msg& msg) override ZINET_API_POST;
+		void sink_it_(const spdlog::details::log_msg& msg) override;
 
-		void flush_() override
-		{}
+		void flush_() override {}
 
 	};
 
@@ -56,34 +55,51 @@ namespace zt::core
 
 		inline static ConsoleLogger Create(std::string name);
 
-		spdlog::logger* operator -> () { return internal.get(); }
-		const spdlog::logger* operator -> () const { return internal.get(); }
+	protected:
 
-		spdlog::logger* operator ()() { return internal.get(); }
-		const spdlog::logger* operator ()() const { return internal.get(); }
+		ConsoleLogger() noexcept = default;
+		ConsoleLogger(const ConsoleLogger& other) = default;
+		ConsoleLogger(ConsoleLogger&& other) noexcept { *this = std::move(other); }
+	
+	public:
 
-		operator bool() { return internal.operator bool(); }
-		operator bool() const { return internal.operator bool(); }
+		~ConsoleLogger() noexcept = default;
+
+		ConsoleLogger& operator = (const ConsoleLogger& other) = default;
+		ConsoleLogger& operator = (ConsoleLogger&& other) noexcept = default;
+
+		spdlog::logger* operator -> () { return impl.internal.get(); }
+		const spdlog::logger* operator -> () const { return impl.internal.get(); }
+
+		spdlog::logger* operator ()() { return impl.internal.get(); }
+		const spdlog::logger* operator ()() const { return impl.internal.get(); }
+
+		operator bool() { return impl.internal.operator bool(); }
+		operator bool() const { return impl.internal.operator bool(); }
 
 		void turnOff();
 		void turnOn();
 
 	protected:
 
-		std::shared_ptr<spdlog::logger> internal;
-		spdlog::level::level_enum lastLevel = spdlog::level::info;
+		struct Impl
+		{
+			std::shared_ptr<spdlog::logger> internal;
+			spdlog::level::level_enum lastLevel = spdlog::level::info;
+		};
+		Impl impl;
 
 	};
 
 	ConsoleLogger ConsoleLogger::Create(std::string name)
 	{
 		ConsoleLogger logger;
-		logger.internal = spdlog::get(name);
+		logger.impl.internal = spdlog::get(name);
 		if (!logger)
-			logger.internal = spdlog::stdout_color_mt(name);
+			logger.impl.internal = spdlog::stdout_color_mt(name);
 
 		auto sink = std::make_shared<CustomSink>();
-		auto& sinks = logger.internal->sinks();
+		auto& sinks = logger.impl.internal->sinks();
 		sinks.push_back(sink);
 		
 		return logger;
