@@ -26,19 +26,19 @@ namespace zt::vulkan_renderer
 			: VulkanObject(newObjectHandle)
 		{}
 
-		ShaderModule() ZINET_API_POST = delete;
-		ShaderModule(const ShaderModule& other) ZINET_API_POST = delete;
-		ShaderModule(ShaderModule&& other) ZINET_API_POST = default;
-		~ShaderModule() ZINET_API_POST = default;
+		ShaderModule() noexcept = delete;
+		ShaderModule(const ShaderModule& other) noexcept = delete;
+		ShaderModule(ShaderModule&& other) noexcept = default;
+		~ShaderModule() noexcept = default;
 
-		ShaderModule& operator = (const ShaderModule& other) ZINET_API_POST = delete;
-		ShaderModule& operator = (ShaderModule&& other) ZINET_API_POST = default;
+		ShaderModule& operator = (const ShaderModule& other) noexcept = delete;
+		ShaderModule& operator = (ShaderModule&& other) noexcept = default;
 
-		bool create(const Device& device, const shaderc::SpvCompilationResult& compilationResult) ZINET_API_POST;
+		bool create(const Device& device, const shaderc::SpvCompilationResult& compilationResult);
 
-		VkPipelineShaderStageCreateInfo createPipelineShaderStageCreateInfo(const ShaderType shaderType) const ZINET_API_POST;
+		VkPipelineShaderStageCreateInfo createPipelineShaderStageCreateInfo(const ShaderType shaderType) const;
 
-		void destroy(const Device& device) ZINET_API_POST;
+		void destroy(const Device& device) noexcept;
 
 	};
 }

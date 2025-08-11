@@ -3,7 +3,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool DebugUtilsMessenger::create(const Instance& instance) ZINET_API_POST
+	bool DebugUtilsMessenger::create(const Instance& instance)
 	{
 		if (isValid())
 			return false;
@@ -41,7 +41,7 @@ namespace zt::vulkan_renderer
 		return false;
 	}
 
-	void DebugUtilsMessenger::destroy(const Instance& instance) ZINET_API_POST
+	void DebugUtilsMessenger::destroy(const Instance& instance) noexcept
 	{
 		if (isValid())
 		{

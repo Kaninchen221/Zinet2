@@ -23,19 +23,19 @@ namespace zt::vulkan_renderer
 		PipelineLayout(HandleType newObjectHandle)
 			: VulkanObject(newObjectHandle) {}
 
-		PipelineLayout() ZINET_API_POST = delete;
-		PipelineLayout(const PipelineLayout& other) ZINET_API_POST = delete;
-		PipelineLayout(PipelineLayout&& other) ZINET_API_POST = default;
-		~PipelineLayout() ZINET_API_POST = default;
+		PipelineLayout() noexcept = delete;
+		PipelineLayout(const PipelineLayout& other) noexcept = delete;
+		PipelineLayout(PipelineLayout&& other) noexcept = default;
+		~PipelineLayout() noexcept = default;
 
-		PipelineLayout& operator = (const PipelineLayout& other) ZINET_API_POST = delete;
-		PipelineLayout& operator = (PipelineLayout&& other) ZINET_API_POST = default;
+		PipelineLayout& operator = (const PipelineLayout& other) noexcept = delete;
+		PipelineLayout& operator = (PipelineLayout&& other) noexcept = default;
 	
-		static VkPipelineLayoutCreateInfo GetDefaultCreateInfo(const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) ZINET_API_POST;
+		static VkPipelineLayoutCreateInfo GetDefaultCreateInfo(const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) noexcept;
 
-		bool create(const Device& device, const VkPipelineLayoutCreateInfo& createInfo) ZINET_API_POST;
+		bool create(const Device& device, const VkPipelineLayoutCreateInfo& createInfo);
 
-		void destroy(const Device& device) ZINET_API_POST;
+		void destroy(const Device& device) noexcept;
 
 	};
 }

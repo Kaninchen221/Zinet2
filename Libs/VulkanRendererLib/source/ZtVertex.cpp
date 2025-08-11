@@ -3,7 +3,7 @@
 namespace zt::vulkan_renderer
 {
 
-	VkVertexInputBindingDescription Vertex::GetInputBindingDescription() ZINET_API_POST
+	InputBindingDescription GetVertexInputBindingDescription() noexcept
 	{
 		return
 		{
@@ -13,9 +13,9 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	std::array<VkVertexInputAttributeDescription, 3> Vertex::GetInputAttributesDescriptions() ZINET_API_POST
+	InputAttributesDescriptions GetVertexInputAttributesDescriptions() noexcept
 	{
-		std::array<VkVertexInputAttributeDescription, 3> descriptions;
+		InputAttributesDescriptions descriptions;
 
 		// Position
 		descriptions[0] =

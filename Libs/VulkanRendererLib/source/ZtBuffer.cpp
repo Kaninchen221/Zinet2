@@ -5,7 +5,7 @@
 
 namespace zt::vulkan_renderer
 {
-	VkBufferCreateInfo Buffer::GetImageBufferCreateInfo(const core::Image& image) ZINET_API_POST
+	VkBufferCreateInfo Buffer::GetImageBufferCreateInfo(const core::Image& image) noexcept
 	{
 		return
 		{
@@ -16,7 +16,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	bool Buffer::createBuffer(const VkBufferCreateInfo& createInfo, const VMA& vma) ZINET_API_POST
+	bool Buffer::createBuffer(const VkBufferCreateInfo& createInfo, const VMA& vma)
 	{
 		if (isValid())
 			return false;
@@ -40,12 +40,12 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	bool Buffer::fillWithImage(const core::Image& image, const VMA& vma) ZINET_API_POST
+	bool Buffer::fillWithImage(const core::Image& image, const VMA& vma)
 	{
 		if (!isValid())
 			return false;
 
-		const auto result = fillWithData(image.data(), image.getSize(), vma);
+		const auto result = fillWithData(image.getData(), image.getSize(), vma);
 
 		if (result == VK_SUCCESS)
 		{
@@ -58,7 +58,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void Buffer::destroy(const VMA& vma) ZINET_API_POST
+	void Buffer::destroy(const VMA& vma) noexcept
 	{
 		if (isValid())
 		{
@@ -69,7 +69,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	VkResult Buffer::fillWithData(const void* src, size_t srcSize, const VMA& vma) const ZINET_API_POST
+	VkResult Buffer::fillWithData(const void* src, size_t srcSize, const VMA& vma) const
 	{
 		if (srcSize != size)
 		{
@@ -91,7 +91,7 @@ namespace zt::vulkan_renderer
 		return VK_SUCCESS;
 	}
 
-	VkResult Buffer::getData(void* dst, size_t dstSize, const VMA& vma) const ZINET_API_POST
+	VkResult Buffer::getData(void* dst, size_t dstSize, const VMA& vma) const noexcept
 	{
 		if (dstSize != size)
 			return VK_ERROR_MEMORY_MAP_FAILED;

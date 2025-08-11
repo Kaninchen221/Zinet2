@@ -5,7 +5,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool Surface::create(const Instance& instance, wd::Window& window) ZINET_API_POST
+	bool Surface::create(const Instance& instance, wd::Window& window)
 	{
 		if (isValid())
 			return false;
@@ -22,7 +22,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void Surface::destroy(const Instance& instance) ZINET_API_POST
+	void Surface::destroy(const Instance& instance) noexcept
 	{
 		if (isValid())
 		{

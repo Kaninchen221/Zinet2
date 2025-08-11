@@ -15,46 +15,46 @@ namespace zt::vulkan_renderer
 {
 	class RendererContext;
 
-	class ZINET_VULKAN_RENDERER_API Camera
+	class Camera
 	{
 	protected:
 
 		inline static auto Logger = core::ConsoleLogger::Create("VRCamera");
 
 	public:
-
-		Camera() ZINET_API_POST = default;
-		Camera(const Camera& other) ZINET_API_POST = default;
-		Camera(Camera&& other) ZINET_API_POST = default;
-		~Camera() ZINET_API_POST = default;
-
-		Camera& operator = (const Camera& other) ZINET_API_POST = default;
-		Camera& operator = (Camera&& other) ZINET_API_POST = default;
-
 		using MatrixT = glm::mat4;
-		MatrixT getViewMatrix() const ZINET_API_POST;
 
-		void setPosition(const Vector3f& newPosition) ZINET_API_POST { position = newPosition; }
-		const auto& getPosition() const ZINET_API_POST { return position; }
+		ZINET_VULKAN_RENDERER_API Camera() noexcept = default;
+		ZINET_VULKAN_RENDERER_API Camera(const Camera& other) noexcept = default;
+		ZINET_VULKAN_RENDERER_API Camera(Camera&& other) noexcept = default;
+		ZINET_VULKAN_RENDERER_API ~Camera() noexcept = default;
 
-		void setLookingAt(const Vector3f& newLookingAt) ZINET_API_POST { lookingAt = newLookingAt; }
-		const auto& getLookingAt() const ZINET_API_POST { return lookingAt; }
+		ZINET_VULKAN_RENDERER_API Camera& operator = (const Camera& other) noexcept = default;
+		ZINET_VULKAN_RENDERER_API Camera& operator = (Camera&& other) noexcept = default;
 
-		void setUpVector(const Vector3f& newUpVector) ZINET_API_POST { upVector = newUpVector; }
-		const auto& getUpVector() const ZINET_API_POST { return upVector; }
+		ZINET_VULKAN_RENDERER_API MatrixT getViewMatrix() const noexcept;
 
-		MatrixT getPerspectiveMatrix() const ZINET_API_POST;
+		void setPosition(const Vector3f& newPosition) noexcept { position = newPosition; }
+		const auto& getPosition() const noexcept { return position; }
 
-		void setFieldOfView(const float& newFieldOfView) ZINET_API_POST { fieldOfView = newFieldOfView; }
-		const auto& getFieldOfView() const ZINET_API_POST { return fieldOfView; }
+		void setLookingAt(const Vector3f& newLookingAt) noexcept { lookingAt = newLookingAt; }
+		const auto& getLookingAt() const noexcept { return lookingAt; }
 
-		void setAspectRatio(const float& newAspectRatio) ZINET_API_POST { aspectRatio = newAspectRatio; }
-		const auto& getAspectRatio() const ZINET_API_POST { return aspectRatio; }
+		void setUpVector(const Vector3f& newUpVector) noexcept { upVector = newUpVector; }
+		const auto& getUpVector() const noexcept { return upVector; }
 
-		void setClipping(const Vector2f& newClipping) ZINET_API_POST { clipping = newClipping; }
-		const auto& getClipping() const ZINET_API_POST { return clipping; }
+		ZINET_VULKAN_RENDERER_API MatrixT getPerspectiveMatrix() const noexcept;
 
-		void imGui();
+		void setFieldOfView(const float& newFieldOfView) noexcept { fieldOfView = newFieldOfView; }
+		const auto& getFieldOfView() const noexcept { return fieldOfView; }
+
+		void setAspectRatio(const float& newAspectRatio) noexcept { aspectRatio = newAspectRatio; }
+		const auto& getAspectRatio() const noexcept { return aspectRatio; }
+
+		void setClipping(const Vector2f& newClipping) noexcept { clipping = newClipping; }
+		const auto& getClipping() const noexcept { return clipping; }
+
+		ZINET_VULKAN_RENDERER_API void imGui();
 
 	protected:
 

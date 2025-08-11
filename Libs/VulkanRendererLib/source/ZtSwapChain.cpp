@@ -14,7 +14,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool SwapChain::create(const Device& device, const PhysicalDevice& physicalDevice, const Surface& surface, const Vector2i& windowFramebufferSize) ZINET_API_POST
+	bool SwapChain::create(const Device& device, const PhysicalDevice& physicalDevice, const Surface& surface, const Vector2i& windowFramebufferSize)
 	{
 		if (isValid())
 			return false;
@@ -91,7 +91,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void SwapChain::destroy(const Device& device) ZINET_API_POST
+	void SwapChain::destroy(const Device& device) noexcept
 	{
 		if (isValid())
 		{
@@ -100,7 +100,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	std::vector<VkImage> SwapChain::getImages(const Device& device) const ZINET_API_POST
+	std::vector<VkImage> SwapChain::getImages(const Device& device) const
 	{
 		std::uint32_t count;
 		vkGetSwapchainImagesKHR(device.get(), objectHandle, &count, nullptr);
@@ -117,7 +117,7 @@ namespace zt::vulkan_renderer
 		return images;
 	}
 
-	std::uint32_t SwapChain::acquireNextImage(const Device& device, Semaphore& semaphore) const ZINET_API_POST
+	std::uint32_t SwapChain::acquireNextImage(const Device& device, Semaphore& semaphore) const
 	{
 		std::uint32_t imageIndex{};
 		const auto result =

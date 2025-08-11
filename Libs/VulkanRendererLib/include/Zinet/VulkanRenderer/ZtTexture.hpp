@@ -20,7 +20,7 @@ namespace zt::vulkan_renderer
 	class Buffer;
 	class CommandBuffer;
 
-	struct ZINET_VULKAN_RENDERER_API FillWithImageBufferInput
+	struct FillWithImageBufferInput
 	{
 		const Buffer& buffer;
 		const CommandBuffer& commandBuffer;
@@ -36,24 +36,24 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Texture() ZINET_API_POST = default;
-		Texture(const Texture& other) ZINET_API_POST = delete;
-		Texture(Texture&& other) ZINET_API_POST = default;
-		~Texture() ZINET_API_POST = default;
+		Texture() noexcept = default;
+		Texture(const Texture& other) noexcept = delete;
+		Texture(Texture&& other) noexcept = default;
+		~Texture() noexcept = default;
 
-		Texture& operator = (const Texture& other) ZINET_API_POST = delete;
-		Texture& operator = (Texture&& other) ZINET_API_POST = default;
+		Texture& operator = (const Texture& other) noexcept = delete;
+		Texture& operator = (Texture&& other) noexcept = default;
 
-		bool create(const Device& device, const VMA& vma, const Vector2ui& size) ZINET_API_POST;
+		bool create(const Device& device, const VMA& vma, const Vector2ui& size);
 
-		void destroy(const Device& device, const VMA& vma) ZINET_API_POST;
+		void destroy(const Device& device, const VMA& vma) noexcept;
 
-		bool isValid() const ZINET_API_POST;
+		bool isValid() const noexcept;
 
-		const auto& getImage() const ZINET_API_POST { return image; }
-		const auto& getImageView() const ZINET_API_POST { return imageView; }
+		const auto& getImage() const noexcept { return image; }
+		const auto& getImageView() const noexcept { return imageView; }
 
-		void fillWithImageBuffer(const FillWithImageBufferInput& input) const ZINET_API_POST;
+		void fillWithImageBuffer(const FillWithImageBufferInput& input) const noexcept;
 
 	protected:
 

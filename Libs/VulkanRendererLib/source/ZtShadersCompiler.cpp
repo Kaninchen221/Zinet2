@@ -4,7 +4,7 @@
 
 namespace zt::vulkan_renderer
 {
-	shaderc::SpvCompilationResult ShadersCompiler::compileFromFile(const std::filesystem::path& filePath, ShaderType shaderType) const ZINET_API_POST
+	shaderc::SpvCompilationResult ShadersCompiler::compileFromFile(const std::filesystem::path& filePath, ShaderType shaderType) const
 	{
 		core::File file;
 		file.open(filePath, core::FileOpenMode::Read);
@@ -19,7 +19,8 @@ namespace zt::vulkan_renderer
 
 		return compileFromString(sourceCode, shaderType, sourceFileName);
 	}
-	shaderc::SpvCompilationResult ShadersCompiler::compileFromString(const std::string& source, ShaderType shaderType, const std::string& fileName) const ZINET_API_POST
+
+	shaderc::SpvCompilationResult ShadersCompiler::compileFromString(const std::string& source, ShaderType shaderType, const std::string& fileName) const
 	{
 		shaderc::Compiler compiler;
 		auto result = compiler.CompileGlslToSpv(source.c_str(), ShaderTypeToShaderCShaderKind(shaderType), fileName.c_str());

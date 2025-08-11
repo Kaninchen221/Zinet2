@@ -4,7 +4,7 @@
 
 namespace zt::vulkan_renderer
 {
-	shaderc_shader_kind ShaderTypeToShaderCShaderKind(const ShaderType shaderType) ZINET_API_POST
+	shaderc_shader_kind ShaderTypeToShaderCShaderKind(const ShaderType shaderType) noexcept
 	{
 		switch (shaderType)
 		{
@@ -13,12 +13,11 @@ namespace zt::vulkan_renderer
 		case ShaderType::Vertex: return shaderc_shader_kind::shaderc_glsl_vertex_shader;
 		}
 
-		auto Logger = core::ConsoleLogger::Create("ShaderTypeToShaderCShaderKind");
-		Logger->error("Not supported ShaderType");
+		Ensure(false); // Not supported ShaderType
 		return shaderc_shader_kind::shaderc_glsl_infer_from_source;
 	}
 
-	VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType) ZINET_API_POST
+	VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType) noexcept
 	{
 		switch (shaderType)
 		{
@@ -27,12 +26,11 @@ namespace zt::vulkan_renderer
 		case ShaderType::Vertex: return VK_SHADER_STAGE_VERTEX_BIT;
 		}
 
-		auto Logger = core::ConsoleLogger::Create("ShaderTypeToVkShaderStage");
-		Logger->error("Not supported ShaderType");
+		Ensure(false); // Not supported ShaderType
 		return {};
 	}
 
-	ShaderType FromStringToShaderType(const std::string& str) ZINET_API_POST
+	ShaderType FromStringToShaderType(const std::string& str)
 	{
 		if (str == "vert")
 			return ShaderType::Vertex;
@@ -40,7 +38,8 @@ namespace zt::vulkan_renderer
 			return ShaderType::Fragment;
 		else if (str == "comp")
 			return ShaderType::Compute;
-		
+
+		Ensure(false); // Not supported ShaderType
 		return ShaderType::Invalid;
 	}
 }

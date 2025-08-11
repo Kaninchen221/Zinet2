@@ -24,35 +24,35 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Instance(HandleType newObjectHandle)
+		Instance(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle) {}
 
-		Instance() ZINET_API_POST = delete;
-		Instance(const Instance& other) ZINET_API_POST = delete;
-		Instance(Instance&& other) ZINET_API_POST = default;
-		~Instance() ZINET_API_POST = default;
+		Instance() noexcept = delete;
+		Instance(const Instance& other) noexcept = delete;
+		Instance(Instance&& other) noexcept = default;
+		~Instance() noexcept = default;
 
-		Instance& operator = (const Instance& other) ZINET_API_POST = delete;
-		Instance& operator = (Instance&& other) ZINET_API_POST = default;
+		Instance& operator = (const Instance& other) noexcept = delete;
+		Instance& operator = (Instance&& other) noexcept = default;
 
-		static void PrintAPIVersion() ZINET_API_POST;
+		static void PrintAPIVersion();
 
-		bool create() ZINET_API_POST;
+		bool create();
 
-		void destroy() ZINET_API_POST;
+		void destroy() noexcept;
 
-		void setEnableValidationLayers(bool value) ZINET_API_POST { enableValidationLayers = value; }
-		bool getEnableValidationLayers() const ZINET_API_POST { return enableValidationLayers; }
+		void setEnableValidationLayers(bool value) noexcept { enableValidationLayers = value; }
+		bool getEnableValidationLayers() const noexcept { return enableValidationLayers; }
 
-		std::vector<const char*> getEnabledLayerNames() const ZINET_API_POST;
+		std::vector<const char*> getEnabledLayerNames() const;
 
-		bool areEnabledLayersSupported() const ZINET_API_POST;
+		bool areEnabledLayersSupported() const;
 
-		static std::vector<const char*> GetGlfwRequiredInstanceExtensions() ZINET_API_POST;
+		static std::vector<const char*> GetGlfwRequiredInstanceExtensions();
 
-		std::vector<const char*> getRequiredExtensions() const ZINET_API_POST;
+		std::vector<const char*> getRequiredExtensions() const;
 
-		std::vector<PhysicalDevice> getPhysicalDevices() const ZINET_API_POST;
+		std::vector<PhysicalDevice> getPhysicalDevices() const;
 
 	protected:
 

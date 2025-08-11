@@ -21,27 +21,27 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		DescriptorSetLayout(HandleType newObjectHandle)
+		DescriptorSetLayout(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle) {}
 
-		DescriptorSetLayout() ZINET_API_POST = delete;
-		DescriptorSetLayout(const DescriptorSetLayout& other) ZINET_API_POST = delete;
-		DescriptorSetLayout(DescriptorSetLayout&& other) ZINET_API_POST = default;
-		~DescriptorSetLayout() ZINET_API_POST = default;
+		DescriptorSetLayout() noexcept = delete;
+		DescriptorSetLayout(const DescriptorSetLayout& other) noexcept = delete;
+		DescriptorSetLayout(DescriptorSetLayout&& other) noexcept = default;
+		~DescriptorSetLayout() noexcept = default;
 
-		DescriptorSetLayout& operator = (const DescriptorSetLayout& other) ZINET_API_POST = delete;
-		DescriptorSetLayout& operator = (DescriptorSetLayout&& other) ZINET_API_POST = default;
+		DescriptorSetLayout& operator = (const DescriptorSetLayout& other) noexcept = delete;
+		DescriptorSetLayout& operator = (DescriptorSetLayout&& other) noexcept = default;
 
-		static VkDescriptorSetLayoutBinding GetDefaultUniformLayoutBinding() ZINET_API_POST;
-		static VkDescriptorSetLayoutBinding GetDefaultImageLayoutBinding() ZINET_API_POST;
+		static VkDescriptorSetLayoutBinding GetDefaultUniformLayoutBinding() noexcept;
+		static VkDescriptorSetLayoutBinding GetDefaultImageLayoutBinding() noexcept;
 
 		using Bindings = std::vector<VkDescriptorSetLayoutBinding>;
-		static VkDescriptorSetLayoutCreateInfo GetDefaultCreateInfo(const Bindings& bindings) ZINET_API_POST;
-		static VkDescriptorSetLayoutCreateInfo GetDefaultCreateInfo(Bindings&& bindings) ZINET_API_POST = delete;
+		static VkDescriptorSetLayoutCreateInfo GetDefaultCreateInfo(const Bindings& bindings) noexcept;
+		static VkDescriptorSetLayoutCreateInfo GetDefaultCreateInfo(Bindings&& bindings) noexcept = delete;
 
-		bool create(const VkDescriptorSetLayoutCreateInfo& createInfo, const Device& device) ZINET_API_POST;
+		bool create(const VkDescriptorSetLayoutCreateInfo& createInfo, const Device& device);
 
-		void destroy(const Device& device) ZINET_API_POST;
+		void destroy(const Device& device) noexcept;
 
 	};
 }

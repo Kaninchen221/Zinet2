@@ -10,7 +10,7 @@ namespace zt::vulkan_renderer
 {
 	class ShaderModule;
 
-	class ZINET_VULKAN_RENDERER_API Vertex
+	class Vertex
 	{
 	public:
 
@@ -19,11 +19,11 @@ namespace zt::vulkan_renderer
 		Vector2f uv;
 
 		auto operator<=>(const Vertex&) const = default;
-
-		using InputBindingDescription = VkVertexInputBindingDescription;
-		static InputBindingDescription GetInputBindingDescription() ZINET_API_POST;
-
-		using InputAttributesDescriptions = std::array<VkVertexInputAttributeDescription, 3>;
-		static InputAttributesDescriptions GetInputAttributesDescriptions() ZINET_API_POST;
 	};
+
+	using InputBindingDescription = VkVertexInputBindingDescription;
+	ZINET_VULKAN_RENDERER_API InputBindingDescription GetVertexInputBindingDescription() noexcept;
+
+	using InputAttributesDescriptions = std::array<VkVertexInputAttributeDescription, 3>;
+	ZINET_VULKAN_RENDERER_API InputAttributesDescriptions GetVertexInputAttributesDescriptions() noexcept;
 }

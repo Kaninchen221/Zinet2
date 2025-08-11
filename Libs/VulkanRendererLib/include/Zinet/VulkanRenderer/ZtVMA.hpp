@@ -34,16 +34,16 @@ namespace zt::vulkan_renderer
 		VMA(HandleType newObjectHandle)
 			: VulkanObject(newObjectHandle) {}
 
-		VMA() ZINET_API_POST = delete;
-		VMA(const VMA& other) ZINET_API_POST = delete;
-		VMA(VMA&& other) ZINET_API_POST = default;
-		~VMA() ZINET_API_POST = default;
+		VMA() noexcept = delete;
+		VMA(const VMA& other) noexcept = delete;
+		VMA(VMA&& other) noexcept = default;
+		~VMA() noexcept = default;
 
-		VMA& operator = (const VMA& other) ZINET_API_POST = delete;
-		VMA& operator = (VMA&& other) ZINET_API_POST = default;
+		VMA& operator = (const VMA& other) noexcept = delete;
+		VMA& operator = (VMA&& other) noexcept = default;
 
-		bool create(const Device& device, const PhysicalDevice& physicalDevice, const Instance& instance) ZINET_API_POST;
+		bool create(const Device& device, const PhysicalDevice& physicalDevice, const Instance& instance);
 
-		void destroy() ZINET_API_POST;
+		void destroy() noexcept;
 	};
 }

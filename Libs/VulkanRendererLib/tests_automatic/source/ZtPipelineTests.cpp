@@ -160,8 +160,8 @@ namespace zt::vulkan_renderer::tests
 
 	TEST(Pipeline, CreateVkPipelineVertexInputStateCreateInfoTest)
 	{
-		const auto bindingDescriptions = Vertex::GetInputBindingDescription();
-		const auto attributesDescriptions = Vertex::GetInputAttributesDescriptions();
+		const auto bindingDescriptions = GetVertexInputBindingDescription();
+		const auto attributesDescriptions = GetVertexInputAttributesDescriptions();
 
 		Pipeline pipeline{ nullptr };
 		const VkPipelineVertexInputStateCreateInfo createInfo =

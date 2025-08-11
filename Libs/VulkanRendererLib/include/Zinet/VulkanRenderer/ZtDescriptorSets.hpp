@@ -27,39 +27,39 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		DescriptorSets(HandleType newObjectHandle)
+		DescriptorSets(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle) {
 			if (newObjectHandle) 
 				count = 1;
 		}
 
-		DescriptorSets() ZINET_API_POST = delete;
-		DescriptorSets(const DescriptorSets& other) ZINET_API_POST = delete;
-		DescriptorSets(DescriptorSets&& other) ZINET_API_POST = default;
-		~DescriptorSets() ZINET_API_POST = default;
+		DescriptorSets() noexcept = delete;
+		DescriptorSets(const DescriptorSets& other) noexcept = delete;
+		DescriptorSets(DescriptorSets&& other) noexcept = default;
+		~DescriptorSets() noexcept = default;
 
-		DescriptorSets& operator = (const DescriptorSets& other) ZINET_API_POST = delete;
-		DescriptorSets& operator = (DescriptorSets&& other) ZINET_API_POST = default;
-
-		static VkDescriptorSetAllocateInfo GetDefaultAllocateInfo(
-			const DescriptorPool& descriptorPool, const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) ZINET_API_POST;
+		DescriptorSets& operator = (const DescriptorSets& other) noexcept = delete;
+		DescriptorSets& operator = (DescriptorSets&& other) noexcept = default;
 
 		static VkDescriptorSetAllocateInfo GetDefaultAllocateInfo(
-			const DescriptorPool& descriptorPool, std::vector<DescriptorSetLayout::HandleType>&& descriptorSetLayouts) ZINET_API_POST = delete;
+			const DescriptorPool& descriptorPool, const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) noexcept;
 
-		bool create(const Device& device, const VkDescriptorSetAllocateInfo& allocateInfo) ZINET_API_POST;
+		static VkDescriptorSetAllocateInfo GetDefaultAllocateInfo(
+			const DescriptorPool& descriptorPool, std::vector<DescriptorSetLayout::HandleType>&& descriptorSetLayouts) noexcept = delete;
 
-		void invalidate() { objectHandle = nullptr; }
+		bool create(const Device& device, const VkDescriptorSetAllocateInfo& allocateInfo);
 
-		static VkWriteDescriptorSet GetDefaultWriteDescriptorSet() ZINET_API_POST;
+		void invalidate() noexcept { objectHandle = nullptr; }
 
-		static VkDescriptorBufferInfo GetBufferInfo(const Buffer& buffer) ZINET_API_POST;
+		static VkWriteDescriptorSet GetDefaultWriteDescriptorSet() noexcept;
 
-		static VkDescriptorImageInfo GetImageInfo(const ImageView& imageView, const Sampler& sampler) ZINET_API_POST;
+		static VkDescriptorBufferInfo GetBufferInfo(const Buffer& buffer) noexcept;
 
-		void update(const Device& device, const std::vector<VkWriteDescriptorSet>& writeDescriptorSets) const ZINET_API_POST;
+		static VkDescriptorImageInfo GetImageInfo(const ImageView& imageView, const Sampler& sampler) noexcept;
 
-		auto getCount() const ZINET_API_POST { return count; }
+		void update(const Device& device, const std::vector<VkWriteDescriptorSet>& writeDescriptorSets) const noexcept;
+
+		auto getCount() const noexcept { return count; }
 
 	protected:
 

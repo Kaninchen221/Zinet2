@@ -4,7 +4,7 @@
 namespace zt::vulkan_renderer
 {
 
-	bool Fence::create(const Device& device, bool signaled) ZINET_API_POST
+	bool Fence::create(const Device& device, bool signaled)
 	{
 		if (isValid())
 			return false;
@@ -28,7 +28,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void Fence::destroy(const Device& device) ZINET_API_POST
+	void Fence::destroy(const Device& device)
 	{
 		if (isValid())
 		{
@@ -37,7 +37,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	bool Fence::wait(const Device& device, std::uint64_t timeout) const ZINET_API_POST
+	bool Fence::wait(const Device& device, std::uint64_t timeout) const
 	{
 		const auto result = vkWaitForFences(device.get(), 1u, &objectHandle, VK_TRUE, timeout);
 		if (result == VK_SUCCESS)
@@ -51,7 +51,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	bool Fence::isSignaled(const Device& device) const ZINET_API_POST
+	bool Fence::isSignaled(const Device& device) const
 	{
 		const auto result = vkGetFenceStatus(device.get(), objectHandle);
 		if (result == VK_SUCCESS)
@@ -69,7 +69,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	bool Fence::reset(const Device& device) ZINET_API_POST
+	bool Fence::reset(const Device& device)
 	{
 		const auto result = vkResetFences(device.get(), 1, &objectHandle);
 		if (result == VK_SUCCESS)

@@ -10,7 +10,7 @@ namespace zt::vulkan_renderer
 {
 
 	VkPipelineDynamicStateCreateInfo Pipeline::createVkPipelineDynamicStateCreateInfo(
-		const std::vector<VkDynamicState>& dynamicStates) const ZINET_API_POST
+		const std::vector<VkDynamicState>& dynamicStates) const noexcept
 	{
 		return VkPipelineDynamicStateCreateInfo
 		{
@@ -21,8 +21,8 @@ namespace zt::vulkan_renderer
 	}
 
 	VkPipelineVertexInputStateCreateInfo Pipeline::createVkPipelineVertexInputStateCreateInfo(
-		const Vertex::InputBindingDescription* bindingDescription,
-		const Vertex::InputAttributesDescriptions* attributesDescriptions) const ZINET_API_POST
+		const InputBindingDescription* bindingDescription,
+		const InputAttributesDescriptions* attributesDescriptions) const noexcept
 	{
 		VkPipelineVertexInputStateCreateInfo createInfo
 		{
@@ -49,7 +49,7 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	VkPipelineInputAssemblyStateCreateInfo Pipeline::createVkPipelineInputAssemblyStateCreateInfo() const ZINET_API_POST
+	VkPipelineInputAssemblyStateCreateInfo Pipeline::createVkPipelineInputAssemblyStateCreateInfo() const noexcept
 	{
 		return VkPipelineInputAssemblyStateCreateInfo
 		{
@@ -60,7 +60,7 @@ namespace zt::vulkan_renderer
 	}
 
 	VkPipelineViewportStateCreateInfo Pipeline::createVkPipelineViewportStateCreateInfo(
-		const VkViewport& viewport, const VkRect2D& scissor) const ZINET_API_POST
+		const VkViewport& viewport, const VkRect2D& scissor) const noexcept
 	{
 		return VkPipelineViewportStateCreateInfo
 		{
@@ -74,7 +74,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	VkPipelineRasterizationStateCreateInfo Pipeline::createVkPipelineRasterizationStateCreateInfo() const ZINET_API_POST
+	VkPipelineRasterizationStateCreateInfo Pipeline::createVkPipelineRasterizationStateCreateInfo() const noexcept
 	{
 		return VkPipelineRasterizationStateCreateInfo
 		{
@@ -94,7 +94,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	VkPipelineMultisampleStateCreateInfo Pipeline::createVkPipelineMultisampleStateCreateInfo() const ZINET_API_POST
+	VkPipelineMultisampleStateCreateInfo Pipeline::createVkPipelineMultisampleStateCreateInfo() const noexcept
 	{
 		return VkPipelineMultisampleStateCreateInfo
 		{
@@ -110,7 +110,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	VkPipelineColorBlendAttachmentState Pipeline::createVkPipelineColorBlendAttachmentState() const ZINET_API_POST
+	VkPipelineColorBlendAttachmentState Pipeline::createVkPipelineColorBlendAttachmentState() const noexcept
 	{
 		return VkPipelineColorBlendAttachmentState
 		{
@@ -126,7 +126,7 @@ namespace zt::vulkan_renderer
 	}
 
 	VkPipelineColorBlendStateCreateInfo Pipeline::createVkPipelineColorBlendStateCreateInfo(
-		const VkPipelineColorBlendAttachmentState& colorBlendAttachmentState) const ZINET_API_POST
+		const VkPipelineColorBlendAttachmentState& colorBlendAttachmentState) const noexcept
 	{
 		return VkPipelineColorBlendStateCreateInfo
 		{
@@ -147,7 +147,7 @@ namespace zt::vulkan_renderer
 		const RenderPass& renderPass,
 		const VkViewport& viewport,
 		const VkRect2D& scissor,
-		const DrawInfo& drawInfo) ZINET_API_POST
+		const DrawInfo& drawInfo)
 	{
 		if (isValid())
 			return false;
@@ -157,8 +157,8 @@ namespace zt::vulkan_renderer
 			VK_DYNAMIC_STATE_SCISSOR
 		};
 
-		const auto vertexInputBindingDescription = Vertex::GetInputBindingDescription();
-		const auto vertexInputAttributesDescriptions = Vertex::GetInputAttributesDescriptions();
+		const auto vertexInputBindingDescription = GetVertexInputBindingDescription();
+		const auto vertexInputAttributesDescriptions = GetVertexInputAttributesDescriptions();
 
 		VkPipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
 		if (drawInfo.vertexBuffer && drawInfo.vertexBuffer->isValid())
@@ -214,7 +214,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void Pipeline::destroy(const Device& device) ZINET_API_POST
+	void Pipeline::destroy(const Device& device) noexcept
 	{
 		if (isValid())
 		{
@@ -223,7 +223,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	Pipeline::ShadersStages Pipeline::createShadersStages(const DrawInfo& drawInfo) const ZINET_API_POST
+	Pipeline::ShadersStages Pipeline::createShadersStages(const DrawInfo& drawInfo) const
 	{
 		Pipeline::ShadersStages shadersStages;
 

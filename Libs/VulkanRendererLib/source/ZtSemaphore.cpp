@@ -4,7 +4,7 @@
 namespace zt::vulkan_renderer
 {
 
-	bool Semaphore::create(const Device& device) ZINET_API_POST
+	bool Semaphore::create(const Device& device)
 	{
 		if (isValid())
 			return false;
@@ -28,7 +28,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void Semaphore::destroy(const Device& device) ZINET_API_POST
+	void Semaphore::destroy(const Device& device) noexcept
 	{
 		if (isValid())
 		{

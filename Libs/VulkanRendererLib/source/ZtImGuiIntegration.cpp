@@ -14,7 +14,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool ImGuiIntegration::init(const RendererContext& rendererContext, wd::Window& window) ZINET_API_POST
+	bool ImGuiIntegration::init(const RendererContext& rendererContext, wd::Window& window)
 	{
 		{
 			// Copied from imgui demo
@@ -73,7 +73,7 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	void ImGuiIntegration::deinit(const RendererContext& rendererContext) ZINET_API_POST
+	void ImGuiIntegration::deinit(const RendererContext& rendererContext)
 	{
 		rendererContext.device.waitIdle();
 
@@ -83,25 +83,25 @@ namespace zt::vulkan_renderer
 		descriptorPool.destroy(rendererContext.device);
 	}
 
-	void ImGuiIntegration::prepareRenderData() const ZINET_API_POST
+	void ImGuiIntegration::prepareRenderData() const
 	{
 		ImGui::Render();
 	}
 
-	void ImGuiIntegration::ImplSpecificNewFrame() ZINET_API_POST
+	void ImGuiIntegration::ImplSpecificNewFrame()
 	{
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 	}
 
-	void ImGuiIntegration::DrawCommand(const CommandBuffer& commandBuffer) ZINET_API_POST
+	void ImGuiIntegration::DrawCommand(const CommandBuffer& commandBuffer)
 	{
 		auto drawData = ImGui::GetDrawData();
 		if (drawData)
 			ImGui_ImplVulkan_RenderDrawData(drawData, commandBuffer.get());
 	}
 
-	void ImGuiIntegration::SetStyle_Dark() ZINET_API_POST
+	void ImGuiIntegration::SetStyle_Dark()
 	{
 		// Darky style by 90th from ImThemes
 		ImGuiStyle& style = ImGui::GetStyle();

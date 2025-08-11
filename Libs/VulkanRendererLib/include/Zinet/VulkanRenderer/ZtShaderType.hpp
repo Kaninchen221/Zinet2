@@ -14,10 +14,10 @@ namespace zt::vulkan_renderer
 		Invalid
 	};
 
-	ZINET_VULKAN_RENDERER_API shaderc_shader_kind ShaderTypeToShaderCShaderKind(const ShaderType shaderType) ZINET_API_POST;
+	ZINET_VULKAN_RENDERER_API shaderc_shader_kind ShaderTypeToShaderCShaderKind(const ShaderType shaderType) noexcept;
 
-	ZINET_VULKAN_RENDERER_API VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType) ZINET_API_POST;
+	ZINET_VULKAN_RENDERER_API VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType) noexcept;
 
-	ZINET_VULKAN_RENDERER_API ShaderType FromStringToShaderType(const std::string& str) ZINET_API_POST;
+	ZINET_VULKAN_RENDERER_API ShaderType FromStringToShaderType(const std::string& str);
 
 }

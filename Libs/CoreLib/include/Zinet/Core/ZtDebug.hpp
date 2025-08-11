@@ -2,6 +2,8 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
+#include <exception>
+
 #if ZINET_MSVC
 	#include <intrin.h>
 #endif // ZINET_MSVC
@@ -35,5 +37,12 @@ namespace zt
 #else
 	static inline bool Ensure(bool Value) { return Value; }
 #endif
+
+	inline static void TerminateDebug() noexcept
+	{
+#if ZINET_DEBUG
+		std::terminate();
+#endif
+	}
 
 }

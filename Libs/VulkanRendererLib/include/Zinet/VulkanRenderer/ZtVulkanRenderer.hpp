@@ -4,8 +4,8 @@
 #include "Zinet/VulkanRenderer/ZtRendererContext.hpp"
 #include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
 
-#include "Zinet/Core/Reflection/ZtReflection.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtObject.hpp"
 
 #include "Zinet/Math/ZtVecTypes.hpp"
 
@@ -30,30 +30,30 @@ namespace zt::vulkan_renderer
 		VulkanRenderer() = default;
 		VulkanRenderer(const VulkanRenderer& other) = default;
 		VulkanRenderer(VulkanRenderer&& other) = default;
-		~VulkanRenderer() ZINET_API_POST = default;
+		~VulkanRenderer() noexcept = default;
 
-		VulkanRenderer& operator = (const VulkanRenderer& other) ZINET_API_POST = default;
-		VulkanRenderer& operator = (VulkanRenderer&& other) ZINET_API_POST = default;
+		VulkanRenderer& operator = (const VulkanRenderer& other) noexcept = default;
+		VulkanRenderer& operator = (VulkanRenderer&& other) noexcept = default;
 
-		bool init(wd::Window& window) ZINET_API_POST;
+		bool init(wd::Window& window);
 
-		void deinit() ZINET_API_POST;
+		void deinit();
 
-		bool beginFrame() ZINET_API_POST;
+		bool beginFrame();
 
-		bool createPipeline(DrawInfo& drawInfo) ZINET_API_POST;
+		bool createPipeline(DrawInfo& drawInfo);
 		
-		void draw(const DrawInfo& drawInfo) ZINET_API_POST;
+		void draw(const DrawInfo& drawInfo);
 
-		bool submit() ZINET_API_POST;
+		bool submit();
 
-		bool endFrame() ZINET_API_POST;
+		bool endFrame();
 
-		const auto& getRendererContext() const ZINET_API_POST { return rendererContext; }
-		auto& getRendererContext() ZINET_API_POST { return rendererContext; }
+		const auto& getRendererContext() const { return rendererContext; }
+		auto& getRendererContext() { return rendererContext; }
 
-		const auto& getGraphicsPipeline() const ZINET_API_POST { return graphicsPipeline; }
-		auto& getGraphicsPipeline() ZINET_API_POST { return graphicsPipeline; }
+		const auto& getGraphicsPipeline() const { return graphicsPipeline; }
+		auto& getGraphicsPipeline() { return graphicsPipeline; }
 
 	protected:
 

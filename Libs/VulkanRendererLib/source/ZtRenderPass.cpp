@@ -3,7 +3,7 @@
 
 namespace zt::vulkan_renderer
 {
-	RenderPassCreateInfo& RenderPassCreateInfo::operator=(const RenderPassCreateInfo& other) ZINET_API_POST
+	RenderPassCreateInfo& RenderPassCreateInfo::operator=(const RenderPassCreateInfo& other) noexcept
 	{
 		colorAttachmentDescription = other.colorAttachmentDescription;
 
@@ -19,7 +19,7 @@ namespace zt::vulkan_renderer
 		return *this;
 	}
 
-	RenderPassCreateInfo RenderPass::GetPresentCreateInfo(VkFormat format) ZINET_API_POST
+	RenderPassCreateInfo RenderPass::GetPresentCreateInfo(VkFormat format) noexcept
 	{	
 		RenderPassCreateInfo createInfo;
 
@@ -52,7 +52,7 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	RenderPassCreateInfo RenderPass::GetDrawCreateInfo(VkFormat format) ZINET_API_POST
+	RenderPassCreateInfo RenderPass::GetDrawCreateInfo(VkFormat format) noexcept
 	{
 		RenderPassCreateInfo createInfo;
 
@@ -85,7 +85,7 @@ namespace zt::vulkan_renderer
 		return createInfo;
 	}
 
-	bool RenderPass::create(const Device& device, const RenderPassCreateInfo& createInfo) ZINET_API_POST
+	bool RenderPass::create(const Device& device, const RenderPassCreateInfo& createInfo)
 	{
 		if (isValid())
 			return false;
@@ -103,7 +103,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	bool RenderPass::recreate(const Device& device) ZINET_API_POST
+	bool RenderPass::recreate(const Device& device)
 	{
 		destroy(device);
 		if (!create(device, cachedCreateInfo))
@@ -115,7 +115,7 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	void RenderPass::destroy(const Device& device) ZINET_API_POST
+	void RenderPass::destroy(const Device& device) noexcept
 	{
 		if (isValid())
 		{

@@ -27,21 +27,21 @@ namespace zt::vulkan_renderer
 
 		using HandleType = HandleT;
 
-		VulkanObject(HandleType newObjectHandle)
+		VulkanObject(HandleType newObjectHandle) noexcept
 			: objectHandle(newObjectHandle) {}
 
-		VulkanObject() ZINET_API_POST = delete;
+		VulkanObject() = delete;
 		VulkanObject(const VulkanObject& other) = delete;
-		VulkanObject(VulkanObject&& other) ZINET_API_POST { *this = std::move(other); }
-		~VulkanObject() ZINET_API_POST;
+		VulkanObject(VulkanObject&& other) noexcept { *this = std::move(other); }
+		~VulkanObject() noexcept;
 
 		VulkanObject& operator = (const VulkanObject& other) = delete;
-		VulkanObject& operator = (VulkanObject&& other) ZINET_API_POST;
+		VulkanObject& operator = (VulkanObject&& other) noexcept;
 
-		const HandleType get() const ZINET_API_POST { return objectHandle; }
-		HandleType get() ZINET_API_POST { return objectHandle; }
+		const HandleType get() const noexcept { return objectHandle; }
+		HandleType get() noexcept { return objectHandle; }
 
-		bool isValid() const ZINET_API_POST { return objectHandle != nullptr; }
+		bool isValid() const noexcept { return objectHandle != nullptr; }
 
 	protected:
 
@@ -49,7 +49,7 @@ namespace zt::vulkan_renderer
 
 	};
 
-	inline void invalidateAll(auto&& container) ZINET_API_POST
+	inline void invalidateAll(auto&& container) noexcept
 	{
 		for (auto&& element : container)
 		{
@@ -58,7 +58,7 @@ namespace zt::vulkan_renderer
 	}
 
 	template<class ...ArgsT>
-	inline void destroyAll(auto&& container, ArgsT&& ... args) ZINET_API_POST
+	inline void destroyAll(auto&& container, ArgsT&& ... args)
 	{
 		for (auto&& element : container)
 		{
@@ -67,7 +67,7 @@ namespace zt::vulkan_renderer
 	}
 
 	template<class ResultContainerT>
-	inline ResultContainerT VulkanObjectsToVkObjects(auto&& container) ZINET_API_POST
+	inline ResultContainerT VulkanObjectsToVkObjects(auto&& container)
 	{
 		ResultContainerT resultContainer;
 		for (auto&& vulkanObject : container)
@@ -79,7 +79,7 @@ namespace zt::vulkan_renderer
 	}
 
 	template<class HandleT>
-	VulkanObject<HandleT>& VulkanObject<HandleT>::operator=(VulkanObject&& other) ZINET_API_POST
+	VulkanObject<HandleT>& VulkanObject<HandleT>::operator=(VulkanObject&& other) noexcept
 	{
 		if (isValid())
 		{
@@ -93,12 +93,19 @@ namespace zt::vulkan_renderer
 	}
 
 	template<class HandleT>
-	VulkanObject<HandleT>::~VulkanObject() ZINET_API_POST
+	VulkanObject<HandleT>::~VulkanObject() noexcept
 	{
 		if (isValid())
 		{
-			auto Logger = core::ConsoleLogger::Create("VulkanObject");
-			Logger->error("Object must be manually destroyed/invalidated before destructor call");
+			try 
+			{
+				auto Logger = core::ConsoleLogger::Create("VulkanObject");
+				Logger->error("Object must be manually destroyed/invalidated before destructor call");
+			}
+			catch ([[maybe_unused]] std::exception& ex)
+			{
+				TerminateDebug();
+			}
 		}
 	}
 

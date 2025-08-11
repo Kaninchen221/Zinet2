@@ -6,7 +6,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool RendererContext::create(wd::Window& window) ZINET_API_POST
+	bool RendererContext::create(wd::Window& window)
 	{
 		if (!instance.create())
 			return false;
@@ -66,16 +66,16 @@ namespace zt::vulkan_renderer
 			return false;
 
 		/// Framebuffers
-		images = swapChain.getImages(device);
-		if (images.empty())
+		displayImages.images = swapChain.getImages(device);
+		if (displayImages.images.empty())
 		{
 			Logger->error("SwapChain returned empty swapChainImages");
 			return false;
 		}
 
-		for (auto image : images)
+		for (auto image : displayImages.images)
 		{
-			auto& imageView = imageViews.emplace_back(nullptr);
+			auto& imageView = displayImages.imageViews.emplace_back(nullptr);
 			const auto imageViewCreateInfo = ImageView::GetDefaultCreateInfo(image, swapChain.getFormat());
 			if (!imageView.create(device, imageViewCreateInfo))
 			{
@@ -86,9 +86,9 @@ namespace zt::vulkan_renderer
 
 		const auto swapChainSize = swapChain.getExtent();
 		const Vector2ui framebufferSize{ swapChainSize.width, swapChainSize.height };
-		for (auto& imageView : imageViews)
+		for (auto& imageView : displayImages.imageViews)
 		{
-			auto& framebuffer = framebuffers.emplace_back(nullptr);
+			auto& framebuffer = displayImages.framebuffers.emplace_back(nullptr);
 			if (!framebuffer.create(device, renderPass, imageView, framebufferSize))
 			{
 				Logger->error("Couldn't create framebuffer from one of the swap chain images");
@@ -99,15 +99,15 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	void RendererContext::destroy() ZINET_API_POST
+	void RendererContext::destroy()
 	{
-		for (auto& framebuffer : framebuffers)
+		for (auto& framebuffer : displayImages.framebuffers)
 			framebuffer.destroy(device);
-		framebuffers.clear();
+		displayImages.framebuffers.clear();
 
-		for (auto& imageView : imageViews)
+		for (auto& imageView : displayImages.imageViews)
 			imageView.destroy(device);
-		imageViews.clear();
+		displayImages.imageViews.clear();
 
 		renderPass.destroy(device);
 		fence.destroy(device);
@@ -124,7 +124,7 @@ namespace zt::vulkan_renderer
 		instance.destroy();
 	}
 
-	void RendererContext::windowResized(const Vector2i& size) ZINET_API_POST
+	void RendererContext::windowResized(const Vector2i& size)
 	{
 		renderPass.destroy(device);
 		if (!renderPass.recreate(device))
@@ -140,25 +140,25 @@ namespace zt::vulkan_renderer
 			return;
 		}
 
-		images = swapChain.getImages(device);
-		if (images.empty())
+		displayImages.images = swapChain.getImages(device);
+		if (displayImages.images.empty())
 		{
 			Logger->error("SwapChain returned empty swapChainImages");
 			return;
 		}
 
 		/// Recreate swap chain framebuffers
-		for (auto& framebuffer : framebuffers)
+		for (auto& framebuffer : displayImages.framebuffers)
 			framebuffer.destroy(device);
-		framebuffers.clear();
+		displayImages.framebuffers.clear();
 
-		for (auto& imageView : imageViews)
+		for (auto& imageView : displayImages.imageViews)
 			imageView.destroy(device);
-		imageViews.clear();
+		displayImages.imageViews.clear();
 
-		for (auto image : images)
+		for (auto image : displayImages.images)
 		{
-			auto& imageView = imageViews.emplace_back(nullptr);
+			auto& imageView = displayImages.imageViews.emplace_back(nullptr);
 			const auto imageViewCreateInfo = ImageView::GetDefaultCreateInfo(image, swapChain.getFormat());
 			if (!imageView.create(device, imageViewCreateInfo))
 			{
@@ -169,9 +169,9 @@ namespace zt::vulkan_renderer
 
 		const auto swapChainSize = swapChain.getExtent();
 		const Vector2ui framebufferSize{ swapChainSize.width, swapChainSize.height };
-		for (auto& imageView : imageViews)
+		for (auto& imageView : displayImages.imageViews)
 		{
-			auto& framebuffer = framebuffers.emplace_back(nullptr);
+			auto& framebuffer = displayImages.framebuffers.emplace_back(nullptr);
 			if (!framebuffer.create(device, renderPass, imageView, framebufferSize))
 			{
 				Logger->error("Couldn't create framebuffer from one of the swap chain images");

@@ -37,17 +37,17 @@ namespace zt::vulkan_renderer
 	{
 	protected:
 
-		inline static auto Logger = core::ConsoleLogger::Create("VRRendererContext");
+		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::VRRendererContext");
 
 	public:
 
-		RendererContext() ZINET_API_POST = default;
-		RendererContext(const RendererContext& other) ZINET_API_POST = delete;
-		RendererContext(RendererContext&& other) ZINET_API_POST = default;
-		~RendererContext() ZINET_API_POST = default;
+		RendererContext() noexcept = default;
+		RendererContext(const RendererContext& other) noexcept = delete;
+		RendererContext(RendererContext&& other) noexcept = default;
+		~RendererContext() noexcept = default;
 
-		RendererContext& operator = (const RendererContext& other) ZINET_API_POST = delete;
-		RendererContext& operator = (RendererContext&& other) ZINET_API_POST = default;
+		RendererContext& operator = (const RendererContext& other) noexcept = delete;
+		RendererContext& operator = (RendererContext&& other) noexcept = default;
 
 		Instance instance{ nullptr };
 		DebugUtilsMessenger debugUtilsMessenger{ nullptr };
@@ -63,19 +63,23 @@ namespace zt::vulkan_renderer
 		Semaphore renderFinishedSemaphore{ nullptr };
 		Fence fence{ nullptr };
 
-		std::vector<VkImage> images;
-		std::vector<ImageView> imageViews;
-		std::vector<Framebuffer> framebuffers;
+		struct DisplayImages
+		{
+			std::vector<VkImage> images;
+			std::vector<ImageView> imageViews;
+			std::vector<Framebuffer> framebuffers;
+		};
+		DisplayImages displayImages;
 
 		uint32_t currentFramebufferIndex{};
 
 		RenderPass renderPass{ nullptr };
 
-		bool create(wd::Window& window) ZINET_API_POST;
+		bool create(wd::Window& window);
 
-		void destroy() ZINET_API_POST;
+		void destroy();
 
-		void windowResized(const Vector2i& size) ZINET_API_POST;
+		void windowResized(const Vector2i& size);
 
 	};
 }

@@ -17,26 +17,26 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Fence(HandleType newObjectHandle)
+		Fence(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle) {}
 
-		Fence() ZINET_API_POST = delete;
-		Fence(const Fence& other) ZINET_API_POST = delete;
-		Fence(Fence&& other) ZINET_API_POST = default;
-		~Fence() ZINET_API_POST = default;
+		Fence() noexcept = delete;
+		Fence(const Fence& other) noexcept = delete;
+		Fence(Fence&& other) noexcept = default;
+		~Fence() noexcept = default;
 
-		Fence& operator = (const Fence& other) ZINET_API_POST = delete;
-		Fence& operator = (Fence&& other) ZINET_API_POST = default;
+		Fence& operator = (const Fence& other) noexcept = delete;
+		Fence& operator = (Fence&& other) noexcept = default;
 
-		bool create(const Device& device, bool signaled = true) ZINET_API_POST;
+		bool create(const Device& device, bool signaled = true);
 
-		void destroy(const Device& device) ZINET_API_POST;
+		void destroy(const Device& device);
 
-		bool wait(const Device& device, std::uint64_t timeout = UINT64_MAX) const ZINET_API_POST;
+		bool wait(const Device& device, std::uint64_t timeout = UINT64_MAX) const;
 
-		bool isSignaled(const Device& device) const ZINET_API_POST;
+		bool isSignaled(const Device& device) const;
 
-		bool reset(const Device& device) ZINET_API_POST;
+		bool reset(const Device& device);
 
 	};
 }

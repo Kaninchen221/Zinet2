@@ -5,7 +5,7 @@
 
 namespace zt::vulkan_renderer
 {
-	VkImageViewCreateInfo ImageView::GetDefaultCreateInfo(const VkImage& vkImage, VkFormat format) ZINET_API_POST
+	VkImageViewCreateInfo ImageView::GetDefaultCreateInfo(const VkImage& vkImage, VkFormat format) noexcept
 	{
 		return VkImageViewCreateInfo
 		{
@@ -33,7 +33,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	bool ImageView::create(const Device& device, const VkImageViewCreateInfo& createInfo) ZINET_API_POST
+	bool ImageView::create(const Device& device, const VkImageViewCreateInfo& createInfo)
 	{
 		if (isValid())
 			return false;
@@ -51,7 +51,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void ImageView::destroy(const Device& device) ZINET_API_POST
+	void ImageView::destroy(const Device& device) noexcept
 	{
 		if (isValid())
 		{

@@ -28,29 +28,29 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Device(HandleType newObjectHandle)
+		Device(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle)
 		{}
 
-		Device() ZINET_API_POST = delete;
-		Device(const Device& other) ZINET_API_POST = delete;
-		Device(Device&& other) ZINET_API_POST = default;
-		~Device() ZINET_API_POST = default;
+		Device() noexcept = delete;
+		Device(const Device& other) noexcept = delete;
+		Device(Device&& other) noexcept = default;
+		~Device() noexcept = default;
 
-		Device& operator = (const Device& other) ZINET_API_POST = delete;
-		Device& operator = (Device&& other) ZINET_API_POST = default;
+		Device& operator = (const Device& other) noexcept = delete;
+		Device& operator = (Device&& other) noexcept = default;
 
-		bool create(const Instance& instance, const PhysicalDevice& physicalDevice, const Surface& surface) ZINET_API_POST;
+		bool create(const Instance& instance, const PhysicalDevice& physicalDevice, const Surface& surface);
 
-		void destroy() ZINET_API_POST;
+		void destroy() noexcept;
 
-		Queue getQueue() ZINET_API_POST;
+		Queue getQueue() noexcept;
 
-		const auto& getQueueFamilyIndex() const ZINET_API_POST { return queueFamilyIndex; }
+		const auto& getQueueFamilyIndex() const noexcept { return queueFamilyIndex; }
 
-		bool waitIdle() const ZINET_API_POST;
+		bool waitIdle() const;
 
-		bool setDebugName(const IsVulkanObjectT auto& vulkanObject, std::string_view debugName, VkObjectType objectType) const ZINET_API_POST;
+		bool setDebugName(const IsVulkanObjectT auto& vulkanObject, std::string_view debugName, VkObjectType objectType) const;
 
 	protected:
 
@@ -61,7 +61,7 @@ namespace zt::vulkan_renderer
 
 	};
 
-	bool Device::setDebugName([[maybe_unused]] const IsVulkanObjectT auto& vulkanObject, [[maybe_unused]] std::string_view debugName, [[maybe_unused]] VkObjectType objectType) const ZINET_API_POST
+	bool Device::setDebugName([[maybe_unused]] const IsVulkanObjectT auto& vulkanObject, [[maybe_unused]] std::string_view debugName, [[maybe_unused]] VkObjectType objectType) const
 	{
 		/// Should be empty for not debug builds
 #		if ZINET_DEBUG

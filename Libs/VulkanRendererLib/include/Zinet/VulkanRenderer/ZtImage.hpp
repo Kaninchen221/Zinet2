@@ -22,34 +22,34 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Image(HandleType newObjectHandle, VkFormat newFormat = VK_FORMAT_UNDEFINED)
+		Image(HandleType newObjectHandle, VkFormat newFormat = VK_FORMAT_UNDEFINED) noexcept
 			: VulkanObject{ newObjectHandle },
 			format{ newFormat }
 		{}
 
-		Image() ZINET_API_POST = delete;
-		Image(const Image& other) ZINET_API_POST = delete;
-		Image(Image&& other) ZINET_API_POST = default;
-		~Image() ZINET_API_POST = default;
+		Image() noexcept = delete;
+		Image(const Image& other) noexcept = delete;
+		Image(Image&& other) noexcept = default;
+		~Image() noexcept = default;
 
-		Image& operator = (const Image& other) ZINET_API_POST = delete;
-		Image& operator = (Image&& other) ZINET_API_POST = default;
+		Image& operator = (const Image& other) noexcept = delete;
+		Image& operator = (Image&& other) noexcept = default;
 
-		static VkImageCreateInfo GetDefaultCreateInfo(const Device& device) ZINET_API_POST;
+		static VkImageCreateInfo GetDefaultCreateInfo(const Device& device) noexcept;
 
-		bool create(const VMA& vma, const VkImageCreateInfo& createInfo) ZINET_API_POST;
+		bool create(const VMA& vma, const VkImageCreateInfo& createInfo);
 
-		void destroy(const VMA& vma) ZINET_API_POST;
+		void destroy(const VMA& vma) noexcept;
 
-		VkFormat getFormat() const ZINET_API_POST { return format; }
+		VkFormat getFormat() const noexcept { return format; }
 
-		static VkImageSubresourceRange GetDefaultSubresourceRange() ZINET_API_POST;
+		static VkImageSubresourceRange GetDefaultSubresourceRange() noexcept;
 
 		VkImageMemoryBarrier getDefaultMemoryBarier(
 			VkImageLayout oldLayout = VK_IMAGE_LAYOUT_UNDEFINED,
 			VkImageLayout newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 			VkImageSubresourceRange subresourceRange = GetDefaultSubresourceRange()
-			) const ZINET_API_POST;
+			) const noexcept;
 
 	protected:
 

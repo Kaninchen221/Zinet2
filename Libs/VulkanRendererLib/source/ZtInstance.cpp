@@ -6,7 +6,7 @@
 
 namespace zt::vulkan_renderer
 {
-	void Instance::PrintAPIVersion() ZINET_API_POST
+	void Instance::PrintAPIVersion()
 	{
 		std::uint32_t apiVersion = 0;
 		vkEnumerateInstanceVersion(&apiVersion);
@@ -18,7 +18,7 @@ namespace zt::vulkan_renderer
 		Logger->info("API Version: {} {} {}", major, minor, patch);
 	}
 
-	bool Instance::create() ZINET_API_POST
+	bool Instance::create()
 	{
 		if (isValid())
 			return false;
@@ -61,7 +61,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void Instance::destroy() ZINET_API_POST
+	void Instance::destroy() noexcept
 	{
 		if (isValid())
 		{
@@ -70,7 +70,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	std::vector<const char*> Instance::getEnabledLayerNames() const ZINET_API_POST
+	std::vector<const char*> Instance::getEnabledLayerNames() const
 	{
 		if (enableValidationLayers)
 			return { "VK_LAYER_KHRONOS_validation" };
@@ -78,7 +78,7 @@ namespace zt::vulkan_renderer
 			return {};
 	}
 
-	bool Instance::areEnabledLayersSupported() const ZINET_API_POST
+	bool Instance::areEnabledLayersSupported() const
 	{
 		// TODO: Refactor this
 		std::uint32_t layerCount;
@@ -113,7 +113,7 @@ namespace zt::vulkan_renderer
 		return areAllLayersSupported;
 	}
 
-	std::vector<const char*> Instance::GetGlfwRequiredInstanceExtensions() ZINET_API_POST
+	std::vector<const char*> Instance::GetGlfwRequiredInstanceExtensions()
 	{
 		if (!wd::GLFW::IsInitialized())
 			return {};
@@ -131,7 +131,7 @@ namespace zt::vulkan_renderer
 		return result;
 	}
 
-	std::vector<const char*> Instance::getRequiredExtensions() const ZINET_API_POST
+	std::vector<const char*> Instance::getRequiredExtensions() const
 	{
 		auto extensions = GetGlfwRequiredInstanceExtensions();
 
@@ -141,7 +141,7 @@ namespace zt::vulkan_renderer
 		return extensions;
 	}
 
-	std::vector<PhysicalDevice> Instance::getPhysicalDevices() const ZINET_API_POST
+	std::vector<PhysicalDevice> Instance::getPhysicalDevices() const
 	{
 		std::uint32_t deviceCount = 0;
 		vkEnumeratePhysicalDevices(objectHandle, &deviceCount, nullptr);

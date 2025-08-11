@@ -25,49 +25,49 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		PhysicalDevice(HandleType newObjectHandle)
+		PhysicalDevice(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle) {}
 
-		PhysicalDevice() ZINET_API_POST = delete;
-		PhysicalDevice(const PhysicalDevice& other) ZINET_API_POST = delete;
-		PhysicalDevice(PhysicalDevice&& other) ZINET_API_POST = default;
-		~PhysicalDevice() ZINET_API_POST = default;
+		PhysicalDevice() noexcept = delete;
+		PhysicalDevice(const PhysicalDevice& other) noexcept = delete;
+		PhysicalDevice(PhysicalDevice&& other) noexcept = default;
+		~PhysicalDevice() noexcept = default;
 
-		PhysicalDevice& operator = (const PhysicalDevice& other) ZINET_API_POST = delete;
-		PhysicalDevice& operator = (PhysicalDevice&& other) ZINET_API_POST = default;
+		PhysicalDevice& operator = (const PhysicalDevice& other) noexcept = delete;
+		PhysicalDevice& operator = (PhysicalDevice&& other) noexcept = default;
 
 		void invalidate() { objectHandle = nullptr; }
 
-		VkPhysicalDeviceProperties getVkPhysicalDeviceProperties() const ZINET_API_POST;
+		VkPhysicalDeviceProperties getVkPhysicalDeviceProperties() const noexcept;
 
-		VkPhysicalDeviceFeatures getVkPhysicalDeviceFeatures() const ZINET_API_POST;
+		VkPhysicalDeviceFeatures getVkPhysicalDeviceFeatures() const noexcept;
 
-		static PhysicalDevice TakeBestPhysicalDevice(auto& physicalDevices) ZINET_API_POST;
+		static PhysicalDevice TakeBestPhysicalDevice(auto& physicalDevices);
 
-		std::vector<VkQueueFamilyProperties> getVkQueuesFamiliesProperties() const ZINET_API_POST;
+		std::vector<VkQueueFamilyProperties> getVkQueuesFamiliesProperties() const;
 
-		void printVkQueuesFamiliesProperties(const auto& familiesProperties, const Surface& surface) const ZINET_API_POST;
+		void printVkQueuesFamiliesProperties(const auto& familiesProperties, const Surface& surface) const;
 
-		std::uint32_t takeQueueFamilyIndexForPresent(std::vector<VkQueueFamilyProperties>& familiesProperties) const ZINET_API_POST;
+		std::uint32_t takeQueueFamilyIndexForPresent(std::vector<VkQueueFamilyProperties>& familiesProperties) const;
 
-		std::uint32_t takeQueueFamilyIndexForSurface(std::vector<VkQueueFamilyProperties>& familiesProperties, const Surface& surface) const ZINET_API_POST;
+		std::uint32_t takeQueueFamilyIndexForSurface(std::vector<VkQueueFamilyProperties>& familiesProperties, const Surface& surface) const;
 
-		std::uint32_t takeQueueFamilyIndexForPresentAndSurface(std::vector<VkQueueFamilyProperties>& familiesProperties, const Surface& surface) const ZINET_API_POST;
+		std::uint32_t takeQueueFamilyIndexForPresentAndSurface(std::vector<VkQueueFamilyProperties>& familiesProperties, const Surface& surface) const;
 
-		bool isQueueFamilySupportingSurface(std::uint32_t index, const Surface& surface) const ZINET_API_POST;
+		bool isQueueFamilySupportingSurface(std::uint32_t index, const Surface& surface) const noexcept;
 
-		std::vector<VkExtensionProperties> getDeviceExtensionProperties() const ZINET_API_POST;
+		std::vector<VkExtensionProperties> getDeviceExtensionProperties() const;
 
-		static std::vector<const char*> GetRequiredExtensions() ZINET_API_POST;
+		static std::vector<const char*> GetRequiredExtensions();
 
-		VkSurfaceCapabilitiesKHR getPhysicalDeviceSurfaceCapabilities(const Surface& surface) const ZINET_API_POST;
+		VkSurfaceCapabilitiesKHR getPhysicalDeviceSurfaceCapabilities(const Surface& surface) const noexcept;
 
-		std::vector<VkSurfaceFormatKHR> getPhysicalDeviceSurfaceFormats(const Surface& surface) const ZINET_API_POST;
+		std::vector<VkSurfaceFormatKHR> getPhysicalDeviceSurfaceFormats(const Surface& surface) const;
 
-		std::vector<VkPresentModeKHR> getPhysicalDeviceSurfacePresentModes(const Surface& surface) const ZINET_API_POST;
+		std::vector<VkPresentModeKHR> getPhysicalDeviceSurfacePresentModes(const Surface& surface) const;
 	};
 
-	inline void PhysicalDevice::printVkQueuesFamiliesProperties(const auto& familiesProperties, const Surface& surface) const ZINET_API_POST
+	inline void PhysicalDevice::printVkQueuesFamiliesProperties(const auto& familiesProperties, const Surface& surface) const
 	{
 		Logger->info("Print VkQueuesFamiliesProperties");
 
@@ -87,7 +87,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	inline PhysicalDevice PhysicalDevice::TakeBestPhysicalDevice(auto& physicalDevices) ZINET_API_POST
+	inline PhysicalDevice PhysicalDevice::TakeBestPhysicalDevice(auto& physicalDevices)
 	{
 		Logger->info("Get best physical device");
 

@@ -11,7 +11,7 @@ namespace zt::vulkan_renderer
 {
 	class Device;
 
-	inline VkFilter SamplerTypeFromString(std::string_view str) ZINET_API_POST
+	inline VkFilter SamplerTypeFromString(std::string_view str)
 	{
 		if (str == "nearest")
 			return VkFilter::VK_FILTER_NEAREST;
@@ -33,23 +33,23 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Sampler(HandleType newObjectHandle)
+		Sampler(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle)
 		{}
 
-		Sampler() ZINET_API_POST = delete;
-		Sampler(const Sampler& other) ZINET_API_POST = delete;
-		Sampler(Sampler&& other) ZINET_API_POST = default;
-		~Sampler() ZINET_API_POST = default;
+		Sampler() noexcept = delete;
+		Sampler(const Sampler& other) noexcept = delete;
+		Sampler(Sampler&& other) noexcept = default;
+		~Sampler() noexcept = default;
 
-		Sampler& operator = (const Sampler& other) ZINET_API_POST = delete;
-		Sampler& operator = (Sampler&& other) ZINET_API_POST = default;
+		Sampler& operator = (const Sampler& other) noexcept = delete;
+		Sampler& operator = (Sampler&& other) noexcept = default;
 
-		static VkSamplerCreateInfo GetDefaultCreateInfo() ZINET_API_POST;
+		static VkSamplerCreateInfo GetDefaultCreateInfo() noexcept;
 
-		bool create(const Device& device, const VkSamplerCreateInfo& createInfo) ZINET_API_POST;
+		bool create(const Device& device, const VkSamplerCreateInfo& createInfo);
 
-		void destroy(const Device& device) ZINET_API_POST;
+		void destroy(const Device& device) noexcept;
 
 	};
 }

@@ -3,7 +3,7 @@
 namespace zt::vulkan_renderer
 {
 
-	bool Queue::waitIdle() const ZINET_API_POST
+	bool Queue::waitIdle() const
 	{
 		const auto result = vkQueueWaitIdle(get());
 		if (result == VK_SUCCESS)

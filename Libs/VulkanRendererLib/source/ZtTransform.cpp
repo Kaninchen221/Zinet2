@@ -5,7 +5,7 @@
 namespace zt::vulkan_renderer
 {
 
-	Transform::MatrixT Transform::getMatrix() const ZINET_API_POST
+	Transform::MatrixT Transform::getMatrix() const noexcept
 	{
 		MatrixT matrix = glm::mat4(1.0f);
 		matrix *= glm::translate(position);

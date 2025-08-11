@@ -28,7 +28,7 @@ namespace zt::vulkan_renderer
 		Buffer* uniformBuffer{};
 	};
 
-	struct ZINET_VULKAN_RENDERER_API DescriptorInfo
+	struct DescriptorInfo
 	{
 		/// Uniform buffer per instance
 		std::vector<UniformBufferInfo> uniformBuffers;
@@ -36,7 +36,7 @@ namespace zt::vulkan_renderer
 		/// Texture per instance
 		std::vector<TextureInfo> texturesInfos;
 
-		DescriptorInfo& operator += (const DescriptorInfo& other) ZINET_API_POST
+		DescriptorInfo& operator += (const DescriptorInfo& other)
 		{
 			uniformBuffers.append_range(other.uniformBuffers);
 			texturesInfos.append_range(other.texturesInfos);
@@ -48,7 +48,7 @@ namespace zt::vulkan_renderer
 		uint32_t cachedTexturesBinding{};
 	};
 
-	struct ZINET_VULKAN_RENDERER_API DrawInfo
+	struct DrawInfo
 	{
 		using Vertices = std::vector<Vertex>;
 		using Indices = std::vector<std::uint16_t>;
