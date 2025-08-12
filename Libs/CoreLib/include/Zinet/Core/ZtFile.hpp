@@ -9,7 +9,7 @@
 
 namespace zt::core
 {
-	class ZINET_CORE_API File
+	class File
 	{
 	protected:
 
@@ -19,49 +19,47 @@ namespace zt::core
 
 		using Byte = std::byte;
 
-		File() = default;
-		File(const File& other) = delete;
-		File(File&& other) noexcept = default;
+		ZINET_CORE_API File() = default;
+		ZINET_CORE_API File(const File& other) = delete;
+		ZINET_CORE_API File(File&& other) noexcept = default;
 
-		File& operator = (const File& other) = delete;
-		File& operator = (File&& other) noexcept = default;
+		ZINET_CORE_API File& operator = (const File& other) = delete;
+		ZINET_CORE_API File& operator = (File&& other) noexcept = default;
 
-		~File();
+		ZINET_CORE_API ~File();
 
-		auto& get() const noexcept { return data.fileStream; }
-		auto& get() noexcept { return data.fileStream; }
+		auto& get() const noexcept { return fileStream; }
+		auto& get() noexcept { return fileStream; }
 
-		void open(const std::filesystem::path& filePath, FileOpenMode openMode, bool binary = false);
+		ZINET_CORE_API void open(const std::filesystem::path& filePath, FileOpenMode openMode, bool binary = false);
 
-		bool isOpen() const noexcept;
+		ZINET_CORE_API bool isOpen() const noexcept;
 
-		bool isOkay() const noexcept;
+		ZINET_CORE_API bool isOkay() const noexcept;
 
-		void log() const;
+		ZINET_CORE_API void log() const;
 
-		std::string readLine();
+		ZINET_CORE_API std::string readLine();
 
-		std::string readAll();
+		ZINET_CORE_API std::string readAll();
 
-		std::vector<Byte> readData();
+		ZINET_CORE_API std::vector<Byte> readData();
 
-		void write(const std::string& string);
+		ZINET_CORE_API void write(const std::string& string);
 
-		void writeData(const std::vector<Byte>& bytes);
+		ZINET_CORE_API void writeData(const std::vector<Byte>& bytes);
 
-		static std::ios_base::openmode ToStdOpenMode(FileOpenMode openMode) noexcept;
+		ZINET_CORE_API static std::ios_base::openmode ToStdOpenMode(FileOpenMode openMode) noexcept;
 
-		void close();
+		ZINET_CORE_API void close();
 
-		static bool RemoveFile(const std::filesystem::path& path);
+		ZINET_CORE_API static bool RemoveFile(const std::filesystem::path& path);
 
-		static File CreateFile(const std::filesystem::path& path);
+		ZINET_CORE_API static File CreateFile(const std::filesystem::path& path);
 
 	protected:
 
-		struct {
-			std::fstream fileStream;
-		} data;
+		std::fstream fileStream;
 
 	};
 

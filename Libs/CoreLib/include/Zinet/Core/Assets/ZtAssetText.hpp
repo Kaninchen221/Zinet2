@@ -27,6 +27,10 @@ namespace zt::core
 
 		ZINET_CORE_API void imGui() override;
 
+		ZINET_CORE_API std::string getText() const { return text; }
+
+	protected:
+
 		// Content
 		std::string text;
 

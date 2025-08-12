@@ -41,7 +41,7 @@ namespace zt::core
 			cdos.insert({ className, cdo });
 		}
 
-		const auto& getCDOs() const noexcept { return cdos; }
+		auto getCDOs() const noexcept { return cdos; }
 
 		std::shared_ptr<BaseClassT> getClassByName(const std::string& name)
 		{
@@ -53,10 +53,7 @@ namespace zt::core
 
 	protected:
 
-		struct {
-			Classes cdos;
-		} classRegistry;
-		Classes& cdos = classRegistry.cdos;
+		Classes cdos;
 
 	};
 

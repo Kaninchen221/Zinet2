@@ -13,7 +13,7 @@
 
 namespace zt::core
 {
-	class ZINET_CORE_API AssetsStorage : public Object
+	class AssetsStorage : public Object
 	{
 	protected:
 
@@ -27,43 +27,35 @@ namespace zt::core
 		using AssetHandlers = std::vector<AssetHandle<>>;
 		using LoadMinimalAssetResult = std::optional<Asset>;
 
-		AssetsStorage() = default;
-		AssetsStorage(const AssetsStorage& other) = default;
-		AssetsStorage(AssetsStorage&& other) noexcept = default;
-		~AssetsStorage() noexcept = default;
+		ZINET_CORE_API AssetsStorage() = default;
+		ZINET_CORE_API AssetsStorage(const AssetsStorage& other) = default;
+		ZINET_CORE_API AssetsStorage(AssetsStorage&& other) noexcept = default;
+		ZINET_CORE_API ~AssetsStorage() noexcept = default;
 
-		AssetsStorage& operator = (const AssetsStorage& other) = default;
-		AssetsStorage& operator = (AssetsStorage&& other) noexcept = default;
+		ZINET_CORE_API AssetsStorage& operator = (const AssetsStorage& other) = default;
+		ZINET_CORE_API AssetsStorage& operator = (AssetsStorage&& other) noexcept = default;
 
-		bool storeAssets();
+		ZINET_CORE_API bool storeAssets();
 
-		void unloadAssets();
+		ZINET_CORE_API void unloadAssets();
 
 		template<std::derived_from<Asset> AssetT>
 		void registerAssetClass();
 
-		AssetHandle<Asset> get(const AssetsKey& key);
+		ZINET_CORE_API AssetHandle<Asset> get(const AssetsKey& key);
 
 		template<std::derived_from<Asset> AssetT>
 		AssetHandle<AssetT> getAs(const AssetsKey& key);
 
-		AssetHandlers getAssets();
+		ZINET_CORE_API AssetHandlers getAssets();
 
-		LoadMinimalAssetResult loadAssetMetaData(const fs::path& assetPath) const;
-
-		AssetsFinder& assetsFinder = data.assetsFinder;
+		ZINET_CORE_API LoadMinimalAssetResult loadAssetMetaData(const fs::path& assetPath) const;
 
 	protected:
 
-		struct {
-			Assets assets;
-			AssetsFinder assetsFinder;
-			ClassRegistry<Asset> classRegistry;
-		} data;
-
-		Assets& assets = data.assets;
-
-		ClassRegistry<Asset>& classRegistry = data.classRegistry;
+		Assets assets;
+		AssetsFinder assetsFinder;
+		ClassRegistry<Asset> classRegistry;
 
 	};
 

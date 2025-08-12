@@ -29,13 +29,13 @@ namespace zt::core
 
 	void ConsoleLogger::turnOff()
 	{
-		impl.lastLevel = impl.internal->level();
-		impl.internal->set_level(spdlog::level::off);
+		lastLevel = internal->level();
+		internal->set_level(spdlog::level::off);
 	}
 
 	void ConsoleLogger::turnOn()
 	{
-		impl.internal->set_level(impl.lastLevel);
+		internal->set_level(lastLevel);
 	}
 
 }

@@ -15,19 +15,19 @@ namespace zt::core
 	class Archive;
 	class JsonArchive;
 
-	class ZINET_CORE_API Object : public ObjectBase
+	class Object : public ObjectBase
 	{
 	public:
 
 		using ObjectPtr = std::shared_ptr<Object>;
 
-		Object() = default;
-		Object(const Object& other) = default;
-		Object(Object&& other) noexcept = default;
-		~Object() noexcept = default;
+		ZINET_CORE_API Object() = default;
+		ZINET_CORE_API Object(const Object& other) = default;
+		ZINET_CORE_API Object(Object&& other) noexcept = default;
+		ZINET_CORE_API ~Object() noexcept = default;
 
-		Object& operator = (const Object& other) = default;
-		Object& operator = (Object&& other) noexcept = default;
+		ZINET_CORE_API Object& operator = (const Object& other) = default;
+		ZINET_CORE_API Object& operator = (Object&& other) noexcept = default;
 
 		virtual ObjectPtr createCopy() const { return {}; }
 
@@ -45,18 +45,19 @@ namespace zt::core
 		void setDisplayName(const std::string_view newDisplayName) { displayName = newDisplayName; }
 		const auto& getDisplayName() const { return displayName; }
 
-		bool isInspectable = true;
+		void setInspectable(bool value) noexcept { inspectable = value; }
+		bool isInspectable() const noexcept { return inspectable; }
+
+		void setSaveable(bool value) noexcept { saveable = value; }
+		bool isSaveable() const noexcept { return saveable; }
 
 		virtual void imGui() {}
 
-		bool isSaveable = false;
-
 	protected:
 
-		struct {
-			std::string displayName;
-		} objInternalData;
-		std::string& displayName = objInternalData.displayName;
+		bool inspectable = true;
+		bool saveable = false;
+		std::string displayName;
 
 	};
 

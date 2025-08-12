@@ -29,7 +29,7 @@ namespace zt::core
 		ZINET_CORE_API AssetsFinder& operator = (const AssetsFinder& other) = default;
 		ZINET_CORE_API AssetsFinder& operator = (AssetsFinder&& other) noexcept = default;
 
-		ZINET_CORE_API std::filesystem::path getContentFolderPath() const { return rootFolder / contentFolderName; }
+		std::filesystem::path getContentFolderPath() const { return rootFolder / contentFolderName; }
 
 		struct FindAssetsInput
 		{
@@ -53,7 +53,7 @@ namespace zt::core
 
 		ZINET_CORE_API void createAssetFile(const std::filesystem::path& filePath, const std::filesystem::path& assetPath) const;
 
-		ZINET_CORE_API void setRootPath(const Path& path) { rootFolder = path; }
+		void setRootPath(const Path& path) { rootFolder = path; }
 
 		const auto& getRootPath() const noexcept { return rootFolder; }
 		const auto& getContentFolderName() const noexcept { return contentFolderName; }
