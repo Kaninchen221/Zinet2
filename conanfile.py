@@ -22,13 +22,13 @@ class ZinetConan(ConanFile):
     generators = ["CMakeToolchain", "CMakeDeps"]
     default_options = {
         "gtest/*:shared": True,
-        "glfw/*:shared": True,
-        "spdlog/*:shared": True,
-        "stb/*:shared": True,
-        "nlohmann_json/*:shared": True,
-        "glm/*:shared": True,
-        "shaderc/*:shared": True,
-        "vulkan-memory-allocator/*:shared": True
+        "glfw/*:shared": False,
+        "spdlog/*:shared": False,
+        "stb/*:shared": False,
+        "nlohmann_json/*:shared": False,
+        "glm/*:shared": False,
+        "shaderc/*:shared": False,
+        "vulkan-memory-allocator/*:shared": False
     }
     
     def configure(self):

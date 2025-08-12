@@ -5,8 +5,8 @@ root.cmakeMinimumVersion = "3.20"
 root.projectDescription = "Game Engine"
 root.projectName = "Zinet2"
 root.projectVersion = "0.0.1"
-root.subdirectories = ["CoreLib", "VulkanRendererLib", "WindowLib", "MathLib", "GameplayLib", "TestUtilsLib", "ThirdParty/ImGuiLib"]
-root.globalCompileOptionsMSVC = "/W4 /WX /external:W0 /external:anglebrackets /MP"
+root.subdirectories = ["CoreLib", "VulkanRendererLib", "WindowLib", "MathLib", "GameplayLib", "TestUtilsLib", "Sandbox", "ThirdParty/ImGuiLib"]
+root.globalCompileOptionsMSVC = "/W4 /WX /external:W0 /external:anglebrackets /MP /fsanitize=address"
 root.globalCompileOptionsGNU = "-Wall -Wextra -w -Werror -pedantic -pedantic-errors"
 root.globalCompileOptionsForAddressSanitizer = "/fsanitize=address /RTCu /experimental:module-"
 root.globalCompileDefinitions = "ZINET_STATIC _DISABLE_VECTOR_ANNOTATION _DISABLE_STRING_ANNOTATION _SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING ZINET_ROOT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}\""

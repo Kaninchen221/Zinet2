@@ -30,7 +30,7 @@ namespace zt::core
 		AssetHandle& operator = (const AssetHandle& other) = default;
 		AssetHandle& operator = (AssetHandle&& other) noexcept { asset = other.asset; other.invalidate(); return *this; };
 
-		bool isValid() const noexcept { return asset; }
+		bool isValid() const noexcept { return static_cast<bool>(asset); }
 
 		operator bool() const noexcept { return isValid(); }
 

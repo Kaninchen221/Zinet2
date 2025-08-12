@@ -77,11 +77,11 @@ namespace zt::gameplay
 		if (nodes.size() == 0 && drawInfo.additionalCommands.empty())
 			return;
 
-		if (vertexShader && vertexShader.assetHandle->isLoaded() &&
-			fragmentShader && fragmentShader.assetHandle->isLoaded())
+		if (vertexShader && vertexShader.getAssetHandle()->isLoaded() &&
+			fragmentShader && fragmentShader.getAssetHandle()->isLoaded())
 		{
-			drawInfo.vertexShaderModule = &vertexShader.assetHandle->shaderModule;
-			drawInfo.fragmentShaderModule = &fragmentShader.assetHandle->shaderModule;
+			drawInfo.vertexShaderModule = &vertexShader.getAssetHandle()->shaderModule;
+			drawInfo.fragmentShaderModule = &fragmentShader.getAssetHandle()->shaderModule;
 
 			drawInfo.pipelineDescriptorInfo = {};
 			drawInfo.drawCallDescriptorInfo = {};

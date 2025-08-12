@@ -15,6 +15,8 @@ namespace zt::gameplay
 
 	public:
 
+		using Children = std::vector<ObjectHandle<Node>>;
+
 		Node() = default;
 		Node(const Node& other) = default;
 		Node(Node&& other) noexcept = default;
@@ -26,18 +28,16 @@ namespace zt::gameplay
 		ObjectPtr createCopy() const override { return std::make_unique<Node>(*this); }
 
 		std::string getClassName() const override { return "zt::gameplay::Node"; }
+		auto& getChildren() noexcept { return children; }
+		const auto& getChildren() const noexcept { return children; }
 
-		using Children = std::vector<ObjectHandle<Node>>;
-		auto& getChildren() noexcept { return data.children; }
-		const auto& getChildren() const noexcept { return data.children; }
+		void addChild(ObjectHandle<Node> ObjectHandle) { children.push_back(ObjectHandle); }
 
-		void addChild(ObjectHandle<Node> ObjectHandle) { data.children.push_back(ObjectHandle); }
+		auto begin() const noexcept { return children.begin(); }
+		auto end() const noexcept { return children.end(); }
 
-		auto begin() const noexcept { return data.children.begin(); }
-		auto end() const noexcept { return data.children.end(); }
-
-		void setParent(ObjectWeakHandle<Node> newParent) noexcept { data.parent = newParent; }
-		auto getParent() const noexcept { return data.parent; }
+		void setParent(ObjectWeakHandle<Node> newParent) noexcept { parent = newParent; }
+		auto getParent() const noexcept { return parent; }
 
 		virtual void imGui();
 
@@ -48,10 +48,8 @@ namespace zt::gameplay
 
 	protected:
 
-		struct {
-			Children children;
-			ObjectWeakHandle<Node> parent;
-		} data;
+		Children children;
+		ObjectWeakHandle<Node> parent;
 
 	};
 

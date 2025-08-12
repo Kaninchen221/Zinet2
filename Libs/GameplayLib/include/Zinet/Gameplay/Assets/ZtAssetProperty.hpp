@@ -13,18 +13,24 @@
 namespace zt::gameplay
 {
 	template<std::derived_from<core::Asset> AssetT>
-	struct AssetProperty
+	class AssetProperty
 	{
 	public:
+
+		AssetProperty() = default;
+		AssetProperty(const std::string_view name)
+			: propertyName(name) {
+		}
+		AssetProperty(const AssetProperty& other) = default;
+		AssetProperty(AssetProperty&& other) noexcept = default;
+		~AssetProperty() noexcept = default;
+
+		AssetProperty& operator = (const AssetProperty& other) = default;
+		AssetProperty& operator = (AssetProperty&& other) noexcept = default;
 
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::AssetProperty");
 
 		using AssetHandleT = typename core::AssetHandle<AssetT>;
-
-		std::string propertyName;
-
-		// TODO: OnChanged
-		core::AssetHandle<AssetT> assetHandle;
 
 		auto operator = (AssetHandleT otherAssetHandle) noexcept { assetHandle = otherAssetHandle; }
 
@@ -37,6 +43,19 @@ namespace zt::gameplay
 		bool deserialize(core::JsonArchive& archive);
 
 		void show();
+	
+		void setPropertyName(const std::string_view newPropertyName) { propertyName = newPropertyName.data(); }
+		const std::string_view getPropertyName() const { return propertyName; }
+
+		void setAssetHandle(AssetHandleT newAssetHandle) { assetHandle = newAssetHandle; }
+		const AssetHandleT& getAssetHandle() const { return assetHandle; }
+
+	protected:
+
+		std::string propertyName = "Default Name";
+
+		// TODO: OnChanged
+		core::AssetHandle<AssetT> assetHandle;
 	};
 
 	template<std::derived_from<core::Asset> AssetT>
@@ -118,13 +137,13 @@ namespace zt::gameplay
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
-			ImGui::Text(fmt::format("{}:", propertyName).c_str());
+			ImGui::Text(propertyName.data());
 
 			if (assetHandle)
 			{
 				ImGui::TableNextColumn();
 				auto assetName = assetHandle->getMetaData().value("fileName", "fileName");
-				ImGui::Text(assetName.c_str());
+				ImGui::Text(assetName.data());
 			}
 			else
 			{
