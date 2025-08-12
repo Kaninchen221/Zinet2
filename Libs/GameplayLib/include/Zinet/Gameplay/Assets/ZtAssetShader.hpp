@@ -14,22 +14,22 @@ namespace zt::gameplay
 	public:
 
 		AssetShader() : AssetText{ { "frag", "vert" }} {}
-		AssetShader(const AssetShader& other) ZINET_API_POST : AssetText{other} {}
-		AssetShader(AssetShader&& other) ZINET_API_POST = default;
-		~AssetShader() ZINET_API_POST = default;
+		AssetShader(const AssetShader& other) : AssetText{other} {}
+		AssetShader(AssetShader&& other) noexcept = default;
+		~AssetShader() noexcept = default;
 
-		AssetShader& operator = (const AssetShader& other) ZINET_API_POST = default;
-		AssetShader& operator = (AssetShader&& other) ZINET_API_POST = default;
+		AssetShader& operator = (const AssetShader& other) = default;
+		AssetShader& operator = (AssetShader&& other) noexcept = default;
 
-		std::string getClassName() const ZINET_API_POST override { return "zt::gameplay::AssetShader"; }
+		std::string getClassName() const override { return "zt::gameplay::AssetShader"; }
 
-		ObjectPtr createCopy() const ZINET_API_POST override { return std::make_unique<AssetShader>(*this); }
+		ObjectPtr createCopy() const override { return std::make_unique<AssetShader>(*this); }
 
-		bool load(const core::Path& rootPath) ZINET_API_POST override;
+		bool load(const core::Path& rootPath) override;
 
-		void unload() ZINET_API_POST override;
+		void unload() override;
 
-		void imGui() ZINET_API_POST override;
+		void imGui() override;
 
 		vulkan_renderer::ShaderModule shaderModule{ nullptr };
 	};

@@ -9,7 +9,7 @@ namespace fs = std::filesystem;
 
 namespace zt::gameplay
 {
-	bool SystemSave::createArchiveFromNodes(ObjectHandle<Node> node) ZINET_API_POST
+	bool SystemSave::createArchiveFromNodes(ObjectHandle<Node> node)
 	{
 		Logger->info("Create archive", nodes.size());
 
@@ -20,7 +20,7 @@ namespace zt::gameplay
 		return true;
 	}
 
-	bool SystemSave::serializeNode(ObjectHandle<Node> node, core::JsonArchive& parentArchive, int nodeNumber) ZINET_API_POST
+	bool SystemSave::serializeNode(ObjectHandle<Node> node, core::JsonArchive& parentArchive, int nodeNumber)
 	{
 		if (!node || !node->isSaveable)
 			return true;
@@ -42,7 +42,7 @@ namespace zt::gameplay
 		return true;
 	}
 
-	bool SystemSave::putArchiveIntoFile() ZINET_API_POST
+	bool SystemSave::putArchiveIntoFile()
 	{
 		Logger->info("Put archive into file", nodes.size());
 
@@ -67,7 +67,7 @@ namespace zt::gameplay
 		return true;
 	}
 
-	bool SystemSave::putFileIntoArchive() ZINET_API_POST
+	bool SystemSave::putFileIntoArchive()
 	{
 		Logger->info("Put file into archive", nodes.size());
 
@@ -160,7 +160,7 @@ namespace zt::gameplay
 	//	return childNode;
 	//}
 
-	bool SystemSave::checkSaveFolderPath() ZINET_API_POST
+	bool SystemSave::checkSaveFolderPath()
 	{
 		if (!fs::exists(saveFolderPath))
 		{
@@ -171,7 +171,7 @@ namespace zt::gameplay
 		return true;
 	}
 
-	bool SystemSave::checkFile(const core::File& file) ZINET_API_POST
+	bool SystemSave::checkFile(const core::File& file)
 	{
 		if (!file.isOkay() || !file.isOpen())
 		{

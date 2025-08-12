@@ -4,7 +4,7 @@
 
 namespace zt::gameplay
 {
-	void EditorBrowserInspector::show(core::Object* object) ZINET_API_POST
+	void EditorBrowserInspector::show(core::Object* object)
 	{
 		const ImVec2 size = {};
 		if (ImGui::BeginChild("Inspector", size, true))
@@ -50,7 +50,7 @@ namespace zt::gameplay
 		for (auto& child : node.getChildren())
 		{
 			if (child)
-				CreateNodeBrowserListElement(*child, list);
+				CreateNodeBrowserListElement(*child.get(), list);
 		}
 		ImGui::Unindent(EditorConfig::IndentValue);
 	}

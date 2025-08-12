@@ -6,7 +6,7 @@
 
 namespace zt::gameplay
 {
-	bool AssetSampler::load(const core::Path& rootPath) ZINET_API_POST
+	bool AssetSampler::load(const core::Path& rootPath)
 	{
 		if (isLoaded())
 			return true;
@@ -55,7 +55,7 @@ namespace zt::gameplay
 		return true;
 	}
 
-	void AssetSampler::unload() ZINET_API_POST
+	void AssetSampler::unload()
 	{
 		if (!isLoaded())
 			return;
@@ -73,7 +73,7 @@ namespace zt::gameplay
 		loaded = false;
 	}
 
-	void AssetSampler::imGui() ZINET_API_POST
+	void AssetSampler::imGui()
 	{
 		Asset::imGui();
 		if (!isLoaded())

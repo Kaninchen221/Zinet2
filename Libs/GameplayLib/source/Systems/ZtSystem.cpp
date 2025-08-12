@@ -4,7 +4,7 @@
 
 namespace zt::gameplay
 {
-	void System::imGui() ZINET_API_POST
+	void System::imGui()
 	{
 		ImGui::Text(getDisplayName().c_str());
 		ImGui::Text(fmt::format("Initialized: {}", initialized).c_str());

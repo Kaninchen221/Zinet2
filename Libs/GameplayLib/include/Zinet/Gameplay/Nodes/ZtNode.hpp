@@ -15,42 +15,43 @@ namespace zt::gameplay
 
 	public:
 
-		Node() ZINET_API_POST = default;
-		Node(const Node& other) ZINET_API_POST = default;
-		Node(Node&& other) ZINET_API_POST = default;
-		~Node() ZINET_API_POST = default;
+		Node() = default;
+		Node(const Node& other) = default;
+		Node(Node&& other) noexcept = default;
+		~Node() noexcept = default;
 
-		Node& operator = (const Node& other) ZINET_API_POST = default;
-		Node& operator = (Node&& other) ZINET_API_POST = default;
+		Node& operator = (const Node& other) = default;
+		Node& operator = (Node&& other) noexcept = default;
 
-		ObjectPtr createCopy() const ZINET_API_POST override { return std::make_unique<Node>(*this); }
+		ObjectPtr createCopy() const override { return std::make_unique<Node>(*this); }
 
-		std::string getClassName() const ZINET_API_POST override { return "zt::gameplay::Node"; }
+		std::string getClassName() const override { return "zt::gameplay::Node"; }
 
 		using Children = std::vector<ObjectHandle<Node>>;
-		auto& getChildren() ZINET_API_POST { return children; }
-		const auto& getChildren() const ZINET_API_POST { return children; }
+		auto& getChildren() noexcept { return data.children; }
+		const auto& getChildren() const noexcept { return data.children; }
 
-		void addChild(ObjectHandle<Node> ObjectHandle) ZINET_API_POST { children.push_back(ObjectHandle); }
+		void addChild(ObjectHandle<Node> ObjectHandle) { data.children.push_back(ObjectHandle); }
 
-		auto begin() const ZINET_API_POST { return children.begin(); }
-		auto end() const ZINET_API_POST { return children.end(); }
+		auto begin() const noexcept { return data.children.begin(); }
+		auto end() const noexcept { return data.children.end(); }
 
-		void setParent(ObjectWeakHandle<Node> newParent) ZINET_API_POST { parent = newParent; }
-		auto getParent() const ZINET_API_POST { return parent; }
+		void setParent(ObjectWeakHandle<Node> newParent) noexcept { data.parent = newParent; }
+		auto getParent() const noexcept { return data.parent; }
 
-		virtual void imGui() ZINET_API_POST;
+		virtual void imGui();
 
-		virtual void update([[maybe_unused]] float deltaTime) ZINET_API_POST {}
+		virtual void update([[maybe_unused]] float deltaTime) {}
 
-		bool serialize(core::JsonArchive& archive) override ZINET_API_POST;
-
-		bool deserialize(core::JsonArchive& archive) override ZINET_API_POST;
+		bool serialize(core::JsonArchive& archive) override;
+		bool deserialize(core::JsonArchive& archive) override;
 
 	protected:
 
-		Children children;
-		ObjectWeakHandle<Node> parent;
+		struct {
+			Children children;
+			ObjectWeakHandle<Node> parent;
+		} data;
 
 	};
 

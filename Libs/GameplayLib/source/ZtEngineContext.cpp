@@ -4,7 +4,7 @@
 
 namespace zt::gameplay
 {
-	bool EngineContext::init() ZINET_API_POST
+	bool EngineContext::init()
 	{
 		if (initialized)
 			return true;
@@ -31,7 +31,7 @@ namespace zt::gameplay
 		return true;
 	}
 
-	void EngineContext::loop() ZINET_API_POST
+	void EngineContext::loop()
 	{
 		windowEvents.pollEvents();
 
@@ -41,7 +41,7 @@ namespace zt::gameplay
 		}
 	}
 
-	void EngineContext::deinit() ZINET_API_POST
+	void EngineContext::deinit()
 	{
 		if (!initialized)
 			return;
@@ -61,7 +61,7 @@ namespace zt::gameplay
 		instance = nullptr;
 	}
 
-	EngineContext::~EngineContext() ZINET_API_POST
+	EngineContext::~EngineContext() noexcept
 	{
 		if (instance)
 		{
@@ -69,7 +69,7 @@ namespace zt::gameplay
 		}
 	}
 
-	void EngineContext::destroyNodes(ObjectHandle<Node>& node) ZINET_API_POST
+	void EngineContext::destroyNodes(ObjectHandle<Node>& node)
 	{
 		if (!node)
 			return;

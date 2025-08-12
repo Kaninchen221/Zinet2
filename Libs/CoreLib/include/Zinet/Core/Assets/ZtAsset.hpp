@@ -38,6 +38,8 @@ namespace zt::core
 
 		AssetT* get() const noexcept { return asset; }
 
+		AssetT& operator*() const noexcept { Ensure(asset); return *asset; }
+
 		void invalidate() noexcept { asset = nullptr; }
 
 	protected:
@@ -57,7 +59,7 @@ namespace zt::core
 		using Extensions = std::vector<std::string>;
 
 		ZINET_CORE_API Asset() = default;
-		ZINET_CORE_API Asset(const Extensions& newExtensions) : extensions{ newExtensions } {}
+		Asset(const Extensions& newExtensions) : extensions{ newExtensions } {}
 		ZINET_CORE_API Asset(const Asset& other) = default;
 		ZINET_CORE_API Asset(Asset&& other) noexcept = default;
 		ZINET_CORE_API ~Asset() noexcept = default;
@@ -65,21 +67,21 @@ namespace zt::core
 		ZINET_CORE_API Asset& operator = (const Asset& other) = default;
 		ZINET_CORE_API Asset& operator = (Asset&& other) noexcept = default;
 
-		ZINET_CORE_API std::string getDisplayName() { return metaData.value("fileNameExt", "fileNameExt_DefaultName"); }
+		std::string getDisplayName() { return metaData.value("fileNameExt", "fileNameExt_DefaultName"); }
 
-		ZINET_CORE_API bool isLoaded() noexcept { return loaded; }
+		bool isLoaded() noexcept { return loaded; }
 
-		ZINET_CORE_API virtual bool load([[maybe_unused]] const Path& rootPath) { return false; }
+		virtual bool load([[maybe_unused]] const Path& rootPath) { return false; }
 
-		ZINET_CORE_API virtual void unload() {}
+		virtual void unload() {}
 
-		ZINET_CORE_API const auto& getExtensions() const noexcept { return extensions; }
+		const auto& getExtensions() const noexcept { return extensions; }
 		
 		ZINET_CORE_API virtual void imGui();
 
-		ZINET_CORE_API bool getAutoLoad() const noexcept { return autoLoad; }
+		bool getAutoLoad() const noexcept { return autoLoad; }
 
-		ZINET_CORE_API auto& getMetaData() noexcept { return metaData; }
+		auto& getMetaData() noexcept { return metaData; }
 		void setMetaData(auto&& newMetaData) { metaData = newMetaData; }
 
 	protected:

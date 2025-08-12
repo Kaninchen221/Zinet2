@@ -36,13 +36,17 @@ namespace zt
 	}
 #else
 	static inline bool Ensure(bool Value) { return Value; }
-#endif
+#endif // ZINET_DEBUG
 
-	inline static void TerminateDebug() noexcept
-	{
 #if ZINET_DEBUG
+	[[noreturn]] inline static void TerminateDebug() noexcept
+	{
 		std::terminate();
-#endif
 	}
+#else
+	inline static void TerminateDebug() noexcept
+	{}
+#endif // ZINET_DEBUG
 
+	[[noreturn]] inline static void Terminate() noexcept { std::terminate(); }
 }

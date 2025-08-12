@@ -18,16 +18,16 @@ namespace zt::gameplay
 
 	public:
 
-		Node2D() ZINET_API_POST = default;
-		Node2D(const Node2D& other) ZINET_API_POST = default;
-		Node2D(Node2D&& other) ZINET_API_POST = default;
-		~Node2D() ZINET_API_POST = default;
+		Node2D() = default;
+		Node2D(const Node2D& other) = default;
+		Node2D(Node2D&& other) noexcept = default;
+		~Node2D() noexcept = default;
 
-		Node2D& operator = (const Node2D& other) ZINET_API_POST = default;
-		Node2D& operator = (Node2D&& other) ZINET_API_POST = default;
+		Node2D& operator = (const Node2D& other) = default;
+		Node2D& operator = (Node2D&& other) noexcept = default;
 
-		vulkan_renderer::DescriptorInfo getPipelineDescriptorInfos() const ZINET_API_POST;
-		vulkan_renderer::DescriptorInfo getDrawCallDescriptorInfos() const ZINET_API_POST;
+		vulkan_renderer::DescriptorInfo getPipelineDescriptorInfos() const;
+		vulkan_renderer::DescriptorInfo getDrawCallDescriptorInfos() const;
 
 		vulkan_renderer::Transform transform;
 

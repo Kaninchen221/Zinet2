@@ -7,18 +7,18 @@
 
 namespace zt::gameplay
 {
-	bool SystemImGui::init() ZINET_API_POST
+	bool SystemImGui::init()
 	{
 		System::init();
 		return true;
 	}
 
-	void SystemImGui::deinit() ZINET_API_POST
+	void SystemImGui::deinit()
 	{
 		System::deinit();
 	}
 
-	void SystemImGui::update() ZINET_API_POST
+	void SystemImGui::update()
 	{
 		System::update();
 
@@ -27,7 +27,7 @@ namespace zt::gameplay
 
 		ImGui::NewFrame();
 
-		for (auto& node : nodes)
+		for (auto& node : data.nodes)
 		{
 			if (node.isValid())
 			{

@@ -15,44 +15,48 @@ namespace zt::core
 	class Archive;
 	class JsonArchive;
 
-	class Object : public ObjectBase
+	class ZINET_CORE_API Object : public ObjectBase
 	{
 	public:
 
 		using ObjectPtr = std::shared_ptr<Object>;
 
-		ZINET_CORE_API Object() = default;
-		ZINET_CORE_API Object(const Object& other) = default;
-		ZINET_CORE_API Object(Object&& other) noexcept = default;
-		ZINET_CORE_API ~Object() noexcept = default;
+		Object() = default;
+		Object(const Object& other) = default;
+		Object(Object&& other) noexcept = default;
+		~Object() noexcept = default;
 
-		ZINET_CORE_API Object& operator = (const Object& other) = default;
-		ZINET_CORE_API Object& operator = (Object&& other) noexcept = default;
+		Object& operator = (const Object& other) = default;
+		Object& operator = (Object&& other) noexcept = default;
 
-		ZINET_CORE_API virtual ObjectPtr createCopy() const { return {}; }
+		virtual ObjectPtr createCopy() const { return {}; }
 
-		ZINET_CORE_API virtual std::string asString() const { return "Object"; }
+		virtual std::string asString() const { return "Object"; }
 
-		ZINET_CORE_API virtual void operator << ([[maybe_unused]] Archive& archive) {}
+		virtual void operator << ([[maybe_unused]] Archive& archive) {}
 
-		ZINET_CORE_API virtual bool serialize([[maybe_unused]] JsonArchive& archive) { return true; }
+		virtual bool serialize([[maybe_unused]] JsonArchive& archive) { return true; }
 
-		ZINET_CORE_API virtual bool deserialize([[maybe_unused]] JsonArchive& archive) { return true; }
+		virtual bool deserialize([[maybe_unused]] JsonArchive& archive) { return true; }
 
-		ZINET_CORE_API virtual std::string getClassName() const { return "zt::core::Object"; }
+		// TODO: Change return type to string_view?
+		virtual std::string getClassName() const { return "zt::core::Object"; }
 
-		ZINET_CORE_API void setDisplayName(const std::string_view newDisplayName) { displayName = newDisplayName; }
-		ZINET_CORE_API const auto& getDisplayName() const { return displayName; }
+		void setDisplayName(const std::string_view newDisplayName) { displayName = newDisplayName; }
+		const auto& getDisplayName() const { return displayName; }
 
 		bool isInspectable = true;
 
-		ZINET_CORE_API virtual void imGui() {}
+		virtual void imGui() {}
 
 		bool isSaveable = false;
 
 	protected:
 
-		std::string displayName;
+		struct {
+			std::string displayName;
+		} objInternalData;
+		std::string& displayName = objInternalData.displayName;
 
 	};
 
@@ -187,6 +191,17 @@ namespace zt::core
 				return nullptr;
 
 			return dynamic_cast<ObjectT*>(objectRefCounter->get());
+		}
+
+		ObjectT& operator*() const
+		{
+			if (!objectRefCounter)
+			{
+				Logger->error("Attempting to dereference an invalid pointer");
+				Terminate();
+			}
+
+			return *dynamic_cast<ObjectT*>(objectRefCounter->get());
 		}
 
 		ObjectRefCounter* getRefCounter() const noexcept { return objectRefCounter; }

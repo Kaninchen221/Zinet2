@@ -18,50 +18,54 @@ namespace zt::gameplay
 
 	public:
 
-		SystemSave() ZINET_API_POST = default;
-		SystemSave(const SystemSave& other) ZINET_API_POST = default;
-		SystemSave(SystemSave&& other) ZINET_API_POST = default;
-		~SystemSave() ZINET_API_POST = default;
+		SystemSave() = default;
+		SystemSave(const SystemSave& other) = default;
+		SystemSave(SystemSave&& other) noexcept = default;
+		~SystemSave() noexcept = default;
 
-		SystemSave& operator = (const SystemSave& other) ZINET_API_POST = default;
-		SystemSave& operator = (SystemSave&& other) ZINET_API_POST = default;
+		SystemSave& operator = (const SystemSave& other) = default;
+		SystemSave& operator = (SystemSave&& other) noexcept = default;
 
-		bool init() ZINET_API_POST override { return System::init();  }
+		bool init() override { return System::init();  }
 
-		void deinit() ZINET_API_POST override { System::deinit(); }
+		void deinit() override { System::deinit(); }
 
-		void imGui() ZINET_API_POST override { System::imGui(); }
+		void imGui() override { System::imGui(); }
 
-		virtual bool createArchiveFromNodes(ObjectHandle<Node> node) ZINET_API_POST;
-		virtual bool putArchiveIntoFile() ZINET_API_POST;
+		virtual bool createArchiveFromNodes(ObjectHandle<Node> node);
+		virtual bool putArchiveIntoFile();
 
-		void clearCurrentBuffer() ZINET_API_POST { currentArchiveBuffer = {}; }
+		void clearCurrentBuffer() { currentArchiveBuffer = {}; }
 
-		virtual bool putFileIntoArchive() ZINET_API_POST;
+		virtual bool putFileIntoArchive();
 	
 		//virtual std::shared_ptr<Node> recreateNodesFromArchive() ZINET_API_POST;
 
-		void setSaveFolderPath(const core::Path& path) ZINET_API_POST { saveFolderPath = path; }
-		const auto& getSaveFolderPath() const ZINET_API_POST { return saveFolderPath; }
+		void setSaveFolderPath(const core::Path& path) { saveFolderPath = path; }
+		const auto& getSaveFolderPath() const noexcept { return saveFolderPath; }
 
 	protected:
 
-		bool serializeNode(ObjectHandle<Node> nodeHandle, core::JsonArchive& archive, int nodeNumber) ZINET_API_POST;
+		bool serializeNode(ObjectHandle<Node> nodeHandle, core::JsonArchive& archive, int nodeNumber);
 
 		//std::shared_ptr<Node> traverse(core::Json& json, std::shared_ptr<Node> parentNode) ZINET_API_POST;
 
-		bool checkSaveFolderPath() ZINET_API_POST;
-		bool checkFile(const core::File& file) ZINET_API_POST;
+		bool checkSaveFolderPath();
+		bool checkFile(const core::File& file);
 
-		core::Path getSaveFilePath() ZINET_API_POST { return saveFolderPath / "save_0.temp"; }
+		core::Path getSaveFilePath() { return saveFolderPath / "save_0.temp"; }
 
-		// Data
-		core::JsonArchive::BufferT currentArchiveBuffer;
+		struct {
+			core::JsonArchive::BufferT currentArchiveBuffer;
+			core::Path saveFolderPath;
+			std::string nodeKey = "node_";
+			std::string classNameKey = "className";
+		} data;
+		core::JsonArchive::BufferT& currentArchiveBuffer = data.currentArchiveBuffer;
 
-		// Config
-		core::Path saveFolderPath;
-		std::string nodeKey = "node_";
-		std::string classNameKey = "className";
+		core::Path& saveFolderPath = data.saveFolderPath;
+		std::string& nodeKey = data.nodeKey;
+		std::string& classNameKey = data.classNameKey;
 
 	};
 

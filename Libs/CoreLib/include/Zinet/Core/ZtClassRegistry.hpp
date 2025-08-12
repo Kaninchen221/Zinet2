@@ -53,7 +53,10 @@ namespace zt::core
 
 	protected:
 
-		Classes cdos;
+		struct {
+			Classes cdos;
+		} classRegistry;
+		Classes& cdos = classRegistry.cdos;
 
 	};
 

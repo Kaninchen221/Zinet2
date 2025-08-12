@@ -19,19 +19,19 @@ namespace zt::gameplay
 
 		using CameraT = vulkan_renderer::Camera;
 
-		NodeCamera() ZINET_API_POST = default;
-		NodeCamera(const NodeCamera& other) ZINET_API_POST = default;
-		NodeCamera(NodeCamera&& other) ZINET_API_POST = default;
-		~NodeCamera() ZINET_API_POST = default;
+		NodeCamera() = default;
+		NodeCamera(const NodeCamera& other) = default;
+		NodeCamera(NodeCamera&& other) noexcept = default;
+		~NodeCamera() noexcept = default;
 
-		NodeCamera& operator = (const NodeCamera& other) ZINET_API_POST = default;
-		NodeCamera& operator = (NodeCamera&& other) ZINET_API_POST = default;
+		NodeCamera& operator = (const NodeCamera& other) = default;
+		NodeCamera& operator = (NodeCamera&& other) noexcept = default;
 
-		void imGui() ZINET_API_POST override;
+		void imGui() override;
 
-		void setCamera(const CameraT& newCamera) ZINET_API_POST { camera = newCamera; }
-		const auto& getCamera() const ZINET_API_POST { return camera; }
-		auto& getCamera() ZINET_API_POST { return camera; }
+		void setCamera(const CameraT& newCamera) { camera = newCamera; }
+		const auto& getCamera() const noexcept { return camera; }
+		auto& getCamera() noexcept { return camera; }
 
 	protected:
 

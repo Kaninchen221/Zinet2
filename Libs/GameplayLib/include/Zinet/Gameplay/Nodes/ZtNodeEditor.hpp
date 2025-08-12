@@ -14,7 +14,7 @@ namespace zt::gameplay
 	struct EditorMetrics
 	{
 		bool shouldShow = false;
-		void show() ZINET_API_POST;
+		void show();
 	};
 
 	class ZINET_GAMEPLAY_API NodeEditor : public Node
@@ -25,19 +25,19 @@ namespace zt::gameplay
 
 	public:
 
-		NodeEditor() ZINET_API_POST : Node{} { isInspectable = false; }
-		NodeEditor(const NodeEditor& other) ZINET_API_POST = default;
-		NodeEditor(NodeEditor&& other) ZINET_API_POST = default;
-		~NodeEditor() ZINET_API_POST = default;
+		NodeEditor() : Node{} { isInspectable = false; }
+		NodeEditor(const NodeEditor& other) = default;
+		NodeEditor(NodeEditor&& other) noexcept = default;
+		~NodeEditor() noexcept = default;
 
-		NodeEditor& operator = (const NodeEditor& other) ZINET_API_POST = default;
-		NodeEditor& operator = (NodeEditor&& other) ZINET_API_POST = default;
+		NodeEditor& operator = (const NodeEditor& other) = default;
+		NodeEditor& operator = (NodeEditor&& other) noexcept = default;
 
-		void imGui() ZINET_API_POST override;
+		void imGui() override;
 
 	protected:
 
-		void showToolsMenu() ZINET_API_POST;
+		void showToolsMenu();
 
 		EditorBrowser assetsList{ "Assets List" };
 		EditorMetrics metrics;

@@ -19,36 +19,38 @@ namespace zt::gameplay
 	class ZINET_GAMEPLAY_API AssetSampler : public Asset
 	{
 	public:
+		using Sampler = vulkan_renderer::Sampler;
+
 		AssetSampler(const Extensions& extensions = { "sampler" }) : Asset{ extensions } {}
-		AssetSampler(const AssetSampler& other) ZINET_API_POST : Asset(other) {}
-		AssetSampler(AssetSampler&& other) ZINET_API_POST = default;
-		~AssetSampler() ZINET_API_POST = default;
+		AssetSampler(const AssetSampler& other) : Asset(other) {}
+		AssetSampler(AssetSampler&& other) noexcept = default;
+		~AssetSampler() noexcept = default;
 
-		AssetSampler& operator = (const AssetSampler& other) ZINET_API_POST { Asset::operator =(other); return *this; }
-		AssetSampler& operator = (AssetSampler&& other) ZINET_API_POST = default;
+		AssetSampler& operator = (const AssetSampler& other) { assetSamplerData = other.assetSamplerData; return *this; }
+		AssetSampler& operator = (AssetSampler&& other) noexcept = default;
 
-		std::string getClassName() const ZINET_API_POST override { return "zt::gameplay::AssetSampler"; }
+		std::string getClassName() const override { return "zt::gameplay::AssetSampler"; }
 
-		ObjectPtr createCopy() const ZINET_API_POST override 
+		ObjectPtr createCopy() const override 
 		{ 
 			auto copy = std::make_shared<AssetSampler>(*this);
 			copy->autoLoad = true;
 			return copy;
 		}
 
-		bool load(const core::Path& rootPath) ZINET_API_POST override;
+		bool load(const core::Path& rootPath) override;
 
-		void unload() ZINET_API_POST override;
+		void unload() override;
 
-		void imGui() ZINET_API_POST override;
-
-		using Sampler = vulkan_renderer::Sampler;
+		void imGui() override;
 		Sampler sampler{ nullptr };
 
 	protected:
 
-		std::string typeStr = "Invalid";
-
+		struct {
+			std::string typeStr = "Invalid";
+		} assetSamplerData;
+		std::string& typeStr = assetSamplerData.typeStr;
 	};
 
 }

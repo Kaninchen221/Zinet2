@@ -19,16 +19,18 @@ namespace zt::core
 			stdOpenMode |= std::ios_base::binary;
 		}
 
-		fileStream.open(filePath, stdOpenMode);
+		data.fileStream.open(filePath, stdOpenMode);
 	}
 
 	bool File::isOpen() const noexcept
 	{
-		return fileStream.is_open();
+		return data.fileStream.is_open();
 	}
 
 	bool File::isOkay() const noexcept
 	{
+		auto& fileStream = data.fileStream;
+
 		bool good = fileStream.good();
 		bool eof = fileStream.eof();
 		bool fail = fileStream.fail();
@@ -39,6 +41,8 @@ namespace zt::core
 
 	void File::log() const
 	{
+		auto& fileStream = data.fileStream;
+
 		if (isOkay())
 		{
 			Logger->info("Everything is okay with the file stream");
@@ -55,20 +59,22 @@ namespace zt::core
 	std::string File::readLine()
 	{
 		std::string line;
-		std::getline(fileStream, line);
+		std::getline(data.fileStream, line);
 		return line;
 	}
 
 	std::string File::readAll()
 	{
-		fileStream.seekg(0);
+		data.fileStream.seekg(0);
 		std::string line;
-		std::getline(fileStream, line, '\0');
+		std::getline(data.fileStream, line, '\0');
 		return line;
 	}
 
 	std::vector<File::Byte> File::readData()
 	{
+		auto& fileStream = data.fileStream;
+
 		fileStream.seekg(0, std::ios::end);
 		std::streamsize size = fileStream.tellg();
 
@@ -85,13 +91,13 @@ namespace zt::core
 
 	void File::write(const std::string& string)
 	{
-		fileStream << string;
+		data.fileStream << string;
 	}
 
-	void File::writeData(const std::vector<Byte>& data)
+	void File::writeData(const std::vector<Byte>& bytes)
 	{
-		fileStream.seekp(0);
-		fileStream.write(reinterpret_cast<const char*>(data.data()), data.size());
+		data.fileStream.seekp(0);
+		data.fileStream.write(reinterpret_cast<const char*>(bytes.data()), bytes.size());
 	}
 
 	std::ios_base::openmode File::ToStdOpenMode(FileOpenMode openMode) noexcept
@@ -115,7 +121,7 @@ namespace zt::core
 
 	void File::close()
 	{
-		fileStream.close();
+		data.fileStream.close();
 	}
 
 	bool File::RemoveFile(const std::filesystem::path& path)

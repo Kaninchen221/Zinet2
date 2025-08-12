@@ -12,7 +12,7 @@ namespace zt::vulkan_renderer
 {
 	class RendererContext;
 
-	class Transform
+	class ZINET_VULKAN_RENDERER_API Transform
 	{
 	protected:
 
@@ -29,25 +29,27 @@ namespace zt::vulkan_renderer
 		Transform& operator = (const Transform& other) noexcept = default;
 		Transform& operator = (Transform&& other) noexcept = default;
 
-		ZINET_VULKAN_RENDERER_API MatrixT getMatrix() const noexcept;
+		MatrixT getMatrix() const noexcept;
 
-		void setPosition(const Vector3f& newPosition) noexcept { position = newPosition; }
-		const auto& getPosition() const noexcept { return position; }
+		void setPosition(const Vector3f& newPosition) noexcept { data.position = newPosition; }
+		const auto& getPosition() const noexcept { return data.position; }
 
 		/// Degrees
-		void setRotation(float newRotation) noexcept { rotation = newRotation; }
-		const auto& getRotation() const noexcept { return rotation; }
+		void setRotation(float newRotation) noexcept { data.rotation = newRotation; }
+		const auto& getRotation() const noexcept { return data.rotation; }
 
-		void setScale(const Vector3f& newScale) noexcept { scale = newScale; }
-		const auto& getScale() const noexcept { return scale; }
+		void setScale(const Vector3f& newScale) noexcept { data.scale = newScale; }
+		const auto& getScale() const noexcept { return data.scale; }
 
-		ZINET_VULKAN_RENDERER_API void imGui();
+		void imGui();
 
 	protected:
 
-		Vector3f position{ 0, 0, 0 };
-		float rotation{ 0 };
-		Vector3f scale{ 1, 1, 1 };
+		struct {
+			Vector3f position{ 0, 0, 0 };
+			float rotation{ 0 };
+			Vector3f scale{ 1, 1, 1 };
+		} data;
 
 	};
 }

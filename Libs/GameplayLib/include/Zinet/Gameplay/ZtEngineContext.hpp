@@ -2,6 +2,7 @@
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 
+#include "Zinet/Core/ZtObject.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtClassRegistry.hpp"
 #include "Zinet/Core/ZtObjectsStorage.hpp"
@@ -16,37 +17,40 @@
 
 namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API EngineContext
+	class EngineContext
 	{
-	protected:
+	private:
 
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EngineContext");
 
-	public:
+		inline static EngineContext* instance = nullptr;
 
-		EngineContext() ZINET_API_POST {
+	public:
+		using Systems = std::vector<ObjectHandle<System>>;
+
+		EngineContext() {
 			instance = this;
 		};
-		EngineContext(const EngineContext& other) ZINET_API_POST = default;
-		EngineContext(EngineContext&& other) ZINET_API_POST = default;
-		~EngineContext() ZINET_API_POST;
+		ZINET_GAMEPLAY_API EngineContext(const EngineContext& other) = default;
+		ZINET_GAMEPLAY_API EngineContext(EngineContext&& other) noexcept = default;
+		ZINET_GAMEPLAY_API ~EngineContext() noexcept;
 
-		EngineContext& operator = (const EngineContext& other) ZINET_API_POST = default;
-		EngineContext& operator = (EngineContext&& other) ZINET_API_POST = default;
+		ZINET_GAMEPLAY_API EngineContext& operator = (const EngineContext& other) = default;
+		ZINET_GAMEPLAY_API EngineContext& operator = (EngineContext&& other) noexcept = default;
 
-		static auto& Get() ZINET_API_POST { Ensure(instance); return *instance; }
+		static auto& Get() noexcept { Ensure(instance); return *instance; }
 
-		bool init() ZINET_API_POST;
+		ZINET_GAMEPLAY_API bool init();
 
-		void loop() ZINET_API_POST;
+		ZINET_GAMEPLAY_API void loop();
 
-		void deinit() ZINET_API_POST;
-
-		template<std::derived_from<System> SystemT>
-		void addSystem(const std::string_view& displayName) ZINET_API_POST;
+		ZINET_GAMEPLAY_API void deinit();
 
 		template<std::derived_from<System> SystemT>
-		SystemT* getSystem() ZINET_API_POST
+		void addSystem(const std::string_view& displayName);
+
+		template<std::derived_from<System> SystemT>
+		SystemT* getSystem()
 		{
 			for (auto& system : systems)
 			{
@@ -58,30 +62,43 @@ namespace zt::gameplay
 			return nullptr;
 		}
 
-		auto& getSystems() ZINET_API_POST { return systems; }
-		const auto& getSystems() const ZINET_API_POST { return systems; }
+		auto& getWindow() noexcept { return window; }
+		auto& getWindow() const noexcept { return window; }
+
+		auto& getWindowEvents() noexcept { return windowEvents; }
+		auto& getWindowEvents() const noexcept { return windowEvents; }
+
+		auto& getAssetsStorage() noexcept { return assetsStorage; }
+		auto& getAssetsStorage() const noexcept { return assetsStorage; }
+
+		auto& getObjectsStorage() noexcept { return objectsStorage; }
+		auto& getObjectsStorage() const noexcept { return objectsStorage; }
+
+		auto& getClassRegistry() noexcept { return classRegistry; }
+		auto& getClassRegistry() const noexcept { return classRegistry; }
+
+		auto& getRootNode() noexcept { return rootNode; }
+		auto& getRootNode() const noexcept { return rootNode; }
+
+		auto& getSystems() noexcept { return systems; }
+		auto& getSystems() const noexcept { return systems; }
+
+		bool isInitialized() const noexcept { return initialized; }
+
+	protected:
 
 		wd::Window window;
 		wd::WindowEvents windowEvents{ window };
-
 		core::AssetsStorage assetsStorage;
-
 		core::ObjectsStorage objectsStorage;
-
-		ObjectHandle<Node> rootNode;
-
 		core::ClassRegistry<core::Object> classRegistry;
+		ObjectHandle<Node> rootNode;
+		Systems systems;
 
-	private:
-
-		void destroyNodes(ObjectHandle<Node>& node) ZINET_API_POST;
-
-		inline static EngineContext* instance = nullptr;
+		void destroyNodes(ObjectHandle<Node>& node);
 
 		bool initialized = false;
 
-		using Systems = std::vector<ObjectHandle<System>>;
-		Systems systems;
 
 	};
 }
@@ -90,7 +107,7 @@ namespace zt::gameplay
 namespace zt
 {
 	template<std::derived_from<core::Object> ObjectT>
-	auto CreateObject(const std::string_view& displayName) ZINET_API_POST
+	auto CreateObject(const std::string_view& displayName)
 	{
 		auto& engineContext = gameplay::EngineContext::Get();
 		return engineContext.objectsStorage.createObject<ObjectT>(displayName);
@@ -100,7 +117,7 @@ namespace zt
 namespace zt::gameplay
 {
 	template<std::derived_from<System> SystemT>
-	void EngineContext::addSystem(const std::string_view& displayName) ZINET_API_POST
+	void EngineContext::addSystem(const std::string_view& displayName)
 	{
 		auto system = CreateObject<SystemT>(displayName);
 		systems.emplace_back(system);

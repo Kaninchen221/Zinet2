@@ -8,12 +8,12 @@
 namespace zt::gameplay
 {
 
-	void Node::imGui() ZINET_API_POST
+	void Node::imGui()
 	{
 		ImGui::Text(fmt::format("Node: {}", getDisplayName()).c_str());
 	}
 
-	bool Node::serialize(core::JsonArchive& archive)  ZINET_API_POST
+	bool Node::serialize(core::JsonArchive& archive)
 	{
 		if (!Object::serialize(archive))
 			return false;
@@ -23,7 +23,7 @@ namespace zt::gameplay
 		return true;
 	}
 
-	bool Node::deserialize(core::JsonArchive& archive)  ZINET_API_POST
+	bool Node::deserialize(core::JsonArchive& archive)
 	{
 		if (!Object::deserialize(archive))
 			return false;

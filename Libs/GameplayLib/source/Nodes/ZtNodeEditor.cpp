@@ -9,7 +9,7 @@
 
 namespace zt::gameplay
 {
-	void EditorMetrics::show() ZINET_API_POST
+	void EditorMetrics::show()
 	{
 		if (ImGui::Begin("Metrics", &shouldShow))
 		{
@@ -19,7 +19,7 @@ namespace zt::gameplay
 		ImGui::End();
 	}
 
-	void NodeEditor::imGui() ZINET_API_POST
+	void NodeEditor::imGui()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
@@ -57,7 +57,7 @@ namespace zt::gameplay
 		ImGui::ShowDemoWindow();
 	}
 
-	void NodeEditor::showToolsMenu() ZINET_API_POST
+	void NodeEditor::showToolsMenu()
 	{
 		if (ImGui::MenuItem("Assets List", nullptr, &assetsList.isOpen)) {}
 		if (ImGui::MenuItem("Metrics", nullptr, &metrics.shouldShow)) {}

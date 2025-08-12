@@ -42,7 +42,7 @@ namespace zt::gameplay::tests
 		ASSERT_FALSE(children.empty());
 
 		int i = 0;
-		for ([[maybe_unused]] const auto& childNode : *node)
+		for ([[maybe_unused]] const auto& childNode : *node.get())
 		{
 			++i;
 		}

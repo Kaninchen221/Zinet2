@@ -5,7 +5,7 @@
 namespace zt::gameplay
 {
 
-	void NodeCamera::imGui() ZINET_API_POST
+	void NodeCamera::imGui()
 	{
 		ImGui::Text("Node Camera");
 		camera.imGui();

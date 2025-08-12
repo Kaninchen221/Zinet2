@@ -83,7 +83,12 @@ namespace zt::core::tests
 			ASSERT_TRUE(File::RemoveFile(testFilePath));
 
 		File createdFile = File::CreateFile(testFilePath);
-		ASSERT_TRUE(createdFile.isOpen());
+		EXPECT_TRUE(createdFile.isOpen());
+		if (!createdFile.isOkay())
+		{
+			createdFile.log();
+			FAIL() << "Something goes wrong with this file";
+		}
 		createdFile.close();
 
 		if (std::filesystem::exists(testFilePath))

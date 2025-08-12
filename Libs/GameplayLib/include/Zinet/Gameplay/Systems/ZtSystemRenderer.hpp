@@ -24,7 +24,7 @@ namespace
 
 namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API SystemRenderer : public System
+	class SystemRenderer : public System
 	{
 	protected:
 
@@ -32,34 +32,34 @@ namespace zt::gameplay
 
 	public:
 
-		SystemRenderer() ZINET_API_POST = default;
-		SystemRenderer(const SystemRenderer& other) ZINET_API_POST = default;
-		SystemRenderer(SystemRenderer&& other) ZINET_API_POST = default;
-		~SystemRenderer() ZINET_API_POST = default;
-
-		SystemRenderer& operator = (const SystemRenderer& other) ZINET_API_POST = default;
-		SystemRenderer& operator = (SystemRenderer&& other) ZINET_API_POST = default;
-
-		bool init() ZINET_API_POST override;
-
-		void deinit() ZINET_API_POST override;
-
-		void update() ZINET_API_POST override;
-
 		inline static bool UseImGui = true;
 
-		void imGui() ZINET_API_POST override;
+		ZINET_GAMEPLAY_API SystemRenderer() = default;
+		ZINET_GAMEPLAY_API SystemRenderer(const SystemRenderer& other) = default;
+		ZINET_GAMEPLAY_API SystemRenderer(SystemRenderer&& other) = default;
+		ZINET_GAMEPLAY_API ~SystemRenderer() = default;
 
-		auto& getRenderer() ZINET_API_POST { return renderer; }
-		const auto& getRenderer() const ZINET_API_POST { return renderer; }
+		ZINET_GAMEPLAY_API SystemRenderer& operator = (const SystemRenderer& other) = default;
+		ZINET_GAMEPLAY_API SystemRenderer& operator = (SystemRenderer&& other) = default;
 
-		void setCameraNode(ObjectHandle<NodeCamera> newCamera) ZINET_API_POST { camera = newCamera; }
-		auto getCameraNode() const ZINET_API_POST { return camera; }
+		ZINET_GAMEPLAY_API bool init() override;
+
+		ZINET_GAMEPLAY_API void deinit() override;
+
+		ZINET_GAMEPLAY_API void update() override;
+
+		ZINET_GAMEPLAY_API void imGui() override;
+
+		auto& getRenderer() noexcept { return renderer; }
+		const auto& getRenderer() const noexcept { return renderer; }
+
+		void setCameraNode(ObjectHandle<NodeCamera> newCamera) noexcept { camera = newCamera; }
+		auto getCameraNode() const noexcept { return camera; }
+
+	protected:
 
 		AssetProperty<AssetShader> vertexShader{ "Vertex Shader" };
 		AssetProperty<AssetShader> fragmentShader{ "Fragment Shader" };
-
-	protected:
 
 		vr::ImGuiIntegration imGuiIntegration;
 		vr::VulkanRenderer renderer;

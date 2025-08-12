@@ -17,31 +17,34 @@ namespace zt::gameplay
 
 		using Nodes = std::vector<ObjectWeakHandle<Node>>;
 
-		System() ZINET_API_POST = default;
-		System(const System& other) ZINET_API_POST = default;
-		System(System&& other) ZINET_API_POST = default;
-		~System() ZINET_API_POST = default;
+		System() = default;
+		System(const System& other) = default;
+		System(System&& other) noexcept = default;
+		~System() noexcept = default;
 
-		System& operator = (const System& other) ZINET_API_POST = default;
-		System& operator = (System&& other) ZINET_API_POST = default;
+		System& operator = (const System& other) = default;
+		System& operator = (System&& other) noexcept = default;
 
-		virtual bool init() ZINET_API_POST { initialized = true; return true; }
+		virtual bool init() { initialized = true; return true; }
 
 		// TODO: should return bool
-		virtual void deinit() ZINET_API_POST { initialized = false; }
+		virtual void deinit() { initialized = false; }
 
-		virtual void update() ZINET_API_POST {}
+		virtual void update() {}
 
-		virtual void addNode(const ObjectWeakHandle<Node>& node) ZINET_API_POST { nodes.push_back(node); }
+		virtual void addNode(const ObjectWeakHandle<Node>& node) { nodes.push_back(node); }
 
-		virtual Nodes& getNodes() ZINET_API_POST { return nodes; }
-		virtual const Nodes& getNodes() const ZINET_API_POST { return nodes; }
+		virtual Nodes& getNodes() noexcept { return nodes; }
+		virtual const Nodes& getNodes() const noexcept { return nodes; }
 
-		virtual void imGui() ZINET_API_POST;
+		virtual void imGui();
 
 	protected:
 
-		Nodes nodes;
+		struct {
+			Nodes nodes;
+		} data;
+		Nodes& nodes = data.nodes;
 		bool initialized = false;
 
 	};

@@ -2,12 +2,12 @@
 
 namespace zt::gameplay
 {
-	vulkan_renderer::DescriptorInfo Node2D::getPipelineDescriptorInfos() const ZINET_API_POST
+	vulkan_renderer::DescriptorInfo Node2D::getPipelineDescriptorInfos() const
 	{
 		return {};
 	}
 
-	vulkan_renderer::DescriptorInfo Node2D::getDrawCallDescriptorInfos() const ZINET_API_POST
+	vulkan_renderer::DescriptorInfo Node2D::getDrawCallDescriptorInfos() const
 	{
 		return {};
 	}

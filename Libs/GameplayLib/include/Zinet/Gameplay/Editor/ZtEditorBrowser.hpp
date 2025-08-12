@@ -16,25 +16,25 @@
 namespace zt::gameplay
 {
 	template<core::LikeSmartPointer InputT>
-	constexpr auto& ResolveOptionalSmartPointer(InputT& object) ZINET_API_POST { return *object; }
+	constexpr auto& ResolveOptionalSmartPointer(InputT& object) noexcept { return *object; }
 
 	template<core::NotLikeSmartPointer InputT>
-	constexpr auto& ResolveOptionalSmartPointer(InputT& object) ZINET_API_POST { return object; }
+	constexpr auto& ResolveOptionalSmartPointer(InputT& object) noexcept { return object; }
 
 	struct AbstractObject
 	{
 		std::string displayName = "name";
 
-		const std::string& getDisplayName() ZINET_API_POST { return displayName; }
+		const std::string& getDisplayName() { return displayName; }
 
-		void imGui() ZINET_API_POST { auto name = getDisplayName(); ImGui::Text(name.c_str()); }
+		void imGui() { auto name = getDisplayName(); ImGui::Text(name.c_str()); }
 	};
 
 	struct ZINET_GAMEPLAY_API EditorBrowserInspector
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EditorBrowserInspector");
 
-		void show(core::Object* object = nullptr) ZINET_API_POST;
+		void show(core::Object* object = nullptr);
 	};
 
 	struct EditorBrowserList;
@@ -43,14 +43,14 @@ namespace zt::gameplay
 	ZINET_GAMEPLAY_API void CreateNodeBrowserListElement(gameplay::Node& node, EditorBrowserList& list);
 
 	template<class ObjectT>
-	void CreateDragDropSourceSection(ObjectT& object) ZINET_API_POST;
+	void CreateDragDropSourceSection(ObjectT& object);
 
 	struct EditorBrowserList
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EditorBrowserList");
 
 		template<class ContainerT>
-		void show(ContainerT& container, std::string_view searchText, auto ElementCreator) ZINET_API_POST;
+		void show(ContainerT& container, std::string_view searchText, auto ElementCreator);
 
 		core::Object* selectedObject = nullptr;
 	};
@@ -60,7 +60,7 @@ namespace zt::gameplay
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EditorBrowser");
 
 		template<class ContainerT>
-		void show(ContainerT& container, auto BrowserListElementCreator = CreateDefaultBrowserListElement) ZINET_API_POST;
+		void show(ContainerT& container, auto BrowserListElementCreator = CreateDefaultBrowserListElement);
 
 		// Config
 		std::string title = "Editor Browser";

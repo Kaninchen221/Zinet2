@@ -16,19 +16,19 @@ namespace zt::gameplay
 
 	public:
 
-		SystemImGui() ZINET_API_POST = default;
-		SystemImGui(const SystemImGui& other) ZINET_API_POST = default;
-		SystemImGui(SystemImGui&& other) ZINET_API_POST = default;
-		~SystemImGui() ZINET_API_POST = default;
+		SystemImGui() = default;
+		SystemImGui(const SystemImGui& other) = default;
+		SystemImGui(SystemImGui&& other) noexcept = default;
+		~SystemImGui() noexcept = default;
 
-		SystemImGui& operator = (const SystemImGui& other) ZINET_API_POST = default;
-		SystemImGui& operator = (SystemImGui&& other) ZINET_API_POST = default;
+		SystemImGui& operator = (const SystemImGui& other) = default;
+		SystemImGui& operator = (SystemImGui&& other) noexcept = default;
 
-		bool init() ZINET_API_POST override;
+		bool init() override;
 
-		void deinit() ZINET_API_POST override;
+		void deinit() override;
 
-		void update() ZINET_API_POST override;
+		void update() override;
 
 	};
 

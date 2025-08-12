@@ -7,7 +7,7 @@
 namespace zt::gameplay
 {
 	template<class ObjectT>
-	void CreateDragDropSourceSection(ObjectT& object) ZINET_API_POST
+	void CreateDragDropSourceSection(ObjectT& object)
 	{
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
@@ -19,7 +19,7 @@ namespace zt::gameplay
 	}
 
 	template<class ContainerT>
-	void EditorBrowserList::show(ContainerT& container, std::string_view searchText, auto elementCreator) ZINET_API_POST
+	void EditorBrowserList::show(ContainerT& container, std::string_view searchText, auto elementCreator)
 	{
 		const ImVec2 size = {};
 		const bool borders = true;
@@ -47,7 +47,7 @@ namespace zt::gameplay
 	}
 
 	template<class ContainerT>
-	void EditorBrowser::show(ContainerT& container, auto BrowserListElementCreator) ZINET_API_POST
+	void EditorBrowser::show(ContainerT& container, auto BrowserListElementCreator)
 	{
 		if (ImGui::Begin(title.c_str(), &isOpen))
 		{
