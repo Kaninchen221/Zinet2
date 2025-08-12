@@ -6,39 +6,29 @@ namespace zt::wd
 {
 
 	Keyboard::Keyboard(Window& newWindow)
-		: data{ .window = &newWindow }
+		: window{ &newWindow }
 	{
-	}
-
-	const Window* Keyboard::getWindow() const noexcept
-	{
-		return data.window;
-	}
-
-	const std::vector<KeyboardEvent>& Keyboard::getEvents() const noexcept
-	{
-		return data.events;
 	}
 
 	bool Keyboard::isPressed(KeyboardKey key) const
 	{
-		return glfwGetKey(data.window->getInternal(), static_cast<int>(key)) == static_cast<int>(KeyboardEventType::Pressed);
+		return glfwGetKey(window->getInternal(), static_cast<int>(key)) == static_cast<int>(KeyboardEventType::Pressed);
 	}
 
 	bool Keyboard::isReleased(KeyboardKey key) const
 	{
-		return glfwGetKey(data.window->getInternal(), static_cast<int>(key)) == static_cast<int>(KeyboardEventType::Released);
+		return glfwGetKey(window->getInternal(), static_cast<int>(key)) == static_cast<int>(KeyboardEventType::Released);
 	}
 
 	void Keyboard::bindCallbacks()
 	{
-		if (data.window == nullptr)
+		if (window == nullptr)
 		{
 			Logger->error("Can't bind callbacks when window is nullptr");
 			return;
 		}
 
-		glfwSetKeyCallback(data.window->getInternal(), Keyboard::KeyCallback);
+		glfwSetKeyCallback(window->getInternal(), Keyboard::KeyCallback);
 	}
 
 	void Keyboard::pushEvent(KeyboardKey key, [[maybe_unused]] std::int32_t scanCode, KeyboardEventType type, KeyboardMods mods)
@@ -47,13 +37,13 @@ namespace zt::wd
 		keyboardEvent.type = type;
 		keyboardEvent.key = key;
 		keyboardEvent.mods = mods;
-		data.events.insert(data.events.begin(), keyboardEvent);
+		events.insert(events.begin(), keyboardEvent);
 	}
 
 	std::string Keyboard::asString() const
 	{
 		std::string result = "Keyboard events:\n";
-		for (const auto& event : data.events)
+		for (const auto& event : events)
 		{
 			result += fmt::format("Event type: {}, key: {} mods: {} \n", 
 				static_cast<std::int32_t>(event.type), 

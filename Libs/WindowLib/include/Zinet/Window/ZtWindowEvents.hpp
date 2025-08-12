@@ -8,7 +8,7 @@ namespace zt::wd
 {
 	class Window;
 
-	class ZINET_WINDOW_LAYER_API WindowEvents : public core::Object
+	class WindowEvents : public core::Object
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("Logger");
 
@@ -47,4 +47,21 @@ namespace zt::wd
 
 	};
 
+	inline void WindowEvents::bindCallbacks()
+	{
+		keyboard.bindCallbacks();
+		mouse.bindCallbacks();
+	}
+
+	inline void WindowEvents::pollEvents()
+	{
+		keyboard.clearEvents();
+		mouse.clearEvents();
+		glfwPollEvents();
+	}
+
+	inline std::string WindowEvents::asString() const
+	{
+		return fmt::format("Window events:\n{}{}", keyboard.asString(), mouse.asString());
+	}
 }

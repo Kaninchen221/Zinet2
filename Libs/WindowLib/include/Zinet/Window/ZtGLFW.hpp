@@ -6,7 +6,7 @@
 
 namespace zt::wd
 {
-	class ZINET_WINDOW_LAYER_API GLFW
+	class GLFW
 	{
 
 	protected:
@@ -16,23 +16,22 @@ namespace zt::wd
 	public:
 
 		GLFW() { Init(); }
-		GLFW(const GLFW& other) noexcept = default;
-		GLFW(GLFW&& other) noexcept = default;
-
-		GLFW& operator = (const GLFW& other) noexcept = default;
-		GLFW& operator = (GLFW&& other) noexcept = default;
-
+		ZINET_WINDOW_LAYER_API GLFW(const GLFW& other) noexcept = default;
+		ZINET_WINDOW_LAYER_API GLFW(GLFW&& other) noexcept = default;
 		~GLFW() { Deinit(); }
 
-		static bool Init(bool hideWindow = true);
-		static void Deinit();
+		ZINET_WINDOW_LAYER_API GLFW& operator = (const GLFW& other) noexcept = default;
+		ZINET_WINDOW_LAYER_API GLFW& operator = (GLFW&& other) noexcept = default;
 
-		static bool IsInitialized();
+		ZINET_WINDOW_LAYER_API static bool Init(bool hideWindow = true);
+		ZINET_WINDOW_LAYER_API static void Deinit();
 
-		static void HideWindow();
-		static void UnhideWindow();
+		ZINET_WINDOW_LAYER_API static bool IsInitialized();
 
-		static bool IsVulkanSupported();
+		ZINET_WINDOW_LAYER_API static void HideWindow();
+		ZINET_WINDOW_LAYER_API static void UnhideWindow();
+
+		ZINET_WINDOW_LAYER_API static bool IsVulkanSupported();
 
 	private:
 

@@ -14,48 +14,44 @@ namespace zt::wd
 {
 	class Window;
 
-	class ZINET_WINDOW_LAYER_API Keyboard : core::Object
+	class Keyboard : core::Object
 	{
 		inline static core::ConsoleLogger Logger = core::ConsoleLogger::Create("Keyboard");
 
 	public:
 
-		Keyboard() = delete;
-		Keyboard(Window& newWindow);
-		Keyboard(const Keyboard& other) = default;
-		Keyboard(Keyboard&& other) noexcept = default;
+		ZINET_WINDOW_LAYER_API Keyboard() = delete;
+		ZINET_WINDOW_LAYER_API Keyboard(Window& newWindow);
+		ZINET_WINDOW_LAYER_API Keyboard(const Keyboard& other) = default;
+		ZINET_WINDOW_LAYER_API Keyboard(Keyboard&& other) noexcept = default;
 
-		Keyboard& operator = (const Keyboard& other) = default;
-		Keyboard& operator = (Keyboard&& other) noexcept = default;
+		ZINET_WINDOW_LAYER_API Keyboard& operator = (const Keyboard& other) = default;
+		ZINET_WINDOW_LAYER_API Keyboard& operator = (Keyboard&& other) noexcept = default;
 
-		~Keyboard() noexcept = default;
+		ZINET_WINDOW_LAYER_API ~Keyboard() noexcept = default;
 
-		const Window* getWindow() const noexcept;
+		const Window* getWindow() const noexcept { return window; }
 
-		const std::vector<KeyboardEvent>& getEvents() const noexcept;
+		const std::vector<KeyboardEvent>& getEvents() const noexcept { return events; }
 
-		bool isPressed(KeyboardKey key) const;
+		ZINET_WINDOW_LAYER_API bool isPressed(KeyboardKey key) const;
 
-		bool isReleased(KeyboardKey key) const;
+		ZINET_WINDOW_LAYER_API bool isReleased(KeyboardKey key) const;
 
-		void bindCallbacks();
+		ZINET_WINDOW_LAYER_API void bindCallbacks();
 
-		void pushEvent(KeyboardKey key, std::int32_t scanCode, KeyboardEventType type, KeyboardMods mods);
+		ZINET_WINDOW_LAYER_API void pushEvent(KeyboardKey key, std::int32_t scanCode, KeyboardEventType type, KeyboardMods mods);
 
-		void clearEvents() { data.events.clear(); }
+		void clearEvents() { events.clear(); }
 
-		std::string asString() const override;
+		ZINET_WINDOW_LAYER_API std::string asString() const override;
 
 	protected:
 
 		static void KeyCallback(GLFWwindow* internalWindow, std::int32_t key, std::int32_t scanCode, std::int32_t type, std::int32_t mods);
 
-		struct Data
-		{
-			Window* window = nullptr;
-			std::vector<KeyboardEvent> events;
-		};
-		Data data;
+		Window* window = nullptr;
+		std::vector<KeyboardEvent> events;
 
 	};
 
