@@ -14,9 +14,9 @@ class ZinetConan(ConanFile):
         "stb/cci.20240531@",
         "nlohmann_json/3.10.5@",
         "glm/0.9.9.5@",
-        #"glslang/11.7.0@", shaderc already has glslang in dependencies
         #"spirv-tools/1.4.309.0@", glslang already has spirv-tools in dependencies
         "shaderc/2024.1@",
+        "glslang/1.3.261.1@", #shaderc already has glslang in dependencies so the version should be always the same that the shaderc needs
         "vulkan-memory-allocator/3.0.1@"
         ]
     generators = ["CMakeToolchain", "CMakeDeps"]

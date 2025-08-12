@@ -12,7 +12,6 @@ generator.includeDirectories = """
 generator.linkLibraries = """
     spdlog::spdlog
     stb::stb
-    plf_colony::plf_colony
     nlohmann_json::nlohmann_json
     glm::glm
     spdlog::spdlog
