@@ -23,7 +23,7 @@ namespace zt::gameplay
 			return false;
 
 		rootNode = CreateObject<Node>("RootNode");
-		rootNode->isSaveable = true;
+		rootNode->setSaveable(true);
 
 		instance = this;
 		initialized = true;

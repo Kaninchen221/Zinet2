@@ -32,7 +32,7 @@ namespace zt::gameplay::tests
 		void SetUp() override
 		{
 			auto& engineContext = EngineContext::Get();
-			auto& assetsStorage = engineContext.assetsStorage;
+			auto& assetsStorage = engineContext.getAssetsStorage();
 			assetsStorage.registerAssetClass<core::AssetText>();
 			assetsStorage.registerAssetClass<gameplay::AssetTexture>();
 			assetsStorage.registerAssetClass<gameplay::AssetShader>();
@@ -45,7 +45,7 @@ namespace zt::gameplay::tests
 			ASSERT_TRUE(engine.init());
 			vulkan_renderer::ImGuiIntegration::SetStyle_Dark();
 
-			auto& rootNode = engineContext.rootNode;
+			auto& rootNode = engineContext.getRootNode();
 
 			auto editorNode = CreateObject<NodeEditor>("Editor");
 			rootNode->addChild(editorNode);
@@ -83,7 +83,7 @@ namespace zt::gameplay::tests
 			camera.setLookingAt(Vector3f(0.0f, 0.0f, 0.0f));
 			camera.setUpVector(Vector3f(0, 1, 0));
 
-			auto& window = engineContext.window;
+			auto& window = engineContext.getWindow();
 			auto windowSize = window.getSize();
 			camera.setFieldOfView(45.f);
 			camera.setAspectRatio(windowSize.x / static_cast<float>(windowSize.y));

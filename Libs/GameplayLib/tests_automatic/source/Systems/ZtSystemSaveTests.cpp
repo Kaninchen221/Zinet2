@@ -11,13 +11,13 @@ namespace zt::gameplay::tests
 	{
 	public:
 
-		NodeTest() : Node{} { isSaveable = true; }
+		NodeTest() : Node{} { setSaveable(true); }
 
-		virtual std::string getClassName() const ZINET_API_POST { return "zt::gameplay::tests::NodeTest"; }
+		virtual std::string getClassName() const { return "zt::gameplay::tests::NodeTest"; }
 
-		ObjectPtr createCopy() const ZINET_API_POST override { return std::make_unique<NodeTest>(*this); }
+		ObjectPtr createCopy() const override { return std::make_unique<NodeTest>(*this); }
 
-		bool serialize(core::JsonArchive& archive) override ZINET_API_POST
+		bool serialize(core::JsonArchive& archive) override
 		{
 			Node::serialize(archive);
 
@@ -27,7 +27,7 @@ namespace zt::gameplay::tests
 			return true;
 		}
 
-		bool deserialize(core::JsonArchive& archive) override ZINET_API_POST
+		bool deserialize(core::JsonArchive& archive) override
 		{
 			Node::deserialize(archive);
 
@@ -50,8 +50,8 @@ namespace zt::gameplay::tests
 		{
 			engineContext.addSystem<SystemSave>("SystemSave");
 
-			engineContext.classRegistry.registerClass<Node>();
-			engineContext.classRegistry.registerClass<NodeTest>();
+			engineContext.getClassRegistry().registerClass<Node>();
+			engineContext.getClassRegistry().registerClass<NodeTest>();
 
 			engineContext.init();
 		}
@@ -69,7 +69,7 @@ namespace zt::gameplay::tests
 		SystemSave system;
 		system.setSaveFolderPath(core::Paths::CurrentProjectRootPath() / "Saves");
 
-		auto& rootNode = engineContext.rootNode;
+		auto& rootNode = engineContext.getRootNode();
 
 		const int nodeTest1Value = 404;
 		const int nodeTest2Value = 68;

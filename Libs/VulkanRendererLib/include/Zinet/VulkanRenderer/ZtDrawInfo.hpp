@@ -16,14 +16,14 @@ namespace zt::vulkan_renderer
 	class Sampler;
 	class CommandBuffer;
 
-	struct ZINET_VULKAN_RENDERER_API TextureInfo
+	struct  TextureInfo
 	{
 		Texture* texture{};
 		Sampler* sampler{};
 		ShaderType shaderType = ShaderType::Invalid;
 	};
 
-	struct ZINET_VULKAN_RENDERER_API UniformBufferInfo
+	struct  UniformBufferInfo
 	{
 		Buffer* uniformBuffer{};
 	};

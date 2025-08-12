@@ -16,7 +16,7 @@ namespace
 
 namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API AssetSampler : public Asset
+	class  AssetSampler : public Asset
 	{
 	public:
 		using Sampler = vulkan_renderer::Sampler;

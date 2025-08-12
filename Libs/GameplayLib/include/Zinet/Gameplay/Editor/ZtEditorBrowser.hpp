@@ -30,7 +30,7 @@ namespace zt::gameplay
 		void imGui() { auto name = getDisplayName(); ImGui::Text(name.c_str()); }
 	};
 
-	struct ZINET_GAMEPLAY_API EditorBrowserInspector
+	struct  EditorBrowserInspector
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EditorBrowserInspector");
 
@@ -38,9 +38,9 @@ namespace zt::gameplay
 	};
 
 	struct EditorBrowserList;
-	ZINET_GAMEPLAY_API void CreateObjectBrowserListElement(core::Object& object, EditorBrowserList& list);
+	 void CreateObjectBrowserListElement(core::Object& object, EditorBrowserList& list);
 
-	ZINET_GAMEPLAY_API void CreateNodeBrowserListElement(gameplay::Node& node, EditorBrowserList& list);
+	 void CreateNodeBrowserListElement(gameplay::Node& node, EditorBrowserList& list);
 
 	template<class ObjectT>
 	void CreateDragDropSourceSection(ObjectT& object);

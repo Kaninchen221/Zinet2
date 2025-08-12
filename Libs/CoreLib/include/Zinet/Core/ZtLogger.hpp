@@ -22,28 +22,28 @@ namespace zt::core
 
 	public:
 
-		ZINET_CORE_API CustomSink() = default;
-		ZINET_CORE_API CustomSink(const CustomSink& other) = delete;
-		ZINET_CORE_API CustomSink(CustomSink&& other) = delete;
+		 CustomSink() = default;
+		 CustomSink(const CustomSink& other) = delete;
+		 CustomSink(CustomSink&& other) = delete;
 
-		ZINET_CORE_API CustomSink& operator = (const CustomSink& other) = delete;
-		ZINET_CORE_API CustomSink& operator = (CustomSink&& other) = delete;
+		 CustomSink& operator = (const CustomSink& other) = delete;
+		 CustomSink& operator = (CustomSink&& other) = delete;
 
-		ZINET_CORE_API ~CustomSink() noexcept = default;
+		 ~CustomSink() noexcept = default;
 
-		ZINET_CORE_API static const CallbackT& GetCallback() noexcept;
+		 static const CallbackT& GetCallback() noexcept;
 
-		ZINET_CORE_API static void SetCallback(CallbackT newCallback) noexcept;
+		 static void SetCallback(CallbackT newCallback) noexcept;
 
 	protected:
 
-		ZINET_CORE_API void sink_it_(const spdlog::details::log_msg& msg) override;
+		 void sink_it_(const spdlog::details::log_msg& msg) override;
 
 		void flush_() override {}
 
 	};
 
-	class ZINET_CORE_API Logger
+	class Logger
 	{
 	public:
 
@@ -66,7 +66,7 @@ namespace zt::core
 	
 	public:
 
-		ZINET_CORE_API ~ConsoleLogger() noexcept = default;
+		~ConsoleLogger() noexcept = default;
 
 		spdlog::logger* operator -> () { return internal.get(); }
 		const spdlog::logger* operator -> () const { return internal.get(); }
@@ -77,8 +77,8 @@ namespace zt::core
 		operator bool() { return internal.operator bool(); }
 		operator bool() const { return internal.operator bool(); }
 
-		ZINET_CORE_API void turnOff();
-		ZINET_CORE_API void turnOn();
+		void turnOff();
+		void turnOn();
 
 	protected:
 
@@ -100,5 +100,16 @@ namespace zt::core
 		
 		return logger;
 
+	}
+
+	inline void ConsoleLogger::turnOff()
+	{
+		lastLevel = internal->level();
+		internal->set_level(spdlog::level::off);
+	}
+
+	inline void ConsoleLogger::turnOn()
+	{
+		internal->set_level(lastLevel);
 	}
 }

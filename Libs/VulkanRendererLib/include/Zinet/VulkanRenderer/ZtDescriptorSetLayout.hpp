@@ -13,7 +13,7 @@ namespace zt::vulkan_renderer
 {
 	class Device;
 
-	class ZINET_VULKAN_RENDERER_API DescriptorSetLayout : public VulkanObject<VkDescriptorSetLayout>
+	class  DescriptorSetLayout : public VulkanObject<VkDescriptorSetLayout>
 	{
 	protected:
 

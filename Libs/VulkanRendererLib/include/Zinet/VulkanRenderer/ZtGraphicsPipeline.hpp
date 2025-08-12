@@ -25,7 +25,7 @@ namespace zt::vulkan_renderer
 	struct DrawInfo;
 	struct DescriptorInfo;
 
-	class ZINET_VULKAN_RENDERER_API GraphicsPipeline
+	class  GraphicsPipeline
 	{
 	protected:
 

@@ -43,13 +43,13 @@ namespace zt::gameplay::tests
 		auto asset = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.vert");
 		ASSERT_TRUE(asset);
 
-		ASSERT_TRUE(asset->load(assetsStorage.assetsFinder.getRootPath()));
+		ASSERT_TRUE(asset->load(assetsStorage.getAssetsFinder().getRootPath()));
 		ASSERT_TRUE(asset->isLoaded());
-		ASSERT_FALSE(asset->text.empty());
+		ASSERT_FALSE(asset->getText().empty());
 
 		asset->unload();
 		ASSERT_FALSE(asset->isLoaded());
-		ASSERT_TRUE(asset->text.empty());
+		ASSERT_TRUE(asset->getText().empty());
 
 		engineContext.deinit();
 		SystemRenderer::UseImGui = true;

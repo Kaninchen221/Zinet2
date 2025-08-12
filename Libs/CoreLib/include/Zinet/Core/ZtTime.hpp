@@ -7,7 +7,7 @@
 namespace zt::core
 {
 
-	class ZINET_CORE_API Time {
+	class  Time {
 
 	public:
 

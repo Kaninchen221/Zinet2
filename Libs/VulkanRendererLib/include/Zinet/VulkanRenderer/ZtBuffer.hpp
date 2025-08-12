@@ -21,7 +21,7 @@ namespace zt::vulkan_renderer
 {
 	class VMA;
 
-	class ZINET_VULKAN_RENDERER_API Buffer : public VulkanObject<VkBuffer>
+	class  Buffer : public VulkanObject<VkBuffer>
 	{
 	protected:
 

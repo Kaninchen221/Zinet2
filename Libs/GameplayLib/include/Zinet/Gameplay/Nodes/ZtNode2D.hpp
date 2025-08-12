@@ -10,7 +10,7 @@
 
 namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API Node2D : public Node
+	class  Node2D : public Node
 	{
 	protected:
 

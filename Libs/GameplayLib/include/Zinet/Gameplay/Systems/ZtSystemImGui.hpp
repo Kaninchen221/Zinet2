@@ -8,7 +8,7 @@
 
 namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API SystemImGui : public System
+	class  SystemImGui : public System
 	{
 	protected:
 

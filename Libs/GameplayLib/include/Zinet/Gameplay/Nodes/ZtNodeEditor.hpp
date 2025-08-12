@@ -17,7 +17,7 @@ namespace zt::gameplay
 		void show();
 	};
 
-	class ZINET_GAMEPLAY_API NodeEditor : public Node
+	class  NodeEditor : public Node
 	{
 	protected:
 
@@ -25,7 +25,7 @@ namespace zt::gameplay
 
 	public:
 
-		NodeEditor() : Node{} { isInspectable = false; }
+		NodeEditor() : Node{} { inspectable = false; }
 		NodeEditor(const NodeEditor& other) = default;
 		NodeEditor(NodeEditor&& other) noexcept = default;
 		~NodeEditor() noexcept = default;

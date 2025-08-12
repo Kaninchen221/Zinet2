@@ -9,7 +9,7 @@
 
 namespace zt::core
 {
-	class ZINET_CORE_API Archive 
+	class  Archive 
 	{
 	public:
 
@@ -47,7 +47,7 @@ namespace zt::core
 		BufferT* buffer = nullptr;
 	};
 
-	class ZINET_CORE_API OutputArchive : public Archive 
+	class  OutputArchive : public Archive 
 	{
 	public:
 
@@ -72,7 +72,7 @@ namespace zt::core
 		}
 	};
 
-	class ZINET_CORE_API InputArchive : public Archive
+	class  InputArchive : public Archive
 	{
 	public:
 
@@ -100,7 +100,7 @@ namespace zt::core
 
 	using Json = nlohmann::json;
 
-	class ZINET_CORE_API JsonArchive
+	class  JsonArchive
 	{
 	public:
 

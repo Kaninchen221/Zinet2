@@ -26,7 +26,7 @@ namespace zt::gameplay::tests
 	TEST_F(AssetSamplerTests, Test)
 	{
 		EngineContext engineContext;
-		auto& assetsStorage = engineContext.assetsStorage;
+		auto& assetsStorage = engineContext.getAssetsStorage();
 		assetsStorage.registerAssetClass<AssetSampler>();
 
 		engineContext.addSystem<SystemRenderer>("SystemRenderer");

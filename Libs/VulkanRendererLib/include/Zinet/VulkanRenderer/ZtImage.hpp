@@ -14,7 +14,7 @@ namespace zt::vulkan_renderer
 	class Device;
 	class VMA;
 
-	class ZINET_VULKAN_RENDERER_API Image : public VulkanObject<VkImage>
+	class  Image : public VulkanObject<VkImage>
 	{
 	protected:
 

@@ -12,7 +12,10 @@
 
 #include <type_traits>
 
+#ifndef ZINET_STATIC
 #define VMA_IMPLEMENTATION
+#endif
+
 #include <vk_mem_alloc.h>
 
 namespace zt::vulkan_renderer::tests

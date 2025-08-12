@@ -7,7 +7,7 @@
 
 namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API Node : public core::Object
+	class  Node : public core::Object
 	{
 	protected:
 

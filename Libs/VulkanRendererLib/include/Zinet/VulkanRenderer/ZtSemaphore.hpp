@@ -9,7 +9,7 @@ namespace zt::vulkan_renderer
 {
 	class Device;
 
-	class ZINET_VULKAN_RENDERER_API Semaphore : public VulkanObject<VkSemaphore>
+	class  Semaphore : public VulkanObject<VkSemaphore>
 	{
 	protected:
 

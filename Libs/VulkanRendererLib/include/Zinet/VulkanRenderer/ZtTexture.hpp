@@ -28,7 +28,7 @@ namespace zt::vulkan_renderer
 		const Vector3i imageOffset = { 0u, 0u, 0u };
 	};
 
-	class ZINET_VULKAN_RENDERER_API Texture
+	class  Texture
 	{
 	protected:
 

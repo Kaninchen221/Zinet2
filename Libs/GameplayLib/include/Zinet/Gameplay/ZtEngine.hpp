@@ -15,7 +15,7 @@
 
 namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API Engine
+	class  Engine
 	{
 	protected:
 
@@ -23,23 +23,23 @@ namespace zt::gameplay
 
 	public:
 
-		Engine() ZINET_API_POST = default;
-		Engine(const Engine& other) ZINET_API_POST = default;
-		Engine(Engine&& other) ZINET_API_POST = default;
-		~Engine() ZINET_API_POST = default;
+		Engine() = default;
+		Engine(const Engine& other) = default;
+		Engine(Engine&& other) noexcept = default;
+		~Engine() noexcept = default;
 
-		Engine& operator = (const Engine& other) ZINET_API_POST = default;
-		Engine& operator = (Engine&& other) ZINET_API_POST = default;
+		Engine& operator = (const Engine& other) = default;
+		Engine& operator = (Engine&& other) noexcept = default;
 
-		bool init() ZINET_API_POST;
+		bool init();
 
-		bool shouldLoop() const ZINET_API_POST { return engineContext.window.isOpen(); }
+		bool shouldLoop() const { return engineContext.getWindow().isOpen(); }
 
-		void turnOff() ZINET_API_POST { engineContext.window.requestCloseWindow(); }
+		void turnOff() { engineContext.getWindow().requestCloseWindow(); }
 
-		void loop() ZINET_API_POST;
+		void loop();
 
-		void deinit() ZINET_API_POST;
+		void deinit();
 
 	protected:
 

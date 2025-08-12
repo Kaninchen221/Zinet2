@@ -31,20 +31,20 @@ namespace zt::gameplay
 		EngineContext() {
 			instance = this;
 		};
-		ZINET_GAMEPLAY_API EngineContext(const EngineContext& other) = default;
-		ZINET_GAMEPLAY_API EngineContext(EngineContext&& other) noexcept = default;
-		ZINET_GAMEPLAY_API ~EngineContext() noexcept;
+		 EngineContext(const EngineContext& other) = default;
+		 EngineContext(EngineContext&& other) noexcept = default;
+		 ~EngineContext() noexcept;
 
-		ZINET_GAMEPLAY_API EngineContext& operator = (const EngineContext& other) = default;
-		ZINET_GAMEPLAY_API EngineContext& operator = (EngineContext&& other) noexcept = default;
+		 EngineContext& operator = (const EngineContext& other) = default;
+		 EngineContext& operator = (EngineContext&& other) noexcept = default;
 
 		static auto& Get() noexcept { Ensure(instance); return *instance; }
 
-		ZINET_GAMEPLAY_API bool init();
+		 bool init();
 
-		ZINET_GAMEPLAY_API void loop();
+		 void loop();
 
-		ZINET_GAMEPLAY_API void deinit();
+		 void deinit();
 
 		template<std::derived_from<System> SystemT>
 		void addSystem(const std::string_view& displayName);
@@ -110,7 +110,7 @@ namespace zt
 	auto CreateObject(const std::string_view& displayName)
 	{
 		auto& engineContext = gameplay::EngineContext::Get();
-		return engineContext.objectsStorage.createObject<ObjectT>(displayName);
+		return engineContext.getObjectsStorage().createObject<ObjectT>(displayName);
 	}
 }
 

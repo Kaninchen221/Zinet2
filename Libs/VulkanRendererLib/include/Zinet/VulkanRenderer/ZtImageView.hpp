@@ -11,7 +11,7 @@ namespace zt::vulkan_renderer
 {
 	class Device;
 
-	class ZINET_VULKAN_RENDERER_API ImageView : public VulkanObject<VkImageView>
+	class  ImageView : public VulkanObject<VkImageView>
 	{
 	protected:
 

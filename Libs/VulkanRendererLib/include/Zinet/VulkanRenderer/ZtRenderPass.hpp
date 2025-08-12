@@ -11,7 +11,7 @@ namespace zt::vulkan_renderer
 {
 	class Device;
 
-	struct ZINET_VULKAN_RENDERER_API RenderPassCreateInfo
+	struct  RenderPassCreateInfo
 	{
 		VkAttachmentDescription colorAttachmentDescription{};
 		VkAttachmentReference colorAttachmentReference{};
@@ -21,7 +21,7 @@ namespace zt::vulkan_renderer
 		RenderPassCreateInfo& operator = (const RenderPassCreateInfo& other) noexcept;
 	};
 
-	class ZINET_VULKAN_RENDERER_API RenderPass : public VulkanObject<VkRenderPass>
+	class  RenderPass : public VulkanObject<VkRenderPass>
 	{
 	protected:
 

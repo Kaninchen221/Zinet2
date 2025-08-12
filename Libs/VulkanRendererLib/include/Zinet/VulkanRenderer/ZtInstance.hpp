@@ -16,7 +16,7 @@ namespace zt::wd
 
 namespace zt::vulkan_renderer
 {
-	class ZINET_VULKAN_RENDERER_API Instance : public VulkanObject<VkInstance>
+	class  Instance : public VulkanObject<VkInstance>
 	{
 	protected:
 

@@ -6,7 +6,7 @@
 
 namespace zt::wd
 {
-	struct ZINET_WINDOW_LAYER_API MouseButtonEvent
+	struct  MouseButtonEvent
 	{
 		MouseButtonEventType type;
 		MouseButton button;

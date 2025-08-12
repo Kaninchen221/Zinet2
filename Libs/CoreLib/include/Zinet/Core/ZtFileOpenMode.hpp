@@ -5,7 +5,7 @@
 namespace zt::core
 {
 
-	enum class ZINET_CORE_API FileOpenMode
+	enum class  FileOpenMode
 	{
 		Write,
 		Read,

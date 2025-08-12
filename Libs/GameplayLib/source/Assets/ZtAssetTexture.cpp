@@ -20,7 +20,7 @@ namespace zt::vulkan_renderer
 
 namespace zt::gameplay
 {
-	bool AssetTexture::load(const core::Path& rootPath) ZINET_API_POST
+	bool AssetTexture::load(const core::Path& rootPath)
 	{
 		if (isLoaded())
 			return true;
@@ -113,7 +113,7 @@ namespace zt::gameplay
 		return true;
 	}
 
-	void AssetTexture::unload() ZINET_API_POST
+	void AssetTexture::unload()
 	{
 		if (!isLoaded())
 			return;
@@ -136,7 +136,7 @@ namespace zt::gameplay
 		loaded = false;
 	}
 
-	void AssetTexture::imGui() ZINET_API_POST
+	void AssetTexture::imGui()
 	{
 		Asset::imGui();
 
@@ -170,7 +170,7 @@ namespace zt::gameplay
 		ImGui::Image((ImTextureID)descriptorSet.get(), size);
 	}
 
-	bool AssetTexture::serialize(core::JsonArchive& archive)  ZINET_API_POST
+	bool AssetTexture::serialize(core::JsonArchive& archive)
 	{
 		if (!Asset::serialize(archive))
 			return false;
@@ -181,7 +181,7 @@ namespace zt::gameplay
 		return true;
 	}
 
-	bool AssetTexture::deserialize(core::JsonArchive& archive)  ZINET_API_POST
+	bool AssetTexture::deserialize(core::JsonArchive& archive)
 	{
 		if (!Asset::deserialize(archive))
 			return false;

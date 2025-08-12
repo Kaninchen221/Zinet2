@@ -34,7 +34,7 @@ namespace zt::gameplay
 	void CreateNodeBrowserListElement(gameplay::Node& node, EditorBrowserList& list)
 	{
 		const auto& displayName = node.getDisplayName();
-		if (!node.isInspectable)
+		if (!node.isInspectable())
 			return;
 
 		bool isSelected = &node == list.selectedObject;

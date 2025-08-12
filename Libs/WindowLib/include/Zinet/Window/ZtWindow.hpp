@@ -26,61 +26,61 @@ namespace zt::wd
 
 	public:
 
-		ZINET_WINDOW_LAYER_API Window() noexcept = default;
-		ZINET_WINDOW_LAYER_API Window(const Window& other) noexcept = default;
-		ZINET_WINDOW_LAYER_API Window(Window&& other) noexcept = default;
+		 Window() noexcept = default;
+		 Window(const Window& other) noexcept = default;
+		 Window(Window&& other) noexcept = default;
 
-		ZINET_WINDOW_LAYER_API Window& operator = (const Window& other) noexcept = default;
-		ZINET_WINDOW_LAYER_API Window& operator = (Window&& other) noexcept = default;
+		 Window& operator = (const Window& other) noexcept = default;
+		 Window& operator = (Window&& other) noexcept = default;
 
-		ZINET_WINDOW_LAYER_API ~Window() noexcept;
+		 ~Window() noexcept;
 
-		ZINET_WINDOW_LAYER_API bool create(int width = 1024, int height = 1024);
+		 bool create(int width = 1024, int height = 1024);
 
 		GLFWwindow* getInternal() noexcept { return internalWindow; }
 		const GLFWwindow* getInternal() const noexcept { return internalWindow; }
 
-		ZINET_WINDOW_LAYER_API bool isOpen() const;
+		 bool isOpen() const;
 
-		ZINET_WINDOW_LAYER_API bool shouldBeClosed() const;
+		 bool shouldBeClosed() const;
 
-		ZINET_WINDOW_LAYER_API static void FramebufferSizeCallback(GLFWwindow* internalWindow, int width, int height);
+		 static void FramebufferSizeCallback(GLFWwindow* internalWindow, int width, int height);
 
 		void setWindowEvents(WindowEvents* newEvent) { windowEvents = newEvent; }
 
 		const WindowEvents& getWindowEvents() const noexcept { return *windowEvents; }
 		WindowEvents& getWindowEvents() noexcept { return *windowEvents; }
 
-		ZINET_WINDOW_LAYER_API bool isMinimized() const;
+		 bool isMinimized() const;
 
-		ZINET_WINDOW_LAYER_API void requestCloseWindow();
+		 void requestCloseWindow();
 
-		ZINET_WINDOW_LAYER_API void setWindowResizedCallback(void* userPointer, WindowResizedCallback callback);
+		 void setWindowResizedCallback(void* userPointer, WindowResizedCallback callback);
 
 		WindowResizedCallback getWindowResizedCallback() const noexcept { return windowResizedCallback; }
 
 		void* getWindowResizedCallbackUserPointer() noexcept { return windowResizedCallbackUserPointer; }
 
-		ZINET_WINDOW_LAYER_API void swapBuffers();
+		 void swapBuffers();
 
-		ZINET_WINDOW_LAYER_API static void SetTransparentFramebuffer(bool value);
+		 static void SetTransparentFramebuffer(bool value);
 
 		/// For Vulkan sometimes it's necessary to call this function too
-		ZINET_WINDOW_LAYER_API void makeWindowTransparentWhileUsingVulkan();
+		 void makeWindowTransparentWhileUsingVulkan();
 
-		ZINET_WINDOW_LAYER_API Vector2i getFramebufferSize() const;
+		 Vector2i getFramebufferSize() const;
 
-		ZINET_WINDOW_LAYER_API void setShowWindowBar(bool value);
+		 void setShowWindowBar(bool value);
 
-		ZINET_WINDOW_LAYER_API void setPosition(const Vector2i& position);
-		ZINET_WINDOW_LAYER_API Vector2i getPosition() const;
+		 void setPosition(const Vector2i& position);
+		 Vector2i getPosition() const;
 
-		ZINET_WINDOW_LAYER_API void setSize(const Vector2i& size);
-		ZINET_WINDOW_LAYER_API Vector2i getSize() const;
+		 void setSize(const Vector2i& size);
+		 Vector2i getSize() const;
 
-		ZINET_WINDOW_LAYER_API void setTitle(const std::string& title);
+		 void setTitle(const std::string& title);
 
-		ZINET_WINDOW_LAYER_API void destroyWindow();
+		 void destroyWindow();
 
 	protected:
 

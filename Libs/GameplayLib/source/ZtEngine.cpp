@@ -4,7 +4,7 @@
 
 namespace zt::gameplay
 {
-	bool Engine::init() ZINET_API_POST
+	bool Engine::init()
 	{
 		if (!engineContext.init())
 			return false;
@@ -12,12 +12,12 @@ namespace zt::gameplay
 		return true;
 	}
 
-	void Engine::loop() ZINET_API_POST
+	void Engine::loop()
 	{
 		engineContext.loop();
 	}
 
-	void Engine::deinit() ZINET_API_POST
+	void Engine::deinit()
 	{
 		engineContext.deinit();
 	}

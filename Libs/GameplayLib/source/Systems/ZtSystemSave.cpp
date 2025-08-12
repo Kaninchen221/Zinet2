@@ -22,7 +22,7 @@ namespace zt::gameplay
 
 	bool SystemSave::serializeNode(ObjectHandle<Node> node, core::JsonArchive& parentArchive, int nodeNumber)
 	{
-		if (!node || !node->isSaveable)
+		if (!node || !node->isSaveable())
 			return true;
 
 		auto* parentArchiveBuffer = parentArchive.getBuffer();

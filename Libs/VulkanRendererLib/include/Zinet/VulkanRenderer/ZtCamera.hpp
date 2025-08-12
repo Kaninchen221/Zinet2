@@ -15,7 +15,7 @@ namespace zt::vulkan_renderer
 {
 	class RendererContext;
 
-	class ZINET_VULKAN_RENDERER_API Camera
+	class  Camera
 	{
 	protected:
 

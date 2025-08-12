@@ -20,31 +20,31 @@ namespace zt::wd
 
 	public:
 
-		ZINET_WINDOW_LAYER_API Keyboard() = delete;
-		ZINET_WINDOW_LAYER_API Keyboard(Window& newWindow);
-		ZINET_WINDOW_LAYER_API Keyboard(const Keyboard& other) = default;
-		ZINET_WINDOW_LAYER_API Keyboard(Keyboard&& other) noexcept = default;
+		 Keyboard() = delete;
+		 Keyboard(Window& newWindow);
+		 Keyboard(const Keyboard& other) = default;
+		 Keyboard(Keyboard&& other) noexcept = default;
 
-		ZINET_WINDOW_LAYER_API Keyboard& operator = (const Keyboard& other) = default;
-		ZINET_WINDOW_LAYER_API Keyboard& operator = (Keyboard&& other) noexcept = default;
+		 Keyboard& operator = (const Keyboard& other) = default;
+		 Keyboard& operator = (Keyboard&& other) noexcept = default;
 
-		ZINET_WINDOW_LAYER_API ~Keyboard() noexcept = default;
+		 ~Keyboard() noexcept = default;
 
 		const Window* getWindow() const noexcept { return window; }
 
 		const std::vector<KeyboardEvent>& getEvents() const noexcept { return events; }
 
-		ZINET_WINDOW_LAYER_API bool isPressed(KeyboardKey key) const;
+		 bool isPressed(KeyboardKey key) const;
 
-		ZINET_WINDOW_LAYER_API bool isReleased(KeyboardKey key) const;
+		 bool isReleased(KeyboardKey key) const;
 
-		ZINET_WINDOW_LAYER_API void bindCallbacks();
+		 void bindCallbacks();
 
-		ZINET_WINDOW_LAYER_API void pushEvent(KeyboardKey key, std::int32_t scanCode, KeyboardEventType type, KeyboardMods mods);
+		 void pushEvent(KeyboardKey key, std::int32_t scanCode, KeyboardEventType type, KeyboardMods mods);
 
 		void clearEvents() { events.clear(); }
 
-		ZINET_WINDOW_LAYER_API std::string asString() const override;
+		 std::string asString() const override;
 
 	protected:
 

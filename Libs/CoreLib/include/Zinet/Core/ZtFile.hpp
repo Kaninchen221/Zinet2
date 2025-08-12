@@ -19,43 +19,43 @@ namespace zt::core
 
 		using Byte = std::byte;
 
-		ZINET_CORE_API File() = default;
-		ZINET_CORE_API File(const File& other) = delete;
-		ZINET_CORE_API File(File&& other) noexcept = default;
+		 File() = default;
+		 File(const File& other) = delete;
+		 File(File&& other) noexcept = default;
 
-		ZINET_CORE_API File& operator = (const File& other) = delete;
-		ZINET_CORE_API File& operator = (File&& other) noexcept = default;
+		 File& operator = (const File& other) = delete;
+		 File& operator = (File&& other) noexcept = default;
 
-		ZINET_CORE_API ~File();
+		 ~File();
 
 		auto& get() const noexcept { return fileStream; }
 		auto& get() noexcept { return fileStream; }
 
-		ZINET_CORE_API void open(const std::filesystem::path& filePath, FileOpenMode openMode, bool binary = false);
+		 void open(const std::filesystem::path& filePath, FileOpenMode openMode, bool binary = false);
 
-		ZINET_CORE_API bool isOpen() const noexcept;
+		 bool isOpen() const noexcept;
 
-		ZINET_CORE_API bool isOkay() const noexcept;
+		 bool isOkay() const noexcept;
 
-		ZINET_CORE_API void log() const;
+		 void log() const;
 
-		ZINET_CORE_API std::string readLine();
+		 std::string readLine();
 
-		ZINET_CORE_API std::string readAll();
+		 std::string readAll();
 
-		ZINET_CORE_API std::vector<Byte> readData();
+		 std::vector<Byte> readData();
 
-		ZINET_CORE_API void write(const std::string& string);
+		 void write(const std::string& string);
 
-		ZINET_CORE_API void writeData(const std::vector<Byte>& bytes);
+		 void writeData(const std::vector<Byte>& bytes);
 
-		ZINET_CORE_API static std::ios_base::openmode ToStdOpenMode(FileOpenMode openMode) noexcept;
+		 static std::ios_base::openmode ToStdOpenMode(FileOpenMode openMode) noexcept;
 
-		ZINET_CORE_API void close();
+		 void close();
 
-		ZINET_CORE_API static bool RemoveFile(const std::filesystem::path& path);
+		 static bool RemoveFile(const std::filesystem::path& path);
 
-		ZINET_CORE_API static File CreateFile(const std::filesystem::path& path);
+		 static File CreateFile(const std::filesystem::path& path);
 
 	protected:
 

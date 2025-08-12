@@ -16,7 +16,7 @@ namespace zt::vulkan_renderer
 {
 	class Instance;
 
-	class ZINET_VULKAN_RENDERER_API Surface : public VulkanObject<VkSurfaceKHR>
+	class  Surface : public VulkanObject<VkSurfaceKHR>
 	{
 	protected:
 

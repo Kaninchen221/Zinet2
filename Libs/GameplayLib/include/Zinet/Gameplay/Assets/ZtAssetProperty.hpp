@@ -15,21 +15,14 @@ namespace zt::gameplay
 	template<std::derived_from<core::Asset> AssetT>
 	struct AssetProperty
 	{
-	private:
-		struct
-		{
-			std::string propertyName = "PropertyName";
-		} data;
 	public:
 
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::AssetProperty");
 
 		using AssetHandleT = typename core::AssetHandle<AssetT>;
 
-		// Config
-		std::string& propertyName = data.propertyName;
+		std::string propertyName;
 
-		// Data
 		// TODO: OnChanged
 		core::AssetHandle<AssetT> assetHandle;
 
@@ -50,7 +43,7 @@ namespace zt::gameplay
 	bool AssetProperty<AssetT>::serialize(core::JsonArchive& archive)
 	{
 		if (assetHandle)
-			archive.serialize(propertyName, assetHandle->metaData.value("fileRelativePath", "invalid relative path"));
+			archive.serialize(propertyName, assetHandle->getMetaData().value("fileRelativePath", "invalid relative path"));
 
 		return true;
 	}
@@ -63,7 +56,7 @@ namespace zt::gameplay
 		if (!assetKey.empty())
 		{
 			auto& engineContext = EngineContext::Get();
-			assetHandle = engineContext.assetsStorage.getAs<AssetT>(assetKey);
+			assetHandle = engineContext.getAssetsStorage().getAs<AssetT>(assetKey);
 		}
 
 		return true;
@@ -130,7 +123,7 @@ namespace zt::gameplay
 			if (assetHandle)
 			{
 				ImGui::TableNextColumn();
-				auto assetName = assetHandle->metaData.value("fileName", "fileName");
+				auto assetName = assetHandle->getMetaData().value("fileName", "fileName");
 				ImGui::Text(assetName.c_str());
 			}
 			else

@@ -13,7 +13,7 @@
 
 namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API NodeSprite : public Node2D
+	class  NodeSprite : public Node2D
 	{
 	protected:
 
@@ -21,15 +21,15 @@ namespace zt::gameplay
 
 	public:
 
-		NodeSprite() ZINET_API_POST = default;
-		NodeSprite(const NodeSprite& other) ZINET_API_POST = default;
-		NodeSprite(NodeSprite&& other) ZINET_API_POST = default;
-		~NodeSprite() ZINET_API_POST = default;
+		NodeSprite() = default;
+		NodeSprite(const NodeSprite& other) = default;
+		NodeSprite(NodeSprite&& other) noexcept = default;
+		~NodeSprite() noexcept = default;
 
-		NodeSprite& operator = (const NodeSprite& other) ZINET_API_POST = default;
-		NodeSprite& operator = (NodeSprite&& other) ZINET_API_POST = default;
+		NodeSprite& operator = (const NodeSprite& other) = default;
+		NodeSprite& operator = (NodeSprite&& other) noexcept = default;
 
-		void imGui() ZINET_API_POST override;
+		void imGui() override;
 
 		AssetProperty<AssetTexture> texture{ "Texture" };
 

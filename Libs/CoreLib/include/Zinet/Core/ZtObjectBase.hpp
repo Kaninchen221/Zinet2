@@ -6,7 +6,7 @@ namespace zt::core
 {
 	class ClassInfoBase;
 
-	class ZINET_CORE_API ObjectBase
+	class  ObjectBase
 	{
 	public:
 

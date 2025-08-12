@@ -20,7 +20,7 @@ namespace zt::vulkan_renderer
 	class RenderPass;
 	class ImageView;
 
-	class ZINET_VULKAN_RENDERER_API Framebuffer : public VulkanObject<VkFramebuffer>
+	class  Framebuffer : public VulkanObject<VkFramebuffer>
 	{
 	protected:
 

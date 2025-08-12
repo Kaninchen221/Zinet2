@@ -10,7 +10,7 @@
 
 namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API SystemSave : public System
+	class  SystemSave : public System
 	{
 	protected:
 

@@ -17,7 +17,7 @@ namespace zt::vulkan_renderer
 	class Framebuffer;
 	class Pipeline;
 
-	class ZINET_VULKAN_RENDERER_API CommandBuffer : public VulkanObject<VkCommandBuffer>
+	class  CommandBuffer : public VulkanObject<VkCommandBuffer>
 	{
 	protected:
 

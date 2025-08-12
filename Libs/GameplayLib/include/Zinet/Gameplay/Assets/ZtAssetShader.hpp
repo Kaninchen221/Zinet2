@@ -9,7 +9,7 @@
 
 namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API AssetShader : public core::AssetText
+	class  AssetShader : public core::AssetText
 	{
 	public:
 

@@ -34,21 +34,21 @@ namespace zt::gameplay
 
 		inline static bool UseImGui = true;
 
-		ZINET_GAMEPLAY_API SystemRenderer() = default;
-		ZINET_GAMEPLAY_API SystemRenderer(const SystemRenderer& other) = default;
-		ZINET_GAMEPLAY_API SystemRenderer(SystemRenderer&& other) = default;
-		ZINET_GAMEPLAY_API ~SystemRenderer() = default;
+		 SystemRenderer() = default;
+		 SystemRenderer(const SystemRenderer& other) = default;
+		 SystemRenderer(SystemRenderer&& other) = default;
+		 ~SystemRenderer() = default;
 
-		ZINET_GAMEPLAY_API SystemRenderer& operator = (const SystemRenderer& other) = default;
-		ZINET_GAMEPLAY_API SystemRenderer& operator = (SystemRenderer&& other) = default;
+		 SystemRenderer& operator = (const SystemRenderer& other) = default;
+		 SystemRenderer& operator = (SystemRenderer&& other) = default;
 
-		ZINET_GAMEPLAY_API bool init() override;
+		 bool init() override;
 
-		ZINET_GAMEPLAY_API void deinit() override;
+		 void deinit() override;
 
-		ZINET_GAMEPLAY_API void update() override;
+		 void update() override;
 
-		ZINET_GAMEPLAY_API void imGui() override;
+		 void imGui() override;
 
 		auto& getRenderer() noexcept { return renderer; }
 		const auto& getRenderer() const noexcept { return renderer; }
@@ -56,10 +56,10 @@ namespace zt::gameplay
 		void setCameraNode(ObjectHandle<NodeCamera> newCamera) noexcept { camera = newCamera; }
 		auto getCameraNode() const noexcept { return camera; }
 
-	protected:
-
 		AssetProperty<AssetShader> vertexShader{ "Vertex Shader" };
 		AssetProperty<AssetShader> fragmentShader{ "Fragment Shader" };
+
+	protected:
 
 		vr::ImGuiIntegration imGuiIntegration;
 		vr::VulkanRenderer renderer;

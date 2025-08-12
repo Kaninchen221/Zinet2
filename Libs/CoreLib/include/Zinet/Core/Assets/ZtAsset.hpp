@@ -58,14 +58,14 @@ namespace zt::core
 
 		using Extensions = std::vector<std::string>;
 
-		ZINET_CORE_API Asset() = default;
+		 Asset() = default;
 		Asset(const Extensions& newExtensions) : extensions{ newExtensions } {}
-		ZINET_CORE_API Asset(const Asset& other) = default;
-		ZINET_CORE_API Asset(Asset&& other) noexcept = default;
-		ZINET_CORE_API ~Asset() noexcept = default;
+		 Asset(const Asset& other) = default;
+		 Asset(Asset&& other) noexcept = default;
+		 ~Asset() noexcept = default;
 
-		ZINET_CORE_API Asset& operator = (const Asset& other) = default;
-		ZINET_CORE_API Asset& operator = (Asset&& other) noexcept = default;
+		 Asset& operator = (const Asset& other) = default;
+		 Asset& operator = (Asset&& other) noexcept = default;
 
 		std::string getDisplayName() { return metaData.value("fileNameExt", "fileNameExt_DefaultName"); }
 
@@ -77,7 +77,7 @@ namespace zt::core
 
 		const auto& getExtensions() const noexcept { return extensions; }
 		
-		ZINET_CORE_API virtual void imGui();
+		 virtual void imGui();
 
 		bool getAutoLoad() const noexcept { return autoLoad; }
 

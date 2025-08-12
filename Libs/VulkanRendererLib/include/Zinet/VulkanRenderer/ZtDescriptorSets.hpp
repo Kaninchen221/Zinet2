@@ -19,7 +19,7 @@ namespace zt::vulkan_renderer
 	class ImageView;
 	class Sampler;
 
-	class ZINET_VULKAN_RENDERER_API DescriptorSets : public VulkanObject<VkDescriptorSet>
+	class  DescriptorSets : public VulkanObject<VkDescriptorSet>
 	{
 	protected:
 

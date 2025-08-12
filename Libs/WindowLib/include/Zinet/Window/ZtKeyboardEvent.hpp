@@ -19,7 +19,7 @@ namespace zt::wd
 		NumLock = GLFW_MOD_NUM_LOCK
 	};
 
-	struct ZINET_WINDOW_LAYER_API KeyboardEvent
+	struct  KeyboardEvent
 	{
 		KeyboardEventType type = KeyboardEventType::Ignore;
 		KeyboardKey key = KeyboardKey::Ignore;

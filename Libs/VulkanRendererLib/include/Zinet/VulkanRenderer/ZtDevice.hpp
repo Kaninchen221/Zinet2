@@ -20,7 +20,7 @@ namespace zt::vulkan_renderer
 	class Surface;
 	class PhysicalDevice;
 
-	class ZINET_VULKAN_RENDERER_API Device : public VulkanObject<VkDevice>
+	class  Device : public VulkanObject<VkDevice>
 	{
 	protected:
 

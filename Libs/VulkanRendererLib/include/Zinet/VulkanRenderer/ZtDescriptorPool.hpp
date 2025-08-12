@@ -11,7 +11,7 @@ namespace zt::vulkan_renderer
 {
 	class Device;
 
-	class ZINET_VULKAN_RENDERER_API DescriptorPool : public VulkanObject<VkDescriptorPool>
+	class  DescriptorPool : public VulkanObject<VkDescriptorPool>
 	{
 	protected:
 

@@ -28,7 +28,7 @@ namespace zt::gameplay::tests
 	TEST_F(AssetTextureTests, Test)
 	{
 		EngineContext engineContext;
-		auto& assetsStorage = engineContext.assetsStorage;
+		auto& assetsStorage = engineContext.getAssetsStorage();
 		assetsStorage.registerAssetClass<AssetTexture>();
 
 		engineContext.addSystem<SystemRenderer>("SystemRenderer");
@@ -39,7 +39,7 @@ namespace zt::gameplay::tests
 		auto asset = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
 		ASSERT_TRUE(asset);
 
-		ASSERT_TRUE(asset->load(assetsStorage.assetsFinder.getRootPath()));
+		ASSERT_TRUE(asset->load(assetsStorage.getAssetsFinder().getRootPath()));
 		ASSERT_TRUE(asset->isLoaded());
 
 		asset->unload();

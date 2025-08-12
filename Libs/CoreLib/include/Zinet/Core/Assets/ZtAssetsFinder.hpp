@@ -21,13 +21,13 @@ namespace zt::core
 
 	public:		
 		
-		ZINET_CORE_API AssetsFinder() = default;
-		ZINET_CORE_API AssetsFinder(const AssetsFinder& other) = default;
-		ZINET_CORE_API AssetsFinder(AssetsFinder&& other) noexcept = default;
-		ZINET_CORE_API ~AssetsFinder() noexcept = default;
+		 AssetsFinder() = default;
+		 AssetsFinder(const AssetsFinder& other) = default;
+		 AssetsFinder(AssetsFinder&& other) noexcept = default;
+		 ~AssetsFinder() noexcept = default;
 
-		ZINET_CORE_API AssetsFinder& operator = (const AssetsFinder& other) = default;
-		ZINET_CORE_API AssetsFinder& operator = (AssetsFinder&& other) noexcept = default;
+		 AssetsFinder& operator = (const AssetsFinder& other) = default;
+		 AssetsFinder& operator = (AssetsFinder&& other) noexcept = default;
 
 		std::filesystem::path getContentFolderPath() const { return rootFolder / contentFolderName; }
 
@@ -43,15 +43,15 @@ namespace zt::core
 			std::vector<std::filesystem::path> assets;
 		};
 
-		ZINET_CORE_API FindAssetsResult findAssets(const FindAssetsInput& findAssetsInput) const;
+		 FindAssetsResult findAssets(const FindAssetsInput& findAssetsInput) const;
 
-		ZINET_CORE_API bool isAssetFile(const std::filesystem::path& path) const;
+		 bool isAssetFile(const std::filesystem::path& path) const;
 
-		ZINET_CORE_API std::filesystem::path createAssetFilePath(const std::filesystem::path& filePath) const;
+		 std::filesystem::path createAssetFilePath(const std::filesystem::path& filePath) const;
 
-		ZINET_CORE_API std::filesystem::path createRelativePath(const std::string& folderAsRoot, const std::filesystem::path& path) const;
+		 std::filesystem::path createRelativePath(const std::string& folderAsRoot, const std::filesystem::path& path) const;
 
-		ZINET_CORE_API void createAssetFile(const std::filesystem::path& filePath, const std::filesystem::path& assetPath) const;
+		 void createAssetFile(const std::filesystem::path& filePath, const std::filesystem::path& assetPath) const;
 
 		void setRootPath(const Path& path) { rootFolder = path; }
 

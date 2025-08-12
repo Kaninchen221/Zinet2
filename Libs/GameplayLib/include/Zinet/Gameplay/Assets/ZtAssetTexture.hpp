@@ -22,30 +22,30 @@ namespace
 
 namespace zt::gameplay
 {
-	class ZINET_GAMEPLAY_API AssetTexture : public core::Asset
+	class  AssetTexture : public core::Asset
 	{
 	public:
 		AssetTexture(const Extensions& extensions = { "png" }) : core::Asset{ extensions } {}
-		AssetTexture(const AssetTexture& other) ZINET_API_POST : core::Asset(other) {}
-		AssetTexture(AssetTexture&& other) ZINET_API_POST = default;
-		~AssetTexture() ZINET_API_POST = default;
+		AssetTexture(const AssetTexture& other) : core::Asset(other) {}
+		AssetTexture(AssetTexture&& other) noexcept = default;
+		~AssetTexture() noexcept = default;
 
-		AssetTexture& operator = (const AssetTexture& other) ZINET_API_POST { Asset::operator =(other); return *this; }
-		AssetTexture& operator = (AssetTexture&& other) ZINET_API_POST = default;
+		AssetTexture& operator = (const AssetTexture& other) noexcept { Asset::operator =(other); return *this; }
+		AssetTexture& operator = (AssetTexture&& other) noexcept = default;
 
-		std::string getClassName() const ZINET_API_POST override { return "zt::gameplay::AssetTexture"; }
+		std::string getClassName() const override { return "zt::gameplay::AssetTexture"; }
 
-		ObjectPtr createCopy() const ZINET_API_POST override { return std::make_shared<AssetTexture>(*this); }
+		ObjectPtr createCopy() const override { return std::make_shared<AssetTexture>(*this); }
 
-		bool load(const core::Path& rootPath) ZINET_API_POST override;
+		bool load(const core::Path& rootPath) override;
 
-		void unload() ZINET_API_POST override;
+		void unload() override;
 
-		void imGui() ZINET_API_POST override;
+		void imGui() override;
 
-		bool serialize(core::JsonArchive& archive) override ZINET_API_POST;
+		bool serialize(core::JsonArchive& archive) override;
 
-		bool deserialize(core::JsonArchive& archive) override ZINET_API_POST;
+		bool deserialize(core::JsonArchive& archive) override;
 
 		// TODO: Recreate the descriptor set when the sampler change
 		AssetProperty<AssetSampler> sampler{ "Sampler" };

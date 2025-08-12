@@ -22,8 +22,8 @@ namespace zt::vulkan_renderer
 	};
 
 	using InputBindingDescription = VkVertexInputBindingDescription;
-	ZINET_VULKAN_RENDERER_API InputBindingDescription GetVertexInputBindingDescription() noexcept;
+	 InputBindingDescription GetVertexInputBindingDescription() noexcept;
 
 	using InputAttributesDescriptions = std::array<VkVertexInputAttributeDescription, 3>;
-	ZINET_VULKAN_RENDERER_API InputAttributesDescriptions GetVertexInputAttributesDescriptions() noexcept;
+	 InputAttributesDescriptions GetVertexInputAttributesDescriptions() noexcept;
 }

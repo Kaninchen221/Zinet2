@@ -34,7 +34,7 @@ namespace zt::gameplay
 		if (assetsList.isOpen)
 		{
 			auto& engineContext = EngineContext::Get();
-			auto assets = engineContext.assetsStorage.getAssets();
+			auto assets = engineContext.getAssetsStorage().getAssets();
 			assetsList.show(assets, CreateObjectBrowserListElement);
 		}
 
@@ -44,7 +44,7 @@ namespace zt::gameplay
 		if (nodesList.isOpen)
 		{
 			auto& engineContext = EngineContext::Get();
-			std::vector nodes{ engineContext.rootNode };
+			std::vector nodes{ engineContext.getRootNode() };
 			nodesList.show(nodes, CreateNodeBrowserListElement);
 		}
 

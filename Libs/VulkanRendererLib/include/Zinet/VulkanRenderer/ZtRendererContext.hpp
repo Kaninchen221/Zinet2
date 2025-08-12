@@ -33,7 +33,7 @@ namespace zt::vulkan_renderer
 	class Device;
 	class VMA;
 
-	class ZINET_VULKAN_RENDERER_API RendererContext
+	class  RendererContext
 	{
 	protected:
 

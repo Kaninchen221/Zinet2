@@ -21,7 +21,7 @@ namespace zt::vulkan_renderer
 	class Surface;
 	class Semaphore;
 
-	class ZINET_VULKAN_RENDERER_API SwapChain : public VulkanObject<VkSwapchainKHR>
+	class  SwapChain : public VulkanObject<VkSwapchainKHR>
 	{
 	protected:
 

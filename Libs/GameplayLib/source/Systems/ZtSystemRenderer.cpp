@@ -7,19 +7,19 @@
 
 namespace zt::gameplay
 {
-	bool SystemRenderer::init() ZINET_API_POST
+	bool SystemRenderer::init()
 	{
 		System::init();
 
 		auto& engineContext = EngineContext::Get();
 
 		renderer.getRendererContext().instance.setEnableValidationLayers(false);
-		if (!renderer.init(engineContext.window))
+		if (!renderer.init(engineContext.getWindow()))
 			return false;
 
 		if (UseImGui)
 		{
-			if (!imGuiIntegration.init(renderer.getRendererContext(), engineContext.window))
+			if (!imGuiIntegration.init(renderer.getRendererContext(), engineContext.getWindow()))
 				return false;
 
 			drawInfo.additionalCommands = { vr::ImGuiIntegration::DrawCommand };
@@ -45,12 +45,11 @@ namespace zt::gameplay
 		const auto indexBufferCreateInfo = vr::Buffer::GetIndexBufferCreateInfo(indices);
 		indexBuffer.createBuffer(indexBufferCreateInfo, renderer.getRendererContext().vma);
 		indexBuffer.fillWithSTDContainer(indices, renderer.getRendererContext().vma);
-		//
 
 		return true;
 	}
 
-	void SystemRenderer::deinit() ZINET_API_POST
+	void SystemRenderer::deinit()
 	{
 		System::deinit();
 
@@ -71,7 +70,7 @@ namespace zt::gameplay
 		renderer.deinit();
 	}
 
-	void SystemRenderer::update() ZINET_API_POST
+	void SystemRenderer::update()
 	{
 		System::update();
 
@@ -117,7 +116,7 @@ namespace zt::gameplay
 		renderer.endFrame();
 	}
 
-	void SystemRenderer::imGui() ZINET_API_POST
+	void SystemRenderer::imGui()
 	{
 		System::imGui();
 

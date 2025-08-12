@@ -15,7 +15,7 @@ namespace zt::vulkan_renderer
 	class RenderPass;
 	struct DrawInfo;
 
-	class ZINET_VULKAN_RENDERER_API Pipeline : public VulkanObject<VkPipeline>
+	class  Pipeline : public VulkanObject<VkPipeline>
 	{
 	protected:
 

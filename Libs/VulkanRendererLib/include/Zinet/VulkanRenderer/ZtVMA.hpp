@@ -23,7 +23,7 @@ namespace zt::vulkan_renderer
 	class PhysicalDevice;
 	class Instance;
 
-	class ZINET_VULKAN_RENDERER_API VMA : public VulkanObject<VmaAllocator>
+	class VMA : public VulkanObject<VmaAllocator>
 	{
 	protected:
 

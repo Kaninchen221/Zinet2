@@ -11,7 +11,7 @@ namespace zt::gameplay
 {
 	using namespace vulkan_renderer;
 
-	bool AssetShader::load(const core::Path& rootPath) ZINET_API_POST
+	bool AssetShader::load(const core::Path& rootPath)
 	{
 		if (!AssetText::load(rootPath))
 			return false;
@@ -50,7 +50,7 @@ namespace zt::gameplay
 		return true;
 	}
 
-	void AssetShader::unload() ZINET_API_POST
+	void AssetShader::unload()
 	{
 		AssetText::unload();
 
@@ -66,7 +66,7 @@ namespace zt::gameplay
 		shaderModule.destroy(device);
 	}
 
-	void AssetShader::imGui() ZINET_API_POST
+	void AssetShader::imGui()
 	{
 		Asset::imGui();
 		if (!isLoaded())

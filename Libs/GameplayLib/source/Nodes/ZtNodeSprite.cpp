@@ -2,7 +2,7 @@
 
 namespace zt::gameplay
 {
-	void NodeSprite::imGui() ZINET_API_POST
+	void NodeSprite::imGui()
 	{
 		texture.show();
 	}

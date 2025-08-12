@@ -16,7 +16,7 @@ namespace zt::vulkan_renderer
 	class CommandBuffer;
 
 	/// For examples of using ImGui see ImGui::ShowDemoWindow();
-	class ZINET_VULKAN_RENDERER_API ImGuiIntegration
+	class  ImGuiIntegration
 	{
 	protected:
 

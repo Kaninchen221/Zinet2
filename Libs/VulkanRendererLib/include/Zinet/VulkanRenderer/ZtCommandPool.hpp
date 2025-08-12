@@ -12,7 +12,7 @@ namespace zt::vulkan_renderer
 	class Device;
 	class Queue;
 
-	class ZINET_VULKAN_RENDERER_API CommandPool : public VulkanObject<VkCommandPool>
+	class  CommandPool : public VulkanObject<VkCommandPool>
 	{
 	protected:
 

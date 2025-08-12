@@ -11,7 +11,7 @@ namespace zt::vulkan_renderer
 {
 	class Instance;
 
-	class ZINET_VULKAN_RENDERER_API DebugUtilsMessenger : public VulkanObject<VkDebugUtilsMessengerEXT>
+	class  DebugUtilsMessenger : public VulkanObject<VkDebugUtilsMessengerEXT>
 	{
 	protected:
 

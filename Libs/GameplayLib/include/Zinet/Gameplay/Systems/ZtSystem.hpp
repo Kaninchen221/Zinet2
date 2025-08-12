@@ -10,7 +10,7 @@ namespace zt::gameplay
 {
 	class EngineContext;
 
-	class ZINET_GAMEPLAY_API System : public core::Object
+	class  System : public core::Object
 	{
 
 	public:

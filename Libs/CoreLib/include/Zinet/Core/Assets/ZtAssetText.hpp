@@ -9,25 +9,25 @@ namespace zt::core
 	{
 	public:
 
-		ZINET_CORE_API AssetText(const Extensions& extensions = { "txt" }) : Asset{ extensions } {}
-		ZINET_CORE_API AssetText(const AssetText& other) = default;
-		ZINET_CORE_API AssetText(AssetText&& other) noexcept = default;
-		ZINET_CORE_API ~AssetText() noexcept = default;
+		 AssetText(const Extensions& extensions = { "txt" }) : Asset{ extensions } {}
+		 AssetText(const AssetText& other) = default;
+		 AssetText(AssetText&& other) noexcept = default;
+		 ~AssetText() noexcept = default;
 
-		ZINET_CORE_API AssetText& operator = (const AssetText& other) = default;
-		ZINET_CORE_API AssetText& operator = (AssetText&& other) noexcept = default;
+		 AssetText& operator = (const AssetText& other) = default;
+		 AssetText& operator = (AssetText&& other) noexcept = default;
 
-		ZINET_CORE_API std::string getClassName() const override { return "zt::core::AssetText"; }
+		 std::string getClassName() const override { return "zt::core::AssetText"; }
 
-		ZINET_CORE_API ObjectPtr createCopy() const override { return std::make_unique<AssetText>(*this); }
+		 ObjectPtr createCopy() const override { return std::make_unique<AssetText>(*this); }
 
-		ZINET_CORE_API bool load(const Path& rootPath) override;
+		 bool load(const Path& rootPath) override;
 
-		ZINET_CORE_API void unload() override;
+		 void unload() override;
 
-		ZINET_CORE_API void imGui() override;
+		 void imGui() override;
 
-		ZINET_CORE_API std::string getText() const { return text; }
+		 const std::string& getText() const { return text; }
 
 	protected:
 
