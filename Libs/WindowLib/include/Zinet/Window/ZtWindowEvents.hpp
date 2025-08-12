@@ -8,7 +8,7 @@ namespace zt::wd
 {
 	class Window;
 
-	class WindowEvents : public core::Object
+	class WindowEvents
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("Logger");
 
@@ -16,13 +16,13 @@ namespace zt::wd
 
 		WindowEvents() = delete;
 		WindowEvents(Window& newWindow) : window{&newWindow}, keyboard{newWindow}, mouse{newWindow} {}
-		WindowEvents(const WindowEvents& other) = default;
-		WindowEvents(WindowEvents&& other) noexcept = default;
+		ZINET_WINDOW_LAYER_API  WindowEvents(const WindowEvents& other) = default;
+		ZINET_WINDOW_LAYER_API  WindowEvents(WindowEvents&& other) noexcept = default;
 
-		WindowEvents& operator = (const WindowEvents& other) = default;
-		WindowEvents& operator = (WindowEvents&& other) noexcept = default;
+		ZINET_WINDOW_LAYER_API WindowEvents& operator = (const WindowEvents& other) = default;
+		ZINET_WINDOW_LAYER_API WindowEvents& operator = (WindowEvents&& other) noexcept = default;
 
-		~WindowEvents() noexcept = default;
+		ZINET_WINDOW_LAYER_API  ~WindowEvents() noexcept = default;
 
 		const Window* getWindow() const noexcept { return window; }
 		Window* getWindow() noexcept { return window; }
@@ -37,7 +37,7 @@ namespace zt::wd
 
 		void bindCallbacks();
 
-		std::string asString() const override;
+		std::string asString() const;
 
 	protected:
 

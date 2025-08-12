@@ -11,73 +11,69 @@
 
 namespace zt::wd
 {
-	class ZINET_WINDOW_LAYER_API Mouse : public core::Object
+	class Mouse
 	{
 
 	public:
 
 		Mouse() = delete;
-		Mouse(Window& newWindow);
-		Mouse(const Mouse& other) = default;
-		Mouse(Mouse&& other) noexcept = default;
+		Mouse(Window& newWindow) : window{ &newWindow } {}
+		ZINET_WINDOW_LAYER_API Mouse(const Mouse& other) = default;
+		ZINET_WINDOW_LAYER_API Mouse(Mouse&& other) noexcept = default;
 
-		Mouse& operator = (const Mouse& other) = default;
-		Mouse& operator = (Mouse&& other) noexcept = default;
+		ZINET_WINDOW_LAYER_API Mouse& operator = (const Mouse& other) = default;
+		ZINET_WINDOW_LAYER_API Mouse& operator = (Mouse&& other) noexcept = default;
 
-		~Mouse() noexcept = default;
+		ZINET_WINDOW_LAYER_API ~Mouse() noexcept = default;
 
-		const Window* getWindow() const noexcept { return data.window; }
-		Window* getWindow() noexcept { return data.window; }
+		const Window* getWindow() const noexcept { return window; }
+		Window* getWindow() noexcept { return window; }
 
-		bool isPressed(MouseButton mouseButton) const;
+		ZINET_WINDOW_LAYER_API bool isPressed(MouseButton mouseButton) const;
 
-		bool isReleased(MouseButton mouseButton) const;
+		ZINET_WINDOW_LAYER_API bool isReleased(MouseButton mouseButton) const;
 
 		Vector2d getMousePosition() const noexcept;
 
 		Vector2d getMousePositionNorm() const;
 
-		const std::vector<MouseButtonEvent>& getButtonsEvents() const noexcept { return data.buttonsEvents; }
+		const std::vector<MouseButtonEvent>& getButtonsEvents() const noexcept { return buttonsEvents; }
 
-		const std::vector<MousePositionEvent>& getPositionEvents() const noexcept { return data.positionEvents; }
+		const std::vector<MousePositionEvent>& getPositionEvents() const noexcept { return positionEvents; }
 
-		void bindCallbacks();
+		ZINET_WINDOW_LAYER_API void bindCallbacks();
 
-		static void ButtonCallback(GLFWwindow* internalWindow, int button, int action, int mods);
+		ZINET_WINDOW_LAYER_API static void ButtonCallback(GLFWwindow* internalWindow, int button, int action, int mods);
 
-		void pushButtonEvent(int button, int action, int mods);
+		ZINET_WINDOW_LAYER_API void pushButtonEvent(int button, int action, int mods);
 
-		static void PositionCallback(GLFWwindow* internalWindow, double positionX, double positionY);
+		ZINET_WINDOW_LAYER_API static void PositionCallback(GLFWwindow* internalWindow, double positionX, double positionY);
 
-		void pushPositionEvent(double positionX, double positionY);
+		ZINET_WINDOW_LAYER_API void pushPositionEvent(double positionX, double positionY);
 
-		void clearEvents();
+		ZINET_WINDOW_LAYER_API void clearEvents();
 
-		std::string asString() const override;
+		ZINET_WINDOW_LAYER_API std::string asString() const;
 
 	protected:
 
-		struct Data
-		{
-			Window* window = nullptr;
-			std::vector<MouseButtonEvent> buttonsEvents;
-			std::vector<MousePositionEvent> positionEvents;
-		};
-		Data data;
+		Window* window = nullptr;
+		std::vector<MouseButtonEvent> buttonsEvents;
+		std::vector<MousePositionEvent> positionEvents;
 
 	};
 
 	inline Vector2d Mouse::getMousePosition() const noexcept
 	{
 		Vector2d position;
-		glfwGetCursorPos(data.window->getInternal(), &position.x, &position.y);
+		glfwGetCursorPos(window->getInternal(), &position.x, &position.y);
 		return position;
 	}
 
 	inline Vector2d Mouse::getMousePositionNorm() const
 	{
 		const auto mousePosition = getMousePosition();
-		const auto windowSize = data.window->getSize();
+		const auto windowSize = window->getSize();
 		return
 		{
 			mousePosition.x / windowSize.x,
