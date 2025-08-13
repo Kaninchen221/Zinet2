@@ -25,7 +25,7 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		inline static const auto DefaultClearColor = VkClearValue{ VkClearColorValue{} };
+		inline static const VkClearValue DefaultClearColor = VkClearValue{ VkClearColorValue{} };
 
 		CommandBuffer(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle) {}

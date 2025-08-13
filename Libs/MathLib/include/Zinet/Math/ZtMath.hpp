@@ -11,8 +11,8 @@ namespace zt::math
 {
 	ZINET_MATH_API void GenerateLib();
 
-	inline static const constexpr auto EpsilonF = std::numeric_limits<float>::epsilon();
-	inline static const constexpr auto EpsilonD = std::numeric_limits<double>::epsilon();
+	inline static const constexpr float EpsilonF = std::numeric_limits<float>::epsilon();
+	inline static const constexpr double EpsilonD = std::numeric_limits<double>::epsilon();
 
 	template<typename VectorType, typename ArrayType = std::array<typename VectorType::value_type, VectorType::length()>>
 	constexpr static ArrayType FromVectorToArray(const VectorType& vector)

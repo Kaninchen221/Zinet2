@@ -32,9 +32,9 @@ namespace zt::gameplay
 
 		using AssetHandleT = typename core::AssetHandle<AssetT>;
 
-		auto operator = (AssetHandleT otherAssetHandle) noexcept { assetHandle = otherAssetHandle; }
+		AssetProperty& operator = (AssetHandleT otherAssetHandle) noexcept { assetHandle = otherAssetHandle; return *this; }
 
-		auto* operator->() noexcept { return assetHandle.operator->(); }
+		AssetT* operator->() noexcept { return assetHandle.operator->(); }
 
 		operator bool() noexcept { return assetHandle; }
 
@@ -44,7 +44,7 @@ namespace zt::gameplay
 
 		void show();
 	
-		void setPropertyName(const std::string_view newPropertyName) { propertyName = newPropertyName.data(); }
+		void setPropertyName(const std::string_view newPropertyName) { propertyName = newPropertyName; }
 		const std::string_view getPropertyName() const { return propertyName; }
 
 		void setAssetHandle(AssetHandleT newAssetHandle) { assetHandle = newAssetHandle; }

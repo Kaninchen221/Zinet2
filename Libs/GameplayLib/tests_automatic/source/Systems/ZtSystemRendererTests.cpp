@@ -14,7 +14,7 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
-			SystemRenderer::UseImGui = false;
+			SystemRenderer::SetUseImGui(false);
 			engineContext.addSystem<SystemRenderer>("SystemRenderer");
 
 			ASSERT_TRUE(engineContext.init());
@@ -23,7 +23,7 @@ namespace zt::gameplay::tests
 		void TearDown() override
 		{
 			engineContext.deinit();
-			SystemRenderer::UseImGui = true;
+			SystemRenderer::SetUseImGui(true);
 		}
 
 		EngineContext engineContext;

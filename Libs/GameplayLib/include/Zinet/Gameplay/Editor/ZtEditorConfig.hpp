@@ -3,10 +3,10 @@
 namespace zt::gameplay
 {
 
-	struct EditorConfig
+	namespace EditorConfig
 	{
-		inline static float IndentValue = 8.f;
-		inline static float ListMenuWidthDiv = 4.f;
+		constexpr float IndentValue = 8.f;
+		constexpr float ListMenuWidthDiv = 4.f;
 	};
 
 }

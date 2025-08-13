@@ -16,22 +16,22 @@ namespace zt::wd
 	public:
 
 		GLFW() { Init(); }
-		 GLFW(const GLFW& other) noexcept = default;
-		 GLFW(GLFW&& other) noexcept = default;
+		GLFW(const GLFW& other) noexcept = default;
+		GLFW(GLFW&& other) noexcept = default;
 		~GLFW() { Deinit(); }
 
-		 GLFW& operator = (const GLFW& other) noexcept = default;
-		 GLFW& operator = (GLFW&& other) noexcept = default;
+		GLFW& operator = (const GLFW& other) noexcept = default;
+		GLFW& operator = (GLFW&& other) noexcept = default;
 
-		 static bool Init(bool hideWindow = true);
-		 static void Deinit();
+		static bool Init(bool hideWindow = true);
+		static void Deinit();
 
-		 static bool IsInitialized();
+		static bool IsInitialized();
 
-		 static void HideWindow();
-		 static void UnhideWindow();
+		static void HideWindow();
+		static void UnhideWindow();
 
-		 static bool IsVulkanSupported();
+		static bool IsVulkanSupported();
 
 	private:
 

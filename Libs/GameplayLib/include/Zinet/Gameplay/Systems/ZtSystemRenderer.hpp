@@ -26,13 +26,13 @@ namespace zt::gameplay
 {
 	class SystemRenderer : public System
 	{
-	protected:
+	private:
 
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::SystemRenderer");
 
-	public:
-
 		inline static bool UseImGui = true;
+
+	public:
 
 		 SystemRenderer() = default;
 		 SystemRenderer(const SystemRenderer& other) = default;
@@ -41,6 +41,9 @@ namespace zt::gameplay
 
 		 SystemRenderer& operator = (const SystemRenderer& other) = default;
 		 SystemRenderer& operator = (SystemRenderer&& other) = default;
+
+		 static void SetUseImGui(bool use) noexcept { UseImGui = use; }
+		 static bool GetUseImGui() noexcept { return UseImGui; }
 
 		 bool init() override;
 
