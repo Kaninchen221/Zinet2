@@ -62,6 +62,9 @@ namespace zt::sandbox
 			sprite->texture->load(core::Paths::RootPath());
 			rootNode->addChild(sprite);
 
+			auto sprite2 = CreateObject<NodeSprite>("Sprite2");
+			rootNode->addChild(sprite2);
+
 			auto systemRenderer = engineContext.getSystem<SystemRenderer>();
 			ASSERT_TRUE(systemRenderer);
 

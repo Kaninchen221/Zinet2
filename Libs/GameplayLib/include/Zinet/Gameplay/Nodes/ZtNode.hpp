@@ -7,7 +7,7 @@
 
 namespace zt::gameplay
 {
-	class  Node : public core::Object
+	class Node : public core::Object
 	{
 	protected:
 
@@ -39,7 +39,7 @@ namespace zt::gameplay
 		void setParent(ObjectWeakHandle<Node> newParent) noexcept { parent = newParent; }
 		auto getParent() const noexcept { return parent; }
 
-		virtual void imGui();
+		void imGui() override;
 
 		virtual void update([[maybe_unused]] float deltaTime) {}
 

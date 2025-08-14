@@ -33,7 +33,7 @@ namespace zt::gameplay::tests
 
 		engineContext.addSystem<SystemRenderer>("SystemRenderer");
 
-		SystemRenderer::UseImGui = false;
+		SystemRenderer::SetUseImGui(false);
 		ASSERT_TRUE(engineContext.init());
 
 		auto asset = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
@@ -46,6 +46,6 @@ namespace zt::gameplay::tests
 		ASSERT_FALSE(asset->isLoaded());
 
 		engineContext.deinit();
-		SystemRenderer::UseImGui = true;
+		SystemRenderer::SetUseImGui(true);
 	}
 }

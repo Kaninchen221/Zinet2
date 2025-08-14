@@ -155,11 +155,11 @@ namespace zt::core
 				"ObjectHandleT must be derived from ObjectHandle with the same ObjectT type");
 		}
 
-		ObjectHandle(const ObjectHandle& other) noexcept { *this = other; }
-		ObjectHandle(ObjectHandle&& other) noexcept { *this = other; }
+		ObjectHandle(const ObjectHandle<ObjectT>& other) noexcept { *this = other; }
+		ObjectHandle(ObjectHandle<ObjectT>&& other) noexcept { *this = other; }
 		~ObjectHandle() noexcept { decrement(); }
 
-		ObjectHandle& operator = (const ObjectHandle& other) noexcept
+		ObjectHandle<ObjectT>& operator = (const ObjectHandle<ObjectT>& other) noexcept
 		{
 			if (!other.objectRefCounter)
 			{
@@ -173,7 +173,7 @@ namespace zt::core
 			return *this;
 		}
 
-		ObjectHandle& operator = (ObjectHandle&& other) noexcept
+		ObjectHandle<ObjectT>& operator = (ObjectHandle<ObjectT>&& other) noexcept
 		{
 			objectRefCounter = other.objectRefCounter;
 			other.objectRefCounter = nullptr;

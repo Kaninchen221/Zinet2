@@ -44,7 +44,8 @@ namespace zt::gameplay
 		if (nodesList.isOpen)
 		{
 			auto& engineContext = EngineContext::Get();
-			std::vector nodes{ engineContext.getRootNode() };
+			auto rootNode = engineContext.getRootNode();
+			std::vector<ObjectHandle<Node>> nodes{ rootNode };
 			nodesList.show(nodes, CreateNodeBrowserListElement);
 		}
 

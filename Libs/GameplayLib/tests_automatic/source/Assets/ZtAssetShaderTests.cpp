@@ -27,7 +27,7 @@ namespace zt::gameplay::tests
 
 	TEST_F(AssetShaderTests, Test)
 	{
-		SystemRenderer::UseImGui = false;
+		SystemRenderer::SetUseImGui(false);
 
 		core::AssetsStorage assetsStorage;
 		assetsStorage.registerAssetClass<AssetShader>();
@@ -52,6 +52,6 @@ namespace zt::gameplay::tests
 		ASSERT_TRUE(asset->getText().empty());
 
 		engineContext.deinit();
-		SystemRenderer::UseImGui = true;
+		SystemRenderer::SetUseImGui(true);
 	}
 }

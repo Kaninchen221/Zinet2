@@ -10,6 +10,7 @@ class ZinetConan(ConanFile):
     requires = [
         "gtest/1.15.0@",
         "spdlog/1.14.1@",
+        "fmt/10.2.1", #spdlog has already fmt in dependencies so the version should be always the same that the spdlog needs
         "glfw/3.4@",
         "stb/cci.20240531@",
         "nlohmann_json/3.10.5@",
@@ -23,6 +24,7 @@ class ZinetConan(ConanFile):
     default_options = {
         "gtest/*:shared": True,
         "glfw/*:shared": False,
+        "fmt/*:shared": False,
         "spdlog/*:shared": False,
         "stb/*:shared": False,
         "nlohmann_json/*:shared": False,
