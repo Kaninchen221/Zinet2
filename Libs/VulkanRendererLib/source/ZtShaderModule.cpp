@@ -3,7 +3,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool ShaderModule::create(const Device& device, const shaderc::SpvCompilationResult& compilationResult)
+	bool ShaderModule::create(const Device& device, const ShadersCompiler::CompileResult& compilationResult)
 	{
 		if (isValid())
 			return false;
@@ -17,7 +17,7 @@ namespace zt::vulkan_renderer
 			.pNext = nullptr,
 			.flags = {},
 			.codeSize = codeSize,
-			.pCode = compilationResult.cbegin()
+			.pCode = compilationResult.data()
 		};
 
 		const auto result = vkCreateShaderModule(device.get(), &createInfo, nullptr, &objectHandle);

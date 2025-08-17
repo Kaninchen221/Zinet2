@@ -42,10 +42,10 @@ namespace zt::vulkan_renderer::tests
 
 		const auto vertShaderFilePath = contentFolderPath / "simple_triangle_shader.vert";
 		const auto vertShaderResult = shadersCompiler.compileFromFile(vertShaderFilePath, ShaderType::Vertex);
-		ASSERT_EQ(vertShaderResult.GetCompilationStatus(), shaderc_compilation_status_success);
+		ASSERT_FALSE(vertShaderResult.empty());
 
 		const auto fragShaderFilePath = contentFolderPath / "simple_triangle_shader.frag";
 		const auto fragShaderResult = shadersCompiler.compileFromFile(fragShaderFilePath, ShaderType::Fragment);
-		ASSERT_EQ(fragShaderResult.GetCompilationStatus(), shaderc_compilation_status_success);
+		ASSERT_FALSE(fragShaderResult.empty());
 	}
 }

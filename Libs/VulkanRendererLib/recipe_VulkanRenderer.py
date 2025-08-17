@@ -13,8 +13,9 @@ generator.linkLibraries = """
     ZinetCore
     ZinetMath
     ZinetWindow
-    ${shaderc_LIBRARIES}
     ${vulkan-memory-allocator_LIBRARIES}
     ImGui
+    ${glslang_LIBRARIES}
+    ${SPIRV-Tools_LIBRARIES}
     """
 project_generator.add_generator(generator)

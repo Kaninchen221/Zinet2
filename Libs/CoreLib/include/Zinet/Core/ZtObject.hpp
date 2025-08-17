@@ -3,6 +3,7 @@
 #include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtObjectBase.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtDebug.hpp"
 
 #include <vector>
 #include <memory>

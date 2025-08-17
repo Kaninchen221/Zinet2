@@ -8,16 +8,15 @@ from Tools.zinet_utilities.platform_info import *
 class ZinetConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     requires = [
-        "gtest/1.15.0@",
+        "gtest/1.16.0@",
         "spdlog/1.14.1@",
-        "fmt/10.2.1", #spdlog has already fmt in dependencies so the version should be always the same that the spdlog needs
+        #"fmt/10.2.1", #spdlog has already fmt in dependencies so the version should be always the same that the spdlog needs
         "glfw/3.4@",
         "stb/cci.20240531@",
         "nlohmann_json/3.10.5@",
         "glm/0.9.9.5@",
         #"spirv-tools/1.4.309.0@", glslang already has spirv-tools in dependencies
-        "shaderc/2024.1@",
-        "glslang/1.3.261.1@", #shaderc already has glslang in dependencies so the version should be always the same that the shaderc needs
+        "glslang/1.4.313.0@",
         "vulkan-memory-allocator/3.0.1@"
         ]
     generators = ["CMakeToolchain", "CMakeDeps"]
@@ -25,17 +24,21 @@ class ZinetConan(ConanFile):
         "gtest/*:shared": True,
         "glfw/*:shared": False,
         "fmt/*:shared": False,
+        "spdlog/*:header_only": False,
         "spdlog/*:shared": False,
         "stb/*:shared": False,
         "nlohmann_json/*:shared": False,
         "glm/*:shared": False,
-        "shaderc/*:shared": False,
+        "glslang/*:shared": False,
+        "glslang/*:build_executables": False,
+        "spirv-headers/*:shared": False,
+        "spirv-tools/*:shared": False,
         "vulkan-memory-allocator/*:shared": False
     }
     
     def configure(self):
         self.options["spdlog"].header_only = False
-        self.options["spdlog"].shared = True
+        self.options["spdlog"].shared = False
 
     if get_system() == SystemInfo.Linux:
         default_options["glfw/*:with_wayland"] = True

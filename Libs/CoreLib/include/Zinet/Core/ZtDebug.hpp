@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
+#include "Zinet/Core/ZtLogger.hpp"
 
 #include <exception>
 
@@ -18,9 +19,9 @@ namespace zt
 
 #if ZINET_DEBUG
 
-	static inline bool Ensure(bool Value)
+	static inline bool Ensure(bool value)
 	{
-		if (!Value)
+		if (!value)
 		{
 		#if ZINET_MSVC
 			__nop();
@@ -32,10 +33,19 @@ namespace zt
 		#endif // ZINET_GCC
 		}
 
-		return Value;
+		return value;
+	}
+
+	static inline bool Ensure(bool value, const char* message)
+	{
+		static auto Logger = zt::core::ConsoleLogger::Create("Ensure");
+		Logger->error(message);
+
+		return Ensure(value);
 	}
 #else
 	static inline bool Ensure(bool Value) { return Value; }
+	static inline bool Ensure(bool Value, const char* /*message*/) { return Value; }
 #endif // ZINET_DEBUG
 
 #if ZINET_DEBUG

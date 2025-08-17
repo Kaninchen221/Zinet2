@@ -66,5 +66,3 @@
 
 // ImGui payload types
 auto constexpr inline static ZinetImGuiPayloadType = "ASSET";
-
-#include "Zinet/Core/ZtDebug.hpp"

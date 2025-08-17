@@ -194,8 +194,11 @@ namespace zt::vulkan_renderer::tests
 
 		const auto fullPath = contentFolderPath / sourceCodeFileName;
 		const auto compileResult = shadersCompiler.compileFromFile(fullPath, shaderType);
-		if (compileResult.GetCompilationStatus() != shaderc_compilation_status_success)
+		if (compileResult.empty())
+		{
+			Ensure(false, "Compile returned empty result");
 			return shaderModule;
+		}
 
 		const auto& device = renderer.getRendererContext().device;
 		shaderModule.create(device, compileResult);

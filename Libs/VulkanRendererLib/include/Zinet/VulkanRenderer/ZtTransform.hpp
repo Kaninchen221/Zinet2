@@ -31,25 +31,23 @@ namespace zt::vulkan_renderer
 
 		MatrixT getMatrix() const noexcept;
 
-		void setPosition(const Vector3f& newPosition) noexcept { data.position = newPosition; }
-		const auto& getPosition() const noexcept { return data.position; }
+		void setPosition(const Vector3f& newPosition) noexcept { position = newPosition; }
+		const auto& getPosition() const noexcept { return position; }
 
 		/// Degrees
-		void setRotation(float newRotation) noexcept { data.rotation = newRotation; }
-		const auto& getRotation() const noexcept { return data.rotation; }
+		void setRotation(float newRotation) noexcept { rotation = newRotation; }
+		const auto& getRotation() const noexcept { return rotation; }
 
-		void setScale(const Vector3f& newScale) noexcept { data.scale = newScale; }
-		const auto& getScale() const noexcept { return data.scale; }
+		void setScale(const Vector3f& newScale) noexcept { scale = newScale; }
+		const auto& getScale() const noexcept { return scale; }
 
 		void imGui();
 
 	protected:
 
-		struct {
-			Vector3f position{ 0, 0, 0 };
-			float rotation{ 0 };
-			Vector3f scale{ 1, 1, 1 };
-		} data;
+		Vector3f position{ 0, 0, 0 };
+		float rotation{ 0 };
+		Vector3f scale{ 1, 1, 1 };
 
 	};
 }

@@ -23,7 +23,7 @@ print(f"Build folder path: {build_folder_path}")
 
 arguments = (f'-S {zinet_root_path} -B {build_folder_path} -G "{args.CMakeGenerator}" '
              f'-D CMAKE_BUILD_TYPE={args.BuildType} '
-             f'-D BUILD_SHARED_LIBS:BOOL=TRUE '
+             f'-D BUILD_SHARED_LIBS:BOOL=FALSE '
              f'-D SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON -D SAMPLES_BUILD=ON '
              f'-D TESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON -D TESTS_BUILD=ON')
 print(f"Arguments: {arguments}")

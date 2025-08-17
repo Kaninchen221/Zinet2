@@ -9,7 +9,7 @@ root.subdirectories = ["CoreLib", "VulkanRendererLib", "WindowLib", "MathLib", "
 root.globalCompileOptionsMSVC = "/W4 /WX /external:W0 /external:anglebrackets /MP"
 root.globalCompileOptionsGNU = "-Wall -Wextra -w -Werror -pedantic -pedantic-errors"
 root.globalCompileOptionsForAddressSanitizer = "/fsanitize=address /RTCu /experimental:module-"
-root.globalCompileDefinitions = "ZINET_STATIC _SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING ZINET_ROOT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}\""
+root.globalCompileDefinitions = "ZINET_STATIC ZINET_ROOT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}\""
 project_generator.add_generator(root)
 
 from zinet_generator.cmakelists_generator_library import CMakeListsGeneratorLibrary

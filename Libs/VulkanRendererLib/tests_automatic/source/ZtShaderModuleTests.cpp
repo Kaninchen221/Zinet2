@@ -68,7 +68,7 @@ namespace zt::vulkan_renderer::tests
 
 		const auto vertShaderFilePath = contentFolderPath / "simple_triangle_shader.vert";
 		const auto vertShaderResult = shadersCompiler.compileFromFile(vertShaderFilePath, ShaderType::Vertex);
-		ASSERT_EQ(vertShaderResult.GetCompilationStatus(), shaderc_compilation_status_success);
+		ASSERT_FALSE(vertShaderResult.empty());
 
 		ASSERT_TRUE(shaderModule.create(device, vertShaderResult));
 		ASSERT_TRUE(shaderModule.isValid());

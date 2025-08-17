@@ -8,13 +8,11 @@
 
 #include <vulkan/vulkan.h>
 
-#include <shaderc/shaderc.hpp>
-
 namespace zt::vulkan_renderer
 {
 	class Device;
 
-	class  ShaderModule : public VulkanObject<VkShaderModule>
+	class ShaderModule : public VulkanObject<VkShaderModule>
 	{
 	protected:
 
@@ -34,7 +32,7 @@ namespace zt::vulkan_renderer
 		ShaderModule& operator = (const ShaderModule& other) noexcept = delete;
 		ShaderModule& operator = (ShaderModule&& other) noexcept = default;
 
-		bool create(const Device& device, const shaderc::SpvCompilationResult& compilationResult);
+		bool create(const Device& device, const ShadersCompiler::CompileResult& compilationResult);
 
 		VkPipelineShaderStageCreateInfo createPipelineShaderStageCreateInfo(const ShaderType shaderType) const;
 

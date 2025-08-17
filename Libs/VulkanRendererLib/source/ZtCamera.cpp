@@ -6,12 +6,12 @@ namespace zt::vulkan_renderer
 {
 	Camera::MatrixT Camera::getViewMatrix() const noexcept
 	{
-		return glm::lookAt(data.position, data.lookingAt, data.upVector);
+		return glm::lookAt(position, lookingAt, upVector);
 	}
 
 	Camera::MatrixT Camera::getPerspectiveMatrix() const noexcept
 	{
-		auto perspective = glm::perspective(glm::radians(data.fieldOfView), data.aspectRatio, data.clipping.x, data.clipping.y);
+		auto perspective = glm::perspective(glm::radians(fieldOfView), aspectRatio, clipping.x, clipping.y);
 		perspective[1][1] *= -1;
 		return perspective;
 	}
@@ -19,9 +19,6 @@ namespace zt::vulkan_renderer
 	void Camera::imGui()
 	{
 #		if ZINET_USE_IMGUI
-
-		auto& position = data.position;
-		auto& lookingAt = data.lookingAt;
 
 		if (ImGui::CollapsingHeader("Properties"))
 		{

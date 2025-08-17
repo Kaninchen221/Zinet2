@@ -70,7 +70,7 @@ namespace zt::vulkan_renderer
 		objectDescriptorSetLayout.destroy(device);
 		objectDescriptorSet.invalidate();
 
-		data.vkDescriptorSets.clear();
+		vkDescriptorSets.clear();
 
 		pipeline.destroy(device);
 		pipelineLayout.destroy(device);
@@ -121,8 +121,8 @@ namespace zt::vulkan_renderer
 				VK_PIPELINE_BIND_POINT_GRAPHICS,
 				pipelineLayout.get(),
 				0,
-				static_cast<uint32_t>(data.vkDescriptorSets.size()),
-				data.vkDescriptorSets.data(),
+				static_cast<uint32_t>(vkDescriptorSets.size()),
+				vkDescriptorSets.data(),
 				0,
 				nullptr);
 		}
@@ -268,7 +268,7 @@ namespace zt::vulkan_renderer
 			const auto allocateInfo = DescriptorSets::GetDefaultAllocateInfo(descriptorPool, vkDescriptorSetLayouts);
 			if (descriptorSet.create(device, allocateInfo))
 			{
-				data.vkDescriptorSets.push_back(descriptorSet.get());
+				vkDescriptorSets.push_back(descriptorSet.get());
 			}
 		}
 

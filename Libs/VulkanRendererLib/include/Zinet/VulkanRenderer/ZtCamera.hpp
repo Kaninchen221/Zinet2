@@ -34,39 +34,37 @@ namespace zt::vulkan_renderer
 
 		MatrixT getViewMatrix() const noexcept;
 
-		void setPosition(const Vector3f& newPosition) noexcept { data.position = newPosition; }
-		const auto& getPosition() const noexcept { return data.position; }
+		void setPosition(const Vector3f& newPosition) noexcept { position = newPosition; }
+		const auto& getPosition() const noexcept { return position; }
 
-		void setLookingAt(const Vector3f& newLookingAt) noexcept { data.lookingAt = newLookingAt; }
-		const auto& getLookingAt() const noexcept { return data.lookingAt; }
+		void setLookingAt(const Vector3f& newLookingAt) noexcept { lookingAt = newLookingAt; }
+		const auto& getLookingAt() const noexcept { return lookingAt; }
 
-		void setUpVector(const Vector3f& newUpVector) noexcept { data.upVector = newUpVector; }
-		const auto& getUpVector() const noexcept { return data.upVector; }
+		void setUpVector(const Vector3f& newUpVector) noexcept { upVector = newUpVector; }
+		const auto& getUpVector() const noexcept { return upVector; }
 
 		MatrixT getPerspectiveMatrix() const noexcept;
 
-		void setFieldOfView(const float& newFieldOfView) noexcept { data.fieldOfView = newFieldOfView; }
-		const auto& getFieldOfView() const noexcept { return data.fieldOfView; }
+		void setFieldOfView(const float& newFieldOfView) noexcept { fieldOfView = newFieldOfView; }
+		const auto& getFieldOfView() const noexcept { return fieldOfView; }
 
-		void setAspectRatio(const float& newAspectRatio) noexcept { data.aspectRatio = newAspectRatio; }
-		const auto& getAspectRatio() const noexcept { return data.aspectRatio; }
+		void setAspectRatio(const float& newAspectRatio) noexcept { aspectRatio = newAspectRatio; }
+		const auto& getAspectRatio() const noexcept { return aspectRatio; }
 
-		void setClipping(const Vector2f& newClipping) noexcept { data.clipping = newClipping; }
-		const auto& getClipping() const noexcept { return data.clipping; }
+		void setClipping(const Vector2f& newClipping) noexcept { clipping = newClipping; }
+		const auto& getClipping() const noexcept { return clipping; }
 
 		void imGui();
 
 	protected:
 
-		struct {
-			Vector3f position{ 0.00001, 0, 1 };
-			Vector3f lookingAt{ 0, 0, 0 };
-			Vector3f upVector{ 0, 0, 1 };
+		Vector3f position{ 0.00001, 0, 1 };
+		Vector3f lookingAt{ 0, 0, 0 };
+		Vector3f upVector{ 0, 0, 1 };
 
-			float fieldOfView{ 90.f };
-			float aspectRatio{ 2.f };
-			Vector2f clipping{ 0.01f, 100.f };
-		} data;
+		float fieldOfView{ 90.f };
+		float aspectRatio{ 2.f };
+		Vector2f clipping{ 0.01f, 100.f };
 
 	};
 }

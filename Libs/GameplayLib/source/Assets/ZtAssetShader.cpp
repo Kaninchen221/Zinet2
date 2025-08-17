@@ -29,7 +29,7 @@ namespace zt::gameplay
 
 		const auto fileName = metaData.value("fileName", "fileName");
 		const auto compileResult = shadersCompiler.compileFromString(text, shaderType, fileName);
-		if (compileResult.GetCompilationStatus() != shaderc_compilation_status_success)
+		if (compileResult.empty())
 		{
 			Logger->error("Couldn't compile shader: {}", metaData.value("fileNameExt", "fileNameExt"));
 			return false;

@@ -6,8 +6,6 @@
 
 #include "Zinet/Core/ZtLogger.hpp"
 
-#include <shaderc/shaderc.hpp>
-
 #include <filesystem>
 
 namespace zt::vulkan_renderer
@@ -22,6 +20,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
+		using CompileResult = std::vector<uint32_t>;
+
 		ShadersCompiler() noexcept = default;
 		ShadersCompiler(const ShadersCompiler& other) noexcept = default;
 		ShadersCompiler(ShadersCompiler&& other) noexcept = default;
@@ -30,9 +30,9 @@ namespace zt::vulkan_renderer
 		ShadersCompiler& operator = (const ShadersCompiler& other) noexcept = default;
 		ShadersCompiler& operator = (ShadersCompiler&& other) noexcept = default;
 
-		shaderc::SpvCompilationResult compileFromFile(const std::filesystem::path& filePath, ShaderType shaderType) const;
+		CompileResult compileFromFile(const std::filesystem::path& filePath, ShaderType shaderType) const;
 
-		shaderc::SpvCompilationResult compileFromString(const std::string& source, ShaderType shaderType, const std::string& fileName) const;
+		CompileResult compileFromString(const std::string& source, ShaderType shaderType, const std::string& fileName) const;
 
 	};
 }

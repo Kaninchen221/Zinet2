@@ -1,20 +1,21 @@
 #include "Zinet/VulkanRenderer/ZtShaderType.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtDebug.hpp"
 
 namespace zt::vulkan_renderer
 {
-	shaderc_shader_kind ShaderTypeToShaderCShaderKind(const ShaderType shaderType) noexcept
+	EShLanguage ShaderTypeToESgLanguage(const ShaderType shaderType) noexcept
 	{
 		switch (shaderType)
 		{
-		case ShaderType::Compute: return shaderc_shader_kind::shaderc_compute_shader;
-		case ShaderType::Fragment: return shaderc_shader_kind::shaderc_glsl_fragment_shader;
-		case ShaderType::Vertex: return shaderc_shader_kind::shaderc_glsl_vertex_shader;
+		case ShaderType::Compute: return EShLanguage::EShLangCompute;
+		case ShaderType::Fragment: return EShLanguage::EShLangFragment;
+		case ShaderType::Vertex: return EShLanguage::EShLangVertex;
 		}
 
-		Ensure(false); // Not supported ShaderType
-		return shaderc_shader_kind::shaderc_glsl_infer_from_source;
+		Ensure(false, "Not supported ShaderType"); 
+		return EShLanguage::EShLangVertex;
 	}
 
 	VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType) noexcept
@@ -26,7 +27,7 @@ namespace zt::vulkan_renderer
 		case ShaderType::Vertex: return VK_SHADER_STAGE_VERTEX_BIT;
 		}
 
-		Ensure(false); // Not supported ShaderType
+		Ensure(false, "Not supported ShaderType");
 		return {};
 	}
 
@@ -39,7 +40,7 @@ namespace zt::vulkan_renderer
 		else if (str == "comp")
 			return ShaderType::Compute;
 
-		Ensure(false); // Not supported ShaderType
+		Ensure(false, "Not supported ShaderType");
 		return ShaderType::Invalid;
 	}
 }

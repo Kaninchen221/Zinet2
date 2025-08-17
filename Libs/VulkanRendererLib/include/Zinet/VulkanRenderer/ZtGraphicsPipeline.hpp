@@ -84,10 +84,7 @@ namespace zt::vulkan_renderer
 
 		static void UpdateDescriptorSet(const Device& device, const DescriptorInfo& descriptorInfo, const DescriptorSets& descriptorSet);
 
-		struct Data {
-			VkDescriptorSets vkDescriptorSets;
-		};
-		Data data;
+		VkDescriptorSets vkDescriptorSets;
 
 	};
 }

@@ -66,13 +66,13 @@ namespace zt::vulkan_renderer::tests
 
 			const auto vertexShaderFilePath = contentFolderPath / "simple_triangle_shader.vert";
 			const auto vertexShaderResult = shadersCompiler.compileFromFile(vertexShaderFilePath, ShaderType::Vertex);
-			ASSERT_EQ(vertexShaderResult.GetCompilationStatus(), shaderc_compilation_status_success);
+			ASSERT_FALSE(vertexShaderResult.empty());
 
 			ASSERT_TRUE(vertexShaderModule.create(device, vertexShaderResult));
 
 			const auto fragmentShaderFilePath = contentFolderPath / "simple_triangle_shader.frag";
 			const auto fragmentShaderResult = shadersCompiler.compileFromFile(fragmentShaderFilePath, ShaderType::Fragment);
-			ASSERT_EQ(fragmentShaderResult.GetCompilationStatus(), shaderc_compilation_status_success);
+			ASSERT_FALSE(fragmentShaderResult.empty());
 
 			ASSERT_TRUE(fragmentShaderModule.create(device, fragmentShaderResult));
 

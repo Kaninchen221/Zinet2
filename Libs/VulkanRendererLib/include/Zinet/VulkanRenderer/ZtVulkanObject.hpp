@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtDebug.hpp"
 
 namespace zt::vulkan_renderer
 {

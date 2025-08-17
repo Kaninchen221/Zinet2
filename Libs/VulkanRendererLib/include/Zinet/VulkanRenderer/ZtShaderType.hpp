@@ -2,22 +2,22 @@
 
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
 
-#include <shaderc/shaderc.hpp>
+#include <glslang/Public/ShaderLang.h>
 
 namespace zt::vulkan_renderer
 {
 	enum class ShaderType
 	{
-		Vertex = shaderc_shader_kind::shaderc_vertex_shader,
-		Fragment = shaderc_shader_kind::shaderc_fragment_shader,
-		Compute = shaderc_shader_kind::shaderc_compute_shader,
+		Vertex = EShLanguage::EShLangVertex,
+		Fragment = EShLanguage::EShLangFragment,
+		Compute = EShLanguage::EShLangCompute,
 		Invalid
 	};
 
-	 shaderc_shader_kind ShaderTypeToShaderCShaderKind(const ShaderType shaderType) noexcept;
+	EShLanguage ShaderTypeToESgLanguage(const ShaderType shaderType) noexcept;
 
-	 VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType) noexcept;
+	VkShaderStageFlagBits ShaderTypeToVkShaderStage(const ShaderType shaderType) noexcept;
 
-	 ShaderType FromStringToShaderType(const std::string& str);
+	ShaderType FromStringToShaderType(const std::string& str);
 
 }
