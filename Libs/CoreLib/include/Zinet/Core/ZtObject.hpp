@@ -8,6 +8,7 @@
 #include <vector>
 #include <memory>
 #include <type_traits>
+#include <utility>
 
 #include <fmt/format.h>
 
@@ -157,7 +158,7 @@ namespace zt::core
 		}
 
 		ObjectHandle(const ObjectHandle<ObjectT>& other) noexcept { *this = other; }
-		ObjectHandle(ObjectHandle<ObjectT>&& other) noexcept { *this = other; }
+		ObjectHandle(ObjectHandle<ObjectT>&& other) noexcept { *this = std::forward<ObjectHandle<ObjectT>>(other); }
 		~ObjectHandle() noexcept { decrement(); }
 
 		ObjectHandle<ObjectT>& operator = (const ObjectHandle<ObjectT>& other) noexcept
@@ -204,6 +205,12 @@ namespace zt::core
 			}
 
 			return *dynamic_cast<ObjectT*>(objectRefCounter->get());
+		}
+
+		template<class ObjectHandleT>
+		bool operator == (const ObjectHandleT& other) const noexcept
+		{
+			return getRefCounter() == other.getRefCounter();
 		}
 
 		ObjectRefCounter* getRefCounter() const noexcept { return objectRefCounter; }

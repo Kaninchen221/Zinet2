@@ -4,7 +4,7 @@
 
 namespace zt::gameplay
 {
-	void EditorBrowserInspector::show(core::Object* object)
+	void EditorBrowserInspector::show(ObjectHandle<core::Object>& object)
 	{
 		const ImVec2 size = {};
 		if (ImGui::BeginChild("Inspector", size, true))
@@ -18,40 +18,28 @@ namespace zt::gameplay
 		ImGui::EndChild();
 	}
 
-	void CreateObjectBrowserListElement(core::Object& object, EditorBrowserList& list)
+	void CreateNodeBrowserListElement(ObjectHandle<Node>& node, EditorBrowserList& list)
 	{
-		const auto& displayName = object.getDisplayName();
-		bool isSelected = &object == list.selectedObject;
-		if (ImGui::Selectable(displayName.c_str(), isSelected))
-		{
-			list.selectedObject = &object;
-			EditorBrowserList::Logger->info("Selected: {}", displayName);
-		}
-
-		CreateDragDropSourceSection(object);
-	}
-
-	void CreateNodeBrowserListElement(gameplay::Node& node, EditorBrowserList& list)
-	{
-		const auto& displayName = node.getDisplayName();
-		if (!node.isInspectable())
+		const auto& displayName = node->getDisplayName();
+		if (!node->isInspectable())
 			return;
 
-		bool isSelected = &node == list.selectedObject;
+		bool isSelected = node == list.selectedObject;
 		if (ImGui::Selectable(displayName.c_str(), isSelected))
 		{
-			list.selectedObject = &node;
+			list.selectedObject = node;
 			EditorBrowserList::Logger->info("Selected: {}", displayName);
 		}
 
 		CreateDragDropSourceSection(node);
 
 		ImGui::Indent(EditorConfig::IndentValue);
-		for (auto& child : node.getChildren())
+		for (auto& child : node->getChildren())
 		{
 			if (child)
-				CreateNodeBrowserListElement(*child.get(), list);
+				CreateNodeBrowserListElement(child, list);
 		}
 		ImGui::Unindent(EditorConfig::IndentValue);
 	}
+
 }

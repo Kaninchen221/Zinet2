@@ -2,14 +2,14 @@
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 #include "Zinet/Gameplay/Nodes/ZtNode.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystem.hpp"
+#include "Zinet/Gameplay/Editor/ZtEditorSearchBar.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtObject.hpp"
 #include "Zinet/Core/ZtConcepts.hpp"
 
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
-
-#include "Zinet/Gameplay/Editor/ZtEditorSearchBar.hpp"
 
 #include <imgui.h>
 
@@ -34,16 +34,18 @@ namespace zt::gameplay
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EditorBrowserInspector");
 
-		void show(core::Object* object = nullptr);
+		void show(ObjectHandle<core::Object>& object);
 	};
 
 	struct EditorBrowserList;
-	 void CreateObjectBrowserListElement(core::Object& object, EditorBrowserList& list);
 
-	 void CreateNodeBrowserListElement(gameplay::Node& node, EditorBrowserList& list);
+	template<class ObjectHandleLikeT>
+	void CreateObjectBrowserListElement(ObjectHandleLikeT& object, EditorBrowserList& list);
 
-	template<class ObjectT>
-	void CreateDragDropSourceSection(ObjectT& object);
+	void CreateNodeBrowserListElement(ObjectHandle<Node>& node, EditorBrowserList& list);
+
+	template<class ObjectHandleT>
+	void CreateDragDropSourceSection(ObjectHandleT& object);
 
 	struct EditorBrowserList
 	{
@@ -52,7 +54,7 @@ namespace zt::gameplay
 		template<class ContainerT>
 		void show(ContainerT& container, std::string_view searchText, auto ElementCreator);
 
-		core::Object* selectedObject = nullptr;
+		ObjectHandle<core::Object> selectedObject;
 	};
 
 	struct EditorBrowser
@@ -71,6 +73,20 @@ namespace zt::gameplay
 		EditorSearchBar searchBar;
 		bool isOpen = false;
 	};
+
+	template<class ObjectHandleLikeT>
+	void CreateObjectBrowserListElement(ObjectHandleLikeT& object, EditorBrowserList& list)
+	{
+		const auto& displayName = object->getDisplayName();
+		bool isSelected = object == list.selectedObject;
+		if (ImGui::Selectable(displayName.c_str(), isSelected))
+		{
+			list.selectedObject = object;
+			EditorBrowserList::Logger->info("Selected: {}", displayName);
+		}
+	
+		CreateDragDropSourceSection(object);
+	}
 }
 
 #include "Zinet/Gameplay/Editor/ZtEditorBrowserImpl.hpp"

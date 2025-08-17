@@ -6,14 +6,14 @@
 
 namespace zt::gameplay
 {
-	template<class ObjectT>
-	void CreateDragDropSourceSection(ObjectT& object)
+	template<class ObjectHandleT>
+	void CreateDragDropSourceSection(ObjectHandleT& objectHandle)
 	{
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
-			void* payloadData = &object;
+			void* payloadData = reinterpret_cast<void*>(&objectHandle);
 			ImGui::SetDragDropPayload(ZinetImGuiPayloadType, &payloadData, sizeof(void*));
-			ImGui::Text(object.getDisplayName().c_str());
+			ImGui::Text(objectHandle->getDisplayName().c_str());
 			ImGui::EndDragDropSource();
 		}
 	}
@@ -29,14 +29,13 @@ namespace zt::gameplay
 			int elementIndex = 0;
 			for (auto& containerElement : container)
 			{
-				auto& object = ResolveOptionalSmartPointer<typename ContainerT::value_type>(containerElement);
-				const auto& displayName = object.getDisplayName();
+				const auto& displayName = containerElement->getDisplayName();
 
 				if (!searchText.empty() && !displayName.contains(searchText))
 					continue;
 
 				ImGui::PushID(elementIndex);
-				std::invoke(elementCreator, object, *this);
+				std::invoke(elementCreator, containerElement, *this);
 				ImGui::PopID();
 
 				++elementIndex;

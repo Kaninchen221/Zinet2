@@ -78,4 +78,18 @@ namespace zt::core::tests
 		ObjectHandle<Object> object = node;
 		ASSERT_TRUE(object);
 	}
+
+	TEST_F(ObjectsStorageTests, DownCastTest)
+	{
+		auto testObject = objectsStorage.createObject<TestObject>("testObject");
+		
+		{
+			ObjectHandle<Object> object = testObject;
+
+			ASSERT_EQ(testObject.getRefCount(), 2);
+			ASSERT_EQ(object.getRefCounter(), testObject.getRefCounter());
+		}
+
+		ASSERT_EQ(testObject.getRefCount(), 1);
+	}
 }

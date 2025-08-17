@@ -6,6 +6,7 @@
 #include <imgui.h>
 
 #include "Zinet/Core/ZtPaths.hpp"
+#include "Zinet/Core/Assets/ZtAsset.hpp"
 
 namespace zt::gameplay
 {
@@ -33,9 +34,10 @@ namespace zt::gameplay
 
 		if (assetsList.isOpen)
 		{
-			auto& engineContext = EngineContext::Get();
-			auto assets = engineContext.getAssetsStorage().getAssets();
-			assetsList.show(assets, CreateObjectBrowserListElement);
+			// TODO: Replace Asset Handle with Object Handle
+			//auto& engineContext = EngineContext::Get();
+			//auto assets = engineContext.getAssetsStorage().getAssets();
+			//assetsList.show(assets, CreateObjectBrowserListElement<core::AssetHandle<>>);
 		}
 
 		if (metrics.shouldShow)
@@ -52,7 +54,7 @@ namespace zt::gameplay
 		if (systemsList.isOpen)
 		{
 			auto& engineContext = EngineContext::Get();
-			systemsList.show(engineContext.getSystems(), CreateObjectBrowserListElement);
+			systemsList.show(engineContext.getSystems(), CreateObjectBrowserListElement<ObjectHandle<System>>);
 		}
 
 		ImGui::ShowDemoWindow();
