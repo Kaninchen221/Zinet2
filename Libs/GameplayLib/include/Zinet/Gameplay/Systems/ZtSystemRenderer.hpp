@@ -34,24 +34,24 @@ namespace zt::gameplay
 
 	public:
 
-		 SystemRenderer() = default;
-		 SystemRenderer(const SystemRenderer& other) = default;
-		 SystemRenderer(SystemRenderer&& other) = default;
-		 ~SystemRenderer() = default;
+		SystemRenderer() = default;
+		SystemRenderer(const SystemRenderer& other) = default;
+		SystemRenderer(SystemRenderer&& other) = default;
+		~SystemRenderer() = default;
 
-		 SystemRenderer& operator = (const SystemRenderer& other) = default;
-		 SystemRenderer& operator = (SystemRenderer&& other) = default;
+		SystemRenderer& operator = (const SystemRenderer& other) = default;
+		SystemRenderer& operator = (SystemRenderer&& other) = default;
 
-		 static void SetUseImGui(bool use) noexcept { UseImGui = use; }
-		 static bool GetUseImGui() noexcept { return UseImGui; }
+		static void SetUseImGui(bool use) noexcept { UseImGui = use; }
+		static bool GetUseImGui() noexcept { return UseImGui; }
 
-		 bool init() override;
+		bool init() override;
 
-		 void deinit() override;
+		void deinit() override;
 
-		 void update() override;
+		void update() override;
 
-		 void imGui() override;
+		void imGui() override;
 
 		auto& getRenderer() noexcept { return renderer; }
 		const auto& getRenderer() const noexcept { return renderer; }

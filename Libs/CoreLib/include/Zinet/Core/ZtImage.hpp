@@ -23,17 +23,17 @@ namespace zt::core
 		static_assert(sizeof(std::byte) == sizeof(stbi_uc));
 		using Data = std::vector<std::byte>;
 
-		 Image() noexcept = default;
-		 Image(const Image& other) = delete;
+		Image() noexcept = default;
+		Image(const Image& other) = delete;
 		Image(Image&& other) noexcept { *this = std::move(other); }
-		 ~Image() noexcept { destroy(); }
+		~Image() noexcept { destroy(); }
 
-		 Image& operator = (const Image& other) = delete;
-		 Image& operator = (Image&& other) noexcept;
+		Image& operator = (const Image& other) = delete;
+		Image& operator = (Image&& other) noexcept;
 
-		 bool loadFromFile(const Path& path, int32_t expectedComponents);
+		bool loadFromFile(const Path& path, int32_t expectedComponents);
 
-		 bool loadFromData(const Data& rawData, int32_t expectedComponents);
+		bool loadFromData(const Data& rawData, int32_t expectedComponents);
 
 		auto getData() const noexcept { return data; }
 		auto getWidth() const noexcept { return width; }
@@ -41,7 +41,7 @@ namespace zt::core
 		auto getComponents() const noexcept { return components; }
 		auto getSize() const noexcept { return width * height * components; }
 
-		 void destroy() noexcept;
+		void destroy() noexcept;
 
 	protected:
 

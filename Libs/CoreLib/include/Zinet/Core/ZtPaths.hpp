@@ -10,7 +10,7 @@ namespace zt::core
 
 	namespace Paths
 	{
-		 Path RootPath();
+		Path RootPath();
 
 		// It must be inline function because of ZINET_CURRENT_PROJECT_ROOT_PATH
 		inline Path CurrentProjectRootPath() { return std::filesystem::absolute(ZINET_CURRENT_PROJECT_ROOT_PATH); }

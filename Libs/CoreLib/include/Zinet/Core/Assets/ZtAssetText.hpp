@@ -9,25 +9,25 @@ namespace zt::core
 	{
 	public:
 
-		 AssetText(const Extensions& extensions = { "txt" }) : Asset{ extensions } {}
-		 AssetText(const AssetText& other) = default;
-		 AssetText(AssetText&& other) noexcept = default;
-		 ~AssetText() noexcept = default;
+		AssetText(const Extensions& extensions = { "txt" }) : Asset{ extensions } {}
+		AssetText(const AssetText& other) = default;
+		AssetText(AssetText&& other) noexcept = default;
+		~AssetText() noexcept = default;
 
-		 AssetText& operator = (const AssetText& other) = default;
-		 AssetText& operator = (AssetText&& other) noexcept = default;
+		AssetText& operator = (const AssetText& other) = default;
+		AssetText& operator = (AssetText&& other) noexcept = default;
 
-		 std::string getClassName() const override { return "zt::core::AssetText"; }
+		std::string getClassName() const override { return "zt::core::AssetText"; }
 
-		 ObjectPtr createCopy() const override { return std::make_unique<AssetText>(*this); }
+		ObjectPtr createCopy() const override { return std::make_unique<AssetText>(*this); }
 
-		 bool load(const Path& rootPath) override;
+		bool load(const Path& rootPath) override;
 
-		 void unload() override;
+		void unload() override;
 
-		 void imGui() override;
+		void imGui() override;
 
-		 const std::string& getText() const { return text; }
+		const std::string& getText() const { return text; }
 
 	protected:
 

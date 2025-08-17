@@ -58,14 +58,14 @@ namespace zt::core
 
 		using Extensions = std::vector<std::string>;
 
-		 Asset() = default;
+		Asset() = default;
 		Asset(const Extensions& newExtensions) : extensions{ newExtensions } {}
-		 Asset(const Asset& other) = default;
-		 Asset(Asset&& other) noexcept = default;
-		 ~Asset() noexcept = default;
+		Asset(const Asset& other) = default;
+		Asset(Asset&& other) noexcept = default;
+		~Asset() noexcept = default;
 
-		 Asset& operator = (const Asset& other) = default;
-		 Asset& operator = (Asset&& other) noexcept = default;
+		Asset& operator = (const Asset& other) = default;
+		Asset& operator = (Asset&& other) noexcept = default;
 
 		std::string getDisplayName() { return metaData.value("fileNameExt", "fileNameExt_DefaultName"); }
 
@@ -77,7 +77,7 @@ namespace zt::core
 
 		const auto& getExtensions() const noexcept { return extensions; }
 		
-		 virtual void imGui();
+		virtual void imGui();
 
 		bool getAutoLoad() const noexcept { return autoLoad; }
 

@@ -19,43 +19,43 @@ namespace zt::core
 
 		using Byte = std::byte;
 
-		 File() = default;
-		 File(const File& other) = delete;
-		 File(File&& other) noexcept = default;
+		File() = default;
+		File(const File& other) = delete;
+		File(File&& other) noexcept = default;
 
-		 File& operator = (const File& other) = delete;
-		 File& operator = (File&& other) noexcept = default;
+		File& operator = (const File& other) = delete;
+		File& operator = (File&& other) noexcept = default;
 
-		 ~File();
+		~File();
 
 		auto& get() const noexcept { return fileStream; }
 		auto& get() noexcept { return fileStream; }
 
-		 void open(const std::filesystem::path& filePath, FileOpenMode openMode, bool binary = false);
+		void open(const std::filesystem::path& filePath, FileOpenMode openMode, bool binary = false);
 
-		 bool isOpen() const noexcept;
+		bool isOpen() const noexcept;
 
-		 bool isOkay() const noexcept;
+		bool isOkay() const noexcept;
 
-		 void log() const;
+		void log() const;
 
-		 std::string readLine();
+		std::string readLine();
 
-		 std::string readAll();
+		std::string readAll();
 
-		 std::vector<Byte> readData();
+		std::vector<Byte> readData();
 
-		 void write(const std::string& string);
+		void write(const std::string& string);
 
-		 void writeData(const std::vector<Byte>& bytes);
+		void writeData(const std::vector<Byte>& bytes);
 
-		 static std::ios_base::openmode ToStdOpenMode(FileOpenMode openMode) noexcept;
+		static std::ios_base::openmode ToStdOpenMode(FileOpenMode openMode) noexcept;
 
-		 void close();
+		void close();
 
-		 static bool RemoveFile(const std::filesystem::path& path);
+		static bool RemoveFile(const std::filesystem::path& path);
 
-		 static File CreateFile(const std::filesystem::path& path);
+		static File CreateFile(const std::filesystem::path& path);
 
 	protected:
 

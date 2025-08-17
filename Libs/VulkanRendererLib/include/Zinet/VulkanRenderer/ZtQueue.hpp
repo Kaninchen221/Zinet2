@@ -21,7 +21,7 @@ namespace zt::vulkan_renderer
 
 		Queue(HandleType newObjectHandle, std::uint32_t newQueueFamilyIndex = InvalidIndex) noexcept
 			: VulkanObject(newObjectHandle),
-			  queueFamilyIndex{ newQueueFamilyIndex }
+			 queueFamilyIndex{ newQueueFamilyIndex }
 		{}
 
 		Queue() noexcept = delete;

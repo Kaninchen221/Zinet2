@@ -20,31 +20,31 @@ namespace zt::wd
 
 	public:
 
-		 Keyboard() = delete;
-		 Keyboard(Window& newWindow);
-		 Keyboard(const Keyboard& other) = default;
-		 Keyboard(Keyboard&& other) noexcept = default;
+		Keyboard() = delete;
+		Keyboard(Window& newWindow);
+		Keyboard(const Keyboard& other) = default;
+		Keyboard(Keyboard&& other) noexcept = default;
 
-		 Keyboard& operator = (const Keyboard& other) = default;
-		 Keyboard& operator = (Keyboard&& other) noexcept = default;
+		Keyboard& operator = (const Keyboard& other) = default;
+		Keyboard& operator = (Keyboard&& other) noexcept = default;
 
-		 ~Keyboard() noexcept = default;
+		~Keyboard() noexcept = default;
 
 		const Window* getWindow() const noexcept { return window; }
 
 		const std::vector<KeyboardEvent>& getEvents() const noexcept { return events; }
 
-		 bool isPressed(KeyboardKey key) const;
+		bool isPressed(KeyboardKey key) const;
 
-		 bool isReleased(KeyboardKey key) const;
+		bool isReleased(KeyboardKey key) const;
 
-		 void bindCallbacks();
+		void bindCallbacks();
 
-		 void pushEvent(KeyboardKey key, std::int32_t scanCode, KeyboardEventType type, KeyboardMods mods);
+		void pushEvent(KeyboardKey key, std::int32_t scanCode, KeyboardEventType type, KeyboardMods mods);
 
 		void clearEvents() { events.clear(); }
 
-		 std::string asString() const override;
+		std::string asString() const override;
 
 	protected:
 

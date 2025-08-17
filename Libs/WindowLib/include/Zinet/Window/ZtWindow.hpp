@@ -26,61 +26,61 @@ namespace zt::wd
 
 	public:
 
-		 Window() noexcept = default;
-		 Window(const Window& other) noexcept = default;
-		 Window(Window&& other) noexcept = default;
+		Window() noexcept = default;
+		Window(const Window& other) noexcept = default;
+		Window(Window&& other) noexcept = default;
 
-		 Window& operator = (const Window& other) noexcept = default;
-		 Window& operator = (Window&& other) noexcept = default;
+		Window& operator = (const Window& other) noexcept = default;
+		Window& operator = (Window&& other) noexcept = default;
 
-		 ~Window() noexcept;
+		~Window() noexcept;
 
-		 bool create(int width = 1024, int height = 1024);
+		bool create(int width = 1024, int height = 1024);
 
 		GLFWwindow* getInternal() noexcept { return internalWindow; }
 		const GLFWwindow* getInternal() const noexcept { return internalWindow; }
 
-		 bool isOpen() const;
+		bool isOpen() const;
 
-		 bool shouldBeClosed() const;
+		bool shouldBeClosed() const;
 
-		 static void FramebufferSizeCallback(GLFWwindow* internalWindow, int width, int height);
+		static void FramebufferSizeCallback(GLFWwindow* internalWindow, int width, int height);
 
 		void setWindowEvents(WindowEvents* newEvent) { windowEvents = newEvent; }
 
 		const WindowEvents& getWindowEvents() const noexcept { return *windowEvents; }
 		WindowEvents& getWindowEvents() noexcept { return *windowEvents; }
 
-		 bool isMinimized() const;
+		bool isMinimized() const;
 
-		 void requestCloseWindow();
+		void requestCloseWindow();
 
-		 void setWindowResizedCallback(void* userPointer, WindowResizedCallback callback);
+		void setWindowResizedCallback(void* userPointer, WindowResizedCallback callback);
 
 		WindowResizedCallback getWindowResizedCallback() const noexcept { return windowResizedCallback; }
 
 		void* getWindowResizedCallbackUserPointer() noexcept { return windowResizedCallbackUserPointer; }
 
-		 void swapBuffers();
+		void swapBuffers();
 
-		 static void SetTransparentFramebuffer(bool value);
+		static void SetTransparentFramebuffer(bool value);
 
 		/// For Vulkan sometimes it's necessary to call this function too
-		 void makeWindowTransparentWhileUsingVulkan();
+		void makeWindowTransparentWhileUsingVulkan();
 
-		 Vector2i getFramebufferSize() const;
+		Vector2i getFramebufferSize() const;
 
-		 void setShowWindowBar(bool value);
+		void setShowWindowBar(bool value);
 
-		 void setPosition(const Vector2i& position);
-		 Vector2i getPosition() const;
+		void setPosition(const Vector2i& position);
+		Vector2i getPosition() const;
 
-		 void setSize(const Vector2i& size);
-		 Vector2i getSize() const;
+		void setSize(const Vector2i& size);
+		Vector2i getSize() const;
 
-		 void setTitle(const std::string& title);
+		void setTitle(const std::string& title);
 
-		 void destroyWindow();
+		void destroyWindow();
 
 	protected:
 

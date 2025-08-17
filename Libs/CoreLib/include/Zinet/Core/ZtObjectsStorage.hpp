@@ -18,13 +18,13 @@ namespace zt::core
 
 		using Objects = std::list<ObjectRefCounter>;
 
-		 ObjectsStorage() noexcept = default;
-		 ObjectsStorage(const ObjectsStorage& other) noexcept = delete;
-		 ObjectsStorage(ObjectsStorage&& other) noexcept = default;
-		 ~ObjectsStorage() noexcept = default;
+		ObjectsStorage() noexcept = default;
+		ObjectsStorage(const ObjectsStorage& other) noexcept = delete;
+		ObjectsStorage(ObjectsStorage&& other) noexcept = default;
+		~ObjectsStorage() noexcept = default;
 
-		 ObjectsStorage& operator = (const ObjectsStorage& other) noexcept = delete;
-		 ObjectsStorage& operator = (ObjectsStorage&& other) noexcept = default;
+		ObjectsStorage& operator = (const ObjectsStorage& other) noexcept = delete;
+		ObjectsStorage& operator = (ObjectsStorage&& other) noexcept = default;
 
 		template<std::derived_from<Object> ObjectT>
 		ObjectHandle<ObjectT> createObject(const std::string_view displayName);

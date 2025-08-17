@@ -23,13 +23,13 @@ namespace zt::core
 
 		using ObjectPtr = std::shared_ptr<Object>;
 
-		 Object() = default;
-		 Object(const Object& other) = default;
-		 Object(Object&& other) noexcept = default;
-		 ~Object() noexcept = default;
+		Object() = default;
+		Object(const Object& other) = default;
+		Object(Object&& other) noexcept = default;
+		~Object() noexcept = default;
 
-		 Object& operator = (const Object& other) = default;
-		 Object& operator = (Object&& other) noexcept = default;
+		Object& operator = (const Object& other) = default;
+		Object& operator = (Object&& other) noexcept = default;
 
 		virtual ObjectPtr createCopy() const { return {}; }
 
@@ -69,18 +69,18 @@ namespace zt::core
 
 	public:
 
-		 ObjectRefCounter() noexcept = default;
-		 ObjectRefCounter(const ObjectRefCounter& other) = delete;
-		 ObjectRefCounter(ObjectRefCounter&& other) noexcept
+		ObjectRefCounter() noexcept = default;
+		ObjectRefCounter(const ObjectRefCounter& other) = delete;
+		ObjectRefCounter(ObjectRefCounter&& other) noexcept
 		{
 			refCount = other.refCount;
 			other.refCount = 0;
 			object = std::move(other.object);
 		}
-		 ~ObjectRefCounter() noexcept = default;
+		~ObjectRefCounter() noexcept = default;
 
-		 ObjectRefCounter& operator = (const ObjectRefCounter& other) noexcept = delete;
-		 ObjectRefCounter& operator = (ObjectRefCounter&& other) noexcept = default;
+		ObjectRefCounter& operator = (const ObjectRefCounter& other) noexcept = delete;
+		ObjectRefCounter& operator = (ObjectRefCounter&& other) noexcept = default;
 
 		template<std::derived_from<Object> ObjectT>
 		void create(const std::string_view displayName)

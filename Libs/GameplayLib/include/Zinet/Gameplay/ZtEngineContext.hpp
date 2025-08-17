@@ -31,20 +31,20 @@ namespace zt::gameplay
 		EngineContext() {
 			instance = this;
 		};
-		 EngineContext(const EngineContext& other) = default;
-		 EngineContext(EngineContext&& other) noexcept = default;
-		 ~EngineContext() noexcept;
+		EngineContext(const EngineContext& other) = default;
+		EngineContext(EngineContext&& other) noexcept = default;
+		~EngineContext() noexcept;
 
-		 EngineContext& operator = (const EngineContext& other) = default;
-		 EngineContext& operator = (EngineContext&& other) noexcept = default;
+		EngineContext& operator = (const EngineContext& other) = default;
+		EngineContext& operator = (EngineContext&& other) noexcept = default;
 
 		static auto& Get() noexcept { Ensure(instance); return *instance; }
 
-		 bool init();
+		bool init();
 
-		 void loop();
+		void loop();
 
-		 void deinit();
+		void deinit();
 
 		template<std::derived_from<System> SystemT>
 		void addSystem(const std::string_view& displayName);

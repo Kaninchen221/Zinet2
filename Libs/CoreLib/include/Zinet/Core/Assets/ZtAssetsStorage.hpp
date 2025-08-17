@@ -27,29 +27,29 @@ namespace zt::core
 		using AssetHandlers = std::vector<AssetHandle<>>;
 		using LoadMinimalAssetResult = std::optional<Asset>;
 
-		 AssetsStorage() = default;
-		 AssetsStorage(const AssetsStorage& other) = default;
-		 AssetsStorage(AssetsStorage&& other) noexcept = default;
-		 ~AssetsStorage() noexcept = default;
+		AssetsStorage() = default;
+		AssetsStorage(const AssetsStorage& other) = default;
+		AssetsStorage(AssetsStorage&& other) noexcept = default;
+		~AssetsStorage() noexcept = default;
 
-		 AssetsStorage& operator = (const AssetsStorage& other) = default;
-		 AssetsStorage& operator = (AssetsStorage&& other) noexcept = default;
+		AssetsStorage& operator = (const AssetsStorage& other) = default;
+		AssetsStorage& operator = (AssetsStorage&& other) noexcept = default;
 
-		 bool storeAssets();
+		bool storeAssets();
 
-		 void unloadAssets();
+		void unloadAssets();
 
 		template<std::derived_from<Asset> AssetT>
 		void registerAssetClass();
 
-		 AssetHandle<Asset> get(const AssetsKey& key);
+		AssetHandle<Asset> get(const AssetsKey& key);
 
 		template<std::derived_from<Asset> AssetT>
 		AssetHandle<AssetT> getAs(const AssetsKey& key);
 
-		 AssetHandlers getAssets();
+		AssetHandlers getAssets();
 
-		 LoadMinimalAssetResult loadAssetMetaData(const fs::path& assetPath) const;
+		LoadMinimalAssetResult loadAssetMetaData(const fs::path& assetPath) const;
 
 		auto& getAssetsFinder() const noexcept { return assetsFinder; }
 

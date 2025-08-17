@@ -21,7 +21,7 @@ namespace zt::vulkan_renderer
 
 		ImageView(HandleType newObjectHandle, VkFormat newFormat = VK_FORMAT_UNDEFINED) noexcept
 			: VulkanObject(newObjectHandle), 
-			  format{ newFormat }
+			 format{ newFormat }
 		{}
 
 		ImageView() noexcept = delete;

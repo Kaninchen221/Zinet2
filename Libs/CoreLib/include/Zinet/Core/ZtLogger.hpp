@@ -22,22 +22,22 @@ namespace zt::core
 
 	public:
 
-		 CustomSink() = default;
-		 CustomSink(const CustomSink& other) = delete;
-		 CustomSink(CustomSink&& other) = delete;
+		CustomSink() = default;
+		CustomSink(const CustomSink& other) = delete;
+		CustomSink(CustomSink&& other) = delete;
 
-		 CustomSink& operator = (const CustomSink& other) = delete;
-		 CustomSink& operator = (CustomSink&& other) = delete;
+		CustomSink& operator = (const CustomSink& other) = delete;
+		CustomSink& operator = (CustomSink&& other) = delete;
 
-		 ~CustomSink() noexcept = default;
+		~CustomSink() noexcept = default;
 
-		 static const CallbackT& GetCallback() noexcept;
+		static const CallbackT& GetCallback() noexcept;
 
-		 static void SetCallback(CallbackT newCallback) noexcept;
+		static void SetCallback(CallbackT newCallback) noexcept;
 
 	protected:
 
-		 void sink_it_(const spdlog::details::log_msg& msg) override;
+		void sink_it_(const spdlog::details::log_msg& msg) override;
 
 		void flush_() override {}
 

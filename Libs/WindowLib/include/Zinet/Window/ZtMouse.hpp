@@ -18,20 +18,20 @@ namespace zt::wd
 
 		Mouse() = delete;
 		Mouse(Window& newWindow) : window{ &newWindow } {}
-		 Mouse(const Mouse& other) = default;
-		 Mouse(Mouse&& other) noexcept = default;
+		Mouse(const Mouse& other) = default;
+		Mouse(Mouse&& other) noexcept = default;
 
-		 Mouse& operator = (const Mouse& other) = default;
-		 Mouse& operator = (Mouse&& other) noexcept = default;
+		Mouse& operator = (const Mouse& other) = default;
+		Mouse& operator = (Mouse&& other) noexcept = default;
 
-		 ~Mouse() noexcept = default;
+		~Mouse() noexcept = default;
 
 		const Window* getWindow() const noexcept { return window; }
 		Window* getWindow() noexcept { return window; }
 
-		 bool isPressed(MouseButton mouseButton) const;
+		bool isPressed(MouseButton mouseButton) const;
 
-		 bool isReleased(MouseButton mouseButton) const;
+		bool isReleased(MouseButton mouseButton) const;
 
 		Vector2d getMousePosition() const noexcept;
 
@@ -41,19 +41,19 @@ namespace zt::wd
 
 		const std::vector<MousePositionEvent>& getPositionEvents() const noexcept { return positionEvents; }
 
-		 void bindCallbacks();
+		void bindCallbacks();
 
-		 static void ButtonCallback(GLFWwindow* internalWindow, int button, int action, int mods);
+		static void ButtonCallback(GLFWwindow* internalWindow, int button, int action, int mods);
 
-		 void pushButtonEvent(int button, int action, int mods);
+		void pushButtonEvent(int button, int action, int mods);
 
-		 static void PositionCallback(GLFWwindow* internalWindow, double positionX, double positionY);
+		static void PositionCallback(GLFWwindow* internalWindow, double positionX, double positionY);
 
-		 void pushPositionEvent(double positionX, double positionY);
+		void pushPositionEvent(double positionX, double positionY);
 
-		 void clearEvents();
+		void clearEvents();
 
-		 std::string asString() const;
+		std::string asString() const;
 
 	protected:
 
