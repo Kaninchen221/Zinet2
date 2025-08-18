@@ -161,10 +161,7 @@ namespace zt::core
 		template<class ObjectHandleT>
 		ObjectHandle(ObjectHandleT& objectHandle) noexcept
 			: ObjectHandle(objectHandle.getRefCounter())
-		{
-			//static_assert(std::derived_from<typename ObjectHandleT::ObjectT, typename ObjectHandle<ObjectT, StrongRef>::ObjectT>,
-			//	"ObjectHandleT must be derived from ObjectHandle with the same ObjectT type");
-		}
+		{}
 
 		ObjectHandle(const ObjectHandle<ObjectT>& other) noexcept { *this = other; }
 		ObjectHandle(ObjectHandle<ObjectT>&& other) noexcept { *this = std::forward<ObjectHandle<ObjectT>>(other); }

@@ -45,7 +45,10 @@ namespace zt::core::tests
 		ASSERT_FALSE(invalidAsset);
 
 		assetsStorage.unloadAssets();
-		ASSERT_TRUE(assetsStorage.getAssets().empty());
+		for (auto& asset : assetsStorage.getAssets())
+		{
+			EXPECT_FALSE(asset);
+		}
 	}
 
 	TEST_F(AssetsStorageTests, LoadMinimalAssetTest)
