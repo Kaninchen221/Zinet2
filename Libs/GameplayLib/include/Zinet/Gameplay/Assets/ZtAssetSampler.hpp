@@ -10,8 +10,6 @@
 namespace
 {
 	using Asset = zt::core::Asset;
-	template<class AssetT = Asset>
-	using AssetHandle = zt::core::AssetHandle<AssetT>;
 }
 
 namespace zt::gameplay
@@ -33,7 +31,7 @@ namespace zt::gameplay
 
 		ObjectPtr createCopy() const override 
 		{ 
-			auto copy = std::make_shared<AssetSampler>(*this);
+			auto copy = std::make_unique<AssetSampler>(*this);
 			copy->autoLoad = true;
 			return copy;
 		}

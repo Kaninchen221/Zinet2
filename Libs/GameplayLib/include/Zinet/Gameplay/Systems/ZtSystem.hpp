@@ -10,7 +10,7 @@ namespace zt::gameplay
 {
 	class EngineContext;
 
-	class  System : public core::Object
+	class System : public core::Object
 	{
 
 	public:
@@ -41,10 +41,7 @@ namespace zt::gameplay
 
 	protected:
 
-		struct {
-			Nodes nodes;
-		} data;
-		Nodes& nodes = data.nodes;
+		Nodes nodes;
 		bool initialized = false;
 
 	};

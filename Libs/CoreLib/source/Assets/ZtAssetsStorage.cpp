@@ -35,7 +35,7 @@ namespace zt::core
 				if (!std::ranges::contains(cdo->getExtensions(), extensionValue))
 					continue;
 
-				auto assetClassCopy = std::dynamic_pointer_cast<Asset>(cdo->createCopy());
+				auto assetClassCopy = dynamic_cast<Asset*>(cdo->createCopy().release());
 				if (!assetClassCopy)
 				{
 					result = false;
@@ -45,12 +45,21 @@ namespace zt::core
 				assetClassCopy->setMetaData(minimalAsset.getMetaData());
 
 				const auto keyValue = assetClassCopy->getMetaData().value("fileRelativePath", "");
-				auto [it, success] = assets.insert_or_assign(keyValue, std::move(assetClassCopy));
+				auto [it, success] = assets.insert_or_assign(keyValue, ObjectRefCounter{ assetClassCopy });
 				if (success)
 				{
 					Logger->info("Loaded asset meta data: {}", keyValue);
 
-					auto& asset = *it->second;
+					auto& objRefCounter = it->second;
+					if (!objRefCounter.isValid())
+					{
+						Logger->error("ObjectRefCounter is invalid for asset with key: {}, but continue", keyValue);
+						result = false;
+						continue;
+					}
+					assetHandlers.emplace_back(&objRefCounter);
+
+					auto& asset = *dynamic_cast<Asset*>(objRefCounter.get());
 
 					core::JsonArchive metaDataArchive{ &asset.getMetaData() };
 					asset.deserialize(metaDataArchive);
@@ -84,12 +93,15 @@ namespace zt::core
 
 	void AssetsStorage::unloadAssets()
 	{
-		for (auto& [key, asset] : assets)
+		for (auto& assetHandle : assetHandlers)
 		{
-			auto& metaData = asset->getMetaData();
+			if (!assetHandle)
+				continue;
+
+			auto& metaData = assetHandle->getMetaData();
 
 			core::JsonArchive metaDataArchive{ &metaData };
-			asset->serialize(metaDataArchive);
+			assetHandle->serialize(metaDataArchive);
 
 			const auto rootPath = assetsFinder.getRootPath();
 			const auto metaDataFilePath = rootPath / metaData["assetRelativePath"];
@@ -102,12 +114,19 @@ namespace zt::core
 			}
 			assetFile.close();
 
-			asset->unload();
+			assetHandle->unload();
 		}
-		assets.clear();
+
+		for (auto& [key, asset] : assets)
+		{
+			if (asset)
+			{
+				asset.reset();
+			}
+		}
 	}
 
-	AssetHandle<Asset> AssetsStorage::get(const AssetsKey& key)
+	ObjectHandle<Asset> AssetsStorage::get(const AssetsKey& key)
 	{
 		auto findResult = assets.find(key);
 		if (findResult == assets.end())
@@ -116,17 +135,7 @@ namespace zt::core
 			return nullptr;
 		}
 
-		return findResult->second.get();
-	}
-
-	AssetsStorage::AssetHandlers AssetsStorage::getAssets()
-	{
-		AssetsStorage::AssetHandlers result;
-		for (auto& asset : assets)
-		{
-			result.emplace_back(asset.second.get());
-		}
-		return result;
+		return &findResult->second;
 	}
 
 	AssetsStorage::LoadMinimalAssetResult AssetsStorage::loadAssetMetaData(const fs::path& assetPath) const

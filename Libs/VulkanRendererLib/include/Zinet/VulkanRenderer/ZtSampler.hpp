@@ -25,7 +25,7 @@ namespace zt::vulkan_renderer
 		return VkFilter::VK_FILTER_NEAREST;
 	}
 
-	class  Sampler : public VulkanObject<VkSampler>
+	class Sampler : public VulkanObject<VkSampler>
 	{
 	protected:
 

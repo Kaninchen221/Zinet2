@@ -93,12 +93,13 @@ namespace zt::gameplay
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(ZinetImGuiPayloadType))
 				{
-					core::Asset* asset = nullptr;
-					std::memcpy(&asset, payload->Data, sizeof(AssetT*));
-					AssetT* castedAsset = dynamic_cast<AssetT*>(asset);
+					core::ObjectRefCounter* objRefCounter{};
+					void* destiny = &objRefCounter;
+					std::memcpy(destiny, payload->Data, sizeof(AssetT*));
+					AssetT* castedAsset = dynamic_cast<AssetT*>(objRefCounter->get());
 					if (castedAsset)
 					{
-						assetHandle = core::AssetHandle<AssetT>{ castedAsset };
+						assetHandle = core::AssetHandle<AssetT>{ objRefCounter };
 						Logger->info("Set a new asset");
 					}
 					else

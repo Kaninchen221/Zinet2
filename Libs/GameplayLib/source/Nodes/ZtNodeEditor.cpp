@@ -34,10 +34,9 @@ namespace zt::gameplay
 
 		if (assetsList.isOpen)
 		{
-			// TODO: Replace Asset Handle with Object Handle
-			//auto& engineContext = EngineContext::Get();
-			//auto assets = engineContext.getAssetsStorage().getAssets();
-			//assetsList.show(assets, CreateObjectBrowserListElement<core::AssetHandle<>>);
+			auto& engineContext = EngineContext::Get();
+			auto assets = engineContext.getAssetsStorage().getAssets();
+			assetsList.show(assets, CreateObjectBrowserListElement<core::AssetHandle<core::Asset>>);
 		}
 
 		if (metrics.shouldShow)

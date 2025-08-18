@@ -27,7 +27,7 @@ namespace zt::gameplay
 
 		ImGui::NewFrame();
 
-		for (auto& node : data.nodes)
+		for (auto& node : nodes)
 		{
 			if (node.isValid())
 			{

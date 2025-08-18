@@ -21,7 +21,7 @@ namespace zt::core
 	{
 	public:
 
-		using ObjectPtr = std::shared_ptr<Object>;
+		using ObjectPtr = std::unique_ptr<Object>;
 
 		Object() = default;
 		Object(const Object& other) = default;
@@ -70,6 +70,9 @@ namespace zt::core
 	public:
 
 		ObjectRefCounter() noexcept = default;
+		ObjectRefCounter(Object* objectPtr) noexcept
+			: object{ objectPtr }
+		{}
 		ObjectRefCounter(const ObjectRefCounter& other) = delete;
 		ObjectRefCounter(ObjectRefCounter&& other) noexcept
 		{
@@ -104,9 +107,13 @@ namespace zt::core
 
 		void decrement() noexcept
 		{
+			if (refCount <= 0)
+			{
+				Ensure(false, "refCount couldn't be less than 0");
+				return;
+			}
+
 			--refCount;
-			if (refCount == 0)
-				reset();
 		}
 
 		void reset() noexcept
@@ -122,6 +129,8 @@ namespace zt::core
 		size_t getRefCount() const noexcept { return refCount; }
 
 		Object* get() const noexcept { return object.get(); }
+
+		Object* operator->() const noexcept { return get(); }
 
 	protected:
 		size_t refCount = 0;
@@ -153,13 +162,13 @@ namespace zt::core
 		ObjectHandle(ObjectHandleT& objectHandle) noexcept
 			: ObjectHandle(objectHandle.getRefCounter())
 		{
-			static_assert(std::derived_from<typename ObjectHandleT::ObjectT, typename ObjectHandle<ObjectT, StrongRef>::ObjectT>,
-				"ObjectHandleT must be derived from ObjectHandle with the same ObjectT type");
+			//static_assert(std::derived_from<typename ObjectHandleT::ObjectT, typename ObjectHandle<ObjectT, StrongRef>::ObjectT>,
+			//	"ObjectHandleT must be derived from ObjectHandle with the same ObjectT type");
 		}
 
 		ObjectHandle(const ObjectHandle<ObjectT>& other) noexcept { *this = other; }
 		ObjectHandle(ObjectHandle<ObjectT>&& other) noexcept { *this = std::forward<ObjectHandle<ObjectT>>(other); }
-		~ObjectHandle() noexcept { decrement(); }
+		~ObjectHandle() noexcept { if (isValid()) decrement(); }
 
 		ObjectHandle<ObjectT>& operator = (const ObjectHandle<ObjectT>& other) noexcept
 		{

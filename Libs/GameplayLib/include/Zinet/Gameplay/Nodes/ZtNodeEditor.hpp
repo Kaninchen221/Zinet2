@@ -17,7 +17,7 @@ namespace zt::gameplay
 		void show();
 	};
 
-	class  NodeEditor : public Node
+	class NodeEditor : public Node
 	{
 	protected:
 

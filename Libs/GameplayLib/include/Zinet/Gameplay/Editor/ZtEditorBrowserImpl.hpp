@@ -11,7 +11,7 @@ namespace zt::gameplay
 	{
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
-			void* payloadData = reinterpret_cast<void*>(&objectHandle);
+			void* payloadData = reinterpret_cast<void*>(objectHandle.getRefCounter());
 			ImGui::SetDragDropPayload(ZinetImGuiPayloadType, &payloadData, sizeof(void*));
 			ImGui::Text(objectHandle->getDisplayName().c_str());
 			ImGui::EndDragDropSource();

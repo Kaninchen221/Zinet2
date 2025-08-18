@@ -13,6 +13,9 @@
 
 namespace zt::core
 {
+	template<std::derived_from<Asset> AssetT>
+	using AssetHandle = ObjectHandle<AssetT, true>;
+
 	class AssetsStorage : public Object
 	{
 	protected:
@@ -22,9 +25,8 @@ namespace zt::core
 	public:
 
 		using AssetsKey = std::string;
-		using ObjectPtr = std::shared_ptr<Asset>;
-		using Assets = std::map<AssetsKey, ObjectPtr>;
-		using AssetHandlers = std::vector<AssetHandle<>>;
+		using Assets = std::map<AssetsKey, ObjectRefCounter>;
+		using AssetHandlers = std::vector<ObjectHandle<Asset>>;
 		using LoadMinimalAssetResult = std::optional<Asset>;
 
 		AssetsStorage() = default;
@@ -42,12 +44,12 @@ namespace zt::core
 		template<std::derived_from<Asset> AssetT>
 		void registerAssetClass();
 
-		AssetHandle<Asset> get(const AssetsKey& key);
+		ObjectHandle<Asset> get(const AssetsKey& key);
 
 		template<std::derived_from<Asset> AssetT>
-		AssetHandle<AssetT> getAs(const AssetsKey& key);
+		ObjectHandle<AssetT> getAs(const AssetsKey& key);
 
-		AssetHandlers getAssets();
+		AssetHandlers getAssets() { return assetHandlers; }
 
 		LoadMinimalAssetResult loadAssetMetaData(const fs::path& assetPath) const;
 
@@ -56,6 +58,7 @@ namespace zt::core
 	protected:
 
 		Assets assets;
+		AssetHandlers assetHandlers;
 		AssetsFinder assetsFinder;
 		ClassRegistry<Asset> classRegistry;
 
@@ -68,13 +71,13 @@ namespace zt::core
 	}
 
 	template<std::derived_from<Asset> AssetT>
-	AssetHandle<AssetT> AssetsStorage::getAs(const AssetsKey& key)
+	ObjectHandle<AssetT> AssetsStorage::getAs(const AssetsKey& key)
 	{
 		auto assetHandle = get(key);
 		if (!assetHandle)
-			return nullptr;
+			ObjectHandle<AssetT>{ nullptr };
 
-		auto result = dynamic_cast<AssetT*>(assetHandle.get());
+		auto result = ObjectHandle<AssetT>(assetHandle);
 		return result;
 	}
 }

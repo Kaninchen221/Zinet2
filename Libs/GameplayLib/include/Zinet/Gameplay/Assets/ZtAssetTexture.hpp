@@ -16,8 +16,6 @@
 namespace
 {
 	using Asset = zt::core::Asset;
-	template<class AssetT = Asset>
-	using AssetHandle = zt::core::AssetHandle<AssetT>;
 }
 
 namespace zt::gameplay
@@ -35,7 +33,7 @@ namespace zt::gameplay
 
 		std::string getClassName() const override { return "zt::gameplay::AssetTexture"; }
 
-		ObjectPtr createCopy() const override { return std::make_shared<AssetTexture>(*this); }
+		ObjectPtr createCopy() const override { return std::make_unique<AssetTexture>(*this); }
 
 		bool load(const core::Path& rootPath) override;
 
