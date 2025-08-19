@@ -12,7 +12,7 @@
 namespace zt::core
 {
 	// TODO: Rename to SimpleCallbackSink
-	class CustomSink : public spdlog::sinks::base_sink<std::mutex>
+	class SimpleCallbackSink : public spdlog::sinks::base_sink<std::mutex>
 	{
 	public:
 		using CallbackT = void(*)();
@@ -22,14 +22,14 @@ namespace zt::core
 
 	public:
 
-		CustomSink() = default;
-		CustomSink(const CustomSink& other) = delete;
-		CustomSink(CustomSink&& other) = delete;
+		SimpleCallbackSink() = default;
+		SimpleCallbackSink(const SimpleCallbackSink& other) = delete;
+		SimpleCallbackSink(SimpleCallbackSink&& other) = delete;
 
-		CustomSink& operator = (const CustomSink& other) = delete;
-		CustomSink& operator = (CustomSink&& other) = delete;
+		SimpleCallbackSink& operator = (const SimpleCallbackSink& other) = delete;
+		SimpleCallbackSink& operator = (SimpleCallbackSink&& other) = delete;
 
-		~CustomSink() noexcept = default;
+		~SimpleCallbackSink() noexcept = default;
 
 		static const CallbackT& GetCallback() noexcept;
 
@@ -94,7 +94,7 @@ namespace zt::core
 		if (!logger)
 			logger.internal = spdlog::stdout_color_mt(name);
 
-		auto sink = std::make_shared<CustomSink>();
+		auto sink = std::make_shared<SimpleCallbackSink>();
 		auto& sinks = logger.internal->sinks();
 		sinks.push_back(sink);
 		

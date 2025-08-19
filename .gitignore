@@ -47,3 +47,6 @@ Scripts/outputs/*.temp
 # Codelite
 .codelite
 .codelite
+
+# Ignore ImGui ini files
+imgui.ini

@@ -5,7 +5,7 @@
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 {
 	auto callback = []() { zt::TerminateDebug(); };
-    zt::core::CustomSink::SetCallback(callback);
+    zt::core::SimpleCallbackSink::SetCallback(callback);
 
 	zt::sandbox::Sandbox sandbox;
 	sandbox.start();

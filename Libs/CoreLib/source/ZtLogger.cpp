@@ -2,17 +2,17 @@
 
 namespace zt::core
 {
-	const CustomSink::CallbackT& CustomSink::GetCallback() noexcept
+	const SimpleCallbackSink::CallbackT& SimpleCallbackSink::GetCallback() noexcept
 	{
 		return Callback;
 	}
 
-	void CustomSink::SetCallback(CallbackT newCallback) noexcept
+	void SimpleCallbackSink::SetCallback(CallbackT newCallback) noexcept
 	{
 		Callback = newCallback;
 	}
 
-	void CustomSink::sink_it_(const spdlog::details::log_msg& msg)
+	void SimpleCallbackSink::sink_it_(const spdlog::details::log_msg& msg)
 	{
 		if (GetCallback())
 		{
