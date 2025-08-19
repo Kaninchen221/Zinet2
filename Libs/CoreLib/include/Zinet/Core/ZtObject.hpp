@@ -59,7 +59,7 @@ namespace zt::core
 
 		bool inspectable = true;
 		bool saveable = false;
-		std::string displayName;
+		std::string displayName{};
 
 	};
 

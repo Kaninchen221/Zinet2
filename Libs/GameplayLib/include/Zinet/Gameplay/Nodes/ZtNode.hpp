@@ -9,7 +9,7 @@ namespace zt::gameplay
 {
 	class Node : public core::Object
 	{
-	protected:
+	private:
 
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::Node");
 
@@ -48,8 +48,8 @@ namespace zt::gameplay
 
 	protected:
 
-		Children children;
-		ObjectWeakHandle<Node> parent;
+		Children children{};
+		ObjectWeakHandle<Node> parent{};
 
 	};
 

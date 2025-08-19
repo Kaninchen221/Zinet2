@@ -13,11 +13,10 @@
 
 namespace zt::gameplay
 {
-	class  NodeSprite : public Node2D
+	class NodeSprite : public Node2D
 	{
-	protected:
+	private:
 
-		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::NodeSprite");
 
 	public:
 

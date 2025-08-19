@@ -12,7 +12,7 @@ namespace zt::gameplay
 {
 	class  Node2D : public Node
 	{
-	protected:
+	private:
 
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::Node2D");
 
@@ -29,7 +29,7 @@ namespace zt::gameplay
 		vulkan_renderer::DescriptorInfo getPipelineDescriptorInfos() const;
 		vulkan_renderer::DescriptorInfo getDrawCallDescriptorInfos() const;
 
-		vulkan_renderer::Transform transform;
+		vulkan_renderer::Transform transform{};
 
 	};
 
