@@ -18,7 +18,6 @@ namespace zt::vulkan_renderer
 {
 	struct DrawInfo;
 
-	// TODO: Check the memory usage (it's too big)
 	class  VulkanRenderer : public core::Object
 	{
 	protected:

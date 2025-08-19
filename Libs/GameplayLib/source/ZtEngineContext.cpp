@@ -52,7 +52,10 @@ namespace zt::gameplay
 
 		for (auto& system : systems)
 		{
-			system->deinit();
+			if (!system->deinit())
+			{
+				Logger->error("System: {} deinit failed", system->getClassName());
+			}
 		}
 
 		window.destroyWindow();
@@ -79,7 +82,7 @@ namespace zt::gameplay
 			destroyNodes(child);
 		}
 		node.invalidate();
-		// TODO: Invalidate? Or we should be able to destroy obejcts?
+		// TODO: Invalidate? Or we should be able to destroy objects (reset in obj ref counter)?
 	}
 
 }

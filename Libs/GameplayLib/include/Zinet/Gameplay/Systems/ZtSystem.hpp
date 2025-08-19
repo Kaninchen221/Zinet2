@@ -27,8 +27,7 @@ namespace zt::gameplay
 
 		virtual bool init() { initialized = true; return true; }
 
-		// TODO: should return bool
-		virtual void deinit() { initialized = false; }
+		virtual bool deinit() { initialized = false; return true; }
 
 		virtual void update() {}
 

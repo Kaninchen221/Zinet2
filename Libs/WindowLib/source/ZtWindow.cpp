@@ -136,7 +136,9 @@ namespace zt::wd
 		SetWindowLong(hwnd, GWL_EXSTYLE,
 		GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
 		SetLayeredWindowAttributes(hwnd, 0, static_cast<BYTE>(255), LWA_ALPHA);
-#		endif
+#		else
+		TerminateDebug("makeWindowTransparentWhileUsingVulkan is not implemented for this platform");
+#		endif // ZINET_WINDOWS
 	}
 
 	void Window::destroyWindow()

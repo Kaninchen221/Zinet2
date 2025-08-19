@@ -49,9 +49,10 @@ namespace zt::gameplay
 		return true;
 	}
 
-	void SystemRenderer::deinit()
+	bool SystemRenderer::deinit()
 	{
-		System::deinit();
+		if (!System::deinit())
+			return false;
 
 		const auto& device = renderer.getRendererContext().device;
 		device.waitIdle();
@@ -68,6 +69,8 @@ namespace zt::gameplay
 		}
 
 		renderer.deinit();
+
+		return true;
 	}
 
 	void SystemRenderer::update()

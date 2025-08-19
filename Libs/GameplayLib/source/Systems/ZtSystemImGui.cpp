@@ -9,13 +9,12 @@ namespace zt::gameplay
 {
 	bool SystemImGui::init()
 	{
-		System::init();
-		return true;
+		return System::init();
 	}
 
-	void SystemImGui::deinit()
+	bool SystemImGui::deinit()
 	{
-		System::deinit();
+		return System::deinit();
 	}
 
 	void SystemImGui::update()

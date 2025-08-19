@@ -26,7 +26,7 @@ namespace zt::gameplay
 
 		bool init() override;
 
-		void deinit() override;
+		bool deinit() override;
 
 		void update() override;
 

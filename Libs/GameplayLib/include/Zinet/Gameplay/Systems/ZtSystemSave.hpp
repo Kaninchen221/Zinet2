@@ -28,7 +28,7 @@ namespace zt::gameplay
 
 		bool init() override { return System::init();  }
 
-		void deinit() override { System::deinit(); }
+		bool deinit() override { return System::deinit(); }
 
 		void imGui() override { System::imGui(); }
 
