@@ -32,6 +32,7 @@ namespace zt::core::tests
 
 		static_assert(std::is_base_of_v<ObjectBase, Object>);
 		static_assert(std::is_default_constructible_v<Object>);
+		static_assert(std::is_constructible_v<Object, std::string>);
 
 		Object object;
 	};

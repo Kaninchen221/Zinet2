@@ -24,6 +24,7 @@ namespace zt::core
 		using ObjectPtr = std::unique_ptr<Object>;
 
 		Object() = default;
+		Object(const std::string& newDisplayName) : displayName{ newDisplayName } {}
 		Object(const Object& other) = default;
 		Object(Object&& other) noexcept = default;
 		~Object() noexcept = default;
