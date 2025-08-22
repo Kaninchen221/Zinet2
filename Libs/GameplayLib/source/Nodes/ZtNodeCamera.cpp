@@ -1,13 +1,13 @@
 ﻿#include "Zinet/Gameplay/Nodes/ZtNodeCamera.hpp"
 
-#include <imgui.h>
+#include "Zinet/Core/ZtImgui.hpp"
 
 namespace zt::gameplay
 {
 
 	void NodeCamera::imGui()
 	{
-		ImGui::Text("Node Camera");
+		ImGui::TextCStr("Node Camera");
 		camera.imGui();
 	}
 

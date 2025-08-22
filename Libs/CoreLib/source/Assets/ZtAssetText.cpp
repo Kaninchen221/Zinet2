@@ -1,6 +1,6 @@
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
 
-#include <imgui.h>
+#include "Zinet/Core/ZtImgui.hpp"
 
 namespace zt::core
 {
@@ -35,8 +35,8 @@ namespace zt::core
 			return;
 
 		ImGui::Separator();
-		ImGui::Text("Loaded text:");
-		ImGui::Text(text.c_str());
+		ImGui::TextCStr("Loaded text:");
+		ImGui::Text(text);
 	}
 
 }

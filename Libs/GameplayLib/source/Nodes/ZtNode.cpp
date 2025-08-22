@@ -1,16 +1,14 @@
 ﻿#include "Zinet/Gameplay/Nodes/ZtNode.hpp"
 
 #include "Zinet/Core/ZtArchive.hpp"
-
-#include <imgui.h>
-#include <fmt/format.h>
+#include "Zinet/Core/ZtImgui.hpp"
 
 namespace zt::gameplay
 {
 
 	void Node::imGui()
 	{
-		ImGui::Text(fmt::format("Node: {}", getDisplayName()).c_str());
+		ImGui::TextFMT("Node: {}", getDisplayName());
 	}
 
 	bool Node::serialize(core::JsonArchive& archive)

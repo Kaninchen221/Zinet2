@@ -1,14 +1,13 @@
 #pragma once
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
-#include "Zinet/Core/Assets/ZtAsset.hpp"
+#include "Zinet/Core/ZtImGui.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/Assets/ZtAsset.hpp"
 
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
 
 #include <concepts>
-
-#include <imgui.h>
 
 namespace zt::gameplay
 {
@@ -124,7 +123,7 @@ namespace zt::gameplay
 
 			if (ImGui::BeginItemTooltip())
 			{
-				ImGui::Text("Invalidate Asset handle");
+				ImGui::TextCStr("Invalidate Asset handle");
 				ImGui::EndTooltip();
 			}
 		};
@@ -138,18 +137,18 @@ namespace zt::gameplay
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
-			ImGui::Text(propertyName.data());
+			ImGui::Text(propertyName);
 
 			if (assetHandle)
 			{
 				ImGui::TableNextColumn();
 				auto assetName = assetHandle->getMetaData().value("fileName", "fileName");
-				ImGui::Text(assetName.data());
+				ImGui::Text(assetName);
 			}
 			else
 			{
 				ImGui::TableNextColumn();
-				ImGui::Text("Invalid asset handle");
+				ImGui::TextCStr("Invalid asset handle");
 			}
 
 			ImGui::TableNextColumn();
@@ -161,8 +160,7 @@ namespace zt::gameplay
 
 		if (assetHandle)
 		{
-			const std::string isLoaded = fmt::format("Is loaded: {}", assetHandle->isLoaded());
-			ImGui::Text(isLoaded.c_str());
+			ImGui::TextFMT("Is loaded: {}", assetHandle->isLoaded());
 		}
 
 		ImGui::PopID();

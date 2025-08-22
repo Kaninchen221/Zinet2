@@ -3,6 +3,7 @@
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 
 #include "Zinet/Core/ZtFile.hpp"
+#include "Zinet/Core/ZtImGui.hpp"
 
 namespace zt::gameplay
 {
@@ -81,7 +82,7 @@ namespace zt::gameplay
 		
 		ImGui::Text("Sampler type:");
 		ImGui::SameLine();
-		ImGui::Text(typeStr.c_str());
+		ImGui::Text(typeStr);
 	}
 
 }

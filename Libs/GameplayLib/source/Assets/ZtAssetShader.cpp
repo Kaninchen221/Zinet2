@@ -5,7 +5,7 @@
 #include <Zinet/VulkanRenderer/ZtShadersCompiler.hpp>
 #include <Zinet/VulkanRenderer/ZtShaderModule.hpp>
 
-#include <imgui.h>
+#include "Zinet/Core/ZtImgui.hpp"
 
 namespace zt::gameplay
 {
@@ -73,8 +73,8 @@ namespace zt::gameplay
 			return;
 
 		ImGui::Separator();
-		ImGui::Text("Loaded shader code:");
-		ImGui::Text(text.c_str());
+		ImGui::TextCStr("Loaded shader code:");
+		ImGui::Text(text);
 	}
 
 }

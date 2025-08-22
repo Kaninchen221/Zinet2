@@ -8,10 +8,9 @@
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtObject.hpp"
 #include "Zinet/Core/ZtConcepts.hpp"
+#include "Zinet/Core/ZtImgui.hpp"
 
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
-
-#include <imgui.h>
 
 namespace zt::gameplay
 {
@@ -27,7 +26,7 @@ namespace zt::gameplay
 
 		const std::string& getDisplayName() { return displayName; }
 
-		void imGui() { auto name = getDisplayName(); ImGui::Text(name.c_str()); }
+		void imGui() { ImGui::Text(getDisplayName()); }
 	};
 
 	struct  EditorBrowserInspector

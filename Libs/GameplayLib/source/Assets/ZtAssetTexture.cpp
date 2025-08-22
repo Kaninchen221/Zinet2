@@ -4,12 +4,9 @@
 
 #include "Zinet/Core/ZtFile.hpp"
 #include "Zinet/Core/ZtImage.hpp"
+#include "Zinet/Core/ZtImgui.hpp"
 
 #include "Zinet/VulkanRenderer/ZtQueueUtils.hpp"
-
-#include <imgui.h>
-
-#include <fmt/format.h>
 
 #include "imgui_impl_vulkan.h"
 
@@ -144,7 +141,7 @@ namespace zt::gameplay
 
 		if (!sampler || !sampler->isLoaded())
 		{
-			ImGui::Text("Sampler asset is invalid or not loaded");
+			ImGui::TextCStr("Sampler asset is invalid or not loaded");
 			return;
 		}
 
@@ -165,7 +162,7 @@ namespace zt::gameplay
 		}
 
 		ImGui::Separator();
-		ImGui::Text("Texture image:");
+		ImGui::TextCStr("Texture image:");
 		ImVec2 size = ImVec2(ImGui::GetContentRegionAvail());
 		ImGui::Image((ImTextureID)descriptorSet.get(), size);
 	}

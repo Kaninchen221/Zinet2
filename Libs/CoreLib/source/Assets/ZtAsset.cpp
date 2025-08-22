@@ -1,14 +1,12 @@
 #include "Zinet/Core/Assets/ZtAsset.hpp"
 
-#include <fmt/format.h>
-#include <imgui.h>
+#include "Zinet/Core/ZtImgui.hpp"
 
 namespace zt::core
 {
 	void Asset::imGui()
 	{
-		const std::string isLoadedText = fmt::format("Is loaded: {}", isLoaded());
-		ImGui::Text(isLoadedText.c_str());
+		ImGui::TextFMT("Is loaded: {}", isLoaded());
 
 		if (ImGui::Button("Load")) { load(core::Paths::RootPath()); }
 		ImGui::SameLine();
@@ -25,10 +23,10 @@ namespace zt::core
 			{
 				ImGui::TableNextRow();
 				ImGui::TableSetColumnIndex(0);
-				ImGui::TextUnformatted(key.c_str());
+				ImGui::Text(key);
 				ImGui::TableSetColumnIndex(1);
 				auto valueText = value.dump();
-				ImGui::TextUnformatted(valueText.c_str());
+				ImGui::Text(valueText);
 			}
 
 			ImGui::EndTable();
