@@ -11,7 +11,6 @@
 
 namespace zt::core
 {
-	// TODO: Rename to SimpleCallbackSink
 	class SimpleCallbackSink : public spdlog::sinks::base_sink<std::mutex>
 	{
 	public:
