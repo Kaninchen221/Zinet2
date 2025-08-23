@@ -2,6 +2,8 @@
 
 #include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
 
+#include "Zinet/Core/ZtDebug.hpp"
+
 namespace zt::gameplay
 {
 	void NodeSprite::show()
@@ -12,22 +14,35 @@ namespace zt::gameplay
 
 	vulkan_renderer::DescriptorInfo NodeSprite::getPipelineDescriptorInfos()
 	{
-		if (!texture || !texture->isLoaded())
-			return {};
-
-		return vulkan_renderer::DescriptorInfo
+		auto descriptorInfo = [](AssetTexture* assetTexture) -> vulkan_renderer::DescriptorInfo
 		{
-			.uniformBuffers = {},
-			.texturesInfos =
+			return
 			{
-				vulkan_renderer::TextureInfo
+				.uniformBuffers = {},
+				.texturesInfos =
 				{
-					.texture = &texture->texture,
-					.sampler = &texture->sampler.get()->sampler,
-					.shaderType = vulkan_renderer::ShaderType::Fragment
+					vulkan_renderer::TextureInfo
+					{
+						.texture = &assetTexture->texture,
+						.sampler = &assetTexture->sampler.get()->sampler,
+						.shaderType = vulkan_renderer::ShaderType::Fragment
+					}
 				}
-			}
+			};
 		};
+
+		if (!texture || !texture->isLoaded())
+		{
+			if (!DefaultTexture || !DefaultTexture->isLoaded())
+			{
+				Ensure(false); // Node2D should have always a valid default texture
+				TerminateDebug();
+			}
+
+			return descriptorInfo(DefaultTexture.get());
+		}
+
+		return descriptorInfo(texture.get());
 	}
 
 }

@@ -11,6 +11,7 @@
 
 namespace zt::gameplay
 {
+	// TODO: Extend it. We need better tools to measure performance inside the engine
 	struct EditorMetrics
 	{
 		bool shouldShow = false;

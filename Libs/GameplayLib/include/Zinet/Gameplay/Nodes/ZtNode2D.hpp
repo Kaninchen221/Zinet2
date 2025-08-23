@@ -9,6 +9,8 @@
 #include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 
+#include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
+
 namespace zt::gameplay
 {
 	struct MVP
@@ -25,6 +27,8 @@ namespace zt::gameplay
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::Node2D");
 
 	public:
+
+		inline static AssetProperty<AssetTexture> DefaultTexture{ "Default Texture" };
 
 		Node2D() = default;
 		Node2D(const Node2D& other) = default;

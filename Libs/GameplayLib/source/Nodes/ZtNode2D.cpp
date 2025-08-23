@@ -75,7 +75,8 @@ namespace zt::gameplay
 			return;
 
 		auto& engineContext = EngineContext::Get();
-		const auto& camera = engineContext.getSystem<SystemRenderer>()->getCameraNode();
+		auto systemRenderer = engineContext.getSystem<SystemRenderer>();
+		const auto& camera = systemRenderer->getCameraNode();
 		if (!camera)
 		{
 			Logger->warn("No camera set in SystemRenderer");

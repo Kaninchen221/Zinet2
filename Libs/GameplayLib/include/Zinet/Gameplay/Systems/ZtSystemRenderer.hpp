@@ -24,6 +24,12 @@ namespace
 
 namespace zt::gameplay
 {
+	// TODO: More graphics pipelines
+	// Now we have a logic for multiple sprites with dynamic UBOs
+	// We need:
+	//		- logic for using multiple graphics pipelines
+	//		- GP for basic shapes
+	//		- GP for multiple sprites with static UBOs (maybe some logic like static/dynamic sprite?)
 	class SystemRenderer : public System
 	{
 	private:

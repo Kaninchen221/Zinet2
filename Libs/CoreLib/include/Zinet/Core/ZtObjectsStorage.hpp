@@ -38,7 +38,7 @@ namespace zt::core
 	template<std::derived_from<Object> ObjectT> 
 	ObjectHandle<ObjectT> ObjectsStorage::createObject(const std::string_view displayName)
 	{
-		Logger->info("Creating object with display name '{}'", displayName);
+		//Logger->info("Creating object with display name '{}'", displayName);
 
 		auto& objectRefCount = objects.emplace_back();
 		objectRefCount.create<ObjectT>(displayName);

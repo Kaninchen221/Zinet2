@@ -16,6 +16,8 @@
 
 #include <gtest/gtest.h>
 
+#include <random>
+
 namespace zt::gameplay::tests
 {
 	class EngineTests : public ::testing::Test
@@ -43,39 +45,12 @@ namespace zt::gameplay::tests
 			auto systemRenderer = engineContext.addSystem<SystemRenderer>("SystemRenderer");
 			auto systemSave = engineContext.addSystem<SystemSave>("SystemSave");
 			auto systemTickable = engineContext.addSystem<SystemTickable>("SystemTickable");
-
+			
 			ASSERT_TRUE(engine.init());
 			vulkan_renderer::ImGuiIntegration::SetStyle_Dark();
 
-			auto& rootNode = engineContext.getRootNode();
-
-			auto editorNode = CreateObject<NodeEditor>("Editor");
-			rootNode->addChild(editorNode);
-			systemImGui->addNode(editorNode);
-
-			auto child = CreateObject<Node>("Child");
-			rootNode->addChild(child);
-			
-			auto childOfChild = CreateObject<Node>("Child of child");
-			child->addChild(childOfChild);
-
-			auto sprite = CreateObject<NodeSprite>("Sprite");
-			sprite->transform.getPosition().z = 50;
-			sprite->transform.getScale().x = 8;
-			sprite->transform.getScale().y = 8;
-			sprite->texture = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
-			sprite->texture->load(core::Paths::RootPath());
-			rootNode->addChild(sprite);
-			systemTickable->addNode(sprite);
-			systemRenderer->addNode(sprite);
-
-			auto shaderVert = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.vert");
-			ASSERT_TRUE(shaderVert->load(core::Paths::RootPath()));
-			systemRenderer->vertexShader = shaderVert;
-
-			auto shaderFrag = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.frag");
-			ASSERT_TRUE(shaderFrag->load(core::Paths::RootPath()));
-			systemRenderer->fragmentShader = shaderFrag;
+			Node2D::DefaultTexture = assetsStorage.getAs<AssetTexture>("Content/Textures/default_texture.png");
+			Node2D::DefaultTexture->load(core::Paths::RootPath());
 
 			auto nodeCamera = CreateObject<NodeCamera>("Camera");
 			auto& camera = nodeCamera->getCamera();
@@ -90,6 +65,52 @@ namespace zt::gameplay::tests
 			camera.setClipping(Vector2f{ 0.0000001f, 10000000.0f });
 
 			systemRenderer->setCameraNode(nodeCamera);
+
+			auto& rootNode = engineContext.getRootNode();
+
+			auto editorNode = CreateObject<NodeEditor>("Editor");
+			rootNode->addChild(editorNode);
+			systemImGui->addNode(editorNode);
+
+			auto child = CreateObject<Node>("Child");
+			rootNode->addChild(child);
+			
+			auto childOfChild = CreateObject<Node>("Child of child");
+			child->addChild(childOfChild);
+
+			// TODO: Write some help class in core lib for random numbers
+			std::random_device rd;
+			std::mt19937 gen(rd());
+
+			std::uniform_real_distribution<float> positionDist(-10, 10);
+			std::uniform_real_distribution<float> rotationDist(0, 360);
+			//
+
+			auto textureForSprites = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
+			ASSERT_TRUE(textureForSprites->load(core::Paths::RootPath()));
+
+			for (size_t i = 0; i < 10000; ++i)
+			{
+				auto sprite = CreateObject<NodeSprite>(fmt::format("Sprite_{}", i));
+				sprite->transform.getPosition().x = positionDist(gen);
+				sprite->transform.getPosition().y = positionDist(gen);
+				sprite->transform.getPosition().z = 50;
+				sprite->transform.getScale().x = 8;
+				sprite->transform.getScale().y = 8;
+				sprite->transform.getRotation() = rotationDist(gen);
+				sprite->texture = textureForSprites;
+				rootNode->addChild(sprite);
+				systemTickable->addNode(sprite);
+				systemRenderer->addNode(sprite);
+			}
+
+			auto shaderVert = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.vert");
+			ASSERT_TRUE(shaderVert->load(core::Paths::RootPath()));
+			systemRenderer->vertexShader = shaderVert;
+
+			auto shaderFrag = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.frag");
+			ASSERT_TRUE(shaderFrag->load(core::Paths::RootPath()));
+			systemRenderer->fragmentShader = shaderFrag;
 		}
 
 		void TearDown() override

@@ -60,6 +60,7 @@ namespace zt::vulkan_renderer
 		uint32_t indexCount{};
 		uint32_t instances = 1;
 
+		bool updatePipelineDescriptorInfoPerDrawCall = true;
 		DescriptorInfo pipelineDescriptorInfo;
 		DescriptorInfo drawCallDescriptorInfo;
 

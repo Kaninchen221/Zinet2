@@ -66,10 +66,10 @@ namespace zt::gameplay
 			Logger->error("Couldn't create a texture from an image");
 			return false;
 		}
-		auto textureImageFileName = fmt::format("Texture {} image", metaData.value("fileName", "TextureImageFileName"));
+		auto textureImageFileName = fmt::format("Texture {} image", metaData.value("fileRelativePath", "fileRelativePath"));
 		device.setDebugName(texture.getImage(), textureImageFileName, VK_OBJECT_TYPE_IMAGE);
 
-		auto textureImageViewFileName = fmt::format("Texture {} image view", metaData.value("fileName", "TextureImageFileName"));
+		auto textureImageViewFileName = fmt::format("Texture {} image view", metaData.value("fileRelativePath", "fileRelativePath"));
 		device.setDebugName(texture.getImageView(), textureImageViewFileName, VK_OBJECT_TYPE_IMAGE_VIEW);
 
 		vulkan_renderer::Buffer buffer{ nullptr };
@@ -122,11 +122,11 @@ namespace zt::gameplay
 			Logger->error("System renderer is invalid");
 			return;
 		}
+		systemRenderer->waitCompleteJobs();
 
 		auto& rendererContext = systemRenderer->getRenderer().getRendererContext();
 		auto& device = rendererContext.device;
 		auto& vma = rendererContext.vma;
-		device.waitIdle();
 
 		descriptorSet.invalidate();
 		texture.destroy(device, vma);

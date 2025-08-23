@@ -128,6 +128,9 @@ namespace zt::vulkan_renderer
 		}
 		// Begin draw end
 
+		if (drawInfo.updatePipelineDescriptorInfoPerDrawCall)
+			UpdateDescriptorSet(device, drawInfo.pipelineDescriptorInfo, pipelineDescriptorSet);
+
 		UpdateDescriptorSet(device, drawInfo.drawCallDescriptorInfo, objectDescriptorSet);
 
 		// Vertex Buffer
