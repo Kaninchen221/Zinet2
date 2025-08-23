@@ -32,10 +32,8 @@ namespace zt::core
 		Object& operator = (const Object& other) = default;
 		Object& operator = (Object&& other) noexcept = default;
 
-		// TODO: Test it
 		virtual void onCreate() {}
 
-		// TODO: Test it
 		virtual void onDestroy() {}
 
 		virtual ObjectPtr createCopy() const { return {}; }

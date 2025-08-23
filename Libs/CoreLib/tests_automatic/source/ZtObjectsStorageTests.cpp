@@ -22,11 +22,33 @@ namespace zt::core::tests
 		TestObject() {}
 		~TestObject() {}
 
+		bool onCreateInvoked = false;
+		void onCreate() override
+		{
+			onCreateInvoked = true;
+		}
+
+		bool onDestroyInvoked = false;
+		void onDestroy() override
+		{
+			onDestroyInvoked = true;
+		}
+
 		/// Test if we could create ObjectHandle<TestObject in Node class
 		using Nodes = std::vector<ObjectHandle<TestObject>>;
 		Nodes nodes;
 
 	};
+
+	TEST_F(ObjectsStorageTests, OnCreateOnDestroyTest)
+	{
+		auto objHandle = objectsStorage.createObject<TestObject>("");
+		ASSERT_TRUE(objHandle->onCreateInvoked);
+		ASSERT_FALSE(objHandle->onDestroyInvoked);
+
+		objHandle.destroy();
+		ASSERT_TRUE(objHandle->onDestroyInvoked);
+	}
 
 	TEST_F(ObjectsStorageTests, ComplexTest)
 	{
