@@ -47,23 +47,11 @@ namespace zt::gameplay
 
 		void deinit();
 
-		// TODO: Return object handle to the created system
 		template<std::derived_from<System> SystemT>
-		void addSystem(const std::string_view& displayName);
+		ObjectHandle<SystemT> addSystem(const std::string_view& displayName);
 
-		// TODO: Replace raw pointer with object handle
 		template<std::derived_from<System> SystemT>
-		SystemT* getSystem()
-		{
-			for (auto& system : systems)
-			{
-				auto ptr = dynamic_cast<SystemT*>(system.get());
-				if (ptr)
-					return ptr;
-			}
-
-			return nullptr;
-		}
+		ObjectHandle<SystemT> getSystem();
 
 		auto& getWindow() noexcept { return window; }
 		auto& getWindow() const noexcept { return window; }
@@ -120,9 +108,22 @@ namespace zt
 namespace zt::gameplay
 {
 	template<std::derived_from<System> SystemT>
-	void EngineContext::addSystem(const std::string_view& displayName)
+	ObjectHandle<SystemT> EngineContext::addSystem(const std::string_view& displayName)
 	{
 		auto system = CreateObject<SystemT>(displayName);
-		systems.emplace_back(system);
+		return systems.emplace_back(system);
+	}
+
+	template<std::derived_from<System> SystemT>
+	ObjectHandle<SystemT> EngineContext::getSystem()
+	{
+		for (auto& system : systems)
+		{
+			auto ptr = dynamic_cast<SystemT*>(system.get());
+			if (ptr)
+				return system;
+		}
+
+		return ObjectHandle<SystemT>{};
 	}
 }

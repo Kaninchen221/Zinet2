@@ -32,9 +32,15 @@ namespace zt::gameplay::tests
 	TEST_F(EngineContextTests, SystemTest)
 	{
 		ASSERT_TRUE(engineContext.init());
-		engineContext.addSystem<System>("System");
-		System* system = engineContext.getSystem<System>();
-		ASSERT_TRUE(system);
+
+		ObjectHandle<System> addSystemHandle = engineContext.addSystem<System>("System");
+		ASSERT_TRUE(addSystemHandle);
+
+		ObjectHandle<System> getSystemHandle = engineContext.getSystem<System>();
+		ASSERT_TRUE(getSystemHandle);
+
+		ASSERT_EQ(addSystemHandle, getSystemHandle);
+
 		engineContext.deinit();
 	}
 }

@@ -36,10 +36,10 @@ namespace zt::sandbox
 			assetsStorage.registerAssetClass<gameplay::AssetShader>();
 			assetsStorage.registerAssetClass<gameplay::AssetSampler>();
 
-			engineContext.addSystem<SystemImGui>("SystemImGui");
-			engineContext.addSystem<SystemRenderer>("SystemRenderer");
-			engineContext.addSystem<SystemSave>("SystemSave");
-			engineContext.addSystem<SystemTickable>("SystemTickable");
+			auto systemImGui = engineContext.addSystem<SystemImGui>("SystemImGui");
+			auto systemRenderer = engineContext.addSystem<SystemRenderer>("SystemRenderer");
+			auto systemSave = engineContext.addSystem<SystemSave>("SystemSave");
+			auto systemTickable = engineContext.addSystem<SystemTickable>("SystemTickable");
 
 			ASSERT_TRUE(engine.init());
 			vulkan_renderer::ImGuiIntegration::SetStyle_Dark();
@@ -48,9 +48,6 @@ namespace zt::sandbox
 
 			auto editorNode = CreateObject<NodeEditor>("Editor");
 			rootNode->addChild(editorNode);
-
-			auto systemImGui = engineContext.getSystem<SystemImGui>();
-			ASSERT_TRUE(systemImGui);
 			systemImGui->addNode(editorNode);
 
 			auto child = CreateObject<Node>("Child");
@@ -58,12 +55,6 @@ namespace zt::sandbox
 
 			auto childOfChild = CreateObject<Node>("Child of child");
 			child->addChild(childOfChild);
-
-			auto systemTickable = engineContext.getSystem<SystemTickable>();
-			ASSERT_TRUE(systemTickable);
-
-			auto systemRenderer = engineContext.getSystem<SystemRenderer>();
-			ASSERT_TRUE(systemRenderer);
 
 			{ // Sprite #1
 				auto sprite = CreateObject<NodeSprite>("Sprite");
