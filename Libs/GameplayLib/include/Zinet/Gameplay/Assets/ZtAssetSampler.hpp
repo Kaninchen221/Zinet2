@@ -27,7 +27,7 @@ namespace zt::gameplay
 		AssetSampler& operator = (const AssetSampler& other) { assetSamplerData = other.assetSamplerData; return *this; }
 		AssetSampler& operator = (AssetSampler&& other) noexcept = default;
 
-		std::string getClassName() const override { return "zt::gameplay::AssetSampler"; }
+		const std::string_view getClassName() const override { return "zt::gameplay::AssetSampler"; }
 
 		ObjectPtr createCopy() const override 
 		{ 

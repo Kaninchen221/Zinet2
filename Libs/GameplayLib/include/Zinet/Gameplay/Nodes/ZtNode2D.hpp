@@ -11,7 +11,6 @@
 
 namespace zt::gameplay
 {
-	// TODO: Refactor
 	struct MVP
 	{
 		alignas(16) glm::mat4 model;

@@ -38,7 +38,7 @@ namespace zt::core
 		{
 			auto cdo = std::make_shared<ClassT>();
 			auto className = cdo->getClassName();
-			cdos.insert({ className, cdo });
+			cdos.insert({ KeyT{ className }, cdo });
 		}
 
 		auto getCDOs() const noexcept { return cdos; }

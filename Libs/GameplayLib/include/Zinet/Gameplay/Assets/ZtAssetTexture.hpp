@@ -31,7 +31,7 @@ namespace zt::gameplay
 		AssetTexture& operator = (const AssetTexture& other) noexcept { Asset::operator =(other); return *this; }
 		AssetTexture& operator = (AssetTexture&& other) noexcept = default;
 
-		std::string getClassName() const override { return "zt::gameplay::AssetTexture"; }
+		const std::string_view getClassName() const override { return "zt::gameplay::AssetTexture"; }
 
 		ObjectPtr createCopy() const override { return std::make_unique<AssetTexture>(*this); }
 

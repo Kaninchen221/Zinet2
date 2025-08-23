@@ -32,7 +32,7 @@ namespace zt::core
 
 		bool deserialize(JsonArchive& archive) override;
 
-		std::string getClassName() const override { return "zt::core::ConfigVariable"; }
+		const std::string_view getClassName() const override { return "zt::core::ConfigVariable"; }
 
 		void imGui() override {}
 

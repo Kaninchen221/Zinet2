@@ -46,8 +46,7 @@ namespace zt::core
 
 		virtual bool deserialize([[maybe_unused]] JsonArchive& archive) { return true; }
 
-		// TODO: Change return type to string_view?
-		virtual std::string getClassName() const { return "zt::core::Object"; }
+		virtual const std::string_view getClassName() const { return "zt::core::Object"; }
 
 		void setDisplayName(const std::string_view newDisplayName) { displayName = newDisplayName; }
 		const auto& getDisplayName() const { return displayName; }
@@ -243,7 +242,6 @@ namespace zt::core
 			return ObjectHandle<ObjectT, false>(objectRefCounter);
 		}
 
-		// TODO: Test it
 		void destroy() { Ensure(objectRefCounter); objectRefCounter->reset(); }
 
 	protected:

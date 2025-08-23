@@ -27,7 +27,7 @@ namespace zt::gameplay
 
 		ObjectPtr createCopy() const override { return std::make_unique<Node>(*this); }
 
-		std::string getClassName() const override { return "zt::gameplay::Node"; }
+		const std::string_view getClassName() const override { return "zt::gameplay::Node"; }
 		auto& getChildren() noexcept { return children; }
 		const auto& getChildren() const noexcept { return children; }
 

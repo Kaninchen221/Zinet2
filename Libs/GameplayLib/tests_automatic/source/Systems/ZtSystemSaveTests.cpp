@@ -13,7 +13,7 @@ namespace zt::gameplay::tests
 
 		NodeTest() : Node{} { setSaveable(true); }
 
-		virtual std::string getClassName() const { return "zt::gameplay::tests::NodeTest"; }
+		virtual const std::string_view getClassName() const { return "zt::gameplay::tests::NodeTest"; }
 
 		ObjectPtr createCopy() const override { return std::make_unique<NodeTest>(*this); }
 

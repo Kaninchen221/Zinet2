@@ -17,7 +17,7 @@ namespace zt::core
 		AssetText& operator = (const AssetText& other) = default;
 		AssetText& operator = (AssetText&& other) noexcept = default;
 
-		std::string getClassName() const override { return "zt::core::AssetText"; }
+		const std::string_view getClassName() const override { return "zt::core::AssetText"; }
 
 		ObjectPtr createCopy() const override { return std::make_unique<AssetText>(*this); }
 

@@ -3,6 +3,7 @@
 #include "Zinet/Core/ZtObjectsStorage.hpp"
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 namespace zt::core::tests
 {
@@ -27,12 +28,7 @@ namespace zt::core::tests
 		{
 			onCreateInvoked = true;
 		}
-
-		bool onDestroyInvoked = false;
-		void onDestroy() override
-		{
-			onDestroyInvoked = true;
-		}
+		MOCK_METHOD(void, onDestroy, (), (override));
 
 		/// Test if we could create ObjectHandle<TestObject in Node class
 		using Nodes = std::vector<ObjectHandle<TestObject>>;
@@ -42,12 +38,13 @@ namespace zt::core::tests
 
 	TEST_F(ObjectsStorageTests, OnCreateOnDestroyTest)
 	{
-		auto objHandle = objectsStorage.createObject<TestObject>("");
+		ObjectHandle<TestObject> objHandle = objectsStorage.createObject<TestObject>("");
 		ASSERT_TRUE(objHandle->onCreateInvoked);
-		ASSERT_FALSE(objHandle->onDestroyInvoked);
+
+		EXPECT_CALL(*objHandle.get(), onDestroy())
+			.Times(1);
 
 		objHandle.destroy();
-		ASSERT_TRUE(objHandle->onDestroyInvoked);
 	}
 
 	TEST_F(ObjectsStorageTests, ComplexTest)

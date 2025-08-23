@@ -21,7 +21,7 @@ namespace zt::gameplay
 		AssetShader& operator = (const AssetShader& other) = default;
 		AssetShader& operator = (AssetShader&& other) noexcept = default;
 
-		std::string getClassName() const override { return "zt::gameplay::AssetShader"; }
+		const std::string_view getClassName() const override { return "zt::gameplay::AssetShader"; }
 
 		ObjectPtr createCopy() const override { return std::make_unique<AssetShader>(*this); }
 
