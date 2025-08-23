@@ -67,7 +67,7 @@ namespace zt::sandbox
 
 			{ // Sprite #1
 				auto sprite = CreateObject<NodeSprite>("Sprite");
-				sprite->transform.getPosition().x = -10;
+				sprite->transform.getPosition().x = -15;
 				sprite->transform.getPosition().z = 50;
 				sprite->transform.getScale().x = 24;
 				sprite->transform.getScale().y = 24;
@@ -80,7 +80,7 @@ namespace zt::sandbox
 
 			{ // Sprite #2
 				auto sprite = CreateObject<NodeSprite>("Sprite2");
-				sprite->transform.getPosition().x = 10;
+				sprite->transform.getPosition().x = 15;
 				sprite->transform.getPosition().z = 50;
 				sprite->transform.getScale().x = 24;
 				sprite->transform.getScale().y = 24;
