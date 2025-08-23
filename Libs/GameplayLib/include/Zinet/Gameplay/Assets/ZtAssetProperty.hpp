@@ -82,7 +82,6 @@ namespace zt::gameplay
 		return true;
 	}
 
-	// TODO: Rename all "show" functions that are using ImGui to "imgui"
 	template<std::derived_from<core::Asset> AssetT>
 	void AssetProperty<AssetT>::show()
 	{
