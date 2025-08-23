@@ -1,0 +1,31 @@
+#pragma once
+
+#include "Zinet/Gameplay/ZtGameplayConfig.hpp"
+#include "Zinet/Gameplay/Nodes/ZtNode.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystem.hpp"
+
+#include "Zinet/Core/ZtLogger.hpp"
+
+namespace zt::gameplay
+{
+	class  SystemTickable : public System
+	{
+	protected:
+
+		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::SystemTickable");
+
+	public:
+
+		SystemTickable() = default;
+		SystemTickable(const SystemTickable& other) = default;
+		SystemTickable(SystemTickable&& other) noexcept = default;
+		~SystemTickable() noexcept = default;
+
+		SystemTickable& operator = (const SystemTickable& other) = default;
+		SystemTickable& operator = (SystemTickable&& other) noexcept = default;
+
+		void update() override;
+
+	};
+
+}

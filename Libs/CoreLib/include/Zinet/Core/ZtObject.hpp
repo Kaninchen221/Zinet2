@@ -32,6 +32,12 @@ namespace zt::core
 		Object& operator = (const Object& other) = default;
 		Object& operator = (Object&& other) noexcept = default;
 
+		// TODO: Test it
+		virtual void onCreate() {}
+
+		// TODO: Test it
+		virtual void onDestroy() {}
+
 		virtual ObjectPtr createCopy() const { return {}; }
 
 		virtual std::string asString() const { return "Object"; }
@@ -117,9 +123,12 @@ namespace zt::core
 			--refCount;
 		}
 
-		void reset() noexcept
+		inline void destroy() { reset(); }
+
+		void reset()
 		{
 			refCount = 0;
+			object->onDestroy();
 			object.reset();
 		}
 
@@ -235,6 +244,9 @@ namespace zt::core
 		{
 			return ObjectHandle<ObjectT, false>(objectRefCounter);
 		}
+
+		// TODO: Test it
+		void destroy() { Ensure(objectRefCounter); objectRefCounter->reset(); }
 
 	protected:
 

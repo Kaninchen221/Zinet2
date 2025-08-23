@@ -13,7 +13,7 @@ namespace zt::gameplay
 
 		auto& engineContext = EngineContext::Get();
 
-		renderer.getRendererContext().instance.setEnableValidationLayers(false);
+		renderer.getRendererContext().instance.setEnableValidationLayers(ZINET_DEBUG);
 		if (!renderer.init(engineContext.getWindow()))
 			return false;
 
@@ -99,20 +99,30 @@ namespace zt::gameplay
 					continue;
 
 				drawInfo.pipelineDescriptorInfo += node2D->getPipelineDescriptorInfos();
-				drawInfo.drawCallDescriptorInfo += node2D->getPipelineDescriptorInfos();
+				drawInfo.drawCallDescriptorInfo += node2D->getDrawCallDescriptorInfos();
 				drawInfo.instances++;
 			}
 		}
 
+		// TODO: Add possibility to recreate graphics pipeline
+		//if (renderer.getGraphicsPipeline().isValid())
+		//{
+		//	renderer.getRendererContext().device.waitIdle();
+		//	renderer.getGraphicsPipeline().destroy(renderer.getRendererContext());
+		//}
+
 		renderer.createPipeline(drawInfo);
-		renderer.getGraphicsPipeline().isValid();
+		if (!Ensure(renderer.getGraphicsPipeline().isValid()))
+		{
+			Logger->error("Graphics Pipeline is invalid");
+			return;
+		}
 
 		renderer.beginFrame();
 
 		imGuiIntegration.prepareRenderData();
 
 		renderer.draw(drawInfo);
-		renderer.getGraphicsPipeline().commandBuffer;
 
 		renderer.submit();
 

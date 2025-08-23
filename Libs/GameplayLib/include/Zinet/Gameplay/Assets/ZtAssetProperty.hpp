@@ -35,6 +35,8 @@ namespace zt::gameplay
 
 		AssetT* operator->() noexcept { return assetHandle.operator->(); }
 
+		AssetT* get() noexcept { return assetHandle.get(); }
+
 		operator bool() noexcept { return assetHandle; }
 
 		bool serialize(core::JsonArchive& archive);
@@ -80,6 +82,7 @@ namespace zt::gameplay
 		return true;
 	}
 
+	// TODO: Rename all "show" functions that are using ImGui to "imgui"
 	template<std::derived_from<core::Asset> AssetT>
 	void AssetProperty<AssetT>::show()
 	{
@@ -94,7 +97,7 @@ namespace zt::gameplay
 				{
 					core::ObjectRefCounter* objRefCounter{};
 					void* destiny = &objRefCounter;
-					std::memcpy(destiny, payload->Data, sizeof(AssetT*));
+					std::memcpy(destiny, payload->Data, sizeof(core::ObjectRefCounter*));
 					AssetT* castedAsset = dynamic_cast<AssetT*>(objRefCounter->get());
 					if (castedAsset)
 					{
@@ -142,7 +145,7 @@ namespace zt::gameplay
 			if (assetHandle)
 			{
 				ImGui::TableNextColumn();
-				auto assetName = assetHandle->getMetaData().value("fileName", "fileName");
+				auto assetName = assetHandle->getMetaData().value("fileNameExt", "fileNameExt");
 				ImGui::Text(assetName);
 			}
 			else

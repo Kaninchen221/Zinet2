@@ -20,14 +20,14 @@ namespace zt::vulkan_renderer
 #		if ZINET_USE_IMGUI
 		ImGui::PushID(this);
 
-		ImGui::Indent(16.0f);
 		if (ImGui::CollapsingHeader("Transform"))
 		{
+			ImGui::Indent(16.0f);
 			ImGui::SliderFloat3("Position", reinterpret_cast<float*>(&position), -1000, 1000);
 			ImGui::SliderFloat("Rotation", &rotation, 0, 360);
 			ImGui::SliderFloat3("Scale", reinterpret_cast<float*>(&scale), 0, 1000);
+			ImGui::Unindent(16.0f);
 		}
-		ImGui::Unindent(16.0f);
 
 		ImGui::PopID();
 #		endif 

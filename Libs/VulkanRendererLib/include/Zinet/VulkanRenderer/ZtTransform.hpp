@@ -33,13 +33,16 @@ namespace zt::vulkan_renderer
 
 		void setPosition(const Vector3f& newPosition) noexcept { position = newPosition; }
 		const auto& getPosition() const noexcept { return position; }
+		auto& getPosition() noexcept { return position; }
 
 		/// Degrees
 		void setRotation(float newRotation) noexcept { rotation = newRotation; }
 		const auto& getRotation() const noexcept { return rotation; }
+		auto& getRotation() noexcept { return rotation; }
 
 		void setScale(const Vector3f& newScale) noexcept { scale = newScale; }
 		const auto& getScale() const noexcept { return scale; }
+		auto& getScale() noexcept { return scale; }
 
 		void imGui();
 

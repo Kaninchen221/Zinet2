@@ -47,6 +47,8 @@ namespace zt::gameplay
 
 		bool init() override;
 
+		void waitCompleteJobs() override { renderer.getRendererContext().device.waitIdle(); }
+
 		bool deinit() override;
 
 		void update() override;

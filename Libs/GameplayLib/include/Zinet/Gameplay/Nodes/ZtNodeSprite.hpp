@@ -30,7 +30,13 @@ namespace zt::gameplay
 
 		void imGui() override;
 
+		vulkan_renderer::DescriptorInfo getPipelineDescriptorInfos() override;
+
 		AssetProperty<AssetTexture> texture{ "Texture" };
+
+	protected:
+
+
 
 	};
 }

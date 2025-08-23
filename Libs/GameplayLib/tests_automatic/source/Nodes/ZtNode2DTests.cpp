@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Zinet/Gameplay/Nodes/ZtNode2D.hpp"
+#include "Zinet/Gameplay/ZtEngineContext.hpp"
+#include <Zinet/Gameplay/Systems/ZtSystemRenderer.hpp>
 
 #include "Zinet/Core/ZtObjectsStorage.hpp"
 
@@ -14,21 +16,27 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
+			engineContext.addSystem<SystemRenderer>("SystemRenderer");
+			engineContext.init();
 		}
 
 		void TearDown() override
 		{
+			node.destroy();
+			engineContext.deinit();
 		}
 
-		core::ObjectsStorage objectsStorage;
-		ObjectHandle<Node2D> node = objectsStorage.createObject<Node2D>("TestNode");
+		EngineContext engineContext;
+		ObjectHandle<Node2D> node;
 
 		static_assert(std::is_default_constructible_v<Node2D>);
 	};
 
 	TEST_F(Node2DTests, Test)
 	{
-		[[maybe_unused]]
-		auto& transform = node->transform;
+		node = CreateObject<Node2D>("TestNode");
+		ASSERT_TRUE(node);
+
+
 	}
 }

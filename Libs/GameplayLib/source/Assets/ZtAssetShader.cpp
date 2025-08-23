@@ -44,7 +44,11 @@ namespace zt::gameplay
 		}
 
 		const auto& device = systemRenderer->getRenderer().getRendererContext().device;
-		shaderModule.create(device, compileResult);
+		if (!shaderModule.create(device, compileResult))
+		{
+			Logger->error("ShaderModule create returned false");
+			return false;
+		}
 
 		loaded = true;
 		return true;

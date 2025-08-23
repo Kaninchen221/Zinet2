@@ -98,6 +98,7 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
+			Ensure(false);
 			try 
 			{
 				auto Logger = core::ConsoleLogger::Create("VulkanObject");

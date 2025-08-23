@@ -41,5 +41,7 @@ namespace zt::gameplay::tests
 		ASSERT_EQ(cameraNode.get(), system->getCameraNode().get());
 
 		system->update();
+
+		node.destroy();
 	}
 }

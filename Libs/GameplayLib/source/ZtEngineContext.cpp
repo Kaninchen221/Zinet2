@@ -46,6 +46,11 @@ namespace zt::gameplay
 		if (!initialized)
 			return;
 
+		for (auto& system : systems)
+		{
+			system->waitCompleteJobs();
+		}
+
 		destroyNodes(rootNode);
 
 		assetsStorage.unloadAssets();
@@ -81,8 +86,7 @@ namespace zt::gameplay
 		{
 			destroyNodes(child);
 		}
-		node.invalidate();
-		// TODO: Invalidate? Or we should be able to destroy objects (reset in obj ref counter)?
+		node.destroy();
 	}
 
 }

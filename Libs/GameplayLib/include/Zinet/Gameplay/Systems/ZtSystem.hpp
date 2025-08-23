@@ -27,6 +27,8 @@ namespace zt::gameplay
 
 		virtual bool init() { initialized = true; return true; }
 
+		virtual void waitCompleteJobs() {}
+
 		virtual bool deinit() { initialized = false; return true; }
 
 		virtual void update() {}

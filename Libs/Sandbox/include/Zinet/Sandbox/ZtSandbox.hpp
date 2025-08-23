@@ -12,6 +12,7 @@
 
 #include "Zinet/Gameplay/Systems/ZtSystemSave.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemTickable.hpp"
 
 #define ASSERT_TRUE(EXPR) EXPR
 
@@ -38,6 +39,7 @@ namespace zt::sandbox
 			engineContext.addSystem<SystemImGui>("SystemImGui");
 			engineContext.addSystem<SystemRenderer>("SystemRenderer");
 			engineContext.addSystem<SystemSave>("SystemSave");
+			engineContext.addSystem<SystemTickable>("SystemTickable");
 
 			ASSERT_TRUE(engine.init());
 			vulkan_renderer::ImGuiIntegration::SetStyle_Dark();
@@ -57,16 +59,37 @@ namespace zt::sandbox
 			auto childOfChild = CreateObject<Node>("Child of child");
 			child->addChild(childOfChild);
 
-			auto sprite = CreateObject<NodeSprite>("Sprite");
-			sprite->texture = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
-			sprite->texture->load(core::Paths::RootPath());
-			rootNode->addChild(sprite);
-
-			auto sprite2 = CreateObject<NodeSprite>("Sprite2");
-			rootNode->addChild(sprite2);
+			auto systemTickable = engineContext.getSystem<SystemTickable>();
+			ASSERT_TRUE(systemTickable);
 
 			auto systemRenderer = engineContext.getSystem<SystemRenderer>();
 			ASSERT_TRUE(systemRenderer);
+
+			{ // Sprite #1
+				auto sprite = CreateObject<NodeSprite>("Sprite");
+				sprite->transform.getPosition().x = -10;
+				sprite->transform.getPosition().z = 50;
+				sprite->transform.getScale().x = 24;
+				sprite->transform.getScale().y = 24;
+				sprite->texture = assetsStorage.getAs<AssetTexture>("Content/Textures/ships/ship_1.png");
+				sprite->texture->load(core::Paths::RootPath());
+				rootNode->addChild(sprite);
+				systemTickable->addNode(sprite);
+				systemRenderer->addNode(sprite);
+			}
+
+			{ // Sprite #2
+				auto sprite = CreateObject<NodeSprite>("Sprite2");
+				sprite->transform.getPosition().x = 10;
+				sprite->transform.getPosition().z = 50;
+				sprite->transform.getScale().x = 24;
+				sprite->transform.getScale().y = 24;
+				sprite->texture = assetsStorage.getAs<AssetTexture>("Content/Textures/ships/ship_0.png");
+				sprite->texture->load(core::Paths::RootPath());
+				rootNode->addChild(sprite);
+				systemTickable->addNode(sprite);
+				systemRenderer->addNode(sprite);
+			}
 
 			auto shaderVert = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.vert");
 			ASSERT_TRUE(shaderVert->load(core::Paths::RootPath()));
@@ -75,7 +98,6 @@ namespace zt::sandbox
 			auto shaderFrag = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.frag");
 			ASSERT_TRUE(shaderFrag->load(core::Paths::RootPath()));
 			systemRenderer->fragmentShader = shaderFrag;
-			systemRenderer->addNode(sprite);
 
 			auto nodeCamera = CreateObject<NodeCamera>("Camera");
 			auto& camera = nodeCamera->getCamera();

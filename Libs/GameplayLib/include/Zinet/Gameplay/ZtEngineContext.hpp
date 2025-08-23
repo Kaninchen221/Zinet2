@@ -38,6 +38,7 @@ namespace zt::gameplay
 		EngineContext& operator = (const EngineContext& other) = default;
 		EngineContext& operator = (EngineContext&& other) noexcept = default;
 
+		// TODO: Change it to an object handle to be consistent with rest of the code
 		static auto& Get() noexcept { Ensure(instance); return *instance; }
 
 		bool init();
@@ -46,9 +47,11 @@ namespace zt::gameplay
 
 		void deinit();
 
+		// TODO: Return object handle to the created system
 		template<std::derived_from<System> SystemT>
 		void addSystem(const std::string_view& displayName);
 
+		// TODO: Replace raw pointer with object handle
 		template<std::derived_from<System> SystemT>
 		SystemT* getSystem()
 		{

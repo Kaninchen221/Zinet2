@@ -44,6 +44,6 @@ namespace zt::vulkan_renderer
 
 		bool create(const Device& device, const PhysicalDevice& physicalDevice, const Instance& instance);
 
-		void destroy() noexcept;
+		void destroy();
 	};
 }

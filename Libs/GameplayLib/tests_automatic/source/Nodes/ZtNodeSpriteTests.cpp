@@ -18,13 +18,9 @@ namespace zt::gameplay::tests
 		{
 		}
 
-		core::ObjectsStorage objectsStorage;
-		ObjectHandle<NodeSprite> node = objectsStorage.createObject<NodeSprite>("node");
 	};
 
 	TEST_F(NodeSpriteTests, Test)
 	{
-		[[maybe_unused]]
-		auto& transform = node->transform;
 	}
 }

@@ -51,7 +51,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	void VMA::destroy() noexcept
+	void VMA::destroy()
 	{
 		if (isValid())
 		{
