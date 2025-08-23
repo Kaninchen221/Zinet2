@@ -4,7 +4,7 @@
 
 namespace zt::core
 {
-	void Asset::imGui()
+	void Asset::show()
 	{
 		ImGui::TextFMT("Is loaded: {}", isLoaded());
 

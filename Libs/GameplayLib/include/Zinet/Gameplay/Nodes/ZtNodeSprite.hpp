@@ -28,7 +28,7 @@ namespace zt::gameplay
 		NodeSprite& operator = (const NodeSprite& other) = default;
 		NodeSprite& operator = (NodeSprite&& other) noexcept = default;
 
-		void imGui() override;
+		void show() override;
 
 		vulkan_renderer::DescriptorInfo getPipelineDescriptorInfos() override;
 

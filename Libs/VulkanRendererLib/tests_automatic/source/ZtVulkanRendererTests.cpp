@@ -337,16 +337,16 @@ namespace zt::vulkan_renderer::tests
 			bool isOpen = false;
 			if (ImGui::Begin("EditorOverlay", &isOpen, windowFlags))
 			{
-				camera.imGui();
+				camera.show();
 
 				if (ImGui::CollapsingHeader("Sprite1"))
 				{
-					transform.imGui();
+					transform.show();
 				}
 
 				if (ImGui::CollapsingHeader("Sprite2"))
 				{
-					transform2.imGui();
+					transform2.show();
 				}
 			}
 			ImGui::End();

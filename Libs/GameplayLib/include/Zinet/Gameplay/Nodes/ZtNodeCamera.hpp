@@ -27,7 +27,7 @@ namespace zt::gameplay
 		NodeCamera& operator = (const NodeCamera& other) = default;
 		NodeCamera& operator = (NodeCamera&& other) noexcept = default;
 
-		void imGui() override;
+		void show() override;
 
 		void setCamera(const CameraT& newCamera) { camera = newCamera; }
 		const auto& getCamera() const noexcept { return camera; }

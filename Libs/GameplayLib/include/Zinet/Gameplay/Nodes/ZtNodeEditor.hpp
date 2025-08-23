@@ -33,7 +33,7 @@ namespace zt::gameplay
 		NodeEditor& operator = (const NodeEditor& other) = default;
 		NodeEditor& operator = (NodeEditor&& other) noexcept = default;
 
-		void imGui() override;
+		void show() override;
 
 	protected:
 

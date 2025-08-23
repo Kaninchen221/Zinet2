@@ -133,9 +133,9 @@ namespace zt::gameplay
 		loaded = false;
 	}
 
-	void AssetTexture::imGui()
+	void AssetTexture::show()
 	{
-		Asset::imGui();
+		Asset::show();
 
 		sampler.show();
 

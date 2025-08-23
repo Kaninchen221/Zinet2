@@ -15,7 +15,7 @@ namespace zt::vulkan_renderer
 		return matrix;
 	}
 
-	void Transform::imGui()
+	void Transform::show()
 	{
 #		if ZINET_USE_IMGUI
 		ImGui::PushID(this);

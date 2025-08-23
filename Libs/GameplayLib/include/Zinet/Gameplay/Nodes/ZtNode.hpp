@@ -39,7 +39,7 @@ namespace zt::gameplay
 		void setParent(ObjectWeakHandle<Node> newParent) noexcept { parent = newParent; }
 		auto getParent() const noexcept { return parent; }
 
-		void imGui() override;
+		void show() override;
 
 		virtual void update([[maybe_unused]] float deltaTime) {}
 

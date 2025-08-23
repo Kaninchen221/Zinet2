@@ -74,9 +74,9 @@ namespace zt::gameplay
 		loaded = false;
 	}
 
-	void AssetSampler::imGui()
+	void AssetSampler::show()
 	{
-		Asset::imGui();
+		Asset::show();
 		if (!isLoaded())
 			return;
 		

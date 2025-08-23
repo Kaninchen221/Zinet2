@@ -29,7 +29,7 @@ namespace zt::gameplay
 
 		void unload() override;
 
-		void imGui() override;
+		void show() override;
 
 		vulkan_renderer::ShaderModule shaderModule{ nullptr };
 	};

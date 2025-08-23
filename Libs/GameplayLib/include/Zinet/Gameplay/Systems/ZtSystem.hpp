@@ -38,7 +38,7 @@ namespace zt::gameplay
 		virtual Nodes& getNodes() noexcept { return nodes; }
 		virtual const Nodes& getNodes() const noexcept { return nodes; }
 
-		virtual void imGui();
+		virtual void show();
 
 	protected:
 

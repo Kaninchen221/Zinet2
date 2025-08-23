@@ -6,7 +6,7 @@
 namespace zt::gameplay
 {
 
-	void Node::imGui()
+	void Node::show()
 	{
 		ImGui::TextFMT("Node: {}", getDisplayName());
 	}

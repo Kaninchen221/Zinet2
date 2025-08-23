@@ -39,10 +39,10 @@ namespace zt::gameplay
 		MVPBuffer.destroy(vma);
 	}
 
-	void Node2D::imGui()
+	void Node2D::show()
 	{
-		Node::imGui();
-		transform.imGui();
+		Node::show();
+		transform.show();
 	}
 
 	void Node2D::update([[maybe_unused]] float deltaTime)

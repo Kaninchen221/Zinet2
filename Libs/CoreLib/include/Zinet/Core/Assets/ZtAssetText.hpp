@@ -25,7 +25,7 @@ namespace zt::core
 
 		void unload() override;
 
-		void imGui() override;
+		void show() override;
 
 		const std::string& getText() const { return text; }
 

@@ -5,10 +5,10 @@
 namespace zt::gameplay
 {
 
-	void NodeCamera::imGui()
+	void NodeCamera::show()
 	{
 		ImGui::TextCStr("Node Camera");
-		camera.imGui();
+		camera.show();
 	}
 
 }

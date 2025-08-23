@@ -34,7 +34,7 @@ namespace zt::core
 
 		const std::string_view getClassName() const override { return "zt::core::ConfigVariable"; }
 
-		void imGui() override {}
+		void show() override {}
 
 		const auto& getToolTip() const noexcept { return toolTip; }
 

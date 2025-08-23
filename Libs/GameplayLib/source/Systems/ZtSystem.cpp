@@ -4,7 +4,7 @@
 
 namespace zt::gameplay
 {
-	void System::imGui()
+	void System::show()
 	{
 		ImGui::Text(getDisplayName());
 		ImGui::TextFMT("Initialized: {}", initialized);

@@ -40,7 +40,7 @@ namespace zt::gameplay
 
 		void unload() override;
 
-		void imGui() override;
+		void show() override;
 		Sampler sampler{ nullptr };
 
 	protected:

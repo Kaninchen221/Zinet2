@@ -129,14 +129,14 @@ namespace zt::gameplay
 		renderer.endFrame();
 	}
 
-	void SystemRenderer::imGui()
+	void SystemRenderer::show()
 	{
-		System::imGui();
+		System::show();
 
 		vertexShader.show();
 		fragmentShader.show();
 		if (camera)
-			camera->imGui();
+			camera->show();
 	}
 
 }

@@ -20,7 +20,7 @@ namespace zt::gameplay
 		ImGui::End();
 	}
 
-	void NodeEditor::imGui()
+	void NodeEditor::show()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{

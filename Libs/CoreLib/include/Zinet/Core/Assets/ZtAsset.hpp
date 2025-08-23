@@ -41,7 +41,7 @@ namespace zt::core
 
 		const auto& getExtensions() const noexcept { return extensions; }
 		
-		virtual void imGui();
+		virtual void show();
 
 		bool getAutoLoad() const noexcept { return autoLoad; }
 

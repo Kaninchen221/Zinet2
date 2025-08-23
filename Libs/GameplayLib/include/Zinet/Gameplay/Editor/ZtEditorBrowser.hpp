@@ -26,7 +26,7 @@ namespace zt::gameplay
 
 		const std::string& getDisplayName() { return displayName; }
 
-		void imGui() { ImGui::Text(getDisplayName()); }
+		void show() { ImGui::Text(getDisplayName()); }
 	};
 
 	struct  EditorBrowserInspector

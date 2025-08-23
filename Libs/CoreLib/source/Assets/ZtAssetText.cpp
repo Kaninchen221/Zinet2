@@ -28,9 +28,9 @@ namespace zt::core
 		loaded = false; 
 	}
 
-	void AssetText::imGui()
+	void AssetText::show()
 	{
-		Asset::imGui();
+		Asset::show();
 		if (!isLoaded())
 			return;
 

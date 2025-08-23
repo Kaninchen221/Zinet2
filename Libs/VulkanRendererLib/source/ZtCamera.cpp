@@ -16,7 +16,7 @@ namespace zt::vulkan_renderer
 		return perspective;
 	}
 
-	void Camera::imGui()
+	void Camera::show()
 	{
 #		if ZINET_USE_IMGUI
 

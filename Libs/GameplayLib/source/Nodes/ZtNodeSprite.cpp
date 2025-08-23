@@ -4,9 +4,9 @@
 
 namespace zt::gameplay
 {
-	void NodeSprite::imGui()
+	void NodeSprite::show()
 	{
-		Node2D::imGui();
+		Node2D::show();
 		texture.show();
 	}
 

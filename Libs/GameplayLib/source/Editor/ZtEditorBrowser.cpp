@@ -11,7 +11,7 @@ namespace zt::gameplay
 		{
 			if (object)
 			{
-				object->imGui();
+				object->show();
 			}
 
 		}

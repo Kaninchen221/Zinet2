@@ -70,9 +70,9 @@ namespace zt::gameplay
 		shaderModule.destroy(device);
 	}
 
-	void AssetShader::imGui()
+	void AssetShader::show()
 	{
-		Asset::imGui();
+		Asset::show();
 		if (!isLoaded())
 			return;
 

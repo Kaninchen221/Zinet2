@@ -57,7 +57,7 @@ namespace zt::core
 		void setSaveable(bool value) noexcept { saveable = value; }
 		bool isSaveable() const noexcept { return saveable; }
 
-		virtual void imGui() {}
+		virtual void show() {}
 
 	protected:
 

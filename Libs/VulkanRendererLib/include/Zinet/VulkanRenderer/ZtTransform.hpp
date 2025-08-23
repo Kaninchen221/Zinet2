@@ -44,7 +44,7 @@ namespace zt::vulkan_renderer
 		const auto& getScale() const noexcept { return scale; }
 		auto& getScale() noexcept { return scale; }
 
-		void imGui();
+		void show();
 
 	protected:
 

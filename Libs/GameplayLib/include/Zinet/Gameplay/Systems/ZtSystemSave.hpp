@@ -30,7 +30,7 @@ namespace zt::gameplay
 
 		bool deinit() override { return System::deinit(); }
 
-		void imGui() override { System::imGui(); }
+		void show() override { System::show(); }
 
 		virtual bool createArchiveFromNodes(ObjectHandle<Node> node);
 		virtual bool putArchiveIntoFile();

@@ -30,7 +30,7 @@ namespace zt::gameplay
 		{
 			if (node.isValid())
 			{
-				node->imGui();
+				node->show();
 			}
 		}
 

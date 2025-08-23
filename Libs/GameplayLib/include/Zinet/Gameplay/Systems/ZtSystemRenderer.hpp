@@ -53,7 +53,7 @@ namespace zt::gameplay
 
 		void update() override;
 
-		void imGui() override;
+		void show() override;
 
 		auto& getRenderer() noexcept { return renderer; }
 		const auto& getRenderer() const noexcept { return renderer; }

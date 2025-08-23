@@ -38,7 +38,7 @@ namespace zt::gameplay
 
 		void onDestroy() override;
 
-		void imGui() override;
+		void show() override;
 
 		void update(float deltaTime) override;
 
