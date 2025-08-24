@@ -27,7 +27,7 @@ namespace zt::gameplay
 		AssetProperty(AssetProperty&& other) noexcept = default;
 		~AssetProperty() noexcept 
 		{
-			// Static asset properties should not release their asset handles on destruction because they are already destroyed by the assets storage
+			// Static asset properties should not release their asset handle on destruction because it's already destroyed by the assets storage
 			if constexpr (IsStatic{})
 				assetHandle = core::AssetHandle<AssetT>(nullptr);
 		}
