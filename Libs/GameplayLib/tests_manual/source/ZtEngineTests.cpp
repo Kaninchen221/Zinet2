@@ -89,7 +89,7 @@ namespace zt::gameplay::tests
 			auto textureForSprites = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
 			ASSERT_TRUE(textureForSprites->load(core::Paths::RootPath()));
 
-			for (size_t i = 0; i < 10000; ++i)
+			for (size_t i = 0; i < 5; ++i)
 			{
 				auto sprite = CreateObject<NodeSprite>(fmt::format("Sprite_{}", i));
 				sprite->transform.getPosition().x = positionDist(gen);

@@ -28,7 +28,7 @@ namespace zt::gameplay
 
 	public:
 
-		inline static AssetProperty<AssetTexture> DefaultTexture{ "Default Texture" };
+		inline static AssetProperty<AssetTexture, core::Static::Yes> DefaultTexture{ "Default Texture" };
 
 		Node2D() = default;
 		Node2D(const Node2D& other) = default;

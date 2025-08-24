@@ -4,6 +4,7 @@
 #include "Zinet/Core/ZtImGui.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/Assets/ZtAsset.hpp"
+#include "Zinet/Core/ZtConstants.hpp"
 
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
 
@@ -11,10 +12,12 @@
 
 namespace zt::gameplay
 {
-	template<std::derived_from<core::Asset> AssetT>
+	template<std::derived_from<core::Asset> AssetT, class Static = core::Static::No>
 	class AssetProperty
 	{
 	public:
+
+		using IsStatic = Static;
 
 		AssetProperty() = default;
 		AssetProperty(const std::string_view name)
@@ -22,7 +25,12 @@ namespace zt::gameplay
 		}
 		AssetProperty(const AssetProperty& other) = default;
 		AssetProperty(AssetProperty&& other) noexcept = default;
-		~AssetProperty() noexcept = default;
+		~AssetProperty() noexcept 
+		{
+			// Static asset properties should not release their asset handles on destruction because they are already destroyed by the assets storage
+			if constexpr (IsStatic{})
+				assetHandle = core::AssetHandle<AssetT>(nullptr);
+		}
 
 		AssetProperty& operator = (const AssetProperty& other) = default;
 		AssetProperty& operator = (AssetProperty&& other) noexcept = default;
@@ -59,8 +67,8 @@ namespace zt::gameplay
 		core::AssetHandle<AssetT> assetHandle;
 	};
 
-	template<std::derived_from<core::Asset> AssetT>
-	bool AssetProperty<AssetT>::serialize(core::JsonArchive& archive)
+	template<std::derived_from<core::Asset> AssetT, class Static>
+	bool AssetProperty<AssetT, Static>::serialize(core::JsonArchive& archive)
 	{
 		if (assetHandle)
 			archive.serialize(propertyName, assetHandle->getMetaData().value("fileRelativePath", "invalid relative path"));
@@ -68,8 +76,8 @@ namespace zt::gameplay
 		return true;
 	}
 
-	template<std::derived_from<core::Asset> AssetT>
-	bool AssetProperty<AssetT>::deserialize(core::JsonArchive& archive)
+	template<std::derived_from<core::Asset> AssetT, class Static>
+	bool AssetProperty<AssetT, Static>::deserialize(core::JsonArchive& archive)
 	{
 		std::string assetKey;
 		archive.deserialize(propertyName, assetKey);
@@ -82,8 +90,8 @@ namespace zt::gameplay
 		return true;
 	}
 
-	template<std::derived_from<core::Asset> AssetT>
-	void AssetProperty<AssetT>::show()
+	template<std::derived_from<core::Asset> AssetT, class Static>
+	void AssetProperty<AssetT, Static>::show()
 	{
 		ImGui::PushID(this);
 
