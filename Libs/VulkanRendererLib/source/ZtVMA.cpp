@@ -8,7 +8,6 @@
 
 namespace zt::vulkan_renderer
 {
-
 	bool VMA::create(const Device& device, const PhysicalDevice& physicalDevice, const Instance& instance)
 	{
 		if (isValid())
@@ -55,9 +54,27 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
+			freeBuildStatsString();
 			vmaDestroyAllocator(objectHandle);
 			objectHandle = nullptr;
 		}
+	}
+
+	void VMA::updateBuildStatsString() noexcept
+	{
+		if (buildStatsString)
+			freeBuildStatsString();
+
+		vmaBuildStatsString(get(), &buildStatsString, false);
+	}
+
+	void VMA::freeBuildStatsString() noexcept
+	{
+		if (!buildStatsString)
+			return;
+
+		vmaFreeStatsString(get(), buildStatsString); 
+		buildStatsString = nullptr;
 	}
 
 }

@@ -4,6 +4,7 @@
 #include "Zinet/Gameplay/Nodes/ZtNode.hpp"
 #include "Zinet/Gameplay/Editor/ZtEditorBrowser.hpp"
 #include "Zinet/Gameplay/Editor/ZtEditorSearchBar.hpp"
+#include "Zinet/Gameplay/Editor/ZtEditorMetrics.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtObject.hpp"
@@ -11,13 +12,6 @@
 
 namespace zt::gameplay
 {
-	// TODO: Extend it. We need better tools to measure performance inside the engine
-	struct EditorMetrics
-	{
-		bool shouldShow = false;
-		void show();
-	};
-
 	class NodeEditor : public Node
 	{
 	protected:

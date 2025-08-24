@@ -88,4 +88,14 @@ namespace zt::vulkan_renderer::tests
 
 		vmaDestroyBuffer(vma.get(), buffer, allocation);
 	}
+
+	TEST_F(VMATests, StatsStringTest)
+	{
+		auto stats = vma.getBuildStatsString();
+		ASSERT_TRUE(stats.empty());
+
+		vma.updateBuildStatsString();
+		stats = vma.getBuildStatsString();
+		ASSERT_FALSE(stats.empty());
+	}
 }

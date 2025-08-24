@@ -45,5 +45,14 @@ namespace zt::vulkan_renderer
 		bool create(const Device& device, const PhysicalDevice& physicalDevice, const Instance& instance);
 
 		void destroy();
+
+		void updateBuildStatsString() noexcept;
+		std::string_view getBuildStatsString() const noexcept { return buildStatsString ? buildStatsString : ""; }
+
+	private:
+
+		void freeBuildStatsString() noexcept;
+		char* buildStatsString = nullptr;
+
 	};
 }
