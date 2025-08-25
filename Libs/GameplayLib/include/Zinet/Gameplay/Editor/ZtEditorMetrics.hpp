@@ -18,6 +18,14 @@ namespace zt::gameplay
 
 	protected:
 
+		void imGuiMetrics();
+		float imGuiFPSMax = 0.f;
+		float imGuiFPSMin = 0.f;
+		size_t imGuiFPSMaxPoints = 10000;
+		std::vector<float> imGuiFPSPoints = std::vector<float>(imGuiFPSMaxPoints);
+
+		void cpuMetrics();
+
 		void gpuMetrics();
 		void gpuMemoryMetrics();
 
