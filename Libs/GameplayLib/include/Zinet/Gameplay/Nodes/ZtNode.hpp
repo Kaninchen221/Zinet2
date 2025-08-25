@@ -33,6 +33,8 @@ namespace zt::gameplay
 
 		void addChild(ObjectHandle<Node> ObjectHandle) { children.push_back(ObjectHandle); }
 
+		// TODO: Remove child
+
 		auto begin() const noexcept { return children.begin(); }
 		auto end() const noexcept { return children.end(); }
 
