@@ -2,16 +2,21 @@
 
 namespace zt::gameplay
 {
+	void SystemTickable::onCreate()
+	{
+		clock.start();
+	}
+
 	void SystemTickable::update()
 	{
 		System::update();
 
+		const auto elapsedTimeAsSeconds = clock.restart().getAsSeconds();
 		for (auto& node : nodes)
 		{
 			if (node.isValid())
 			{
-				// TODO: Delta time
-				node->update(1 /* Delta placeholder */);
+				node->update(elapsedTimeAsSeconds);
 			}
 		}
 	}

@@ -28,11 +28,13 @@ namespace zt::gameplay::tests
 	class TestNode : public Node
 	{
 	public:
-		void update([[maybe_unused]] float deltaTime) override
+		void update(float deltaTime) override
 		{
 			updated = true;
+			timeElapsed += deltaTime;
 		}
 		bool updated{ false };
+		float timeElapsed = 0.f;
 	};
 
 	TEST_F(SystemTickableTests, PassTest)
@@ -42,6 +44,7 @@ namespace zt::gameplay::tests
 		system.addNode(node);
 
 		system.update();
-		ASSERT_TRUE(node->updated);
+		EXPECT_TRUE(node->updated);
+		EXPECT_TRUE(node->timeElapsed > 0.f);
 	}
 }

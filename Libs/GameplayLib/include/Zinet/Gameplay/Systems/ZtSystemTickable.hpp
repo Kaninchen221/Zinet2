@@ -5,6 +5,7 @@
 #include "Zinet/Gameplay/Systems/ZtSystem.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtClock.hpp"
 
 namespace zt::gameplay
 {
@@ -24,7 +25,13 @@ namespace zt::gameplay
 		SystemTickable& operator = (const SystemTickable& other) = default;
 		SystemTickable& operator = (SystemTickable&& other) noexcept = default;
 
+		void onCreate() override;
+
 		void update() override;
+
+	protected:
+
+		core::Clock clock;
 
 	};
 
