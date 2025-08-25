@@ -44,6 +44,9 @@ namespace zt::sandbox
 			ASSERT_TRUE(engine.init());
 			vulkan_renderer::ImGuiIntegration::SetStyle_Dark();
 
+			Node2D::DefaultTexture = assetsStorage.getAs<AssetTexture>("Content/Textures/default_texture.png");
+			Node2D::DefaultTexture->load(core::Paths::RootPath());
+
 			auto& rootNode = engineContext.getRootNode();
 
 			auto editorNode = CreateObject<NodeEditor>("Editor");
