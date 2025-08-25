@@ -1,6 +1,6 @@
 #include "Zinet/VulkanRenderer/ZtTransform.hpp"
 
-#include <imgui.h>
+#include "Zinet/Core/ZtImgui.hpp"
 
 namespace zt::vulkan_renderer
 {
@@ -23,9 +23,24 @@ namespace zt::vulkan_renderer
 		if (ImGui::CollapsingHeader("Transform"))
 		{
 			ImGui::Indent(16.0f);
-			ImGui::SliderFloat3("Position", reinterpret_cast<float*>(&position), -1000, 1000);
-			ImGui::SliderFloat("Rotation", &rotation, 0, 360);
-			ImGui::SliderFloat3("Scale", reinterpret_cast<float*>(&scale), 0, 1000);
+			
+			ImGui::TextCStr("Position");
+			ImGui::SliderFloat("X", &position.x, -1000, 1000);
+			ImGui::SliderFloat("Y", &position.y, -1000, 1000);
+			ImGui::SliderFloat("Z", &position.z, -1000, 1000);
+			ImGui::Separator();
+
+			float rad = glm::radians(rotation);
+			ImGui::SliderAngle("Rotation", &rad, -180, 180);
+			rotation = glm::degrees(rad);
+			ImGui::Separator();
+
+			ImGui::TextCStr("Scale");
+			ImGui::SliderFloat("X##1", &scale.x, 0, 1000);
+			ImGui::SliderFloat("Y##1", &scale.y, 0, 1000);
+			ImGui::SliderFloat("Z##1", &scale.z, 0, 1000);
+			ImGui::Separator();
+
 			ImGui::Unindent(16.0f);
 		}
 
