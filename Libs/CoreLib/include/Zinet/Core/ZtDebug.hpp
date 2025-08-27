@@ -53,9 +53,15 @@ namespace zt
 	{
 		std::terminate();
 	}
+
+	[[noreturn]] inline static void TerminateDebug([[maybe_unused]] bool ShouldTerminate) noexcept
+	{
+		if (ShouldTerminate)
+			std::terminate();
+	}
 #else
-	inline static void TerminateDebug() noexcept
-	{}
+	inline static void TerminateDebug() noexcept {}
+	inline static void TerminateDebug([[maybe_unused]] bool ShouldTerminate) noexcept {}
 #endif // ZINET_DEBUG
 
 	[[noreturn]] inline static void Terminate() noexcept { std::terminate(); }

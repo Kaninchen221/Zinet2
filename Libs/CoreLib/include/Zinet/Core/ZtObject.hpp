@@ -80,14 +80,22 @@ namespace zt::core
 		ObjectRefCounter(const ObjectRefCounter& other) = delete;
 		ObjectRefCounter(ObjectRefCounter&& other) noexcept
 		{
+			*this = std::forward<ObjectRefCounter>(other);
+		}
+
+		~ObjectRefCounter() noexcept
+		{
+			object.reset();
+		}
+
+		ObjectRefCounter& operator = (const ObjectRefCounter& other) noexcept = delete;
+		ObjectRefCounter& operator = (ObjectRefCounter&& other) noexcept
+		{
 			refCount = other.refCount;
 			other.refCount = 0;
 			object = std::move(other.object);
+			return *this;
 		}
-		~ObjectRefCounter() noexcept = default;
-
-		ObjectRefCounter& operator = (const ObjectRefCounter& other) noexcept = delete;
-		ObjectRefCounter& operator = (ObjectRefCounter&& other) noexcept = default;
 
 		template<std::derived_from<Object> ObjectT>
 		void create(const std::string_view displayName)
@@ -135,7 +143,13 @@ namespace zt::core
 
 		size_t getRefCount() const noexcept { return refCount; }
 
-		Object* get() const noexcept { return object.get(); }
+		Object* get() const noexcept
+		{ 
+			if (!isValid())
+				Terminate();
+
+			return object.get(); 
+		}
 
 		Object* operator->() const noexcept { return get(); }
 
@@ -176,10 +190,9 @@ namespace zt::core
 
 		ObjectHandle<ObjectT>& operator = (const ObjectHandle<ObjectT>& other) noexcept
 		{
-			if (!other.objectRefCounter)
+			if (!Ensure(other.isValid()))
 			{
 				Logger->warn("Attempting to assign an ObjectHandle with invalid object ref counter");
-				Ensure(false);
 				return *this;
 			}
 
@@ -190,6 +203,12 @@ namespace zt::core
 
 		ObjectHandle<ObjectT>& operator = (ObjectHandle<ObjectT>&& other) noexcept
 		{
+			if (isValid())
+				invalidate();
+
+			if (!other.isValid())
+				return *this;
+
 			objectRefCounter = other.objectRefCounter;
 			other.objectRefCounter = nullptr;
 			return *this;
@@ -203,21 +222,21 @@ namespace zt::core
 
 		ObjectT* get() const noexcept
 		{
-			if (!objectRefCounter)
-				return nullptr;
+			if (!isValid())
+				Terminate();
 
-			return dynamic_cast<ObjectT*>(objectRefCounter->get());
+			return dynamic_cast<class ObjectT*>(objectRefCounter->get());
 		}
 
 		ObjectT& operator*() const
 		{
-			if (!objectRefCounter)
+			if (!isValid)
 			{
 				Logger->error("Attempting to dereference an invalid pointer");
 				Terminate();
 			}
 
-			return *dynamic_cast<ObjectT*>(objectRefCounter->get());
+			return *dynamic_cast<class ObjectT*>(objectRefCounter->get());
 		}
 
 		template<class ObjectHandleT>
@@ -234,11 +253,17 @@ namespace zt::core
 
 		auto createHandle() noexcept
 		{
+			if (!isValid())
+				Terminate();
+
 			return ObjectHandle<ObjectT, true>(objectRefCounter);
 		}
 
 		auto createWeakHandle() noexcept
 		{
+			if (!isValid())
+				Terminate();
+
 			return ObjectHandle<ObjectT, false>(objectRefCounter);
 		}
 

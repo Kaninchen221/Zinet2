@@ -8,13 +8,13 @@
 
 namespace zt::core
 {
-	class Clock : public Object
+	class Clock
 	{
 	public:
 
 		using UnderlyingClock = std::chrono::system_clock;
 
-		Clock() noexcept = default;
+		Clock() noexcept { start(); }
 		Clock(const Clock& other) noexcept = default;
 		Clock(Clock&& other) noexcept = default;
 		~Clock() noexcept = default;

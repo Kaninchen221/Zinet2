@@ -75,7 +75,7 @@ namespace zt::core
 	{
 		auto assetHandle = get(key);
 		if (!assetHandle)
-			ObjectHandle<AssetT>{ nullptr };
+			return ObjectHandle<AssetT>{ nullptr };
 
 		auto result = ObjectHandle<AssetT>(assetHandle);
 		return result;
