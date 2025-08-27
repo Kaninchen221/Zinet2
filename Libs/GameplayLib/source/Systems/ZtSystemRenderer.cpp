@@ -103,6 +103,10 @@ namespace zt::gameplay
 				drawInfo.instances++;
 			}
 		}
+		else
+		{
+			return;
+		}
 
 		// TODO: Add possibility to recreate graphics pipeline
 		//if (renderer.getGraphicsPipeline().isValid())
