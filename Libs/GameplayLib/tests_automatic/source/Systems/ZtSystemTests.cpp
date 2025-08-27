@@ -22,7 +22,7 @@ namespace zt::gameplay::tests
 			system.deinit();
 		}
 
-		using NodeBase = Node;
+		core::ObjectsStorage objectsStorage;
 		System system;
 
 		static_assert(std::is_default_constructible_v<System>);
@@ -30,7 +30,6 @@ namespace zt::gameplay::tests
 
 	TEST_F(SystemTests, NodesTest)
 	{
-		core::ObjectsStorage objectsStorage;
 		ObjectHandle<Node> node = objectsStorage.createObject<Node>("node");
 		system.addNode(node.createWeakHandle());
 		ASSERT_EQ(node.getRefCount(), 1);

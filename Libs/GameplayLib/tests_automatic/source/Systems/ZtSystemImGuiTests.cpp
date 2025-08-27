@@ -40,6 +40,7 @@ namespace zt::gameplay::tests
 			wd::GLFW::Deinit();
 		}
 
+		core::ObjectsStorage objectsStorage;
 		vr::RendererContext rendererContext;
 		wd::Window window;
 		vr::ImGuiIntegration imGuiIntegration;
@@ -48,7 +49,6 @@ namespace zt::gameplay::tests
 
 	TEST_F(SystemImGuiTests, PassTest)
 	{
-		core::ObjectsStorage objectsStorage;
 		auto node = objectsStorage.createObject<Node>("node");
 		system.addNode(node.createWeakHandle());
 
