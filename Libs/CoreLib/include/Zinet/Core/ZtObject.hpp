@@ -186,7 +186,7 @@ namespace zt::core
 
 		ObjectHandle(const ObjectHandle<ObjectT>& other) noexcept { *this = other; }
 		ObjectHandle(ObjectHandle<ObjectT>&& other) noexcept { *this = std::forward<ObjectHandle<ObjectT>>(other); }
-		~ObjectHandle() noexcept { if (isValid()) decrement(); }
+		~ObjectHandle() noexcept { decrement(); }
 
 		ObjectHandle<ObjectT>& operator = (const ObjectHandle<ObjectT>& other) noexcept
 		{
@@ -275,7 +275,7 @@ namespace zt::core
 		{
 			if constexpr (StrongRef)
 			{
-				if (objectRefCounter)
+				if (isValid())
 					objectRefCounter->increment();
 			}
 		}
@@ -284,7 +284,7 @@ namespace zt::core
 		{
 			if constexpr (StrongRef)
 			{
-				if (objectRefCounter)
+				if (isValid())
 					objectRefCounter->decrement();
 			}
 		}
