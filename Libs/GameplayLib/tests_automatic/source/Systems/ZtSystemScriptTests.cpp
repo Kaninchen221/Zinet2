@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Zinet/Gameplay/Systems/ZtSystemTickable.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemScript.hpp"
 
 #include "Zinet/Core/ZtObjectsStorage.hpp"
 
@@ -8,7 +8,7 @@
 
 namespace zt::gameplay::tests
 {
-	class SystemTickableTests : public ::testing::Test
+	class SystemScriptTests : public ::testing::Test
 	{
 	protected:
 
@@ -26,26 +26,17 @@ namespace zt::gameplay::tests
 		{
 		public:
 
-			void update(float deltaTime) override
-			{
-				updated = true;
-				timeElapsed += deltaTime;
-			}
-			bool updated{ false };
-			float timeElapsed = 0.f;
 		};
 
 		core::ObjectsStorage objectsStorage;
-		SystemTickable system;
+		SystemScript system;
 	};
 
-	TEST_F(SystemTickableTests, PassTest)
+	TEST_F(SystemScriptTests, PassTest)
 	{
 		auto node = objectsStorage.createObject<TestNode>("node");
 		system.addNode(node);
 
 		system.update();
-		EXPECT_TRUE(node->updated);
-		EXPECT_TRUE(node->timeElapsed > 0.f);
 	}
 }
