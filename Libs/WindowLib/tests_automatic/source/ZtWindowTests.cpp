@@ -79,7 +79,7 @@ namespace zt::wd::tests
 	TEST_F(WindowTests, GetWindowResizedCallback)
 	{
 		auto callback = window.getWindowResizedCallback();
-		EXPECT_EQ(callback, nullptr);
+		EXPECT_FALSE(callback.isValid());
 	}
 
 	TEST_F(WindowTests, GetWindowResizedCallbackUserPointer)

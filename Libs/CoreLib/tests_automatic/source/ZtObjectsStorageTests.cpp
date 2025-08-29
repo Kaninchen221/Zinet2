@@ -14,26 +14,25 @@ namespace zt::core::tests
 
 		ObjectsStorage objectsStorage;
 
-	};
-
-	class TestObject : public core::Object
-	{
-	public:
-
-		TestObject() {}
-		~TestObject() {}
-
-		bool onCreateInvoked = false;
-		void onCreate() override
+		class TestObject : public core::Object
 		{
-			onCreateInvoked = true;
-		}
-		MOCK_METHOD(void, onDestroy, (), (override));
+		public:
 
-		/// Test if we could create ObjectHandle<TestObject in Node class
-		using Nodes = std::vector<ObjectHandle<TestObject>>;
-		Nodes nodes;
+			TestObject() {}
+			~TestObject() {}
 
+			bool onCreateInvoked = false;
+			void onCreate() override
+			{
+				onCreateInvoked = true;
+			}
+			MOCK_METHOD(void, onDestroy, (), (override));
+
+			/// Test if we could create ObjectHandle<TestObject in Node class
+			using Nodes = std::vector<ObjectHandle<TestObject>>;
+			Nodes nodes;
+
+		};
 	};
 
 	TEST_F(ObjectsStorageTests, OnCreateOnDestroyTest)

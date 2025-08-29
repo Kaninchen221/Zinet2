@@ -8,6 +8,8 @@
 #include "Zinet/VulkanRenderer/ZtImageView.hpp"
 #include "Zinet/VulkanRenderer/ZtSampler.hpp"
 
+#include "Zinet/Core/ZtFunction.hpp"
+
 #include <span>
 
 namespace zt::vulkan_renderer
@@ -64,7 +66,7 @@ namespace zt::vulkan_renderer
 		DescriptorInfo pipelineDescriptorInfo;
 		DescriptorInfo drawCallDescriptorInfo;
 
-		using AdditionalCommands = std::vector<void(*)(const CommandBuffer&)>;
+		using AdditionalCommands = std::vector<core::Function<void, const CommandBuffer&>>;
 		AdditionalCommands additionalCommands;
 	};
 }

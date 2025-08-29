@@ -62,7 +62,7 @@ namespace zt::wd
     void Window::FramebufferSizeCallback(GLFWwindow* internalWindow, int width, int height)
     {
         void* windowUserPointer = glfwGetWindowUserPointer(internalWindow);
-        if (windowUserPointer == nullptr)
+        if (!windowUserPointer)
         {
             Logger->warn("Window::FramebufferSizeCallback: windowUserPointer is nullptr");
             return;
@@ -71,8 +71,12 @@ namespace zt::wd
         Window* window = static_cast<Window*>(windowUserPointer);
 		if (window->windowResizedCallback && window->windowResizedCallbackUserPointer)
 		{
-            auto callable = std::bind(window->windowResizedCallback, window->windowResizedCallbackUserPointer, Vector2i{width, height});
-			std::invoke(callable);
+			window->windowResizedCallback.invoke(window->windowResizedCallbackUserPointer, Vector2i{ width, height });
+		}
+		else
+		{
+			Logger->warn("windowResizedCallback {} or windowResizedCallbackUserPointer {} is nullptr", 
+				window->windowResizedCallback.isValid(), window->windowResizedCallbackUserPointer);
 		}
     }
 

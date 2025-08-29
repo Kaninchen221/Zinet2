@@ -30,6 +30,7 @@ namespace zt::gameplay
 	//		- logic for using multiple graphics pipelines
 	//		- GP for basic shapes
 	//		- GP for multiple sprites with static UBOs (maybe some logic like static/dynamic sprite?)
+	//		- Push constants
 	class SystemRenderer : public System
 	{
 	private:

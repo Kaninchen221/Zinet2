@@ -223,7 +223,7 @@ namespace zt::core
 		ObjectT* get() const noexcept
 		{
 			if (!isValid())
-				Terminate();
+				return nullptr;
 
 			return dynamic_cast<class ObjectT*>(objectRefCounter->get());
 		}

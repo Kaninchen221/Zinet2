@@ -6,6 +6,7 @@
 #include "Zinet/VulkanRenderer/ZtSwapChain.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtFunction.hpp"
 
 #include <vulkan/vulkan.h>
 
@@ -56,8 +57,8 @@ namespace zt::vulkan_renderer
 
 		std::uint32_t queueFamilyIndex = InvalidIndex;
 
-		/// TODO: Refactor this
-		PFN_vkSetDebugUtilsObjectNameEXT setDebugUtilsObjectName = nullptr;
+		using SetDebugUtilsObjectNameT = core::Function<VkResult, VkDevice, const VkDebugUtilsObjectNameInfoEXT*>;
+		SetDebugUtilsObjectNameT setDebugUtilsObjectName;
 
 	};
 
@@ -80,7 +81,7 @@ namespace zt::vulkan_renderer
 			.pObjectName = debugName.data()
 		};
 
-		const auto result = std::invoke(setDebugUtilsObjectName, get(), &debugVulkanObjectName);
+		const auto result = setDebugUtilsObjectName.invoke(get(), &debugVulkanObjectName);
 		if (result != VK_SUCCESS)
 		{
 			Logger->error("Failed registering buffer debug name, result: {}", static_cast<int32_t>(result));

@@ -16,6 +16,7 @@ namespace zt::core
 		using InternalFunctionT = ReturnType(*)(Args...);
 
 		Function() noexcept = default;
+		Function(InternalFunctionT newInternalFunction) : internalFunction{ newInternalFunction } {}
 		Function(const Function& other) noexcept = default;
 		Function(Function&& other) noexcept = default;
 		~Function() noexcept = default;
@@ -34,7 +35,7 @@ namespace zt::core
 		void invalidate() noexcept { internalFunction = nullptr; }
 
 		template<class ...Args>
-		ReturnT invoke(Args&&... args) { return std::invoke(internalFunction, std::forward<Args>(args)...); }
+		ReturnT invoke(Args&&... args) const { return std::invoke(internalFunction, std::forward<Args>(args)...); }
 
 	private:
 

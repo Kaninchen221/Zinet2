@@ -151,7 +151,8 @@ namespace zt::vulkan_renderer
 
 		for (const auto& additionalCommand : drawInfo.additionalCommands)
 		{
-			std::invoke(additionalCommand, commandBuffer);
+			if (additionalCommand)
+				additionalCommand.invoke(commandBuffer);
 		}
 
 		commandBuffer.endRenderPass();

@@ -6,6 +6,7 @@
 #include "Zinet/Math/ZtVecTypes.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtFunction.hpp"
 
 namespace zt::wd
 {
@@ -15,13 +16,13 @@ namespace zt::wd
 	{
 	public:
 
-		using WindowResizedCallback = void (*)(void*, const Vector2i&);
+		using WindowResizedCallback = core::Function<void, void*, const Vector2i&>;
 
 	private:
 
 		inline static core::ConsoleLogger Logger = core::ConsoleLogger::Create("Window");
 
-		WindowResizedCallback windowResizedCallback = nullptr;
+		WindowResizedCallback windowResizedCallback;
 		void* windowResizedCallbackUserPointer = nullptr;
 
 	public:
