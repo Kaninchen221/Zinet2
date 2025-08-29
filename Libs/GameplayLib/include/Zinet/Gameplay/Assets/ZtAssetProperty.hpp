@@ -29,7 +29,7 @@ namespace zt::gameplay
 		{
 			// Static asset properties should not release their asset handle on destruction because it's already destroyed by the assets storage
 			if constexpr (IsStatic{})
-				assetHandle = core::AssetHandle<AssetT>(nullptr);
+				assetHandle.release();
 		}
 
 		AssetProperty& operator = (const AssetProperty& other) = default;

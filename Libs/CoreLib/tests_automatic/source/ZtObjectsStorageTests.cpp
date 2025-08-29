@@ -87,6 +87,17 @@ namespace zt::core::tests
 		ASSERT_EQ(objectHandle.getRefCount(), 0);
 	}
 
+	TEST_F(ObjectsStorageTests, ReleaseTest)
+	{
+		const std::string_view displayName = "Test Object";
+		ObjectHandle<Object> objectHandle = objectsStorage.createObject<Object>(displayName);
+
+		ObjectRefCounter* refCounter = objectHandle.release();
+		ASSERT_FALSE(objectHandle.get());
+		ASSERT_FALSE(objectHandle.isValid());
+		ASSERT_TRUE(refCounter);
+	}
+
 	TEST_F(ObjectsStorageTests, DerivedToBaseTest)
 	{
 		const std::string_view displayName = "Test Object";

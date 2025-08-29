@@ -155,6 +155,7 @@ namespace zt::core
 
 	protected:
 		size_t refCount = 0;
+		// TODO: Objects should be stored in a better way than some random place in the memory
 		std::unique_ptr<Object> object;
 	};
 	
@@ -250,6 +251,13 @@ namespace zt::core
 		size_t getRefCount() const noexcept { return objectRefCounter ? objectRefCounter->getRefCount() : 0; }
 
 		void invalidate() noexcept { decrement(); objectRefCounter = nullptr; }
+
+		ObjectRefCounter* release() noexcept 
+		{ 
+			ObjectRefCounter* temp = objectRefCounter;
+			objectRefCounter = nullptr; 
+			return temp;
+		}
 
 		auto createHandle() noexcept
 		{

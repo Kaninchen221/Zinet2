@@ -16,6 +16,7 @@ namespace zt::core
 
 	public:
 
+		// TODO: Store objects in a contiguous memory pool
 		using Objects = std::list<ObjectRefCounter>;
 
 		ObjectsStorage() noexcept = default;
