@@ -33,13 +33,13 @@ namespace zt::gameplay
 
 		CreateDragDropSourceSection(node);
 
-		ImGui::Indent(EditorConfig::IndentValue);
+		ImGui::Indent();
 		for (auto& child : node->getChildren())
 		{
 			if (child)
 				CreateNodeBrowserListElement(child, list);
 		}
-		ImGui::Unindent(EditorConfig::IndentValue);
+		ImGui::Unindent();
 	}
 
 }

@@ -59,7 +59,7 @@ namespace zt::gameplay
 
 	void EditorMetrics::gpuMemoryMetrics()
 	{
-		ImGui::Indent(EditorConfig::IndentValue);
+		ImGui::Indent();
 		if (ImGui::CollapsingHeader("Memory (Slow)"))
 		{
 			auto& engineContext = EngineContext::Get();
@@ -74,7 +74,7 @@ namespace zt::gameplay
 			vma.updateBuildStatsString();
 			ImGui::TextFMT("VMA Stats: \n{}", vma.getBuildStatsString());
 		}
-		ImGui::Unindent(EditorConfig::IndentValue);
+		ImGui::Unindent();
 	}
 
 }
