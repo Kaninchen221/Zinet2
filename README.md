@@ -6,8 +6,8 @@
 ![Linux Release Badge](https://github.com/Kaninchen221/Zinet2/actions/workflows/Linux_Release.yml/badge.svg)
 
 # Zinet
-Readme last update: 31/8/2025
-Zinet is a game engine focused mainly on 2D graphics
+Readme last update: 31/8/2025  
+Zinet is a game engine focused mainly on 2D graphics  
 The purpose of this project is learning the C++ language, maintaining a big project and in the feature creating a game
 
 ## Step by step Windows
