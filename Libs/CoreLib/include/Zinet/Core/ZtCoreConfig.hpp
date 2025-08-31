@@ -61,8 +61,13 @@
 #	define ZINET_CORE_API
 #endif // ZINET_STATIC
 
-// Uncomment for time tracing info 
-//#define ZINET_TIME_TRACE
+#if ZINET_DEBUG
+#	define ZINET_TIME_TRACE 1
+#endif
+
+#ifndef ZINET_TIME_TRACE
+#	define ZINET_TIME_TRACE 0
+#endif
 
 // ImGui payload types
 auto constexpr inline static ZinetImGuiPayloadType = "ASSET";

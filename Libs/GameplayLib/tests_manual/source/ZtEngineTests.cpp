@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/Core/ZtRandom.hpp"
+#include "Zinet/Core/ZtTimeLog.hpp"
 
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
 
@@ -18,8 +19,6 @@
 
 #include <gtest/gtest.h>
 
-#include <random>
-
 namespace zt::gameplay::tests
 {
 	class EngineTests : public ::testing::Test
@@ -36,6 +35,13 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
+			ZT_TIME_LOG_NAME(Test_ZT_TIME_LOG_TIME,
+				ZT_TIME_LOG(init());
+			);
+		}
+
+		void init()
+		{
 			auto& engineContext = EngineContext::Get();
 			auto& assetsStorage = engineContext.getAssetsStorage();
 			assetsStorage.registerAssetClass<core::AssetText>();
@@ -47,7 +53,7 @@ namespace zt::gameplay::tests
 			auto systemRenderer = engineContext.addSystem<SystemRenderer>("SystemRenderer");
 			auto systemSave = engineContext.addSystem<SystemSave>("SystemSave");
 			auto systemTickable = engineContext.addSystem<SystemTickable>("SystemTickable");
-			
+
 			ASSERT_TRUE(engine.init());
 			vulkan_renderer::ImGuiIntegration::SetStyle_Dark();
 
@@ -76,14 +82,17 @@ namespace zt::gameplay::tests
 
 			auto child = CreateObject<Node>("Child");
 			rootNode->addChild(child);
-			
+
 			auto childOfChild = CreateObject<Node>("Child of child");
 			child->addChild(childOfChild);
 
 			core::Random random;
 
 			auto textureForSprites = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
-			ASSERT_TRUE(textureForSprites->load(core::Paths::RootPath()));
+
+			ZT_TIME_LOG(
+				ASSERT_TRUE(textureForSprites->load(core::Paths::RootPath()))
+			);
 
 			for (size_t i = 0; i < 5; ++i)
 			{
@@ -101,17 +110,23 @@ namespace zt::gameplay::tests
 			}
 
 			auto shaderVert = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.vert");
-			ASSERT_TRUE(shaderVert->load(core::Paths::RootPath()));
+			ZT_TIME_LOG(
+				ASSERT_TRUE(shaderVert->load(core::Paths::RootPath()));
+			);
 			systemRenderer->vertexShader = shaderVert;
 
 			auto shaderFrag = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.frag");
-			ASSERT_TRUE(shaderFrag->load(core::Paths::RootPath()));
+			ZT_TIME_LOG(
+				ASSERT_TRUE(shaderFrag->load(core::Paths::RootPath()));
+			);
 			systemRenderer->fragmentShader = shaderFrag;
 		}
 
 		void TearDown() override
 		{
-			engine.deinit();
+			ZT_TIME_LOG(
+				engine.deinit();
+			);
 		}
 
 		Engine engine;
