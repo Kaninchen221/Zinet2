@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/Core/ZtRandom.hpp"
+
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
 
 #include "Zinet/Gameplay/ZtEngine.hpp"
@@ -79,12 +81,13 @@ namespace zt::gameplay::tests
 			child->addChild(childOfChild);
 
 			// TODO: Write some help class in core lib for random numbers
-			std::random_device rd;
-			std::mt19937 gen(rd());
-
-			std::uniform_real_distribution<float> positionDist(-10, 10);
-			std::uniform_real_distribution<float> rotationDist(0, 360);
+			//std::random_device rd;
+			//std::mt19937 gen(rd());
 			//
+			//std::uniform_real_distribution<float> positionDist(-10, 10);
+			//std::uniform_real_distribution<float> rotationDist(0, 360);
+			//
+			core::Random random;
 
 			auto textureForSprites = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
 			ASSERT_TRUE(textureForSprites->load(core::Paths::RootPath()));
@@ -92,12 +95,12 @@ namespace zt::gameplay::tests
 			for (size_t i = 0; i < 5; ++i)
 			{
 				auto sprite = CreateObject<NodeSprite>(fmt::format("Sprite_{}", i));
-				sprite->transform.getPosition().x = positionDist(gen);
-				sprite->transform.getPosition().y = positionDist(gen);
+				sprite->transform.getPosition().x = random.real<float>(-10, 10);
+				sprite->transform.getPosition().y = random.real<float>(-10, 10);
 				sprite->transform.getPosition().z = 50;
 				sprite->transform.getScale().x = 8;
 				sprite->transform.getScale().y = 8;
-				sprite->transform.getRotation() = rotationDist(gen);
+				sprite->transform.getRotation() = random.real<float>(0, 360);
 				sprite->texture = textureForSprites;
 				rootNode->addChild(sprite);
 				systemTickable->addNode(sprite);
