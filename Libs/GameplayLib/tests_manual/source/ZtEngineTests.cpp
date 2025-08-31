@@ -80,13 +80,6 @@ namespace zt::gameplay::tests
 			auto childOfChild = CreateObject<Node>("Child of child");
 			child->addChild(childOfChild);
 
-			// TODO: Write some help class in core lib for random numbers
-			//std::random_device rd;
-			//std::mt19937 gen(rd());
-			//
-			//std::uniform_real_distribution<float> positionDist(-10, 10);
-			//std::uniform_real_distribution<float> rotationDist(0, 360);
-			//
 			core::Random random;
 
 			auto textureForSprites = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
