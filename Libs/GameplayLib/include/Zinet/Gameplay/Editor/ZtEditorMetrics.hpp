@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtGraph.hpp"
 
 namespace zt::gameplay
 {
@@ -19,10 +20,7 @@ namespace zt::gameplay
 	protected:
 
 		void imGuiMetrics();
-		float imGuiFPSMax = 0.f;
-		float imGuiFPSMin = 0.f;
-		size_t imGuiFPSMaxPoints = 10000;
-		std::vector<float> imGuiFPSPoints = std::vector<float>(imGuiFPSMaxPoints);
+		core::Graph imGuiFPSGraph{ 0.f, 0.f, 10000 };
 
 		void cpuMetrics();
 

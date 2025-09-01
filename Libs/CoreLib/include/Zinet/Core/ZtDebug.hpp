@@ -38,8 +38,13 @@ namespace zt
 
 	static inline bool Ensure(bool value, const char* message)
 	{
-		static auto Logger = zt::core::ConsoleLogger::Create("Ensure");
-		Logger->error(message);
+		bool shouldEnsure = !value;
+
+		if (shouldEnsure)
+		{
+			static auto Logger = core::ConsoleLogger::Create("Ensure");
+			Logger->error(message);
+		}
 
 		return Ensure(value);
 	}
@@ -54,7 +59,7 @@ namespace zt
 		std::terminate();
 	}
 
-	[[noreturn]] inline static void TerminateDebug([[maybe_unused]] bool ShouldTerminate) noexcept
+	inline static void TerminateDebug([[maybe_unused]] bool ShouldTerminate) noexcept
 	{
 		if (ShouldTerminate)
 			std::terminate();
