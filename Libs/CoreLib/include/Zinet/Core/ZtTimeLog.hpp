@@ -17,8 +17,8 @@ namespace
 	zt::core::Clock timeLogNameClock; \
 	timeLogNameClock.start(); \
 	EXPR; \
-	auto seconds = timeLogNameClock.getElapsedTime().getAsMilliseconds(); \
-	TimeCheckLogger->info("Expression {} took: {} ms", #NAME, seconds); \
+	auto milliseconds = timeLogNameClock.getElapsedTime().getAsMilliseconds(); \
+	TimeCheckLogger->info("Expression {} took: {} ms", #NAME, milliseconds); \
 }
 
 #define ZT_TIME_LOG(EXPR) \
@@ -26,8 +26,8 @@ namespace
 	zt::core::Clock timeLogClock; \
 	timeLogClock.start(); \
 	EXPR; \
-	auto seconds = timeLogClock.getElapsedTime().getAsMilliseconds(); \
-	TimeCheckLogger->info("Expression {} took: {} ms", #EXPR, seconds); \
+	auto milliseconds = timeLogClock.getElapsedTime().getAsMilliseconds(); \
+	TimeCheckLogger->info("Expression {} took: {} ms", #EXPR, milliseconds); \
 }
 
 #else // ZINET_TIME_TRACE
