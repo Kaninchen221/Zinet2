@@ -35,7 +35,7 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
-			ZT_TIME_LOG_NAME(Test_ZT_TIME_LOG_TIME,
+			ZT_TIME_LOG_NAME(LogTimePlusInit,
 				ZT_TIME_LOG(init());
 			);
 		}
@@ -94,20 +94,22 @@ namespace zt::gameplay::tests
 				ASSERT_TRUE(textureForSprites->load(core::Paths::RootPath()))
 			);
 
-			for (size_t i = 0; i < 5; ++i)
-			{
-				auto sprite = CreateObject<NodeSprite>(fmt::format("Sprite_{}", i));
-				sprite->transform.getPosition().x = random.real<float>(-10, 10);
-				sprite->transform.getPosition().y = random.real<float>(-10, 10);
-				sprite->transform.getPosition().z = 50;
-				sprite->transform.getScale().x = 8;
-				sprite->transform.getScale().y = 8;
-				sprite->transform.getRotation() = random.real<float>(0, 360);
-				sprite->texture = textureForSprites;
-				rootNode->addChild(sprite);
-				systemTickable->addNode(sprite);
-				systemRenderer->addNode(sprite);
-			}
+			ZT_TIME_LOG_NAME(CreateSprites,
+				for (size_t i = 0; i < 5; ++i)
+				{
+					auto sprite = CreateObject<NodeSprite>(fmt::format("Sprite_{}", i));
+					sprite->transform.getPosition().x = random.real<float>(-10, 10);
+					sprite->transform.getPosition().y = random.real<float>(-10, 10);
+					sprite->transform.getPosition().z = 50;
+					sprite->transform.getScale().x = 8;
+					sprite->transform.getScale().y = 8;
+					sprite->transform.getRotation() = random.real<float>(0, 360);
+					sprite->texture = textureForSprites;
+					rootNode->addChild(sprite);
+					systemTickable->addNode(sprite);
+					systemRenderer->addNode(sprite);
+				}
+			);
 
 			auto shaderVert = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.vert");
 			ZT_TIME_LOG(
