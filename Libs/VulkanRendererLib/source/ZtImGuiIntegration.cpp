@@ -10,6 +10,8 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_vulkan.h>
 
+#include <implot.h>
+
 #include <array>
 
 namespace zt::vulkan_renderer
@@ -70,12 +72,16 @@ namespace zt::vulkan_renderer
 			return false;
 		}
 
+		ImPlot::CreateContext();
+
 		return true;
 	}
 
 	void ImGuiIntegration::deinit(const RendererContext& rendererContext)
 	{
 		rendererContext.device.waitIdle();
+
+		ImPlot::DestroyContext();
 
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
