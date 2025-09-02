@@ -1,6 +1,7 @@
 #include "Zinet/Core/ZtGraph.hpp"
 
-#include <imgui.h>
+#include "Zinet/Core/ZtImgui.hpp"
+
 #include <implot.h>
 
 #include <fmt/format.h>
@@ -23,12 +24,24 @@ namespace zt::core
 		}
 
 		values.push_back(newValue);
+
+		if (largestValue < newValue)
+			largestValue = newValue;
+		else if (smallestValue > newValue)
+			smallestValue = newValue;
 	}
 
 	void Graph::show()
 	{
+		ImGui::PushID(this);
+
 		auto checkboxLabel = fmt::format("Plot {}", displayName);
 		ImGui::Checkbox(checkboxLabel.c_str(), &plot);
+
+		ImGui::TextFMT("Largest: {} Smallest: {}", largestValue, smallestValue);
+
+		if (ImGui::Button("Reset"))
+			reset();
 
 		auto plotLabel = fmt::format("##{}", checkboxLabel);
 		static ImPlotAxisFlags plotFlags = ImPlotFlags_NoFrame | ImPlotFlags_NoLegend;
@@ -39,6 +52,8 @@ namespace zt::core
 			ImPlot::PlotLine(displayName.c_str(), values.data(), static_cast<int>(values.size()));
 			ImPlot::EndPlot();
 		}
+
+		ImGui::PopID();
 	}
 
 	void Graph::setMinValue(const ValueT newMinValue) noexcept
@@ -57,6 +72,13 @@ namespace zt::core
 	{
 		if (Ensure(newMaxPoints > 0, "newMaxPoints must be greater than 0"))
 			maxPoints = newMaxPoints;
+	}
+
+	void Graph::reset()
+	{
+		values.clear();
+		smallestValue = std::numeric_limits<ValueT>::max();
+		largestValue = std::numeric_limits<ValueT>::lowest();
 	}
 
 }

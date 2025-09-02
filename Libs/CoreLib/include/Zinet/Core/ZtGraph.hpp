@@ -54,6 +54,8 @@ namespace zt::core
 		void setMaxPoints(const size_t newMaxPoints) noexcept;
 		auto getMaxPoints() const noexcept { return maxPoints; }
 
+		void reset();
+
 	protected:
 
 		std::vector<ValueT> values;
@@ -61,6 +63,8 @@ namespace zt::core
 		ValueT maxValue{};
 		size_t maxPoints{ 1000 };
 		bool plot = true;
+		ValueT smallestValue{ std::numeric_limits<ValueT>::max() };
+		ValueT largestValue{ std::numeric_limits<ValueT>::lowest() };
 
 	};
 
