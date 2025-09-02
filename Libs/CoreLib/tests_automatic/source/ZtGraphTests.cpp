@@ -14,7 +14,7 @@ namespace zt::core::tests
 		const Graph::ValueT minValue = 0.f;
 		const Graph::ValueT maxValue = 10.f;
 		const size_t maxPoints = 2;
-		Graph graph{ minValue, maxValue, maxPoints };
+		Graph graph{ "DisplayName", minValue, maxValue, maxPoints};
 	};
 
 	TEST_F(GraphTests, Test)
