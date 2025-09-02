@@ -20,7 +20,7 @@ namespace zt::gameplay
 	protected:
 
 		void imGuiMetrics();
-		core::Graph imGuiFPSGraph{ 0.f, 0.f, 10000 };
+		core::Graph imGuiFPSGraph{ "ImGui FPS", 0.f, 0.f, 1000};
 
 		void cpuMetrics();
 

@@ -14,6 +14,8 @@
 #include "Zinet/Core/ZtPaths.hpp"
 #include "Zinet/Core/ZtClock.hpp"
 #include "Zinet/Core/ZtImage.hpp"
+#include "Zinet/Core/ZtTimeLog.hpp"
+#include "Zinet/Core/ZtGraph.hpp"
 
 #include <gtest/gtest.h>
 
@@ -22,8 +24,11 @@
 #include "Zinet/Window/ZtGLFW.hpp"
 #include "Zinet/Window/ZtWindow.hpp"
 #include "Zinet/Window/ZtWindowEvents.hpp"
-#include "imgui_impl_vulkan.h"
-#include "imgui_impl_glfw.h"
+
+#include <imgui_impl_vulkan.h>
+#include <imgui_impl_glfw.h>
+
+#include <implot.h>
 
 // It's just a copy from the automatic tests
 // I wanted a fast option to manualy test the renderer
@@ -183,6 +188,18 @@ namespace zt::vulkan_renderer::tests
 		void updateUniformBuffersData();
 
 		void createTexture();
+
+		core::Graph beginFrameTimeGraph{ "Begin Frame", 0.f, 0.1f, 1000 };
+		core::Clock beginFrameClock;
+
+		core::Graph drawTimeGraph{ "Draw", 0.f, 0.1f, 1000 };
+		core::Clock drawClock;
+
+		core::Graph submitTimeGraph{ "Submit", 0.f, 0.1f, 1000 };
+		core::Clock submitClock;
+
+		core::Graph endFrameTimeGraph{ "End Frame", 0.f, 0.1f, 1000 };
+		core::Clock endFrameClock;
 	};
 
 	ShaderModule VulkanRendererTests::createShaderModule(std::string_view sourceCodeFileName, ShaderType shaderType)
@@ -348,24 +365,39 @@ namespace zt::vulkan_renderer::tests
 			}
 			ImGui::End();
 
+			core::Graph::ShowPlotAny();
+			beginFrameTimeGraph.show();
+			drawTimeGraph.show();
+			submitTimeGraph.show();
+			endFrameTimeGraph.show();
+
 			ImGui::EndFrame();
 
 			updateUniformBuffersData();
 
 			// Rendering logic
 
+			// TODO: Measure and display using Graph class
 			ASSERT_TRUE(renderer.createPipeline(drawInfo));
 			ASSERT_TRUE(renderer.getGraphicsPipeline().isValid());
 
+			beginFrameClock.restart();
 			ASSERT_TRUE(renderer.beginFrame());
+			beginFrameTimeGraph.update(beginFrameClock.restart().getAsMilliseconds());
 
 			imGuiIntegration.prepareRenderData();
 
+			drawClock.restart();
 			renderer.draw(drawInfo);
+			drawTimeGraph.update(drawClock.restart().getAsMilliseconds());
 
+			submitClock.restart();
 			ASSERT_TRUE(renderer.submit());
+			submitTimeGraph.update(submitClock.restart().getAsMilliseconds());
 
+			endFrameClock.restart();
 			ASSERT_TRUE(renderer.endFrame());
+			endFrameTimeGraph.update(endFrameClock.restart().getAsMilliseconds());
 
 			// Post logic
 

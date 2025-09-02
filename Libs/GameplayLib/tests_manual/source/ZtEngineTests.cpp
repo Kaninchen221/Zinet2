@@ -35,9 +35,7 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
-			ZT_TIME_LOG_NAME(LogTimePlusInit,
-				ZT_TIME_LOG(init());
-			);
+			ZT_TIME_LOG(init());
 		}
 
 		void init()

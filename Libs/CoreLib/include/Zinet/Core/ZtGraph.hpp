@@ -9,16 +9,24 @@ namespace zt::core
 {
 	class Graph : public Object
 	{
-	protected:
+	private:
 
 		inline static core::ConsoleLogger Logger = core::ConsoleLogger::Create("zt::core::Graph");
 
+		inline static bool PlotAny = true;
+
 	public:
+
+		static void SetPlotAny(bool value) noexcept { PlotAny = value; }
+		static bool GetPlotAny() noexcept { return PlotAny; }
+		static void ShowPlotAny();
 
 		using ValueT = float;
 
 		Graph() = default;
-		Graph(ValueT newMinValue, ValueT newMaxValue, size_t newMaxPoints) : minValue{ newMinValue }, maxValue{ newMaxValue }, maxPoints{ newMaxPoints }
+		Graph(const std::string& name, ValueT newMinValue, ValueT newMaxValue, size_t newMaxPoints) 
+			: Object{ name },
+			minValue{ newMinValue }, maxValue{ newMaxValue }, maxPoints{ newMaxPoints }
 		{
 			Ensure(maxPoints > 0, "maxPoints must be greater than 0");
 			Ensure(maxValue >= minValue, "maxValue must be greater than minValue");
@@ -52,6 +60,7 @@ namespace zt::core
 		ValueT minValue{};
 		ValueT maxValue{};
 		size_t maxPoints{ 1000 };
+		bool plot = true;
 
 	};
 
