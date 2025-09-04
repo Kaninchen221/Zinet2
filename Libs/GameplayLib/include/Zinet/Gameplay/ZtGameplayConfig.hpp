@@ -2,6 +2,8 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
+// TODO: Rename this lib to Engine
+
 #ifndef ZINET_STATIC
 #	if ZINET_WINDOWS
 #		define ZINET_API_EXPORT __declspec(dllexport)

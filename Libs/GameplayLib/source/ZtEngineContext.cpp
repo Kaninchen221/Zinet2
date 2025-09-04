@@ -35,6 +35,7 @@ namespace zt::gameplay
 	{
 		windowEvents.pollEvents();
 
+		// TODO: Update category? So the system thread queue will process the events at the end
 		for (auto& system : systems)
 		{
 			system->update();
