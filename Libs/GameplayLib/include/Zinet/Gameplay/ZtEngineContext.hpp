@@ -17,6 +17,14 @@
 
 namespace zt::gameplay
 {
+	enum class UpdatePhase
+	{
+		Pre  = 0,
+		Main = 1,
+		Post = 2,
+		Max  = 3
+	};
+
 	class EngineContext
 	{
 	private:
@@ -27,10 +35,9 @@ namespace zt::gameplay
 
 	public:
 		using Systems = std::vector<ObjectHandle<System>>;
+		using SystemsPerUpdatePhase = std::array<Systems, static_cast<size_t>(UpdatePhase::Max)>;
 
-		EngineContext() {
-			instance = this;
-		};
+		EngineContext();
 		EngineContext(const EngineContext& other) = default;
 		EngineContext(EngineContext&& other) noexcept = default;
 		~EngineContext() noexcept;
@@ -53,7 +60,7 @@ namespace zt::gameplay
 		// I want a system thread queue per thread so we can "access" objects data on the rendering thread while using ImGui
 		// I want to know on what thread we are
 		template<std::derived_from<System> SystemT>
-		ObjectHandle<SystemT> addSystem(const std::string_view& displayName);
+		ObjectHandle<SystemT> addSystem(const std::string_view& displayName, UpdatePhase updatePhase = UpdatePhase::Main);
 
 		template<std::derived_from<System> SystemT>
 		ObjectHandle<SystemT> getSystem();
@@ -89,12 +96,13 @@ namespace zt::gameplay
 		core::ObjectsStorage objectsStorage;
 		core::ClassRegistry<core::Object> classRegistry;
 		ObjectHandle<Node> rootNode;
+
 		Systems systems;
+		SystemsPerUpdatePhase systemsPerUpdatePhase;
 
 		void destroyNodes(ObjectHandle<Node>& node);
 
 		bool initialized = false;
-
 
 	};
 }
@@ -113,15 +121,26 @@ namespace zt
 namespace zt::gameplay
 {
 	template<std::derived_from<System> SystemT>
-	ObjectHandle<SystemT> EngineContext::addSystem(const std::string_view& displayName)
+	ObjectHandle<SystemT> EngineContext::addSystem(const std::string_view& displayName, UpdatePhase updatePhase)
 	{
+		if (updatePhase >= UpdatePhase::Max)
+		{
+			Logger->error("UpdatePhase is out of range, skip adding system with display name: {}", displayName);
+			return {};
+		}
+
 		auto system = CreateObject<SystemT>(displayName);
+
+		systemsPerUpdatePhase[static_cast<size_t>(updatePhase)].emplace_back(system);
+
 		return systems.emplace_back(system);
 	}
 
 	template<std::derived_from<System> SystemT>
 	ObjectHandle<SystemT> EngineContext::getSystem()
 	{
+		// TODO: Handle multiple systems of the same type or derived type or not? 
+		// Else: assert that there is only one system of the type or derived type during addSystem
 		for (auto& system : systems)
 		{
 			auto ptr = dynamic_cast<SystemT*>(system.get());

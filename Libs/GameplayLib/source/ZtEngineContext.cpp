@@ -4,10 +4,25 @@
 
 namespace zt::gameplay
 {
+	EngineContext::EngineContext()
+	{
+		if (instance)
+		{
+			Ensure(false, "We should have only a one instance of the Engine Context");
+		}
+
+		instance = this;
+	};
+
 	bool EngineContext::init()
 	{
-		if (initialized)
+		if (initialized && instance)
+		{
+			Ensure(false, "Init should be called only once and we should have only one instance of the EngineContext");
 			return true;
+		}
+
+		instance = this;
 
 		wd::GLFW::Init(false);
 
@@ -25,7 +40,6 @@ namespace zt::gameplay
 		rootNode = CreateObject<Node>("RootNode");
 		rootNode->setSaveable(true);
 
-		instance = this;
 		initialized = true;
 
 		return true;
@@ -35,10 +49,12 @@ namespace zt::gameplay
 	{
 		windowEvents.pollEvents();
 
-		// TODO: Update category? So the system thread queue will process the events at the end
-		for (auto& system : systems)
+		for (auto& phaseSystems : systemsPerUpdatePhase)
 		{
-			system->update();
+			for (auto& system : phaseSystems)
+			{
+				system->update();
+			}
 		}
 	}
 
