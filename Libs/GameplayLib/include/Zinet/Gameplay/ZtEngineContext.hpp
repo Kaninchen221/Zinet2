@@ -53,6 +53,10 @@ namespace zt::gameplay
 		// TODO: Rename to update
 		void loop();
 
+		bool shouldLoop() const { return window.isOpen(); }
+
+		void turnOff() { window.requestCloseWindow(); }
+
 		void deinit();
 
 		// TODO: Write some class to handle threads

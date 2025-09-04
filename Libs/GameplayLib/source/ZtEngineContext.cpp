@@ -47,6 +47,7 @@ namespace zt::gameplay
 
 	void EngineContext::loop()
 	{
+		// TODO: Poll events should be called by some system
 		windowEvents.pollEvents();
 
 		for (auto& phaseSystems : systemsPerUpdatePhase)

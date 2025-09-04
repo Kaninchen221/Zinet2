@@ -33,9 +33,9 @@ namespace zt::gameplay
 
 		bool init();
 
-		bool shouldLoop() const { return engineContext.getWindow().isOpen(); }
+		bool shouldLoop() const { return engineContext.shouldLoop(); }
 
-		void turnOff() { engineContext.getWindow().requestCloseWindow(); }
+		void turnOff() { engineContext.turnOff(); }
 
 		void loop();
 
