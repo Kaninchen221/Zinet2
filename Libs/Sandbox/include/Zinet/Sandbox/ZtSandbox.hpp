@@ -13,6 +13,7 @@
 #include "Zinet/Gameplay/Systems/ZtSystemSave.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemTickable.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemThreadQueue.hpp"
 
 #define ASSERT_TRUE(EXPR) EXPR
 
@@ -40,6 +41,7 @@ namespace zt::sandbox
 			auto systemRenderer = engineContext.addSystem<SystemRenderer>("SystemRenderer");
 			auto systemSave = engineContext.addSystem<SystemSave>("SystemSave");
 			auto systemTickable = engineContext.addSystem<SystemTickable>("SystemTickable");
+			auto systemThreadQueue = engineContext.addSystem<SystemThreadQueue>("SystemThreadQueue", UpdatePhase::Post);
 
 			ASSERT_TRUE(engine.init());
 			vulkan_renderer::ImGuiIntegration::SetStyle_Dark();
