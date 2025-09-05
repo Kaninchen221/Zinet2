@@ -1,4 +1,5 @@
 ﻿#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
 
 #include <imgui.h>
@@ -9,17 +10,35 @@ namespace zt::gameplay
 {
 	bool SystemRenderer::init()
 	{
-		System::init();
-
 		auto& engineContext = EngineContext::Get();
 
+		auto systemWindow = engineContext.getSystem<SystemWindow>();
+		if (!systemWindow)
+		{
+			Logger->error("SystemWindow not found");
+			return Ensure(false);
+		}
+
+		if (!systemWindow->isInitialized())
+		{
+			Logger->error("SystemWindow must be initialized before system renderer");
+			return Ensure(false);
+		}
+
+		auto& window = systemWindow->getWindow();
+		if (!window.isOpen())
+		{
+			Logger->error("Window is not open");
+			return Ensure(false);
+		}
+
 		renderer.getRendererContext().instance.setEnableValidationLayers(ZINET_DEBUG);
-		if (!renderer.init(engineContext.getWindow()))
+		if (!renderer.init(window))
 			return false;
 
 		if (UseImGui)
 		{
-			if (!imGuiIntegration.init(renderer.getRendererContext(), engineContext.getWindow()))
+			if (!imGuiIntegration.init(renderer.getRendererContext(), window))
 				return false;
 
 			drawInfo.additionalCommands = { vr::ImGuiIntegration::DrawCommand };
@@ -46,6 +65,7 @@ namespace zt::gameplay
 		indexBuffer.createBuffer(indexBufferCreateInfo, renderer.getRendererContext().vma);
 		indexBuffer.fillWithSTDContainer(indices, renderer.getRendererContext().vma);
 
+		initialized = true;
 		return true;
 	}
 

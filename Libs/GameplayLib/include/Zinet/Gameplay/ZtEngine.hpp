@@ -33,8 +33,6 @@ namespace zt::gameplay
 
 		bool init();
 
-		bool shouldLoop() const { return engineContext.shouldLoop(); }
-
 		void stopLooping() { engineContext.stopLooping(); }
 
 		void loop();

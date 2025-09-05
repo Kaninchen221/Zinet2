@@ -47,8 +47,6 @@ namespace zt::gameplay
 		
 		void loop();
 
-		bool shouldLoop() const { return window.isOpen(); }
-
 		bool isLooping() const;
 
 		void stopLooping();
@@ -64,12 +62,6 @@ namespace zt::gameplay
 
 		template<std::derived_from<System> SystemT>
 		ObjectHandle<SystemT> getSystem(ThreadID threadID = ThreadID::Main);
-
-		auto& getWindow() noexcept { return window; }
-		auto& getWindow() const noexcept { return window; }
-
-		auto& getWindowEvents() noexcept { return windowEvents; }
-		auto& getWindowEvents() const noexcept { return windowEvents; }
 
 		auto& getAssetsStorage() noexcept { return assetsStorage; }
 		auto& getAssetsStorage() const noexcept { return assetsStorage; }
@@ -97,8 +89,6 @@ namespace zt::gameplay
 
 		void destroyNodes(ObjectHandle<Node>& node);
 		
-		wd::Window window;
-		wd::WindowEvents windowEvents{ window };
 		core::AssetsStorage assetsStorage;
 		core::ObjectsStorage objectsStorage;
 		core::ClassRegistry<core::Object> classRegistry;

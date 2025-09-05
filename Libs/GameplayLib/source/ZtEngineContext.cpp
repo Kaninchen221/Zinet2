@@ -22,12 +22,9 @@ namespace zt::gameplay
 			return true;
 		}
 
+		Logger->info("Initialize engine context");
+
 		instance = this;
-
-		wd::GLFW::Init(false);
-
-		if (!window.create())
-			return false;
 
 		for (auto& system : systems)
 		{
@@ -47,9 +44,6 @@ namespace zt::gameplay
 
 	void EngineContext::loop()
 	{
-		// TODO: Poll events should be called by some system
-		//windowEvents.pollEvents();
-
 		renderingThread.runAsync();
 		mainThread.runSync();
 	}
@@ -58,29 +52,30 @@ namespace zt::gameplay
 	{
 		bool renderingThreadRunning = renderingThread.isRunning();
 		bool mainThreadRunning = mainThread.isRunning();
-		bool isWindowOpen = window.isOpen();
 
-		return renderingThreadRunning && mainThreadRunning && isWindowOpen;
+		return renderingThreadRunning && mainThreadRunning;
 	}
 
 	void EngineContext::stopLooping()
 	{
+		Logger->info("Stop looping engine context");
+
+		if (!renderingThread.isRunning() || !mainThread.isRunning())
+			return;
+
 		renderingThread.stop();
 		mainThread.stop();
 
 		renderingThread.wait();
 		mainThread.wait();
-
-		renderingThread.clearSystems();
-		mainThread.clearSystems();
-
-		window.requestCloseWindow();
 	}
 
 	void EngineContext::deinit()
 	{
 		if (!initialized)
 			return;
+
+		Logger->info("Deinitialize engine context");
 
 		// TODO: waitCompleteJobs or wait for engine threads?
 		for (auto& system : systems)
@@ -94,8 +89,11 @@ namespace zt::gameplay
 
 		destroyNodes(rootNode);
 
-		for (auto& system : systems)
+		// Deinit systems in reverse order like the RAII
+		for (auto systemIt = systems.rbegin(); systemIt != systems.rend(); ++systemIt)
 		{
+			auto& system = *systemIt;
+
 			if (!system->deinit())
 			{
 				Logger->error("System: {} deinit failed", system->getClassName());
@@ -103,8 +101,8 @@ namespace zt::gameplay
 		}
 		systems.clear();
 
-		window.destroyWindow();
-		wd::GLFW::Deinit();
+		renderingThread.clearSystems();
+		mainThread.clearSystems();
 
 		instance = nullptr;
 	}

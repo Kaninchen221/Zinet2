@@ -13,6 +13,7 @@
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
 
+#include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemSave.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemTickable.hpp"
@@ -48,6 +49,7 @@ namespace zt::gameplay::tests
 			assetsStorage.registerAssetClass<gameplay::AssetShader>();
 			assetsStorage.registerAssetClass<gameplay::AssetSampler>();
 
+			auto systemWindow = engineContext.addSystem<SystemWindow>("SystemWindow");
 			auto systemImGui = engineContext.addSystem<SystemImGui>("SystemImGui");
 			auto systemRenderer = engineContext.addSystem<SystemRenderer>("SystemRenderer");
 			auto systemSave = engineContext.addSystem<SystemSave>("SystemSave");
@@ -66,7 +68,7 @@ namespace zt::gameplay::tests
 			camera.setLookingAt(Vector3f(0.0f, 0.0f, 0.0f));
 			camera.setUpVector(Vector3f(0, 1, 0));
 
-			auto& window = engineContext.getWindow();
+			auto& window = systemWindow->getWindow();
 			auto windowSize = window.getSize();
 			camera.setFieldOfView(45.f);
 			camera.setAspectRatio(windowSize.x / static_cast<float>(windowSize.y));

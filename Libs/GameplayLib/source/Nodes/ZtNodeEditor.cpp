@@ -1,4 +1,5 @@
 ﻿#include "Zinet/Gameplay/Nodes/ZtNodeEditor.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
 
 #include "Zinet/Gameplay/Editor/ZtEditorConfig.hpp"
@@ -19,6 +20,15 @@ namespace zt::gameplay
 				showToolsMenu();
 				ImGui::EndMenu();
 			}
+
+			if (ImGui::MenuItem("Exit", nullptr, nullptr))
+			{
+				auto& engineContext = EngineContext::Get();
+				auto windowSystem = engineContext.getSystem<SystemWindow>();
+				windowSystem->getWindow().requestCloseWindow();
+				engineContext.stopLooping();
+			}
+
 			ImGui::EndMainMenuBar();
 		}
 
