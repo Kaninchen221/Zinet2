@@ -27,13 +27,22 @@ namespace zt::gameplay::tests
 		{
 		public:
 
-			inline static size_t CurrentSystemUpdatedOrder = 0;
-			size_t systemUpdatedOrder = 0;
+			~SystemMock() noexcept {}
+
+			const inline static size_t StartingValue = 0;
+			inline static std::atomic<size_t> CurrentSystemUpdatedOrder{ StartingValue + 1 };
+			std::atomic<size_t> systemUpdatedOrder{ StartingValue };
 
 			void update() override 
 			{ 
 				[&systemUpdatedOrder = systemUpdatedOrder]() 
-				{ systemUpdatedOrder = CurrentSystemUpdatedOrder; ++CurrentSystemUpdatedOrder; }(); 
+				{ 
+					if (systemUpdatedOrder.load() == StartingValue)
+					{
+						systemUpdatedOrder.store(CurrentSystemUpdatedOrder);
+						++CurrentSystemUpdatedOrder;
+					}
+				}(); 
 			}
 		};
 	};
@@ -70,11 +79,26 @@ namespace zt::gameplay::tests
 		ObjectHandle<SystemMock> system_2 = engineContext.addSystem<SystemMock>("System2", UpdatePhase::Main);
 		ObjectHandle<SystemMock> system_3 = engineContext.addSystem<SystemMock>("System3", UpdatePhase::Pre);
 
+		std::thread thread
+		{
+			[&engineContext = engineContext]()
+			{
+				using namespace std::chrono_literals;
+				while (!engineContext.isLooping())
+				{}
+
+				std::this_thread::sleep_for(10ms);
+				engineContext.stopLooping();
+			}
+		};
+
 		engineContext.loop();
 
-		ASSERT_EQ(system_1->systemUpdatedOrder, 2);
-		ASSERT_EQ(system_2->systemUpdatedOrder, 1);
-		ASSERT_EQ(system_3->systemUpdatedOrder, 0);
+		thread.join();
+
+		ASSERT_EQ(system_1->systemUpdatedOrder.load(), 3);
+		ASSERT_EQ(system_2->systemUpdatedOrder.load(), 2);
+		ASSERT_EQ(system_3->systemUpdatedOrder.load(), 1);
 
 		engineContext.deinit();
 	}

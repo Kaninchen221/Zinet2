@@ -35,7 +35,7 @@ namespace zt::gameplay
 
 		bool shouldLoop() const { return engineContext.shouldLoop(); }
 
-		void turnOff() { engineContext.turnOff(); }
+		void stopLooping() { engineContext.stopLooping(); }
 
 		void loop();
 

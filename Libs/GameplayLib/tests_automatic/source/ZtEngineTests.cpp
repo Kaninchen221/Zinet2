@@ -30,13 +30,19 @@ namespace zt::gameplay::tests
 		core::Clock turnOffTest;
 		turnOffTest.start();
 
-		while (engine.shouldLoop())
+		std::thread thread
 		{
-			if (turnOffTest.getElapsedTime().getAsSeconds() > 0.1f)
-				engine.turnOff();
+			[&engine = engine]()
+			{
+				using namespace std::chrono_literals;
+				std::this_thread::sleep_for(1ms);
+				engine.stopLooping();
+			}
+		};
 
-			engine.loop();
-		}
+		engine.loop();
+
+		thread.join();
 
 		engine.deinit();
 	}

@@ -1,19 +1,16 @@
 #pragma once
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
-#include "Zinet/Gameplay/ZtEngineContext.hpp"
+#include "Zinet/Gameplay/ZtUpdatePhase.hpp"
+#include "Zinet/Gameplay/ZtThreadID.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystem.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtObject.hpp"
 
 namespace zt::gameplay
 {
-	enum class ThreadID
-	{
-		Main = 0,
-		RenderingThread = 1,
-		Max = 2
-	};
-
+	// TODO: Assert that we have enough available threads
 	class EngineThread : public core::Object
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EngineContext");
@@ -21,7 +18,7 @@ namespace zt::gameplay
 	public:
 
 		using Systems = std::vector<ObjectHandle<System>>;
-		using SystemsPerUpdatePhase = std::array<Systems, static_cast<size_t>(UpdatePhase::Max)>;
+		using SystemsPerUpdatePhase = std::vector<Systems>;
 
 		EngineThread() = delete;
 		EngineThread(const std::string& displayName, ThreadID newThreadID);
@@ -38,6 +35,12 @@ namespace zt::gameplay
 
 		void stop() { running.store(false); }
 		bool isRunning() const { return running.load(); }
+		void wait() { if (running && thread.joinable()) thread.join(); }
+		void clearSystems()
+		{
+			systems.clear();
+			systemsPerUpdatePhase.clear();
+		}
 
 		template<std::derived_from<System> SystemT>
 		ObjectHandle<SystemT> addSystem(const std::string_view& displayName, UpdatePhase updatePhase = UpdatePhase::Main);
@@ -56,7 +59,7 @@ namespace zt::gameplay
 		ThreadID threadID{ ThreadID::Max };
 
 		Systems systems;
-		SystemsPerUpdatePhase systemsPerUpdatePhase;
+		SystemsPerUpdatePhase systemsPerUpdatePhase{ static_cast<size_t>(UpdatePhase::Max) };
 	};
 }
 

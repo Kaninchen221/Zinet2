@@ -48,15 +48,33 @@ namespace zt::gameplay
 	void EngineContext::loop()
 	{
 		// TODO: Poll events should be called by some system
-		windowEvents.pollEvents();
+		//windowEvents.pollEvents();
 
-		for (auto& phaseSystems : systemsPerUpdatePhase)
-		{
-			for (auto& system : phaseSystems)
-			{
-				system->update();
-			}
-		}
+		renderingThread.runAsync();
+		mainThread.runSync();
+	}
+
+	bool EngineContext::isLooping() const
+	{
+		bool renderingThreadRunning = renderingThread.isRunning();
+		bool mainThreadRunning = mainThread.isRunning();
+		bool isWindowOpen = window.isOpen();
+
+		return renderingThreadRunning && mainThreadRunning && isWindowOpen;
+	}
+
+	void EngineContext::stopLooping()
+	{
+		renderingThread.stop();
+		mainThread.stop();
+
+		renderingThread.wait();
+		mainThread.wait();
+
+		renderingThread.clearSystems();
+		mainThread.clearSystems();
+
+		window.requestCloseWindow();
 	}
 
 	void EngineContext::deinit()
@@ -64,14 +82,17 @@ namespace zt::gameplay
 		if (!initialized)
 			return;
 
+		// TODO: waitCompleteJobs or wait for engine threads?
 		for (auto& system : systems)
 		{
 			system->waitCompleteJobs();
 		}
 
-		destroyNodes(rootNode);
-
 		assetsStorage.unloadAssets();
+
+		stopLooping();
+
+		destroyNodes(rootNode);
 
 		for (auto& system : systems)
 		{
@@ -80,6 +101,7 @@ namespace zt::gameplay
 				Logger->error("System: {} deinit failed", system->getClassName());
 			}
 		}
+		systems.clear();
 
 		window.destroyWindow();
 		wd::GLFW::Deinit();
@@ -92,6 +114,20 @@ namespace zt::gameplay
 		if (instance)
 		{
 			Logger->error("EngineContext must be manually deinitialized");
+		}
+	}
+
+	EngineThread& EngineContext::getThreadByID(ThreadID threadID)
+	{
+		switch (threadID)
+		{
+			case ThreadID::Main:
+				return mainThread;
+			case ThreadID::RenderingThread:
+				return renderingThread;
+			default:
+				Logger->error("ThreadID is out of range, returning main thread");
+				return mainThread;
 		}
 	}
 

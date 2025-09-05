@@ -11,20 +11,15 @@
 
 #include "Zinet/Gameplay/Nodes/ZtNode.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystem.hpp"
+#include "Zinet/Gameplay/ZtEngineThread.hpp"
+#include "Zinet/Gameplay/ZtThreadID.hpp"
+#include "Zinet/Gameplay/ZtUpdatePhase.hpp"
 
 #include "Zinet/Window/ZtWindow.hpp"
 #include "Zinet/Window/ZtWindowEvents.hpp"
 
 namespace zt::gameplay
 {
-	enum class UpdatePhase
-	{
-		Pre  = 0,
-		Main = 1,
-		Post = 2,
-		Max  = 3
-	};
-
 	class EngineContext
 	{
 	private:
@@ -45,29 +40,30 @@ namespace zt::gameplay
 		EngineContext& operator = (const EngineContext& other) = default;
 		EngineContext& operator = (EngineContext&& other) noexcept = default;
 
-		// TODO: Change it to an object handle to be consistent with rest of the code
+		// TODO: Change it to an object handle to be consistent with rest of the code?
 		static auto& Get() noexcept { Ensure(instance); return *instance; }
 
 		bool init();
-
-		// TODO: Rename to update
+		
 		void loop();
 
 		bool shouldLoop() const { return window.isOpen(); }
 
-		void turnOff() { window.requestCloseWindow(); }
+		bool isLooping() const;
+
+		void stopLooping();
 
 		void deinit();
 
 		// TODO: Write some class to handle threads
 		// I want to run system renderer on a separate thread
-		// I want a system thread queue per thread so we can "access" objects data on the rendering thread while using ImGui
+		// I want a system thread queue per thread so we can "access" objects (nodes etc.) data on the rendering thread while using ImGui
 		// I want to know on what thread we are
 		template<std::derived_from<System> SystemT>
-		ObjectHandle<SystemT> addSystem(const std::string_view& displayName, UpdatePhase updatePhase = UpdatePhase::Main);
+		ObjectHandle<SystemT> addSystem(const std::string_view& displayName, UpdatePhase updatePhase = UpdatePhase::Main, ThreadID threadID = ThreadID::Main);
 
 		template<std::derived_from<System> SystemT>
-		ObjectHandle<SystemT> getSystem();
+		ObjectHandle<SystemT> getSystem(ThreadID threadID = ThreadID::Main);
 
 		auto& getWindow() noexcept { return window; }
 		auto& getWindow() const noexcept { return window; }
@@ -94,6 +90,13 @@ namespace zt::gameplay
 
 	protected:
 
+		EngineThread& getThreadByID(ThreadID threadID);
+
+		EngineThread mainThread{ "Main Thread", ThreadID::Main };
+		EngineThread renderingThread{ "Rendering Thread", ThreadID::RenderingThread };
+
+		void destroyNodes(ObjectHandle<Node>& node);
+		
 		wd::Window window;
 		wd::WindowEvents windowEvents{ window };
 		core::AssetsStorage assetsStorage;
@@ -102,13 +105,11 @@ namespace zt::gameplay
 		ObjectHandle<Node> rootNode;
 
 		Systems systems;
-		SystemsPerUpdatePhase systemsPerUpdatePhase;
-
-		void destroyNodes(ObjectHandle<Node>& node);
 
 		bool initialized = false;
 
 	};
+
 }
 
 /// Not in "core" namespace because used too often
@@ -125,33 +126,20 @@ namespace zt
 namespace zt::gameplay
 {
 	template<std::derived_from<System> SystemT>
-	ObjectHandle<SystemT> EngineContext::addSystem(const std::string_view& displayName, UpdatePhase updatePhase)
+	ObjectHandle<SystemT> EngineContext::addSystem(const std::string_view& displayName, UpdatePhase updatePhase, ThreadID threadID)
 	{
-		if (updatePhase >= UpdatePhase::Max)
-		{
-			Logger->error("UpdatePhase is out of range, skip adding system with display name: {}", displayName);
-			return {};
-		}
-
-		auto system = CreateObject<SystemT>(displayName);
-
-		systemsPerUpdatePhase[static_cast<size_t>(updatePhase)].emplace_back(system);
+		auto& thread = getThreadByID(threadID);
+		auto system = thread.addSystem<SystemT>(displayName, updatePhase);
 
 		return systems.emplace_back(system);
 	}
 
 	template<std::derived_from<System> SystemT>
-	ObjectHandle<SystemT> EngineContext::getSystem()
+	ObjectHandle<SystemT> EngineContext::getSystem(ThreadID threadID)
 	{
-		// TODO: Handle multiple systems of the same type or derived type or not? 
-		// Else: assert that there is only one system of the type or derived type during addSystem
-		for (auto& system : systems)
-		{
-			auto ptr = dynamic_cast<SystemT*>(system.get());
-			if (ptr)
-				return system;
-		}
+		auto& thread = getThreadByID(threadID);
+		auto system = thread.getSystem<SystemT>();
 
-		return ObjectHandle<SystemT>{};
+		return system;
 	}
 }

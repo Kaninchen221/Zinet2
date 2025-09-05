@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/Gameplay/ZtEngineThread.hpp"
+#include "Zinet/Gameplay/ZtEngineContext.hpp"
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -35,7 +36,6 @@ namespace zt::gameplay::tests
 
 	TEST_F(EngineThreadTests, Test)
 	{
-
 		EngineThread thread_1{ "Rendering Thread", ThreadID::RenderingThread };
 		ASSERT_EQ(thread_1.getDisplayName(), "Rendering Thread");
 		ASSERT_EQ(thread_1.getID(), ThreadID::RenderingThread);
@@ -57,7 +57,7 @@ namespace zt::gameplay::tests
 				while (!thread_1.isRunning() || !thread_1.isRunning())
 				{}
 
-				std::this_thread::sleep_for(1ms);
+				std::this_thread::sleep_for(10ms);
 
 				thread_1.stop();
 				thread_2.stop();
@@ -83,6 +83,9 @@ namespace zt::gameplay::tests
 
 		ASSERT_TRUE(rendererHandleFromAdd->updated.load());
 		ASSERT_TRUE(tickableHandleFromAdd->updated.load());
+
+		thread_1.clearSystems();
+		thread_2.clearSystems();
 
 		engineContext.deinit();
 	}

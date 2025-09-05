@@ -136,9 +136,6 @@ namespace zt::gameplay::tests
 
 	TEST_F(EngineTests, PassTest)
 	{
-		while (engine.shouldLoop())
-		{
-			engine.loop();
-		}
+		engine.loop();
 	}
 }
