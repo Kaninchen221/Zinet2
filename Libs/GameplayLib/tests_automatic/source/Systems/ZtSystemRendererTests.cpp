@@ -3,6 +3,7 @@
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
 #include "Zinet/Gameplay/Nodes/ZtNodeCamera.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
 #include <gtest/gtest.h>
 
@@ -15,6 +16,7 @@ namespace zt::gameplay::tests
 		void SetUp() override
 		{
 			SystemRenderer::SetUseImGui(false);
+			engineContext.addSystem<SystemWindow>("SystemWindow");
 			engineContext.addSystem<SystemRenderer>("SystemRenderer");
 
 			ASSERT_TRUE(engineContext.init());

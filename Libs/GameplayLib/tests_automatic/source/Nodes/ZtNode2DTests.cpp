@@ -3,6 +3,7 @@
 #include "Zinet/Gameplay/Nodes/ZtNode2D.hpp"
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
 #include <Zinet/Gameplay/Systems/ZtSystemRenderer.hpp>
+#include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
 #include "Zinet/Core/ZtObjectsStorage.hpp"
 
@@ -16,6 +17,7 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
+			engineContext.addSystem<SystemWindow>("SystemWindow");
 			engineContext.addSystem<SystemRenderer>("SystemRenderer");
 			engineContext.init();
 		}

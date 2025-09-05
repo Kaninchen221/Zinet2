@@ -49,9 +49,12 @@ namespace zt::gameplay::tests
 			assetsStorage.registerAssetClass<gameplay::AssetShader>();
 			assetsStorage.registerAssetClass<gameplay::AssetSampler>();
 
+			const bool useMultiThreading = false;
+			const ThreadID renderingThread = useMultiThreading ? ThreadID::RenderingThread : ThreadID::Main;
+
 			auto systemWindow = engineContext.addSystem<SystemWindow>("SystemWindow");
-			auto systemImGui = engineContext.addSystem<SystemImGui>("SystemImGui");
-			auto systemRenderer = engineContext.addSystem<SystemRenderer>("SystemRenderer");
+			auto systemImGui = engineContext.addSystem<SystemImGui>("SystemImGui", UpdatePhase::Main, renderingThread);
+			auto systemRenderer = engineContext.addSystem<SystemRenderer>("SystemRenderer", UpdatePhase::Main, renderingThread);
 			auto systemSave = engineContext.addSystem<SystemSave>("SystemSave");
 			auto systemTickable = engineContext.addSystem<SystemTickable>("SystemTickable");
 			auto systemThreadQueue = engineContext.addSystem<SystemThreadQueue>("SystemThreadQueue", UpdatePhase::Post);

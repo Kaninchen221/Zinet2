@@ -130,6 +130,13 @@ namespace zt::gameplay
 		auto& thread = getThreadByID(threadID);
 		auto system = thread.getSystem<SystemT>();
 
+		// TODO: Treat the engine threads more like array of threads
+		if (!system && threadID == ThreadID::Main)
+		{
+			Logger->debug("Couldn't find a system on threadID: {}. Try get it from the rendering thread", static_cast<size_t>(threadID));
+			return renderingThread.getSystem<SystemT>();
+		}
+
 		return system;
 	}
 }

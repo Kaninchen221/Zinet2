@@ -3,6 +3,7 @@
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
 
@@ -33,6 +34,7 @@ namespace zt::gameplay::tests
 		assetsStorage.registerAssetClass<AssetShader>();
 
 		EngineContext engineContext;
+		engineContext.addSystem<SystemWindow>("SystemWindow");
 		engineContext.addSystem<SystemRenderer>("SystemRenderer");
 
 		engineContext.init();

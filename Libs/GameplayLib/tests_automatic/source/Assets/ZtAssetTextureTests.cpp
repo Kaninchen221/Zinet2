@@ -5,6 +5,7 @@
 #include <Zinet/Gameplay/Assets/ZtAssetTexture.hpp>
 #include <Zinet/Gameplay/ZtEngineContext.hpp>
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
 #include <gtest/gtest.h>
 
@@ -31,6 +32,7 @@ namespace zt::gameplay::tests
 		auto& assetsStorage = engineContext.getAssetsStorage();
 		assetsStorage.registerAssetClass<AssetTexture>();
 
+		engineContext.addSystem<SystemWindow>("SystemWindow");
 		engineContext.addSystem<SystemRenderer>("SystemRenderer");
 
 		SystemRenderer::SetUseImGui(false);

@@ -3,6 +3,7 @@
 #include <Zinet/Gameplay/Assets/ZtAssetSampler.hpp>
 #include <Zinet/Gameplay/ZtEngineContext.hpp>
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
 #include <gtest/gtest.h>
 
@@ -29,6 +30,7 @@ namespace zt::gameplay::tests
 		auto& assetsStorage = engineContext.getAssetsStorage();
 		assetsStorage.registerAssetClass<AssetSampler>();
 
+		engineContext.addSystem<SystemWindow>("SystemWindow");
 		engineContext.addSystem<SystemRenderer>("SystemRenderer");
 
 		SystemRenderer::SetUseImGui(false);
