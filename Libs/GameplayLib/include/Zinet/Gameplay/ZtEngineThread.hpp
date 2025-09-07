@@ -25,11 +25,11 @@ namespace zt::gameplay
 
 		EngineThread() = delete;
 		EngineThread(const std::string& displayName, ThreadID newThreadID);
-		EngineThread(const EngineThread& other) = default;
+		EngineThread(const EngineThread& other) = delete;
 		EngineThread(EngineThread&& other) noexcept = default;
 		~EngineThread() noexcept = default;
 
-		EngineThread& operator = (const EngineThread& other) = default;
+		EngineThread& operator = (const EngineThread& other) = delete;
 		EngineThread& operator = (EngineThread&& other) noexcept = default;
 
 		void runAsync();
