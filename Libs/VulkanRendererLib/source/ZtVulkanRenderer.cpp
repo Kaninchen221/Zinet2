@@ -29,7 +29,7 @@ namespace zt::vulkan_renderer
 		auto& swapChain = rendererContext.swapChain;
 		auto& device = rendererContext.device;
 		auto& fence = rendererContext.fence;
-		auto& imageAvailableSemaphore = rendererContext.imageAvailableSemaphore;
+
 		auto& currentFramebufferIndex = rendererContext.currentFramebufferIndex;
 
 		if (!fence.wait(device))
@@ -38,7 +38,7 @@ namespace zt::vulkan_renderer
 		if (!fence.reset(device))
 			return false;
 
-		currentFramebufferIndex = swapChain.acquireNextImage(device, imageAvailableSemaphore);
+		currentFramebufferIndex = swapChain.acquireNextImage(device, rendererContext.imageAvailableSemaphore);
 		if (currentFramebufferIndex == SwapChain::InvalidIndex)
 			return false;
 
@@ -67,17 +67,16 @@ namespace zt::vulkan_renderer
 	{
 		const auto& swapChain = rendererContext.swapChain;
 		const auto& queue = rendererContext.queue;
-		const auto& renderFinishedSemaphore = rendererContext.renderFinishedSemaphore;
 		auto currentFramebufferIndex = rendererContext.currentFramebufferIndex;
 
-		const VkSemaphore signalSemaphores[] = { renderFinishedSemaphore.get() };
+		const VkSemaphore waitSemaphores[] = { rendererContext.renderFinishedSemaphore.get() };
 		const VkSwapchainKHR swapChains[] = { swapChain.get() };
 		const VkPresentInfoKHR presentInfo
 		{
 			.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 			.pNext = nullptr,
 			.waitSemaphoreCount = 1,
-			.pWaitSemaphores = signalSemaphores,
+			.pWaitSemaphores = waitSemaphores,
 			.swapchainCount = 1,
 			.pSwapchains = swapChains,
 			.pImageIndices = &currentFramebufferIndex,

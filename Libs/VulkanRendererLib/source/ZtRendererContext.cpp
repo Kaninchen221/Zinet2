@@ -6,6 +6,68 @@
 
 namespace zt::vulkan_renderer
 {
+	bool DisplayImage::create(RendererContext& rendererContext, VkImage swapChainImage)
+	{
+		auto& swapChain = rendererContext.swapChain;
+		auto& device = rendererContext.device;
+		auto& renderPass = rendererContext.renderPass;
+
+		image = swapChainImage;
+
+		const auto imageViewCreateInfo = ImageView::GetDefaultCreateInfo(image, swapChain.getFormat());
+		if (!imageView.create(device, imageViewCreateInfo))
+		{
+			Logger->error("Couldn't create an image view from one of the swap chain images");
+			return false;
+		}
+
+		const auto swapChainSize = swapChain.getExtent();
+		const Vector2ui framebufferSize{ swapChainSize.width, swapChainSize.height };
+		if (!framebuffer.create(device, renderPass, imageView, framebufferSize))
+		{
+			Logger->error("Couldn't create framebuffer from one of the swap chain images");
+			return false;
+		}
+
+		return true;
+	}
+
+	void DisplayImage::destroy(RendererContext& rendererContext)
+	{
+		auto& device = rendererContext.device;
+
+		image = nullptr;
+		framebuffer.destroy(device);
+		imageView.destroy(device);
+	}
+
+	bool RendererContext::createDisplayImages()
+	{
+		auto swapChainImages = swapChain.getImages(device);
+		if (swapChainImages.empty())
+		{
+			Logger->error("SwapChain::getImages returned empty container");
+			return false;
+		}
+
+		displayImages.clear();
+		displayImages.shrink_to_fit();
+		displayImages.resize(swapChainImages.size());
+
+		size_t imageIndex = 0;
+		for (auto& displayImage : displayImages)
+		{
+			if (!displayImage.create(*this, swapChainImages[imageIndex]))
+			{
+				Logger->error("Couldn't create a display image of the index: {}", imageIndex);
+				return false;
+			}
+			++imageIndex;
+		}
+
+		return true;
+	}
+
 	bool RendererContext::create(wd::Window& window)
 	{
 		if (!instance.create())
@@ -52,12 +114,6 @@ namespace zt::vulkan_renderer
 		if (!commandPool.create(device, queue))
 			return false;
 
-		if (!imageAvailableSemaphore.create(device))
-			return false;
-
-		if (!renderFinishedSemaphore.create(device))
-			return false;
-
 		if (!fence.create(device, true))
 			return false;
 
@@ -65,54 +121,33 @@ namespace zt::vulkan_renderer
 		if (!renderPass.create(device, renderPassCreateInfo))
 			return false;
 
-		/// Framebuffers
-		displayImages.images = swapChain.getImages(device);
-		if (displayImages.images.empty())
+		if (!createDisplayImages())
 		{
-			Logger->error("SwapChain returned empty swapChainImages");
+			Logger->error("Couldn't create display images");
 			return false;
 		}
 
-		for (auto image : displayImages.images)
-		{
-			auto& imageView = displayImages.imageViews.emplace_back(nullptr);
-			const auto imageViewCreateInfo = ImageView::GetDefaultCreateInfo(image, swapChain.getFormat());
-			if (!imageView.create(device, imageViewCreateInfo))
-			{
-				Logger->error("Couldn't create image view from one of the swap chain images");
-				return false;
-			}
-		}
+		if (!imageAvailableSemaphore.create(device))
+			return false;
 
-		const auto swapChainSize = swapChain.getExtent();
-		const Vector2ui framebufferSize{ swapChainSize.width, swapChainSize.height };
-		for (auto& imageView : displayImages.imageViews)
-		{
-			auto& framebuffer = displayImages.framebuffers.emplace_back(nullptr);
-			if (!framebuffer.create(device, renderPass, imageView, framebufferSize))
-			{
-				Logger->error("Couldn't create framebuffer from one of the swap chain images");
-				return false;
-			}
-		}
+		if (!renderFinishedSemaphore.create(device))
+			return false;
 
 		return true;
 	}
 
 	void RendererContext::destroy()
 	{
-		for (auto& framebuffer : displayImages.framebuffers)
-			framebuffer.destroy(device);
-		displayImages.framebuffers.clear();
+		renderFinishedSemaphore.destroy(device);
+		imageAvailableSemaphore.destroy(device);
 
-		for (auto& imageView : displayImages.imageViews)
-			imageView.destroy(device);
-		displayImages.imageViews.clear();
+		for (auto& displayImage : displayImages)
+		{
+			displayImage.destroy(*this);
+		}
 
 		renderPass.destroy(device);
 		fence.destroy(device);
-		renderFinishedSemaphore.destroy(device);
-		imageAvailableSemaphore.destroy(device);
 		commandPool.destroy(device);
 		swapChain.destroy(device);
 		vma.destroy();
@@ -140,44 +175,7 @@ namespace zt::vulkan_renderer
 			return;
 		}
 
-		displayImages.images = swapChain.getImages(device);
-		if (displayImages.images.empty())
-		{
-			Logger->error("SwapChain returned empty swapChainImages");
-			return;
-		}
-
-		/// Recreate swap chain framebuffers
-		for (auto& framebuffer : displayImages.framebuffers)
-			framebuffer.destroy(device);
-		displayImages.framebuffers.clear();
-
-		for (auto& imageView : displayImages.imageViews)
-			imageView.destroy(device);
-		displayImages.imageViews.clear();
-
-		for (auto image : displayImages.images)
-		{
-			auto& imageView = displayImages.imageViews.emplace_back(nullptr);
-			const auto imageViewCreateInfo = ImageView::GetDefaultCreateInfo(image, swapChain.getFormat());
-			if (!imageView.create(device, imageViewCreateInfo))
-			{
-				Logger->error("Couldn't create image view from one of the swap chain images");
-				return;
-			}
-		}
-
-		const auto swapChainSize = swapChain.getExtent();
-		const Vector2ui framebufferSize{ swapChainSize.width, swapChainSize.height };
-		for (auto& imageView : displayImages.imageViews)
-		{
-			auto& framebuffer = displayImages.framebuffers.emplace_back(nullptr);
-			if (!framebuffer.create(device, renderPass, imageView, framebufferSize))
-			{
-				Logger->error("Couldn't create framebuffer from one of the swap chain images");
-				return;
-			}
-		}
+		createDisplayImages();
 	}
 
 }

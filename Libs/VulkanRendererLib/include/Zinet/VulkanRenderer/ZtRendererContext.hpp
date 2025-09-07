@@ -30,8 +30,22 @@ namespace wd
 
 namespace zt::vulkan_renderer
 {
-	class Device;
-	class VMA;
+	class RendererContext;
+
+	class DisplayImage
+	{
+		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::DisplayImage");
+
+	public:
+
+		VkImage image{};
+		ImageView imageView{ nullptr };
+		Framebuffer framebuffer{ nullptr };
+
+		bool create(RendererContext& rendererContext, VkImage swapChainImage);
+
+		void destroy(RendererContext& rendererContext);
+	};
 
 	class  RendererContext
 	{
@@ -61,15 +75,33 @@ namespace zt::vulkan_renderer
 
 		Semaphore imageAvailableSemaphore{ nullptr };
 		Semaphore renderFinishedSemaphore{ nullptr };
+
 		Fence fence{ nullptr };
 
-		struct DisplayImages
-		{
-			std::vector<VkImage> images;
-			std::vector<ImageView> imageViews;
-			std::vector<Framebuffer> framebuffers;
-		};
+		using DisplayImages = std::vector<DisplayImage>;
 		DisplayImages displayImages;
+
+		bool createDisplayImages();
+
+		// TODO: Refactor
+		auto& getPreviousDisplayImage()
+		{
+			if (currentFramebufferIndex == 0)
+				return displayImages.back();
+
+			return displayImages[currentFramebufferIndex - 1];
+		}
+
+		auto& getPreviousDisplayImage() const
+		{
+			if (currentFramebufferIndex == 0)
+				return displayImages.back();
+
+			return displayImages[currentFramebufferIndex - 1];
+		}
+
+		auto& getCurrentDisplayImage() { return displayImages[currentFramebufferIndex]; }
+		auto& getCurrentDisplayImage() const { return displayImages[currentFramebufferIndex]; }
 
 		uint32_t currentFramebufferIndex{};
 

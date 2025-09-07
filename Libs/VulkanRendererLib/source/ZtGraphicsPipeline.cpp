@@ -82,8 +82,7 @@ namespace zt::vulkan_renderer
 	{
 		auto& swapChain = rendererContext.swapChain;
 		auto& device = rendererContext.device;
-		auto currentFramebufferIndex = rendererContext.currentFramebufferIndex;
-		auto& currentFramebuffer = rendererContext.displayImages.framebuffers[currentFramebufferIndex];
+		auto& displayImage = rendererContext.getCurrentDisplayImage();
 		auto& renderPass = rendererContext.renderPass;
 
 		// Begin draw start
@@ -91,7 +90,7 @@ namespace zt::vulkan_renderer
 
 		commandBuffer.begin();
 		const auto extent = swapChain.getExtent();
-		commandBuffer.beginRenderPass(renderPass, currentFramebuffer, extent);
+		commandBuffer.beginRenderPass(renderPass, displayImage.framebuffer, extent);
 
 		commandBuffer.bindPipeline(pipeline);
 
@@ -162,17 +161,16 @@ namespace zt::vulkan_renderer
 	bool GraphicsPipeline::submit(const RendererContext& rendererContext) 
 	{
 		auto& queue = rendererContext.queue;
-		auto& imageAvailableSemaphore = rendererContext.imageAvailableSemaphore;
-		auto& renderFinishedSemaphore = rendererContext.renderFinishedSemaphore;
 		auto& fence = rendererContext.fence;
 
-		const VkSemaphore waitSemaphores[] = { imageAvailableSemaphore.get() };
+		const VkSemaphore waitSemaphores[] = { rendererContext.imageAvailableSemaphore.get() };
 		const VkPipelineStageFlags waitStages[] = {
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
 			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT
 		};
 		const auto vkCommandBuffer = commandBuffer.get();
-		const VkSemaphore signalSemaphores[] = { renderFinishedSemaphore.get() };
+
+		const VkSemaphore signalSemaphores[] = { rendererContext.renderFinishedSemaphore.get() };
 
 		const VkSubmitInfo submitInfo
 		{
