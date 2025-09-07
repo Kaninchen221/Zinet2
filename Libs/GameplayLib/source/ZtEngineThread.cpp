@@ -14,8 +14,9 @@ namespace zt::gameplay
 	{
 		thread = std::jthread
 		{
-			[&engineThread = *this]()
+			[&engineThread = *this, threadID = threadID]()
 			{
+				CurrentThreadID = threadID;
 				engineThread.runInternal();
 			}
 		};
@@ -24,6 +25,7 @@ namespace zt::gameplay
 
 	void EngineThread::runSync()
 	{
+		CurrentThreadID = threadID;
 		runInternal();
 	}
 

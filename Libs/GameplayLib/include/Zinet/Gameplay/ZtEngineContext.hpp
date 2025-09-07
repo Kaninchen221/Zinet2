@@ -53,10 +53,6 @@ namespace zt::gameplay
 
 		void deinit();
 
-		// TODO: Write some class to handle threads
-		// I want to run system renderer on a separate thread
-		// I want a system thread queue per thread so we can "access" objects (nodes etc.) data on the rendering thread while using ImGui
-		// I want to know on what thread we are
 		template<std::derived_from<System> SystemT>
 		ObjectHandle<SystemT> addSystem(const std::string_view& displayName, UpdatePhase updatePhase = UpdatePhase::Main, ThreadID threadID = ThreadID::Main);
 

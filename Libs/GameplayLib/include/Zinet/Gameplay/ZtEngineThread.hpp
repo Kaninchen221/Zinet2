@@ -14,8 +14,11 @@ namespace zt::gameplay
 	class EngineThread : public core::Object
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EngineContext");
+		inline static thread_local ThreadID CurrentThreadID = ThreadID::Max;
 
 	public:
+
+		static ThreadID GetCurrentThreadID() noexcept { return CurrentThreadID; }
 
 		using Systems = std::vector<ObjectHandle<System>>;
 		using SystemsPerUpdatePhase = std::vector<Systems>;

@@ -27,10 +27,12 @@ namespace zt::gameplay::tests
 			void update() override
 			{
 				updated.store(true);
+				ASSERT_EQ(EngineThread::GetCurrentThreadID(), expectedThreadID);
 			}
 
 		public:
 			std::atomic_bool updated{ false };
+			ThreadID expectedThreadID = ThreadID::Max;
 		};
 	};
 
@@ -68,7 +70,10 @@ namespace zt::gameplay::tests
 		engineContext.init();
 
 		const auto rendererHandleFromAdd = thread_1.addSystem<TestSystem>("Renderer");
+		rendererHandleFromAdd->expectedThreadID = ThreadID::RenderingThread;
+
 		const auto tickableHandleFromAdd = thread_2.addSystem<TestSystem>("Tickable");
+		tickableHandleFromAdd->expectedThreadID = ThreadID::Main;
 
 		thread_1.runAsync();
 		thread_2.runSync();
