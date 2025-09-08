@@ -358,15 +358,15 @@ namespace zt::vulkan_renderer::tests
 			ASSERT_TRUE(renderer.createPipeline(drawInfo));
 			ASSERT_TRUE(renderer.getGraphicsPipeline().isValid());
 
-			ASSERT_TRUE(renderer.beginFrame());
+			ASSERT_TRUE(renderer.nextFrame());
 
 			imGuiIntegration.prepareRenderData();
 
 			renderer.draw(drawInfo);
 
-			ASSERT_TRUE(renderer.submit());
+			ASSERT_TRUE(renderer.submitDrawInfo());
 
-			ASSERT_TRUE(renderer.endFrame());
+			ASSERT_TRUE(renderer.displayCurrentFrame());
 
 			// Post logic
 

@@ -49,8 +49,6 @@ namespace zt::vulkan_renderer
 
 		void draw(const RendererContext& rendererContext, const DrawInfo& drawInfo);
 
-		bool submit(const RendererContext& rendererContext);
-
 		bool isValid() const noexcept;
 
 		CommandBuffer commandBuffer{ nullptr };

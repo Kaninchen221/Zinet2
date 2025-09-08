@@ -384,7 +384,7 @@ namespace zt::vulkan_renderer::tests
 				ASSERT_TRUE(renderer.getGraphicsPipeline().isValid());
 				
 				beginFrameClock.restart();
-				ASSERT_TRUE(renderer.beginFrame());
+				ASSERT_TRUE(renderer.nextFrame());
 				beginFrameTimeGraph.update(beginFrameClock.restart().getAsMilliseconds());
 
 				drawClock.restart();
@@ -392,11 +392,11 @@ namespace zt::vulkan_renderer::tests
 				drawTimeGraph.update(drawClock.restart().getAsMilliseconds());
 
 				submitClock.restart();
-				ASSERT_TRUE(renderer.submit());
+				ASSERT_TRUE(renderer.submitDrawInfo());
 				submitTimeGraph.update(submitClock.restart().getAsMilliseconds());
 
 				endFrameClock.restart();
-				ASSERT_TRUE(renderer.endFrame());
+				ASSERT_TRUE(renderer.displayCurrentFrame());
 				endFrameTimeGraph.update(endFrameClock.restart().getAsMilliseconds());
 			}
 		});

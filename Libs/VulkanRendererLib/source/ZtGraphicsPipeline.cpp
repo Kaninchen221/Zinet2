@@ -158,44 +158,6 @@ namespace zt::vulkan_renderer
 		commandBuffer.end();
 	}
 
-	bool GraphicsPipeline::submit(const RendererContext& rendererContext) 
-	{
-		auto& queue = rendererContext.queue;
-		auto& fence = rendererContext.fence;
-
-		const VkSemaphore waitSemaphores[] = { rendererContext.imageAvailableSemaphore.get() };
-		const VkPipelineStageFlags waitStages[] = {
-			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT
-		};
-		const auto vkCommandBuffer = commandBuffer.get();
-
-		const VkSemaphore signalSemaphores[] = { rendererContext.renderFinishedSemaphore.get() };
-
-		const VkSubmitInfo submitInfo
-		{
-			.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-			.waitSemaphoreCount = 1,
-			.pWaitSemaphores = waitSemaphores,
-			.pWaitDstStageMask = waitStages,
-			.commandBufferCount = 1,
-			.pCommandBuffers = &vkCommandBuffer,
-			.signalSemaphoreCount = 1,
-			.pSignalSemaphores = signalSemaphores
-		};
-
-		// TODO: Fix the problem occuring on the laptop about semaphore
-		const auto result = vkQueueSubmit(queue.get(), 1, &submitInfo, fence.get());
-			
-		if (result != VK_SUCCESS)
-		{
-			Logger->error("vkQueueSubmit returned not VK_SUCCESS, error code: {}", static_cast<int>(result));
-			return false;
-		}
-
-		return true;
-	}
-
 	bool GraphicsPipeline::isValid() const noexcept
 	{
 		// Ignore objects related to descriptors

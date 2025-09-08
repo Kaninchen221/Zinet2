@@ -38,15 +38,15 @@ namespace zt::vulkan_renderer
 
 		void deinit();
 
-		bool beginFrame();
+		bool nextFrame();
 
 		bool createPipeline(DrawInfo& drawInfo);
 		
 		void draw(const DrawInfo& drawInfo);
 
-		bool submit();
+		bool submitDrawInfo();
 
-		bool endFrame();
+		bool displayCurrentFrame();
 
 		const auto& getRendererContext() const { return rendererContext; }
 		auto& getRendererContext() { return rendererContext; }

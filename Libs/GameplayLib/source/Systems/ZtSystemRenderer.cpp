@@ -142,15 +142,15 @@ namespace zt::gameplay
 			return;
 		}
 
-		renderer.beginFrame();
+		renderer.nextFrame();
 
 		imGuiIntegration.prepareRenderData();
 
 		renderer.draw(drawInfo);
 
-		renderer.submit();
+		renderer.submitDrawInfo();
 
-		renderer.endFrame();
+		renderer.displayCurrentFrame();
 	}
 
 	void SystemRenderer::show()

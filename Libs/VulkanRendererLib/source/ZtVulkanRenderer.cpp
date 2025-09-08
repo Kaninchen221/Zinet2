@@ -24,7 +24,7 @@ namespace zt::vulkan_renderer
 		rendererContext.destroy();
 	}
 
-	bool VulkanRenderer::beginFrame()
+	bool VulkanRenderer::nextFrame()
 	{
 		auto& swapChain = rendererContext.swapChain;
 		auto& device = rendererContext.device;
@@ -58,27 +58,72 @@ namespace zt::vulkan_renderer
 		graphicsPipeline.draw(rendererContext, drawInfo);
 	}
 
-	bool VulkanRenderer::submit()
+	bool VulkanRenderer::submitDrawInfo()
 	{
-		return graphicsPipeline.submit(rendererContext);
+		auto& queue = rendererContext.queue;
+		auto& fence = rendererContext.fence;
+
+		std::vector<VkSemaphore> waitSemaphores = { rendererContext.imageAvailableSemaphore.get() };
+		
+		std::vector<VkPipelineStageFlags> waitStages = {
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+		};
+
+		// Sanity check
+#		if ZINET_DEBUG
+		if (waitSemaphores.size() != waitStages.size())
+		{
+			Logger->error("waitSemaphores.size() != waitStages.size()");
+			return false;
+		}
+#		endif // ZINET_DEBUG
+
+		std::vector<VkCommandBuffer> vkCommandBuffers;
+		vkCommandBuffers.push_back(graphicsPipeline.commandBuffer.get());
+
+		std::vector<VkSemaphore> signalSemaphores;
+		signalSemaphores.push_back(rendererContext.renderFinishedSemaphore.get());
+
+		const VkSubmitInfo submitInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+			.waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size()),
+			.pWaitSemaphores = waitSemaphores.data(),
+			.pWaitDstStageMask = waitStages.data(),
+			.commandBufferCount = static_cast<uint32_t>(vkCommandBuffers.size()),
+			.pCommandBuffers = vkCommandBuffers.data(),
+			.signalSemaphoreCount = static_cast<uint32_t>(signalSemaphores.size()),
+			.pSignalSemaphores = signalSemaphores.data()
+		};
+
+		// TODO: Fix the problem occuring on the laptop about semaphore
+		const auto result = vkQueueSubmit(queue.get(), 1, &submitInfo, fence.get());
+
+		if (result != VK_SUCCESS)
+		{
+			Logger->error("vkQueueSubmit returned not VK_SUCCESS, error code: {}", static_cast<int>(result));
+			return false;
+		}
+
+		return true;
 	}
 
-	bool VulkanRenderer::endFrame()
+	bool VulkanRenderer::displayCurrentFrame()
 	{
 		const auto& swapChain = rendererContext.swapChain;
 		const auto& queue = rendererContext.queue;
 		auto currentFramebufferIndex = rendererContext.currentFramebufferIndex;
 
-		const VkSemaphore waitSemaphores[] = { rendererContext.renderFinishedSemaphore.get() };
-		const VkSwapchainKHR swapChains[] = { swapChain.get() };
+		std::vector<VkSemaphore> waitSemaphores = { rendererContext.renderFinishedSemaphore.get() };
+		std::vector<VkSwapchainKHR> swapChains = { swapChain.get() };
 		const VkPresentInfoKHR presentInfo
 		{
 			.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 			.pNext = nullptr,
-			.waitSemaphoreCount = 1,
-			.pWaitSemaphores = waitSemaphores,
-			.swapchainCount = 1,
-			.pSwapchains = swapChains,
+			.waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size()),
+			.pWaitSemaphores = waitSemaphores.data(),
+			.swapchainCount = static_cast<uint32_t>(swapChains.size()),
+			.pSwapchains = swapChains.data(),
 			.pImageIndices = &currentFramebufferIndex,
 			.pResults = nullptr
 		};
