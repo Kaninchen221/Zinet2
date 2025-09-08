@@ -9,10 +9,6 @@
 #include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
 #include "Zinet/VulkanRenderer/ZtPipelineLayout.hpp"
 #include "Zinet/VulkanRenderer/ZtPipeline.hpp"
-
-#include "Zinet/VulkanRenderer/ZtDescriptorPool.hpp"
-#include "Zinet/VulkanRenderer/ZtDescriptorSetLayout.hpp"
-#include "Zinet/VulkanRenderer/ZtDescriptorSets.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
@@ -33,8 +29,6 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		using VkDescriptorSets = std::vector<VkDescriptorSet>;
-
 		GraphicsPipeline() noexcept = default;
 		GraphicsPipeline(const GraphicsPipeline& other) noexcept = delete;
 		GraphicsPipeline(GraphicsPipeline&& other) noexcept = default;
@@ -51,36 +45,9 @@ namespace zt::vulkan_renderer
 
 		bool isValid() const noexcept;
 
+		// TODO: Write getters?
 		PipelineLayout pipelineLayout{ nullptr };
 		Pipeline pipeline{ nullptr };
-
-		// Descriptors
-		DescriptorPool descriptorPool{ nullptr };
-
-		DescriptorSetLayout pipelineDescriptorSetLayout{ nullptr };
-		DescriptorSets pipelineDescriptorSet{ nullptr };
-
-		DescriptorSetLayout objectDescriptorSetLayout{ nullptr };
-		DescriptorSets objectDescriptorSet{ nullptr };
-
-	protected:
-
-		using DescriptorPoolSizes = std::vector<VkDescriptorPoolSize>;
-		void createDescriptorData(
-			DescriptorSetLayout::Bindings& outBindings, 
-			DescriptorPoolSizes& outDescriptorPoolSizes, 
-			DescriptorInfo& descriptorInfo) const;
-
-		DescriptorSetLayout createDescriptorSetLayout(const Device& device, DescriptorSetLayout::Bindings& bindings);
-
-		DescriptorSets createDescriptorSet(
-			const Device& device,
-			const DescriptorSetLayout& layout, 
-			std::vector<VkDescriptorSetLayout>& outLayouts);
-
-		static void UpdateDescriptorSet(const Device& device, const DescriptorInfo& descriptorInfo, const DescriptorSets& descriptorSet);
-
-		VkDescriptorSets vkDescriptorSets;
 
 	};
 }

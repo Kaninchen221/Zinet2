@@ -16,32 +16,20 @@ namespace zt::vulkan_renderer
 		auto& swapChain = rendererContext.swapChain;
 		auto& renderPass = rendererContext.renderPass;
 
-		auto& pipelineDescriptorInfo = drawInfo.pipelineDescriptorInfo;
-		auto& drawCallDescriptorInfo = drawInfo.drawCallDescriptorInfo;
+		//auto& pipelineDescriptorInfo = drawInfo.pipelineDescriptorInfo;
+		//auto& drawCallDescriptorInfo = drawInfo.drawCallDescriptorInfo;
 
-		DescriptorSetLayout::Bindings pipelineBindings;
-		DescriptorSetLayout::Bindings objectBindings;
+		auto& currentDisplayImage = rendererContext.getCurrentDisplayImage();
+		auto& pipelineDescriptorSetLayout = currentDisplayImage.pipelineDescriptorSetLayout;
+		//auto& pipelineDescriptorSet = currentDisplayImage.pipelineDescriptorSet;
+		auto& objectDescriptorSetLayout = currentDisplayImage.objectDescriptorSetLayout;
+		//auto& objectDescriptorSet = currentDisplayImage.objectDescriptorSet;
 
-		DescriptorPoolSizes descriptorPoolSizes;
-
-		createDescriptorData(pipelineBindings, descriptorPoolSizes, pipelineDescriptorInfo);
-		pipelineDescriptorSetLayout = createDescriptorSetLayout(device, pipelineBindings);
-
-		createDescriptorData(objectBindings, descriptorPoolSizes, drawCallDescriptorInfo);
-		objectDescriptorSetLayout = createDescriptorSetLayout(device, objectBindings);
-
-		if (!descriptorPoolSizes.empty())
+		const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts = 
 		{
-			const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);
-			if (!descriptorPool.create(device, descriptorPoolCreateInfo))
-				return false;
-		}
-
-		std::vector<VkDescriptorSetLayout> vkDescriptorSetLayouts;
-		pipelineDescriptorSet = createDescriptorSet(device, pipelineDescriptorSetLayout, vkDescriptorSetLayouts);
-		objectDescriptorSet = createDescriptorSet(device, objectDescriptorSetLayout, vkDescriptorSetLayouts);
-
-		UpdateDescriptorSet(device, drawInfo.pipelineDescriptorInfo, pipelineDescriptorSet);
+			pipelineDescriptorSetLayout.get(),
+			objectDescriptorSetLayout.get()
+		};
 
 		auto pipelineLayoutCreateInfo = PipelineLayout::GetDefaultCreateInfo(vkDescriptorSetLayouts);
 		if (!pipelineLayout.create(device, pipelineLayoutCreateInfo))
@@ -60,14 +48,6 @@ namespace zt::vulkan_renderer
 	{
 		const auto& device = rendererContext.device;
 
-		descriptorPool.destroy(device);
-		pipelineDescriptorSetLayout.destroy(device);
-		pipelineDescriptorSet.invalidate();
-		objectDescriptorSetLayout.destroy(device);
-		objectDescriptorSet.invalidate();
-
-		vkDescriptorSets.clear();
-
 		pipeline.destroy(device);
 		pipelineLayout.destroy(device);
 	}
@@ -79,6 +59,9 @@ namespace zt::vulkan_renderer
 		auto& displayImage = rendererContext.getCurrentDisplayImage();
 		auto& renderPass = rendererContext.renderPass;
 		auto& commandBuffer = displayImage.commandBuffer;
+		auto& vkDescriptorSets = displayImage.vkDescriptorSets;
+		auto& objectDescriptorSet = displayImage.objectDescriptorSet;
+		auto& pipelineDescriptorSet = displayImage.pipelineDescriptorSet;
 
 		// Begin draw start
 		commandBuffer.reset();
@@ -108,7 +91,7 @@ namespace zt::vulkan_renderer
 		};
 		commandBuffer.setScissor(scissor);
 
-		if (objectDescriptorSet.isValid())
+		if (displayImage.objectDescriptorSet.isValid())
 		{
 			vkCmdBindDescriptorSets(
 				commandBuffer.get(),
@@ -123,9 +106,9 @@ namespace zt::vulkan_renderer
 		// Begin draw end
 
 		if (drawInfo.updatePipelineDescriptorInfoPerDrawCall)
-			UpdateDescriptorSet(device, drawInfo.pipelineDescriptorInfo, pipelineDescriptorSet);
+			DisplayImage::UpdateDescriptorSet(device, drawInfo.pipelineDescriptorInfo, pipelineDescriptorSet);
 
-		UpdateDescriptorSet(device, drawInfo.drawCallDescriptorInfo, objectDescriptorSet);
+		DisplayImage::UpdateDescriptorSet(device, drawInfo.drawCallDescriptorInfo, objectDescriptorSet);
 
 		// Vertex Buffer
 		const VkBuffer vertexBuffers[] = { drawInfo.vertexBuffer->get() };
@@ -159,132 +142,5 @@ namespace zt::vulkan_renderer
 		return
 			pipeline.isValid() &&
 			pipelineLayout.isValid();
-	}
-
-	void GraphicsPipeline::createDescriptorData(
-		DescriptorSetLayout::Bindings& outBindings, 
-		DescriptorPoolSizes& outDescriptorPoolSizes, 
-		DescriptorInfo& descriptorInfo) const
-	{
-		auto& uniformBuffer = descriptorInfo.uniformBuffers;
-		if (!uniformBuffer.empty())
-		{
-			descriptorInfo.cachedUniformBuffersBinding = static_cast<uint32_t>(outBindings.size());
-			uint32_t descriptorsCount = static_cast<uint32_t>(descriptorInfo.uniformBuffers.size());
-
-			auto layoutBinding = DescriptorSetLayout::GetDefaultUniformLayoutBinding();
-			layoutBinding.binding = descriptorInfo.cachedUniformBuffersBinding;
-			layoutBinding.descriptorCount = descriptorsCount;
-			outBindings.push_back(layoutBinding);
-
-			auto poolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
-			poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			poolSize.descriptorCount = descriptorsCount;
-			outDescriptorPoolSizes.push_back(poolSize);
-		}
-
-		if (!descriptorInfo.texturesInfos.empty())
-		{
-			descriptorInfo.cachedTexturesBinding = static_cast<uint32_t>(outBindings.size());
-			uint32_t descriptorsCount = static_cast<uint32_t>(descriptorInfo.texturesInfos.size());
-
-			auto layoutBinding = DescriptorSetLayout::GetDefaultImageLayoutBinding();
-			layoutBinding.binding = descriptorInfo.cachedTexturesBinding;
-			layoutBinding.descriptorCount = descriptorsCount;
-			outBindings.push_back(layoutBinding);
-
-			auto poolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
-			poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-			poolSize.descriptorCount = descriptorsCount;
-			outDescriptorPoolSizes.push_back(poolSize);
-		}
-	}
-
-	DescriptorSetLayout GraphicsPipeline::createDescriptorSetLayout(
-		const Device& device, DescriptorSetLayout::Bindings& bindings)
-	{
-		if (bindings.empty())
-			return DescriptorSetLayout{ nullptr };
-
-		const auto descriptorSetLayoutCreateInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
-		DescriptorSetLayout descriptorSetLayout{ nullptr };
-		descriptorSetLayout.create(descriptorSetLayoutCreateInfo, device);
-
-		return descriptorSetLayout;
-	}
-
-	DescriptorSets GraphicsPipeline::createDescriptorSet(
-		const Device& device,
-		const DescriptorSetLayout& layout,
-		std::vector<VkDescriptorSetLayout>& outLayouts)
-	{
-		DescriptorSets descriptorSet{ nullptr };
-
-		if (layout.isValid())
-		{
-			const std::vector<VkDescriptorSetLayout> vkDescriptorSetLayouts{ layout.get() };
-			outLayouts.push_back(layout.get());
-			const auto allocateInfo = DescriptorSets::GetDefaultAllocateInfo(descriptorPool, vkDescriptorSetLayouts);
-			if (descriptorSet.create(device, allocateInfo))
-			{
-				vkDescriptorSets.push_back(descriptorSet.get());
-			}
-		}
-
-		return descriptorSet;
-	}
-
-	void GraphicsPipeline::UpdateDescriptorSet(
-		const Device& device, const DescriptorInfo& descriptorInfo, const DescriptorSets& descriptorSet)
-	{
-		std::vector<VkWriteDescriptorSet> writeDescriptorSets;
-		std::vector<VkDescriptorBufferInfo> descriptorBuffersInfos;
-		std::vector<VkDescriptorImageInfo> descriptorImagesInfos;
-
-		for (const auto& uniformBufferInfo : descriptorInfo.uniformBuffers)
-		{
-			auto& uniformBuffer = uniformBufferInfo.uniformBuffer;
-			if (!uniformBuffer || !uniformBuffer->isValid())
-				continue;
-
-			auto& descriptorBufferInfo = descriptorBuffersInfos.emplace_back(DescriptorSets::GetBufferInfo(*uniformBuffer));
-			descriptorBufferInfo.offset = 0;
-		}
-
-		/// Write Descriptor for uniform buffers
-		if (!descriptorInfo.uniformBuffers.empty()) 
-		{
-			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSets::GetDefaultWriteDescriptorSet());
-			writeDescriptorSet.dstSet = descriptorSet.get();
-			writeDescriptorSet.dstBinding = descriptorInfo.cachedUniformBuffersBinding;
-			writeDescriptorSet.dstArrayElement = 0;
-			writeDescriptorSet.descriptorCount = static_cast<uint32_t>(descriptorBuffersInfos.size());
-			writeDescriptorSet.pBufferInfo = descriptorBuffersInfos.data();
-			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		}
-
-		for (auto& textureInfo : descriptorInfo.texturesInfos)
-		{
-			if (!textureInfo.texture || !textureInfo.texture->isValid() || !textureInfo.sampler || !textureInfo.sampler->isValid())
-				continue;
-
-			[[maybe_unused]] 
-			auto& imageDescriptorInfo = descriptorImagesInfos.emplace_back(DescriptorSets::GetImageInfo(textureInfo.texture->getImageView(), *textureInfo.sampler));
-		}
-
-		/// Write Descriptor for textures
-		if (!descriptorInfo.texturesInfos.empty())
-		{
-			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(DescriptorSets::GetDefaultWriteDescriptorSet());
-			writeDescriptorSet.dstSet = descriptorSet.get();
-			writeDescriptorSet.dstBinding = descriptorInfo.cachedTexturesBinding;
-			writeDescriptorSet.dstArrayElement = 0;
-			writeDescriptorSet.descriptorCount = static_cast<uint32_t>(descriptorImagesInfos.size());
-			writeDescriptorSet.pImageInfo = descriptorImagesInfos.data();
-			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		}
-
-		if (!writeDescriptorSets.empty())
-			descriptorSet.update(device, writeDescriptorSets);
 	}
 }

@@ -6,7 +6,6 @@
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
 #include "Zinet/VulkanRenderer/ZtImageView.hpp"
-#include "Zinet/VulkanRenderer/ZtSampler.hpp"
 
 #include "Zinet/Core/ZtFunction.hpp"
 

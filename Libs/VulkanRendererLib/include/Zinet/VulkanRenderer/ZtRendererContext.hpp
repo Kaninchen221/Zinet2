@@ -17,6 +17,11 @@
 #include "Zinet/VulkanRenderer/ZtFence.hpp"
 #include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
 #include "Zinet/VulkanRenderer/ZtCommandBuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorPool.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorSetLayout.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorSets.hpp"
+#include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
+#include "Zinet/VulkanRenderer/ZtDisplayImage.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -31,25 +36,6 @@ namespace wd
 
 namespace zt::vulkan_renderer
 {
-	class RendererContext;
-
-	class DisplayImage
-	{
-		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::DisplayImage");
-
-	public:
-
-		VkImage image{};
-		ImageView imageView{ nullptr };
-		Framebuffer framebuffer{ nullptr };
-		Fence fence{ nullptr };
-		CommandBuffer commandBuffer{ nullptr };
-
-		bool create(RendererContext& rendererContext, VkImage swapChainImage);
-
-		void destroy(RendererContext& rendererContext);
-	};
-
 	class  RendererContext
 	{
 	protected:

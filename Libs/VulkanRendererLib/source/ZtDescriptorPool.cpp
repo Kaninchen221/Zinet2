@@ -19,7 +19,7 @@ namespace zt::vulkan_renderer
 		{
 			.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
 			.pNext = nullptr,
-			.flags = {},
+			.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
 			.maxSets = GetDefaultMaxSets(),
 			.poolSizeCount = static_cast<std::uint32_t>(poolSizes.size()),
 			.pPoolSizes = poolSizes.data()
