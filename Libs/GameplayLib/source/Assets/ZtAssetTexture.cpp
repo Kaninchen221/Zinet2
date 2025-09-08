@@ -115,6 +115,8 @@ namespace zt::gameplay
 		if (!isLoaded())
 			return;
 
+		// TODO: Use ImGui_ImplVulkan_RemoveTexture
+
 		auto& engineContext = EngineContext::Get();
 		auto systemRenderer = engineContext.getSystem<SystemRenderer>();
 		if (!systemRenderer)
