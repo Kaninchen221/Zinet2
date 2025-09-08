@@ -47,11 +47,9 @@ namespace zt::vulkan_renderer
 
 		void destroy(const RendererContext& rendererContext) noexcept;
 
-		void draw(const RendererContext& rendererContext, const DrawInfo& drawInfo);
+		void draw(RendererContext& rendererContext, const DrawInfo& drawInfo);
 
 		bool isValid() const noexcept;
-
-		CommandBuffer commandBuffer{ nullptr };
 
 		PipelineLayout pipelineLayout{ nullptr };
 		Pipeline pipeline{ nullptr };

@@ -16,6 +16,7 @@
 #include "Zinet/VulkanRenderer/ZtSemaphore.hpp"
 #include "Zinet/VulkanRenderer/ZtFence.hpp"
 #include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
+#include "Zinet/VulkanRenderer/ZtCommandBuffer.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -41,6 +42,8 @@ namespace zt::vulkan_renderer
 		VkImage image{};
 		ImageView imageView{ nullptr };
 		Framebuffer framebuffer{ nullptr };
+		Fence fence{ nullptr };
+		CommandBuffer commandBuffer{ nullptr };
 
 		bool create(RendererContext& rendererContext, VkImage swapChainImage);
 
@@ -75,8 +78,6 @@ namespace zt::vulkan_renderer
 
 		Semaphore imageAvailableSemaphore{ nullptr };
 		Semaphore renderFinishedSemaphore{ nullptr };
-
-		Fence fence{ nullptr };
 
 		using DisplayImages = std::vector<DisplayImage>;
 		DisplayImages displayImages;

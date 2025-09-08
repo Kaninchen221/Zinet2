@@ -15,13 +15,9 @@ namespace zt::vulkan_renderer
 		auto& device = rendererContext.device;
 		auto& swapChain = rendererContext.swapChain;
 		auto& renderPass = rendererContext.renderPass;
-		auto& commandPool = rendererContext.commandPool;
 
 		auto& pipelineDescriptorInfo = drawInfo.pipelineDescriptorInfo;
 		auto& drawCallDescriptorInfo = drawInfo.drawCallDescriptorInfo;
-
-		if (!commandBuffer.create(device, commandPool))
-			return false;
 
 		DescriptorSetLayout::Bindings pipelineBindings;
 		DescriptorSetLayout::Bindings objectBindings;
@@ -74,16 +70,15 @@ namespace zt::vulkan_renderer
 
 		pipeline.destroy(device);
 		pipelineLayout.destroy(device);
-
-		commandBuffer.invalidate();
 	}
 
-	void GraphicsPipeline::draw(const RendererContext& rendererContext, const DrawInfo& drawInfo)
+	void GraphicsPipeline::draw(RendererContext& rendererContext, const DrawInfo& drawInfo)
 	{
 		auto& swapChain = rendererContext.swapChain;
 		auto& device = rendererContext.device;
 		auto& displayImage = rendererContext.getCurrentDisplayImage();
 		auto& renderPass = rendererContext.renderPass;
+		auto& commandBuffer = displayImage.commandBuffer;
 
 		// Begin draw start
 		commandBuffer.reset();
@@ -161,8 +156,7 @@ namespace zt::vulkan_renderer
 	bool GraphicsPipeline::isValid() const noexcept
 	{
 		// Ignore objects related to descriptors
-		return 
-			commandBuffer.isValid() &&
+		return
 			pipeline.isValid() &&
 			pipelineLayout.isValid();
 	}

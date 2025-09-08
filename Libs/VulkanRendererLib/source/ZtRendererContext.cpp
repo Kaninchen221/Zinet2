@@ -11,6 +11,7 @@ namespace zt::vulkan_renderer
 		auto& swapChain = rendererContext.swapChain;
 		auto& device = rendererContext.device;
 		auto& renderPass = rendererContext.renderPass;
+		auto& commandPool = rendererContext.commandPool;
 
 		image = swapChainImage;
 
@@ -29,6 +30,12 @@ namespace zt::vulkan_renderer
 			return false;
 		}
 
+		if (!fence.create(device, true))
+			return false;
+
+		if (!commandBuffer.create(device, commandPool))
+			return false;
+
 		return true;
 	}
 
@@ -39,6 +46,8 @@ namespace zt::vulkan_renderer
 		image = nullptr;
 		framebuffer.destroy(device);
 		imageView.destroy(device);
+		fence.destroy(device);
+		commandBuffer.invalidate();
 	}
 
 	bool RendererContext::createDisplayImages()
@@ -114,9 +123,6 @@ namespace zt::vulkan_renderer
 		if (!commandPool.create(device, queue))
 			return false;
 
-		if (!fence.create(device, true))
-			return false;
-
 		const auto renderPassCreateInfo = RenderPass::GetPresentCreateInfo(swapChain.getFormat());
 		if (!renderPass.create(device, renderPassCreateInfo))
 			return false;
@@ -147,7 +153,6 @@ namespace zt::vulkan_renderer
 		}
 
 		renderPass.destroy(device);
-		fence.destroy(device);
 		commandPool.destroy(device);
 		swapChain.destroy(device);
 		vma.destroy();

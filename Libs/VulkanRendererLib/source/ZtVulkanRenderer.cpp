@@ -28,18 +28,18 @@ namespace zt::vulkan_renderer
 	{
 		auto& swapChain = rendererContext.swapChain;
 		auto& device = rendererContext.device;
-		auto& fence = rendererContext.fence;
-
 		auto& currentFramebufferIndex = rendererContext.currentFramebufferIndex;
+
+		currentFramebufferIndex = swapChain.acquireNextImage(device, rendererContext.imageAvailableSemaphore);
+		if (currentFramebufferIndex == SwapChain::InvalidIndex)
+			return false;
+
+		auto& fence = rendererContext.getCurrentDisplayImage().fence;
 
 		if (!fence.wait(device))
 			return false;
 
 		if (!fence.reset(device))
-			return false;
-
-		currentFramebufferIndex = swapChain.acquireNextImage(device, rendererContext.imageAvailableSemaphore);
-		if (currentFramebufferIndex == SwapChain::InvalidIndex)
 			return false;
 
 		return true;
@@ -61,7 +61,8 @@ namespace zt::vulkan_renderer
 	bool VulkanRenderer::submitDrawInfo()
 	{
 		auto& queue = rendererContext.queue;
-		auto& fence = rendererContext.fence;
+		auto& fence = rendererContext.getCurrentDisplayImage().fence;
+		auto& commandBuffer = rendererContext.getCurrentDisplayImage().commandBuffer;
 
 		std::vector<VkSemaphore> waitSemaphores = { rendererContext.imageAvailableSemaphore.get() };
 		
@@ -79,7 +80,7 @@ namespace zt::vulkan_renderer
 #		endif // ZINET_DEBUG
 
 		std::vector<VkCommandBuffer> vkCommandBuffers;
-		vkCommandBuffers.push_back(graphicsPipeline.commandBuffer.get());
+		vkCommandBuffers.push_back(commandBuffer.get());
 
 		std::vector<VkSemaphore> signalSemaphores;
 		signalSemaphores.push_back(rendererContext.renderFinishedSemaphore.get());
@@ -148,7 +149,7 @@ namespace zt::vulkan_renderer
 
 		auto& device = rendererContext.device;
 		auto& graphicsPipeline = vulkanRenderer.getGraphicsPipeline();
-		auto& fence = rendererContext.fence;
+		auto& fence = rendererContext.getCurrentDisplayImage().fence;
 
 		device.waitIdle();
 		fence.wait(device);
