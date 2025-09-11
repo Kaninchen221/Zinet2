@@ -46,8 +46,7 @@ namespace zt::vulkan_renderer::tests
 
 			ASSERT_TRUE(device.create(instance, physicalDevice, Surface{ nullptr }));
 
-			const auto descriptorPoolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
-			std::vector<VkDescriptorPoolSize> descriptorPoolSizes{ descriptorPoolSize };
+			const auto descriptorPoolSizes = DescriptorPool::GetDefaultPoolSizes();
 			const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);
 			
 			ASSERT_TRUE(descriptorPool.create(device, descriptorPoolCreateInfo));

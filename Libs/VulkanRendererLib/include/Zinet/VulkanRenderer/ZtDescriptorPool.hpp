@@ -15,9 +15,10 @@ namespace zt::vulkan_renderer
 	{
 	protected:
 
-		inline static auto Logger = core::ConsoleLogger::Create("VRDescriptorPool");
+		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::DescriptorPool");
 
 	public:
+		using DescriptorPoolSizes = std::vector<VkDescriptorPoolSize>;
 
 		DescriptorPool(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle) {}
@@ -33,7 +34,7 @@ namespace zt::vulkan_renderer
 		// Significant number of GPUs supports only 4 descriptor sets
 		static uint32_t GetDefaultMaxSets() noexcept { return 4; } 
 
-		static VkDescriptorPoolSize GetDefaultDescriptorPoolSize() noexcept;
+		static DescriptorPoolSizes GetDefaultPoolSizes() noexcept;
 
 		static VkDescriptorPoolCreateInfo GetDefaultCreateInfo(const std::vector<VkDescriptorPoolSize>& poolSizes) noexcept;
 		static VkDescriptorPoolCreateInfo GetDefaultCreateInfo(const std::vector<VkDescriptorPoolSize>&& poolSizes) noexcept = delete;

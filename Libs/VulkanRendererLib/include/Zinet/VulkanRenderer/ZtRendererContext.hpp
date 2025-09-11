@@ -17,11 +17,10 @@
 #include "Zinet/VulkanRenderer/ZtFence.hpp"
 #include "Zinet/VulkanRenderer/ZtRenderPass.hpp"
 #include "Zinet/VulkanRenderer/ZtCommandBuffer.hpp"
-#include "Zinet/VulkanRenderer/ZtDescriptorPool.hpp"
-#include "Zinet/VulkanRenderer/ZtDescriptorSetLayout.hpp"
-#include "Zinet/VulkanRenderer/ZtDescriptorSets.hpp"
 #include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
 #include "Zinet/VulkanRenderer/ZtDisplayImage.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorPool.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorSets.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -40,7 +39,7 @@ namespace zt::vulkan_renderer
 	{
 	protected:
 
-		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::VRRendererContext");
+		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::RendererContext");
 
 	public:
 
@@ -68,24 +67,17 @@ namespace zt::vulkan_renderer
 		using DisplayImages = std::vector<DisplayImage>;
 		DisplayImages displayImages;
 
+		DescriptorPool descriptorPool{ nullptr };
+
+		// Descriptor set for global data (camera, time, global textures etc.)
+		DescriptorSetLayout globalDescriptorSetLayout{ nullptr };
+		DescriptorSets globalDescriptorSet{ nullptr };
+
+		// TODO: DescriptorSet for render pass?
+		//DescriptorSetLayout renderPassDescriptorSetLayout{ nullptr };
+		//DescriptorSets renderPassDescriptorSet{ nullptr };
+
 		bool createDisplayImages();
-
-		// TODO: Refactor
-		auto& getPreviousDisplayImage()
-		{
-			if (currentFramebufferIndex == 0)
-				return displayImages.back();
-
-			return displayImages[currentFramebufferIndex - 1];
-		}
-
-		auto& getPreviousDisplayImage() const
-		{
-			if (currentFramebufferIndex == 0)
-				return displayImages.back();
-
-			return displayImages[currentFramebufferIndex - 1];
-		}
 
 		auto& getCurrentDisplayImage() { return displayImages[currentFramebufferIndex]; }
 		auto& getCurrentDisplayImage() const { return displayImages[currentFramebufferIndex]; }

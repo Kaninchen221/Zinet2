@@ -10,6 +10,7 @@
 #include "Zinet/VulkanRenderer/ZtPipelineLayout.hpp"
 #include "Zinet/VulkanRenderer/ZtPipeline.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorSets.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -21,11 +22,12 @@ namespace zt::vulkan_renderer
 	struct DrawInfo;
 	struct DescriptorInfo;
 
+	// TODO: Write getters?
 	class  GraphicsPipeline
 	{
 	protected:
 
-		inline static auto Logger = core::ConsoleLogger::Create("VRGraphicsPipeline");
+		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::GraphicsPipeline");
 
 	public:
 
@@ -41,11 +43,24 @@ namespace zt::vulkan_renderer
 
 		void destroy(const RendererContext& rendererContext) noexcept;
 
+		// TODO: Move this logic. Pipelines shouldn't know about rendering logic
 		void draw(RendererContext& rendererContext, const DrawInfo& drawInfo);
 
 		bool isValid() const noexcept;
 
-		// TODO: Write getters?
+	protected:
+
+		// TODO: Descriptors per frame (display image)
+
+		DescriptorSetLayout pipelineDescriptorSetLayout{ nullptr };
+		DescriptorSets pipelineDescriptorSet{ nullptr };
+
+		DescriptorSetLayout objectDescriptorSetLayout{ nullptr };
+		DescriptorSets objectDescriptorSet{ nullptr };
+
+		using VkDescriptorSets = std::vector<VkDescriptorSet>;
+		VkDescriptorSets vkDescriptorSets;
+
 		PipelineLayout pipelineLayout{ nullptr };
 		Pipeline pipeline{ nullptr };
 

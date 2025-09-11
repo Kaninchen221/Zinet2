@@ -18,14 +18,17 @@ namespace zt::vulkan_renderer
 	class Buffer;
 	class ImageView;
 	class Sampler;
+	struct DescriptorSetsUpdateData;
 
 	class  DescriptorSets : public VulkanObject<VkDescriptorSet>
 	{
 	protected:
 
-		inline static auto Logger = core::ConsoleLogger::Create("VRDescriptorSet");
+		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::DescriptorSet");
 
 	public:
+		using VkDescriptorSetLayouts = std::vector<DescriptorSetLayout::HandleType>;
+		using VkWriteDescriptorSets = std::vector<VkWriteDescriptorSet>;
 
 		DescriptorSets(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle) {
@@ -42,22 +45,19 @@ namespace zt::vulkan_renderer
 		DescriptorSets& operator = (DescriptorSets&& other) noexcept = default;
 
 		static VkDescriptorSetAllocateInfo GetDefaultAllocateInfo(
-			const DescriptorPool& descriptorPool, const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) noexcept;
+			const DescriptorPool& descriptorPool, const VkDescriptorSetLayouts& vkDescriptorSetLayouts) noexcept;
 
 		static VkDescriptorSetAllocateInfo GetDefaultAllocateInfo(
-			const DescriptorPool& descriptorPool, std::vector<DescriptorSetLayout::HandleType>&& descriptorSetLayouts) noexcept = delete;
+			const DescriptorPool& descriptorPool, VkDescriptorSetLayouts&& descriptorSetLayouts) noexcept = delete;
 
 		bool create(const Device& device, const VkDescriptorSetAllocateInfo& allocateInfo);
 
+		// TODO: Add free method (vkFreeDescriptorSets) destroy it without destroying the pool
+		// And remove the invalidate method? So we never make a dangling handle
+
 		void invalidate() noexcept { objectHandle = nullptr; }
 
-		static VkWriteDescriptorSet GetDefaultWriteDescriptorSet() noexcept;
-
-		static VkDescriptorBufferInfo GetBufferInfo(const Buffer& buffer) noexcept;
-
-		static VkDescriptorImageInfo GetImageInfo(const ImageView& imageView, const Sampler& sampler) noexcept;
-
-		void update(const Device& device, const std::vector<VkWriteDescriptorSet>& writeDescriptorSets) const noexcept;
+		void update(const Device& device, const DescriptorSetsUpdateData& updateData) const noexcept;
 
 		auto getCount() const noexcept { return count; }
 

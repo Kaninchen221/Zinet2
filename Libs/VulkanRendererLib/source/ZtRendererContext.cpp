@@ -95,11 +95,35 @@ namespace zt::vulkan_renderer
 		if (!renderFinishedSemaphore.create(device))
 			return false;
 
+		const auto poolSizes = DescriptorPool::GetDefaultPoolSizes();		
+
+		const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(poolSizes);
+		if (!descriptorPool.create(device, descriptorPoolCreateInfo))
+			return false;
+
+		auto globalDescriptorSetLayoutBindings = DescriptorSetLayout::Bindings
+		{
+			DescriptorSetLayout::GetDefaultUniformLayoutBinding()
+		};
+
+		auto createInfo = DescriptorSetLayout::GetDefaultCreateInfo(globalDescriptorSetLayoutBindings);
+		globalDescriptorSetLayout.create(createInfo, device);
+
+		DescriptorSets::VkDescriptorSetLayouts vkDescriptorSetLayouts = { globalDescriptorSetLayout.get() };
+		const auto allocateInfo = DescriptorSets::GetDefaultAllocateInfo(descriptorPool, vkDescriptorSetLayouts);
+		if (!globalDescriptorSet.create(device, allocateInfo))
+			return false;
+
 		return true;
 	}
 
 	void RendererContext::destroy()
 	{
+		globalDescriptorSetLayout.destroy(device);
+		globalDescriptorSet.invalidate();
+
+		descriptorPool.destroy(device);
+
 		renderFinishedSemaphore.destroy(device);
 		imageAvailableSemaphore.destroy(device);
 
@@ -138,5 +162,4 @@ namespace zt::vulkan_renderer
 
 		createDisplayImages();
 	}
-
 }

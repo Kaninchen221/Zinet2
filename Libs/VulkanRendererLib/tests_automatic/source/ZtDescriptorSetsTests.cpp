@@ -9,6 +9,7 @@
 #include "Zinet/VulkanRenderer/ZtDescriptorSetLayout.hpp"
 #include "Zinet/VulkanRenderer/ZtDescriptorPool.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
 
 #include <gtest/gtest.h>
 
@@ -55,8 +56,7 @@ namespace zt::vulkan_renderer::tests
 			const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(position);
 			uniformBuffer.createBuffer(uniformBufferCreateInfo, vma);
 
-			const auto descriptorPoolSize = DescriptorPool::GetDefaultDescriptorPoolSize();
-			std::vector<VkDescriptorPoolSize> descriptorPoolSizes{ descriptorPoolSize };
+			const auto descriptorPoolSizes = DescriptorPool::GetDefaultPoolSizes();
 			const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);
 			ASSERT_TRUE(descriptorPool.create(device, descriptorPoolCreateInfo));
 
@@ -75,14 +75,18 @@ namespace zt::vulkan_renderer::tests
 			ASSERT_EQ(descriptorSets.getCount(), descriptorSetLayouts.size());
 			ASSERT_TRUE(descriptorSets.isValid());
 
-			const VkDescriptorBufferInfo descriptorBufferInfo = DescriptorSets::GetBufferInfo(uniformBuffer);
-			auto writeDescriptorSet = DescriptorSets::GetDefaultWriteDescriptorSet();
+			const VkDescriptorBufferInfo descriptorBufferInfo = DescriptorInfo::GetBufferInfo(uniformBuffer);
+
+			DescriptorSetsUpdateData updateData;
+			updateData.descriptorBuffersInfos.push_back(descriptorBufferInfo);
+
+			auto writeDescriptorSet = DescriptorInfo::GetDefaultWriteDescriptorSet();
 			writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
 			writeDescriptorSet.dstSet = descriptorSets.get();
 
-			const std::vector writeDescriptorSets{ writeDescriptorSet };
+			updateData.writeDescriptorSets.push_back(writeDescriptorSet);
 
-			descriptorSets.update(device, writeDescriptorSets);
+			descriptorSets.update(device, updateData);
 		}
 
 		void TearDown() override

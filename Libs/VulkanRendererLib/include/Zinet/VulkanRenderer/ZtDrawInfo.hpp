@@ -3,9 +3,7 @@
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
 #include "Zinet/VulkanRenderer/ZtVertex.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderType.hpp"
-#include "Zinet/VulkanRenderer/ZtBuffer.hpp"
-#include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
-#include "Zinet/VulkanRenderer/ZtImageView.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorSetLayout.hpp"
 
 #include "Zinet/Core/ZtFunction.hpp"
 
@@ -16,6 +14,10 @@ namespace zt::vulkan_renderer
 	class Texture;
 	class Sampler;
 	class CommandBuffer;
+	class DescriptorSets;
+	class Buffer;
+	class ImageView;
+	class ShaderModule;
 
 	struct  TextureInfo
 	{
@@ -29,24 +31,40 @@ namespace zt::vulkan_renderer
 		Buffer* uniformBuffer{};
 	};
 
+	// TODO: Refactor ~ move it to separate file
+	struct DescriptorSetsUpdateData
+	{
+		std::vector<VkWriteDescriptorSet> writeDescriptorSets;
+		std::vector<VkDescriptorBufferInfo> descriptorBuffersInfos;
+		std::vector<VkDescriptorImageInfo> descriptorImagesInfos;
+	};
+
+	// TODO: Refactor?
 	struct DescriptorInfo
 	{
+		using VkWriteDescriptorSets = std::vector<VkWriteDescriptorSet>;
+
 		/// Uniform buffer per instance
 		std::vector<UniformBufferInfo> uniformBuffers;
+		uint32_t cachedUniformBuffersBinding = 0;
 
 		/// Texture per instance
 		std::vector<TextureInfo> texturesInfos;
+		uint32_t cachedTexturesBinding = 0;
 
-		DescriptorInfo& operator += (const DescriptorInfo& other)
-		{
-			uniformBuffers.append_range(other.uniformBuffers);
-			texturesInfos.append_range(other.texturesInfos);
-			return *this;
-		}
+		DescriptorSetsUpdateData cachedDescriptorSetsUpdateData;
 
-		/// Cached data
-		uint32_t cachedUniformBuffersBinding{};
-		uint32_t cachedTexturesBinding{};
+		DescriptorSetLayout::Bindings createBindings();
+
+		static VkWriteDescriptorSet GetDefaultWriteDescriptorSet() noexcept;
+
+		static VkDescriptorBufferInfo GetBufferInfo(const Buffer& buffer) noexcept;
+
+		static VkDescriptorImageInfo GetImageInfo(const ImageView& imageView, const Sampler& sampler) noexcept;
+
+		DescriptorSetsUpdateData createDescriptorSetsUpdateData(const DescriptorSets& descriptorSets) const;
+
+		DescriptorInfo& operator += (const DescriptorInfo& other);
 	};
 
 	struct DrawInfo
@@ -63,7 +81,7 @@ namespace zt::vulkan_renderer
 
 		bool updatePipelineDescriptorInfoPerDrawCall = true;
 		DescriptorInfo pipelineDescriptorInfo;
-		DescriptorInfo drawCallDescriptorInfo;
+		DescriptorInfo drawCallDescriptorInfo; // TODO: "drawCall" or "object"?
 
 		using AdditionalCommands = std::vector<core::Function<void, const CommandBuffer&>>;
 		AdditionalCommands additionalCommands;

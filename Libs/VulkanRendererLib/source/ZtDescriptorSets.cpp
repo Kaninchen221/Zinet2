@@ -4,11 +4,12 @@
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtImageView.hpp"
 #include "Zinet/VulkanRenderer/ZtSampler.hpp"
+#include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
 
 namespace zt::vulkan_renderer
 {
 	VkDescriptorSetAllocateInfo DescriptorSets::GetDefaultAllocateInfo(
-		const DescriptorPool& descriptorPool, const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) noexcept
+		const DescriptorPool& descriptorPool, const VkDescriptorSetLayouts& vkDescriptorSetLayouts) noexcept
 	{
 		return VkDescriptorSetAllocateInfo
 		{
@@ -35,45 +36,10 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	VkWriteDescriptorSet DescriptorSets::GetDefaultWriteDescriptorSet() noexcept
+	void DescriptorSets::update(const Device& device, const DescriptorSetsUpdateData& updateData) const noexcept
 	{
-		return VkWriteDescriptorSet
-		{
-			.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-			.pNext = nullptr,
-			.dstSet = nullptr,
-			.dstBinding = 0,
-			.dstArrayElement = 0,
-			.descriptorCount = 1,
-			.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-			.pImageInfo = nullptr,
-			.pBufferInfo = nullptr,
-			.pTexelBufferView = nullptr
-		};
-	}
+		auto& writeDescriptorSets = updateData.writeDescriptorSets;
 
-	VkDescriptorBufferInfo DescriptorSets::GetBufferInfo(const Buffer& buffer) noexcept
-	{
-		return
-		{
-			.buffer = buffer.get(),
-			.offset = 0,
-			.range = buffer.getSize()
-		};
-	}
-
-	VkDescriptorImageInfo DescriptorSets::GetImageInfo(const ImageView& imageView, const Sampler& sampler) noexcept
-	{
-		return
-		{
-			.sampler = sampler.get(),
-			.imageView = imageView.get(),
-			.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL // TODO: Refactor, image view or/and image should remember layout
-		};
-	}
-
-	void DescriptorSets::update(const Device& device, const std::vector<VkWriteDescriptorSet>& writeDescriptorSets) const noexcept
-	{
 		vkUpdateDescriptorSets(device.get(), static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
 	}
 

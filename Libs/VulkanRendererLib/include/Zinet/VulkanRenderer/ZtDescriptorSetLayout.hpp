@@ -17,9 +17,10 @@ namespace zt::vulkan_renderer
 	{
 	protected:
 
-		inline static auto Logger = core::ConsoleLogger::Create("VRDescriptorSetLayout");
+		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::DescriptorSetLayout");
 
 	public:
+		using Bindings = std::vector<VkDescriptorSetLayoutBinding>;
 
 		DescriptorSetLayout(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle) {}
@@ -35,7 +36,6 @@ namespace zt::vulkan_renderer
 		static VkDescriptorSetLayoutBinding GetDefaultUniformLayoutBinding() noexcept;
 		static VkDescriptorSetLayoutBinding GetDefaultImageLayoutBinding() noexcept;
 
-		using Bindings = std::vector<VkDescriptorSetLayoutBinding>;
 		static VkDescriptorSetLayoutCreateInfo GetDefaultCreateInfo(const Bindings& bindings) noexcept;
 		static VkDescriptorSetLayoutCreateInfo GetDefaultCreateInfo(Bindings&& bindings) noexcept = delete;
 
