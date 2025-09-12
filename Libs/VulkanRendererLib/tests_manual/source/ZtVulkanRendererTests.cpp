@@ -291,7 +291,7 @@ namespace zt::vulkan_renderer::tests
 				.uniformBuffers = {},
 				.texturesInfos = { textureInfo },
 			},
-			.drawCallDescriptorInfo =
+			.objectDescriptorInfo =
 			{
 				.uniformBuffers = { { &uniformBuffers[0] }, { &uniformBuffers[1] } },
 				.texturesInfos{}

@@ -107,7 +107,7 @@ namespace zt::gameplay
 			drawInfo.fragmentShaderModule = &fragmentShader.getAssetHandle()->shaderModule;
 
 			drawInfo.pipelineDescriptorInfo = {};
-			drawInfo.drawCallDescriptorInfo = {};
+			drawInfo.objectDescriptorInfo = {};
 			drawInfo.instances = 0;
 			for (const auto& node : nodes)
 			{
@@ -119,7 +119,7 @@ namespace zt::gameplay
 					continue;
 
 				drawInfo.pipelineDescriptorInfo += node2D->getPipelineDescriptorInfos();
-				drawInfo.drawCallDescriptorInfo += node2D->getDrawCallDescriptorInfos();
+				drawInfo.objectDescriptorInfo += node2D->getDrawCallDescriptorInfos();
 				drawInfo.instances++;
 			}
 		}

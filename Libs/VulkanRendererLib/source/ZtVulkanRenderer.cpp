@@ -55,7 +55,52 @@ namespace zt::vulkan_renderer
 
 	void VulkanRenderer::draw(const DrawInfo& drawInfo)
 	{
-		graphicsPipeline.draw(rendererContext, drawInfo);
+		auto& swapChain = rendererContext.swapChain;
+		//auto& device = rendererContext.device;
+		auto& renderPass = rendererContext.renderPass;
+		auto& displayImage = rendererContext.getCurrentDisplayImage();
+		auto& commandBuffer = displayImage.commandBuffer;
+
+		// Begin draw start
+		commandBuffer.reset();
+
+		commandBuffer.begin();
+		const auto extent = swapChain.getExtent();
+		commandBuffer.beginRenderPass(renderPass, displayImage.framebuffer, extent);
+
+		// Viewport settings
+		const VkViewport viewport
+		{
+			.x = 0.0f,
+			.y = 0.0f,
+			.width = static_cast<float>(swapChain.getExtent().width),
+			.height = static_cast<float>(swapChain.getExtent().height),
+			.minDepth = 0.0f,
+			.maxDepth = 1.0f
+		};
+		commandBuffer.setViewport(viewport);
+
+		const VkRect2D scissor
+		{
+			.offset = { 0, 0 },
+			.extent = swapChain.getExtent()
+		};
+		commandBuffer.setScissor(scissor);
+
+		commandBuffer.bindPipeline(graphicsPipeline.getPipeline());
+
+		// TODO: Support more than one pipeline
+		graphicsPipeline.draw(rendererContext, drawInfo, commandBuffer);
+
+		// TODO: After adding support of multiple pipelines, additional commands should describe which pipeline to use
+		for (const auto& additionalCommand : drawInfo.additionalCommands)
+		{
+			if (additionalCommand)
+				additionalCommand.invoke(commandBuffer);
+		}
+
+		commandBuffer.endRenderPass();
+		commandBuffer.end();
 	}
 
 	bool VulkanRenderer::submitDrawInfo()

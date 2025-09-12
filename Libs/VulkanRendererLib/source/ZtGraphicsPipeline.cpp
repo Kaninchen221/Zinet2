@@ -36,7 +36,7 @@ namespace zt::vulkan_renderer
 		}
 
 		{ // Object descriptor set & layout
-			const auto bindings = drawInfo.drawCallDescriptorInfo.createBindings();
+			const auto bindings = drawInfo.objectDescriptorInfo.createBindings();
 			const auto createInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
 			if (!objectDescriptorSetLayout.create(createInfo, device))
 				return false;
@@ -47,10 +47,10 @@ namespace zt::vulkan_renderer
 			if (!objectDescriptorSet.create(device, allocateInfo))
 				return false;
 
-			drawInfo.drawCallDescriptorInfo.cachedDescriptorSetsUpdateData =
-				drawInfo.drawCallDescriptorInfo.createDescriptorSetsUpdateData(objectDescriptorSet);
+			drawInfo.objectDescriptorInfo.cachedDescriptorSetsUpdateData =
+				drawInfo.objectDescriptorInfo.createDescriptorSetsUpdateData(objectDescriptorSet);
 
-			objectDescriptorSet.update(device, drawInfo.drawCallDescriptorInfo.cachedDescriptorSetsUpdateData);
+			objectDescriptorSet.update(device, drawInfo.objectDescriptorInfo.cachedDescriptorSetsUpdateData);
 		}
 
 		// TODO: Use global descriptor set
@@ -89,48 +89,14 @@ namespace zt::vulkan_renderer
 		objectDescriptorSetLayout.destroy(device);
 	}
 
-	void GraphicsPipeline::draw(RendererContext& rendererContext, const DrawInfo& drawInfo)
+	void GraphicsPipeline::draw([[maybe_unused]] RendererContext& rendererContext, const DrawInfo& drawInfo, CommandBuffer& commandBuffer)
 	{
-		auto& swapChain = rendererContext.swapChain;
-		//auto& device = rendererContext.device;
-		auto& displayImage = rendererContext.getCurrentDisplayImage();
-		auto& renderPass = rendererContext.renderPass;
-		auto& commandBuffer = displayImage.commandBuffer;
-
 		vkDescriptorSets =
 		{
 			//rendererContext.globalDescriptorSet.get(), // TODO: Use global descriptor set
 			pipelineDescriptorSet.get(),
 			objectDescriptorSet.get()
 		};
-
-		// Begin draw start
-		commandBuffer.reset();
-
-		commandBuffer.begin();
-		const auto extent = swapChain.getExtent();
-		commandBuffer.beginRenderPass(renderPass, displayImage.framebuffer, extent);
-
-		commandBuffer.bindPipeline(pipeline);
-
-		// Viewport settings
-		const VkViewport viewport
-		{
-			.x = 0.0f,
-			.y = 0.0f,
-			.width = static_cast<float>(swapChain.getExtent().width),
-			.height = static_cast<float>(swapChain.getExtent().height),
-			.minDepth = 0.0f,
-			.maxDepth = 1.0f
-		};
-		commandBuffer.setViewport(viewport);
-
-		const VkRect2D scissor
-		{
-			.offset = { 0, 0 },
-			.extent = swapChain.getExtent()
-		};
-		commandBuffer.setScissor(scissor);
 
 		vkCmdBindDescriptorSets(
 			commandBuffer.get(),
@@ -142,19 +108,13 @@ namespace zt::vulkan_renderer
 			0, // dynamicOffsetCount
 			nullptr // pDynamicOffsets
 		);
-		// Begin draw end
-
-		//if (drawInfo.updatePipelineDescriptorInfoPerDrawCall)
-		//	Descriptors::UpdateDescriptorSet(device, drawInfo.pipelineDescriptorInfo, pipelineDescriptorSet);
-
-		//Descriptors::UpdateDescriptorSet(device, drawInfo.drawCallDescriptorInfo, objectDescriptorSet);
 
 		// Vertex Buffer
-		const VkBuffer vertexBuffers[] = { drawInfo.vertexBuffer->get() };
-		const VkDeviceSize offsets[] = { 0 };
-		vkCmdBindVertexBuffers(commandBuffer.get(), 0, 1, vertexBuffers, offsets);
+		const std::array<VkBuffer, 1> vertexBuffers = { drawInfo.vertexBuffer->get() };
+		const std::array<VkDeviceSize, 1> offsets = { 0 };
+		vkCmdBindVertexBuffers(commandBuffer.get(), 0, 1, vertexBuffers.data(), offsets.data());
 		
-		// Index Buffer
+		// Draw with Index Buffer
 		if (drawInfo.indexBuffer->isValid())
 		{
 			vkCmdBindIndexBuffer(commandBuffer.get(), drawInfo.indexBuffer->get(), 0, VK_INDEX_TYPE_UINT16);
@@ -164,15 +124,6 @@ namespace zt::vulkan_renderer
 		{
 			commandBuffer.draw(static_cast<uint32_t>(drawInfo.vertexBuffer->getSize()), drawInfo.instances, 0, 0);
 		}
-
-		for (const auto& additionalCommand : drawInfo.additionalCommands)
-		{
-			if (additionalCommand)
-				additionalCommand.invoke(commandBuffer);
-		}
-
-		commandBuffer.endRenderPass();
-		commandBuffer.end();
 	}
 
 	bool GraphicsPipeline::isValid() const noexcept
@@ -180,7 +131,11 @@ namespace zt::vulkan_renderer
 		// Ignore objects related to descriptors
 		return
 			pipeline.isValid() &&
-			pipelineLayout.isValid();
+			pipelineLayout.isValid() && 
+			pipelineDescriptorSetLayout.isValid() &&
+			pipelineDescriptorSet.isValid() && 
+			objectDescriptorSetLayout.isValid() &&
+			objectDescriptorSet.isValid();
 	}
 
 }

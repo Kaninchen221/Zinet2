@@ -22,7 +22,6 @@ namespace zt::vulkan_renderer
 	struct DrawInfo;
 	struct DescriptorInfo;
 
-	// TODO: Write getters?
 	class  GraphicsPipeline
 	{
 	protected:
@@ -43,10 +42,15 @@ namespace zt::vulkan_renderer
 
 		void destroy(const RendererContext& rendererContext) noexcept;
 
-		// TODO: Move this logic. Pipelines shouldn't know about rendering logic
-		void draw(RendererContext& rendererContext, const DrawInfo& drawInfo);
+		void draw(RendererContext& rendererContext, const DrawInfo& drawInfo, CommandBuffer& commandBuffer);
 
 		bool isValid() const noexcept;
+
+		auto& getPipeline() noexcept { return pipeline; }
+		auto& getPipeline() const noexcept { return pipeline; }
+
+		auto& getPipelineLayout() noexcept { return pipelineLayout; }
+		auto& getPipelineLayout() const noexcept { return pipelineLayout; }
 
 	protected:
 
