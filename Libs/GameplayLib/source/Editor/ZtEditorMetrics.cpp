@@ -64,7 +64,7 @@ namespace zt::gameplay
 				return;
 			}
 
-			auto& vma = systemRenderer->getRenderer().getRendererContext().vma;
+			auto& vma = systemRenderer->getRenderer().getRendererContext().getVMA();
 			vma.updateBuildStatsString();
 			ImGui::TextFMT("VMA Stats: \n{}", vma.getBuildStatsString());
 		}

@@ -59,8 +59,8 @@ namespace zt::vulkan_renderer::tests
 			fragmentShaderModule = createShaderModule("shader.frag", ShaderType::Fragment);
 			ASSERT_TRUE(fragmentShaderModule.isValid());
 
-			auto& vma = renderer.getRendererContext().vma;
-			auto& device = renderer.getRendererContext().device;
+			auto& vma = renderer.getRendererContext().getVMA();
+			auto& device = renderer.getRendererContext().getDevice();
 
 			// Vertex Buffer
 			const DrawInfo::Vertices vertices = {
@@ -129,8 +129,8 @@ namespace zt::vulkan_renderer::tests
 
 		void TearDown() override
 		{
-			auto& device = renderer.getRendererContext().device;
-			auto& vma = renderer.getRendererContext().vma;
+			auto& device = renderer.getRendererContext().getDevice();
+			auto& vma = renderer.getRendererContext().getVMA();
 
 			device.waitIdle();
 
@@ -200,7 +200,7 @@ namespace zt::vulkan_renderer::tests
 			return shaderModule;
 		}
 
-		const auto& device = renderer.getRendererContext().device;
+		const auto& device = renderer.getRendererContext().getDevice();
 		shaderModule.create(device, compileResult);
 
 		return shaderModule;
@@ -208,7 +208,7 @@ namespace zt::vulkan_renderer::tests
 
 	void VulkanRendererTests::updateUniformBuffersData()
 	{
-		const auto& vma = renderer.getRendererContext().vma;
+		const auto& vma = renderer.getRendererContext().getVMA();
 
 		uniformData.view = camera.getViewMatrix();
 		uniformData.projection = camera.getPerspectiveMatrix();
@@ -227,10 +227,10 @@ namespace zt::vulkan_renderer::tests
 	void VulkanRendererTests::createTexture()
 	{
 		const auto& rendererContext = renderer.getRendererContext();
-		const auto& vma = rendererContext.vma;
-		const auto& device = rendererContext.device;
-		const auto& queue = rendererContext.queue;
-		const auto& commandPool = rendererContext.commandPool;
+		const auto& vma = rendererContext.getVMA();
+		const auto& device = rendererContext.getDevice();
+		const auto& queue = rendererContext.getQueue();
+		const auto& commandPool = rendererContext.getCommandPool();
 
 		const std::filesystem::path testFolderPath = core::Paths::CurrentProjectRootPath() / "test_files";
 		const std::filesystem::path imagePath = testFolderPath / "image.png";

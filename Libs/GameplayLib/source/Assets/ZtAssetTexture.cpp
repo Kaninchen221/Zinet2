@@ -56,11 +56,11 @@ namespace zt::gameplay
 		}
 
 		auto& rendererContext = systemRenderer->getRenderer().getRendererContext();
-		auto& device = rendererContext.device;
-		auto& vma = rendererContext.vma;
-		auto& queue = rendererContext.queue;
-		auto& commandPool = rendererContext.commandPool;
-		Vector2ui size = { image.getWidth(), image.getHeight() };
+		auto& device = rendererContext.getDevice();
+		auto& vma = rendererContext.getVMA();
+		auto& queue = rendererContext.getQueue();
+		auto& commandPool = rendererContext.getCommandPool();
+		const Vector2ui size = { image.getWidth(), image.getHeight() };
 		if (!texture.create(device, vma, size))
 		{
 			Logger->error("Couldn't create a texture from an image");
@@ -100,7 +100,7 @@ namespace zt::gameplay
 		};
 		if (!vulkan_renderer::SubmitSingleCommandBufferWaitIdle(device, queue, commandPool, commands))
 		{
-			Logger->error("Filling a texture witn an buffer failed");
+			Logger->error("Filling a texture with an buffer failed");
 			buffer.destroy(vma);
 			return false;
 		}
@@ -127,8 +127,8 @@ namespace zt::gameplay
 		systemRenderer->waitCompleteJobs();
 
 		auto& rendererContext = systemRenderer->getRenderer().getRendererContext();
-		auto& device = rendererContext.device;
-		auto& vma = rendererContext.vma;
+		auto& device = rendererContext.getDevice();
+		auto& vma = rendererContext.getVMA();
 
 		descriptorSet.invalidate();
 		texture.destroy(device, vma);

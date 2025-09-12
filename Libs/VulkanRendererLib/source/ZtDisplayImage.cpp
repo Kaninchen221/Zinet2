@@ -7,10 +7,10 @@ namespace zt::vulkan_renderer
 {
 	bool DisplayImage::create(RendererContext& rendererContext, VkImage swapChainImage)
 	{
-		auto& swapChain = rendererContext.swapChain;
-		auto& device = rendererContext.device;
-		auto& renderPass = rendererContext.renderPass;
-		auto& commandPool = rendererContext.commandPool;
+		auto& swapChain = rendererContext.getSwapChain();
+		auto& device = rendererContext.getDevice();
+		auto& renderPass = rendererContext.getRenderPass();
+		auto& commandPool = rendererContext.getCommandPool();
 
 		image = swapChainImage;
 
@@ -40,7 +40,7 @@ namespace zt::vulkan_renderer
 
 	void DisplayImage::destroy(RendererContext& rendererContext)
 	{
-		auto& device = rendererContext.device;
+		auto& device = rendererContext.getDevice();
 
 		image = nullptr;
 		framebuffer.destroy(device);

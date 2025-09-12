@@ -46,7 +46,7 @@ namespace zt::gameplay
 			Logger->error("Can't create asset sampler because system renderer is invalid");
 			return false;
 		}
-		auto& device = systemRenderer->getRenderer().getRendererContext().device;
+		auto& device = systemRenderer->getRenderer().getRendererContext().getDevice();
 
 		const bool samplerCreated = sampler.create(device, createInfo);
 		if (!samplerCreated)
@@ -68,7 +68,7 @@ namespace zt::gameplay
 			Logger->error("Can't unload asset sampler because system renderer is invalid");
 			return;
 		}
-		auto& device = systemRenderer->getRenderer().getRendererContext().device;
+		auto& device = systemRenderer->getRenderer().getRendererContext().getDevice();
 		sampler.destroy(device);
 
 		loaded = false;

@@ -28,10 +28,10 @@ namespace zt::vulkan_renderer
 	{
 		auto& swapChain = rendererContext.swapChain;
 		auto& device = rendererContext.device;
-		auto& currentFramebufferIndex = rendererContext.currentFramebufferIndex;
+		auto& currentDisplayImageIndex = rendererContext.currentDisplayImageIndex;
 
-		currentFramebufferIndex = swapChain.acquireNextImage(device, rendererContext.imageAvailableSemaphore);
-		if (currentFramebufferIndex == SwapChain::InvalidIndex)
+		currentDisplayImageIndex = swapChain.acquireNextImage(device, rendererContext.imageAvailableSemaphore);
+		if (currentDisplayImageIndex == SwapChain::InvalidIndex)
 			return false;
 
 		auto& fence = rendererContext.getCurrentDisplayImage().fence;
@@ -158,7 +158,7 @@ namespace zt::vulkan_renderer
 	{
 		const auto& swapChain = rendererContext.swapChain;
 		const auto& queue = rendererContext.queue;
-		auto currentFramebufferIndex = rendererContext.currentFramebufferIndex;
+		auto currentDisplayImageIndex = rendererContext.currentDisplayImageIndex;
 
 		std::vector<VkSemaphore> waitSemaphores = { rendererContext.renderFinishedSemaphore.get() };
 		std::vector<VkSwapchainKHR> swapChains = { swapChain.get() };
@@ -170,7 +170,7 @@ namespace zt::vulkan_renderer
 			.pWaitSemaphores = waitSemaphores.data(),
 			.swapchainCount = static_cast<uint32_t>(swapChains.size()),
 			.pSwapchains = swapChains.data(),
-			.pImageIndices = &currentFramebufferIndex,
+			.pImageIndices = &currentDisplayImageIndex,
 			.pResults = nullptr
 		};
 

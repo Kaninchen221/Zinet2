@@ -12,10 +12,10 @@ namespace zt::vulkan_renderer
 		if (isValid())
 			return false;
 
-		auto& device = rendererContext.device;
-		auto& swapChain = rendererContext.swapChain;
-		auto& renderPass = rendererContext.renderPass;
-		auto& descriptorPool = rendererContext.descriptorPool;
+		auto& device = rendererContext.getDevice();
+		auto& swapChain = rendererContext.getSwapChain();
+		auto& renderPass = rendererContext.getRenderPass();
+		auto& descriptorPool = rendererContext.getDescriptorPool();
 
 		{ // Pipeline descriptor set & layout
 			const auto bindings = drawInfo.pipelineDescriptorInfo.createBindings();
@@ -77,7 +77,7 @@ namespace zt::vulkan_renderer
 
 	void GraphicsPipeline::destroy(const RendererContext& rendererContext) noexcept
 	{
-		const auto& device = rendererContext.device;
+		const auto& device = rendererContext.getDevice();
 
 		pipeline.destroy(device);
 		pipelineLayout.destroy(device);

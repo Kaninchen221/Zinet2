@@ -11,6 +11,9 @@ namespace zt::gameplay
 	bool SystemRenderer::init()
 	{
 		auto& engineContext = EngineContext::Get();
+		auto& rendererContext = renderer.getRendererContext();
+		auto& instance = rendererContext.getInstance();
+		auto& vma = rendererContext.getVMA();
 
 		auto systemWindow = engineContext.getSystem<SystemWindow>();
 		if (!systemWindow)
@@ -32,7 +35,7 @@ namespace zt::gameplay
 			return Ensure(false);
 		}
 
-		renderer.getRendererContext().instance.setEnableValidationLayers(ZINET_DEBUG);
+		instance.setEnableValidationLayers(ZINET_DEBUG);
 		if (!renderer.init(window))
 			return false;
 
@@ -52,8 +55,8 @@ namespace zt::gameplay
 		};
 
 		const auto vertexBufferCreateInfo = vr::Buffer::GetVertexBufferCreateInfo(vertices);
-		vertexBuffer.createBuffer(vertexBufferCreateInfo, renderer.getRendererContext().vma);
-		vertexBuffer.fillWithSTDContainer(vertices, renderer.getRendererContext().vma);
+		vertexBuffer.createBuffer(vertexBufferCreateInfo, vma);
+		vertexBuffer.fillWithSTDContainer(vertices, vma);
 
 		const vr::DrawInfo::Indices indices =
 		{
@@ -62,8 +65,8 @@ namespace zt::gameplay
 		};
 
 		const auto indexBufferCreateInfo = vr::Buffer::GetIndexBufferCreateInfo(indices);
-		indexBuffer.createBuffer(indexBufferCreateInfo, renderer.getRendererContext().vma);
-		indexBuffer.fillWithSTDContainer(indices, renderer.getRendererContext().vma);
+		indexBuffer.createBuffer(indexBufferCreateInfo, vma);
+		indexBuffer.fillWithSTDContainer(indices, vma);
 
 		initialized = true;
 		return true;
@@ -74,14 +77,16 @@ namespace zt::gameplay
 		if (!System::deinit())
 			return false;
 
-		const auto& device = renderer.getRendererContext().device;
+		auto& device = renderer.getRendererContext().getDevice();
+		auto& vma = renderer.getRendererContext().getVMA();
+
 		device.waitIdle();
 
-		vertexShaderModule.destroy(renderer.getRendererContext().device);
-		fragmentShaderModule.destroy(renderer.getRendererContext().device);
+		vertexShaderModule.destroy(device);
+		fragmentShaderModule.destroy(device);
 
-		vertexBuffer.destroy(renderer.getRendererContext().vma);
-		indexBuffer.destroy(renderer.getRendererContext().vma);
+		vertexBuffer.destroy(vma);
+		indexBuffer.destroy(vma);
 
 		if (UseImGui)
 		{

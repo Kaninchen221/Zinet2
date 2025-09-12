@@ -44,7 +44,7 @@ namespace zt::vulkan_renderer
 				.pPoolSizes = poolSizes.data()
 			};
 
-			descriptorPool.create(rendererContext.device, createInfo);
+			descriptorPool.create(rendererContext.getDevice(), createInfo);
 		}
 
 		ImGui::CreateContext();
@@ -56,15 +56,15 @@ namespace zt::vulkan_renderer
 		}
 		
 		ImGui_ImplVulkan_InitInfo init_info = {};
-		init_info.Instance = rendererContext.instance.get();
-		init_info.PhysicalDevice = rendererContext.physicalDevice.get();
-		init_info.Device = rendererContext.device.get();
-		init_info.Queue = rendererContext.queue.get();
+		init_info.Instance = rendererContext.getInstance().get();
+		init_info.PhysicalDevice = rendererContext.getPhysicalDevice().get();
+		init_info.Device = rendererContext.getDevice().get();
+		init_info.Queue = rendererContext.getQueue().get();
 		init_info.DescriptorPool = descriptorPool.get();
 		init_info.MinImageCount = 3;
 		init_info.ImageCount = 3;
 		init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
-		init_info.RenderPass = rendererContext.renderPass.get();
+		init_info.RenderPass = rendererContext.getRenderPass().get();
 		
 		if (!ImGui_ImplVulkan_Init(&init_info))
 		{
@@ -79,14 +79,14 @@ namespace zt::vulkan_renderer
 
 	void ImGuiIntegration::deinit(const RendererContext& rendererContext)
 	{
-		rendererContext.device.waitIdle();
+		rendererContext.getDevice().waitIdle();
 
 		ImPlot::DestroyContext();
 
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
-		descriptorPool.destroy(rendererContext.device);
+		descriptorPool.destroy(rendererContext.getDevice());
 	}
 
 	void ImGuiIntegration::prepareRenderData() const

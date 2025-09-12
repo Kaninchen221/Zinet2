@@ -19,7 +19,7 @@ namespace zt::gameplay
 			return;
 		}
 
-		auto& vma = systemRenderer->getRenderer().getRendererContext().vma;
+		auto& vma = systemRenderer->getRenderer().getRendererContext().getVMA();
 
 		const auto bufferCreateInfo = Buffer::GetUniformBufferCreateInfo<MVP>(mvp);
 		if (!Ensure(MVPBuffer.createBuffer(bufferCreateInfo, vma)))
@@ -35,7 +35,7 @@ namespace zt::gameplay
 			return;
 
 		auto& engineContext = EngineContext::Get();
-		auto& vma = engineContext.getSystem<SystemRenderer>()->getRenderer().getRendererContext().vma;
+		auto& vma = engineContext.getSystem<SystemRenderer>()->getRenderer().getRendererContext().getVMA();
 		MVPBuffer.destroy(vma);
 	}
 
@@ -87,7 +87,7 @@ namespace zt::gameplay
 		mvp.view = camera->getCamera().getViewMatrix();
 		mvp.projection = camera->getCamera().getPerspectiveMatrix();
 
-		auto& vma = engineContext.getSystem<SystemRenderer>()->getRenderer().getRendererContext().vma;
+		auto& vma = engineContext.getSystem<SystemRenderer>()->getRenderer().getRendererContext().getVMA();
 		MVPBuffer.fillWithObject(mvp, vma);
 	}
 

@@ -43,7 +43,7 @@ namespace zt::gameplay
 			return false;
 		}
 
-		const auto& device = systemRenderer->getRenderer().getRendererContext().device;
+		const auto& device = systemRenderer->getRenderer().getRendererContext().getDevice();
 		if (!shaderModule.create(device, compileResult))
 		{
 			Logger->error("ShaderModule create returned false");
@@ -66,7 +66,7 @@ namespace zt::gameplay
 			return;
 		}
 
-		const auto& device = systemRenderer->getRenderer().getRendererContext().device;
+		const auto& device = systemRenderer->getRenderer().getRendererContext().getDevice();
 		shaderModule.destroy(device);
 	}
 

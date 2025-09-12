@@ -37,6 +37,8 @@ namespace zt::vulkan_renderer
 {
 	class  RendererContext
 	{
+		friend class VulkanRenderer;
+
 	protected:
 
 		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::RendererContext");
@@ -51,6 +53,40 @@ namespace zt::vulkan_renderer
 		RendererContext& operator = (const RendererContext& other) noexcept = delete;
 		RendererContext& operator = (RendererContext&& other) noexcept = default;
 
+		bool create(wd::Window& window);
+
+		void destroy();
+
+		auto& getCurrentDisplayImage() { return displayImages[currentDisplayImageIndex]; }
+		auto& getCurrentDisplayImage() const { return displayImages[currentDisplayImageIndex]; }
+
+		auto getCurrentDisplayImageIndex() const noexcept { return currentDisplayImageIndex; }
+
+		auto& getInstance() noexcept { return instance; }
+		auto& getInstance() const noexcept { return instance; }
+		auto& getDebugUtilsMessenger() noexcept { return debugUtilsMessenger; }
+		auto& getDebugUtilsMessenger() const noexcept { return debugUtilsMessenger; }
+		auto& getPhysicalDevice() noexcept { return physicalDevice; }
+		auto& getPhysicalDevice() const noexcept { return physicalDevice; }
+		auto& getSurface() noexcept { return surface; }
+		auto& getSurface() const noexcept { return surface; }
+		auto& getDevice() noexcept { return device; }
+		auto& getDevice() const noexcept { return device; }
+		auto& getVMA() noexcept { return vma; }
+		auto& getVMA() const noexcept { return vma; }
+		auto& getSwapChain() noexcept { return swapChain; }
+		auto& getSwapChain() const noexcept { return swapChain; }
+		auto& getQueue() noexcept { return queue; }
+		auto& getQueue() const noexcept { return queue; }
+		auto& getCommandPool() noexcept { return commandPool; }
+		auto& getCommandPool() const noexcept { return commandPool; }
+		auto& getRenderPass() noexcept { return renderPass; }
+		auto& getRenderPass() const noexcept { return renderPass; }
+		auto& getDescriptorPool() noexcept { return descriptorPool; }
+		auto& getDescriptorPool() const noexcept { return descriptorPool; }
+
+	protected:
+
 		Instance instance{ nullptr };
 		DebugUtilsMessenger debugUtilsMessenger{ nullptr };
 		PhysicalDevice physicalDevice{ nullptr };
@@ -61,11 +97,16 @@ namespace zt::vulkan_renderer
 		Queue queue{ nullptr };
 		CommandPool commandPool{ nullptr };
 
+		RenderPass renderPass{ nullptr };
+
 		Semaphore imageAvailableSemaphore{ nullptr };
 		Semaphore renderFinishedSemaphore{ nullptr };
 
 		using DisplayImages = std::vector<DisplayImage>;
 		DisplayImages displayImages;
+		uint32_t currentDisplayImageIndex{};
+
+		bool createDisplayImages();
 
 		DescriptorPool descriptorPool{ nullptr };
 
@@ -76,19 +117,6 @@ namespace zt::vulkan_renderer
 		// TODO: DescriptorSet for render pass?
 		//DescriptorSetLayout renderPassDescriptorSetLayout{ nullptr };
 		//DescriptorSets renderPassDescriptorSet{ nullptr };
-
-		bool createDisplayImages();
-
-		auto& getCurrentDisplayImage() { return displayImages[currentFramebufferIndex]; }
-		auto& getCurrentDisplayImage() const { return displayImages[currentFramebufferIndex]; }
-
-		uint32_t currentFramebufferIndex{};
-
-		RenderPass renderPass{ nullptr };
-
-		bool create(wd::Window& window);
-
-		void destroy();
 
 		void windowResized(const Vector2i& size);
 
