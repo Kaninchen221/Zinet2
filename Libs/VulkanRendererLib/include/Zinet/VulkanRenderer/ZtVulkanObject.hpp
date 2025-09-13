@@ -44,6 +44,8 @@ namespace zt::vulkan_renderer
 
 		bool isValid() const noexcept { return objectHandle != nullptr; }
 
+		operator bool() const noexcept { return isValid(); }
+
 	protected:
 
 		HandleType objectHandle = nullptr;

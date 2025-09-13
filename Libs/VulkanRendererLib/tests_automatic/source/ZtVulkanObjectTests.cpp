@@ -46,6 +46,7 @@ namespace zt::vulkan_renderer::tests
 	TEST_F(VulkanObjectTests, IsValidTest)
 	{
 		ASSERT_FALSE(vulkanObject.isValid());
+		ASSERT_FALSE(vulkanObject.operator bool());
 	}
 
 	TEST(VulkanObject, IsVulkanObjectT)
