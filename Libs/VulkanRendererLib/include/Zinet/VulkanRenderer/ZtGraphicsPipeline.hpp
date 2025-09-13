@@ -22,13 +22,6 @@ namespace zt::vulkan_renderer
 	struct DrawInfo;
 	struct DescriptorInfo;
 
-	struct GraphicsPipelineCreateInfo
-	{
-		const RendererContext& rendererContext;
-		DrawInfo& drawInfo;
-		size_t descriptorsCopyCount = 1; // Useful for frames in flight
-	};
-
 	class  GraphicsPipeline
 	{
 	protected:
@@ -45,7 +38,7 @@ namespace zt::vulkan_renderer
 		GraphicsPipeline& operator = (const GraphicsPipeline& other) noexcept = delete;
 		GraphicsPipeline& operator = (GraphicsPipeline&& other) noexcept = default;
 
-		bool create(const GraphicsPipelineCreateInfo& createInfo);
+		bool create(const RendererContext& rendererContext, DrawInfo& drawInfo);
 
 		void destroy(const RendererContext& rendererContext) noexcept;
 
@@ -71,8 +64,6 @@ namespace zt::vulkan_renderer
 
 		using VkDescriptorSets = std::vector<VkDescriptorSet>;
 		VkDescriptorSets vkDescriptorSets;
-
-		bool createDescriptorsSets(const RendererContext& rendererContext, DrawInfo& drawInfo, size_t descriptorsCopyCount);
 
 		PipelineLayout pipelineLayout{ nullptr };
 		Pipeline pipeline{ nullptr };

@@ -16,7 +16,7 @@ namespace zt::vulkan_renderer
 			.flags = signaled ? VK_FENCE_CREATE_SIGNALED_BIT : VkFenceCreateFlags{}
 		};
 
-		const auto result = vkCreateFence(device.get(), &createInfo, nullptr, &get());
+		const auto result = vkCreateFence(device.get(), &createInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -32,14 +32,14 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroyFence(device.get(), get(), nullptr);
-			invalidateInternal();
+			vkDestroyFence(device.get(), objectHandle, nullptr);
+			objectHandle = nullptr;
 		}
 	}
 
 	bool Fence::wait(const Device& device, std::uint64_t timeout) const
 	{
-		const auto result = vkWaitForFences(device.get(), 1u, &get(), VK_TRUE, timeout);
+		const auto result = vkWaitForFences(device.get(), 1u, &objectHandle, VK_TRUE, timeout);
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -53,7 +53,7 @@ namespace zt::vulkan_renderer
 
 	bool Fence::isSignaled(const Device& device) const
 	{
-		const auto result = vkGetFenceStatus(device.get(), get());
+		const auto result = vkGetFenceStatus(device.get(), objectHandle);
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -71,7 +71,7 @@ namespace zt::vulkan_renderer
 
 	bool Fence::reset(const Device& device)
 	{
-		const auto result = vkResetFences(device.get(), 1, &get());
+		const auto result = vkResetFences(device.get(), 1, &objectHandle);
 		if (result == VK_SUCCESS)
 		{
 			return true;

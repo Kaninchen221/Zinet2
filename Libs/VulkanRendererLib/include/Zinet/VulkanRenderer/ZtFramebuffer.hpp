@@ -28,8 +28,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Framebuffer(VulcanType newHandle) noexcept
-			: VulkanObject(newHandle) {}
+		Framebuffer(HandleType newObjectHandle) noexcept
+			: VulkanObject(newObjectHandle) {}
 
 		Framebuffer() noexcept = delete;
 		Framebuffer(const Framebuffer& other) noexcept = delete;

@@ -9,19 +9,27 @@
 
 namespace zt::vulkan_renderer
 {
-	template<class VulkanT, size_t HandlesCount = 1>
+	template<class HandleT>
+	class VulkanObject;
+
+	template<typename T>
+	concept IsVulkanObjectT = requires {
+		typename T::HandleType;
+	}&&
+	std::derived_from<T, VulkanObject<typename T::HandleType>>;
+
+	template<class HandleT>
 	class VulkanObject
 	{
 	public:
 
-		// TODO: Not "std::numeric_limits<std::uint32_t>::max();" because MSVC see the "max()" part as the "max()" macro
+		// Not "std::numeric_limits<std::uint32_t>::max();" because MSVC see the "max()" part as the "max()" macro
 		inline static constexpr std::uint32_t InvalidIndex = UINT32_MAX;
 
-		using VulcanType = VulkanT;
-		using HandleType = std::array<VulkanT, HandlesCount>;
+		using HandleType = HandleT;
 
-		VulkanObject(VulcanType newHandle) noexcept
-			: handles({ newHandle }) {}
+		VulkanObject(HandleType newObjectHandle) noexcept
+			: objectHandle(newObjectHandle) {}
 
 		VulkanObject() = delete;
 		VulkanObject(const VulkanObject& other) = delete;
@@ -31,24 +39,19 @@ namespace zt::vulkan_renderer
 		VulkanObject& operator = (const VulkanObject& other) = delete;
 		VulkanObject& operator = (VulkanObject&& other) noexcept;
 
-		const VulcanType& get() const noexcept { return handles.front(); }
-		VulcanType& get() noexcept { return handles.front(); }
+		const HandleType get() const noexcept { return objectHandle; }
+		HandleType get() noexcept { return objectHandle; }
 
-		bool isValid() const noexcept { return handles.front() != nullptr; }
+		bool isValid() const noexcept { return objectHandle != nullptr; }
 
 		operator bool() const noexcept { return isValid(); }
 
 	protected:
 
-		void invalidateInternal() noexcept { handles.fill(nullptr); }
-
-	private:
-
-		HandleType handles{ nullptr };
+		HandleType objectHandle = nullptr;
 
 	};
 
-	// TODO: Upper case
 	inline void invalidateAll(auto&& container) noexcept
 	{
 		for (auto&& element : container)
@@ -57,7 +60,6 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	// TODO: Upper case
 	template<class ...ArgsT>
 	inline void destroyAll(auto&& container, ArgsT&& ... args)
 	{
@@ -79,8 +81,8 @@ namespace zt::vulkan_renderer
 		return resultContainer;
 	}
 
-	template<class VulcanType, size_t HandlesCount>
-	VulkanObject<VulcanType, HandlesCount>& VulkanObject<VulcanType, HandlesCount>::operator=(VulkanObject&& other) noexcept
+	template<class HandleT>
+	VulkanObject<HandleT>& VulkanObject<HandleT>::operator=(VulkanObject&& other) noexcept
 	{
 		if (isValid())
 		{
@@ -88,13 +90,13 @@ namespace zt::vulkan_renderer
 			Logger->error("Object must be manually destroyed/invalidated before move call");
 		}
 
-		handles = other.handles;
-		other.handles.fill(nullptr);
+		objectHandle = other.objectHandle;
+		other.objectHandle = nullptr;
 		return *this;
 	}
 
-	template<class VulcanType, size_t HandlesCount>
-	VulkanObject<VulcanType, HandlesCount>::~VulkanObject() noexcept
+	template<class HandleT>
+	VulkanObject<HandleT>::~VulkanObject() noexcept
 	{
 		if (isValid())
 		{

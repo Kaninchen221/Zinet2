@@ -25,8 +25,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		PhysicalDevice(VulcanType newHandle) noexcept
-			: VulkanObject(newHandle) {}
+		PhysicalDevice(HandleType newObjectHandle) noexcept
+			: VulkanObject(newObjectHandle) {}
 
 		PhysicalDevice() noexcept = delete;
 		PhysicalDevice(const PhysicalDevice& other) noexcept = delete;
@@ -36,7 +36,7 @@ namespace zt::vulkan_renderer
 		PhysicalDevice& operator = (const PhysicalDevice& other) noexcept = delete;
 		PhysicalDevice& operator = (PhysicalDevice&& other) noexcept = default;
 
-		void invalidate() { invalidateInternal(); }
+		void invalidate() { objectHandle = nullptr; }
 
 		VkPhysicalDeviceProperties getVkPhysicalDeviceProperties() const noexcept;
 

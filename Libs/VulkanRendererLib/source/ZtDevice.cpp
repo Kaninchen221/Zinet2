@@ -71,7 +71,7 @@ namespace zt::vulkan_renderer
 			.pEnabledFeatures = &deviceFeatures
 		};
 
-		const auto createResult = vkCreateDevice(physicalDevice.get(), &createInfo, nullptr, &get());
+		const auto createResult = vkCreateDevice(physicalDevice.get(), &createInfo, nullptr, &objectHandle);
 		if (createResult == VK_SUCCESS)
 		{
 			return true;
@@ -87,8 +87,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroyDevice(get(), nullptr);
-			invalidateInternal();
+			vkDestroyDevice(objectHandle, nullptr);
+			objectHandle = nullptr;
 		}
 	}
 
@@ -98,14 +98,14 @@ namespace zt::vulkan_renderer
 			return Queue{ nullptr, InvalidIndex };
 
 		VkQueue queueObjectHandle = nullptr;
-		vkGetDeviceQueue(get(), queueFamilyIndex, 0, &queueObjectHandle);
+		vkGetDeviceQueue(objectHandle, queueFamilyIndex, 0, &queueObjectHandle);
 
 		return Queue(queueObjectHandle, queueFamilyIndex);
 	}
 
 	bool Device::waitIdle() const
 	{
-		const auto result = vkDeviceWaitIdle(get());
+		const auto result = vkDeviceWaitIdle(objectHandle);
 		if (result == VK_SUCCESS)
 		{
 			return true;

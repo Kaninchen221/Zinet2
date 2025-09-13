@@ -49,7 +49,7 @@ namespace zt::vulkan_renderer
 
 		PrintAPIVersion();
 
-		const auto result = vkCreateInstance(&createInfo, nullptr, &get());
+		const auto result = vkCreateInstance(&createInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -65,8 +65,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroyInstance(get(), nullptr);
-			invalidateInternal();
+			vkDestroyInstance(objectHandle, nullptr);
+			objectHandle = nullptr;
 		}
 	}
 
@@ -144,10 +144,10 @@ namespace zt::vulkan_renderer
 	std::vector<PhysicalDevice> Instance::getPhysicalDevices() const
 	{
 		std::uint32_t deviceCount = 0;
-		vkEnumeratePhysicalDevices(get(), &deviceCount, nullptr);
+		vkEnumeratePhysicalDevices(objectHandle, &deviceCount, nullptr);
 
 		std::vector<VkPhysicalDevice> rawDevices(deviceCount);
-		vkEnumeratePhysicalDevices(get(), &deviceCount, rawDevices.data());
+		vkEnumeratePhysicalDevices(objectHandle, &deviceCount, rawDevices.data());
 
 		std::vector<PhysicalDevice> result;
 		result.reserve(deviceCount);

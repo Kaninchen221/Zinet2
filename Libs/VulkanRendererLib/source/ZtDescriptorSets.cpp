@@ -23,7 +23,7 @@ namespace zt::vulkan_renderer
 
 	bool DescriptorSets::create(const Device& device, const VkDescriptorSetAllocateInfo& allocateInfo)
 	{
-		const auto result = vkAllocateDescriptorSets(device.get(), &allocateInfo, &get());
+		const auto result = vkAllocateDescriptorSets(device.get(), &allocateInfo, &objectHandle);
 		if (result == VK_SUCCESS)
 		{
 			count = allocateInfo.descriptorSetCount;

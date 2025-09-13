@@ -29,8 +29,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		RenderPass(VulcanType newHandle) noexcept
-			: VulkanObject(newHandle) {}
+		RenderPass(HandleType newObjectHandle) noexcept
+			: VulkanObject(newObjectHandle) {}
 
 		RenderPass() noexcept = delete;
 		RenderPass(const RenderPass& other) noexcept = delete;

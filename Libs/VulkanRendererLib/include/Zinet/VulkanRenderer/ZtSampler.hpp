@@ -33,8 +33,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Sampler(VulcanType newHandle) noexcept
-			: VulkanObject(newHandle)
+		Sampler(HandleType newObjectHandle) noexcept
+			: VulkanObject(newObjectHandle)
 		{}
 
 		Sampler() noexcept = delete;

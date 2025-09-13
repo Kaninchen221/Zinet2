@@ -7,27 +7,55 @@
 
 namespace zt::vulkan_renderer
 {
-	bool GraphicsPipeline::create(const GraphicsPipelineCreateInfo& createInfo)
+	bool GraphicsPipeline::create(const RendererContext& rendererContext, DrawInfo& drawInfo)
 	{
 		if (isValid())
 			return false;
 
-		auto& rendererContext = createInfo.rendererContext;
-		auto& drawInfo = createInfo.drawInfo;
-		auto descriptorsCopyCount = createInfo.descriptorsCopyCount;
 		auto& device = rendererContext.getDevice();
 		auto& swapChain = rendererContext.getSwapChain();
 		auto& renderPass = rendererContext.getRenderPass();
+		auto& descriptorPool = rendererContext.getDescriptorPool();
 
-		if (!createDescriptorsSets(rendererContext, drawInfo, descriptorsCopyCount))
-		{
-			Logger->error("Couldn't create descriptor sets");
-			return false;
+		{ // Pipeline descriptor set & layout
+			const auto bindings = drawInfo.pipelineDescriptorInfo.createBindings();
+			const auto createInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
+			if (!pipelineDescriptorSetLayout.create(createInfo, device))
+				return false;
+
+			const DescriptorSets::VkDescriptorSetLayouts vkDescriptorSetLayouts = { pipelineDescriptorSetLayout.get() };
+
+			const auto allocateInfo = DescriptorSets::GetDefaultAllocateInfo(descriptorPool, vkDescriptorSetLayouts);
+			if (!pipelineDescriptorSet.create(device, allocateInfo))
+				return false;
+
+			drawInfo.pipelineDescriptorInfo.cachedDescriptorSetsUpdateData =
+				drawInfo.pipelineDescriptorInfo.createDescriptorSetsUpdateData(pipelineDescriptorSet);
+
+			pipelineDescriptorSet.update(device, drawInfo.pipelineDescriptorInfo.cachedDescriptorSetsUpdateData);
+		}
+
+		{ // Object descriptor set & layout
+			const auto bindings = drawInfo.objectDescriptorInfo.createBindings();
+			const auto createInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
+			if (!objectDescriptorSetLayout.create(createInfo, device))
+				return false;
+
+			const DescriptorSets::VkDescriptorSetLayouts vkDescriptorSetLayouts = { objectDescriptorSetLayout.get() };
+
+			const auto allocateInfo = DescriptorSets::GetDefaultAllocateInfo(descriptorPool, vkDescriptorSetLayouts);
+			if (!objectDescriptorSet.create(device, allocateInfo))
+				return false;
+
+			drawInfo.objectDescriptorInfo.cachedDescriptorSetsUpdateData =
+				drawInfo.objectDescriptorInfo.createDescriptorSetsUpdateData(objectDescriptorSet);
+
+			objectDescriptorSet.update(device, drawInfo.objectDescriptorInfo.cachedDescriptorSetsUpdateData);
 		}
 
 		// TODO: Use global descriptor set
 		//auto& globalDescriptorSetLayout = rendererContext.globalDescriptorSetLayout;
-		const std::vector<DescriptorSetLayout::VulcanType>& vkDescriptorSetLayouts = 
+		const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts = 
 		{
 			//globalDescriptorSetLayout.get(),
 			pipelineDescriptorSetLayout.get(),
@@ -63,7 +91,6 @@ namespace zt::vulkan_renderer
 
 	void GraphicsPipeline::draw([[maybe_unused]] RendererContext& rendererContext, const DrawInfo& drawInfo, CommandBuffer& commandBuffer)
 	{
-		vkDescriptorSets.clear();
 		vkDescriptorSets =
 		{
 			//rendererContext.globalDescriptorSet.get(), // TODO: Use global descriptor set
@@ -109,50 +136,6 @@ namespace zt::vulkan_renderer
 			pipelineDescriptorSet.isValid() && 
 			objectDescriptorSetLayout.isValid() &&
 			objectDescriptorSet.isValid();
-	}
-
-	bool GraphicsPipeline::createDescriptorsSets(const RendererContext& rendererContext, DrawInfo& drawInfo, size_t descriptorsCopyCount)
-	{
-		auto& device = rendererContext.getDevice();
-		auto& descriptorPool = rendererContext.getDescriptorPool();
-
-		{ // Pipeline descriptor set & layout
-			const auto bindings = drawInfo.pipelineDescriptorInfo.createBindings();
-			const auto createInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
-			if (!pipelineDescriptorSetLayout.create(createInfo, device))
-				return false;
-
-			const DescriptorSets::VkDescriptorSetLayouts vkDescriptorSetLayouts{ descriptorsCopyCount, pipelineDescriptorSetLayout.get() };
-
-			const auto allocateInfo = DescriptorSets::GetDefaultAllocateInfo(descriptorPool, vkDescriptorSetLayouts);
-			if (!pipelineDescriptorSet.create(device, allocateInfo))
-				return false;
-
-			drawInfo.pipelineDescriptorInfo.cachedDescriptorSetsUpdateData =
-				drawInfo.pipelineDescriptorInfo.createDescriptorSetsUpdateData(pipelineDescriptorSet);
-
-			pipelineDescriptorSet.update(device, drawInfo.pipelineDescriptorInfo.cachedDescriptorSetsUpdateData);
-		}
-
-		{ // Object descriptor set & layout
-			const auto bindings = drawInfo.objectDescriptorInfo.createBindings();
-			const auto createInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
-			if (!objectDescriptorSetLayout.create(createInfo, device))
-				return false;
-
-			const DescriptorSets::VkDescriptorSetLayouts vkDescriptorSetLayouts{ descriptorsCopyCount, objectDescriptorSetLayout.get() };
-
-			const auto allocateInfo = DescriptorSets::GetDefaultAllocateInfo(descriptorPool, vkDescriptorSetLayouts);
-			if (!objectDescriptorSet.create(device, allocateInfo))
-				return false;
-
-			drawInfo.objectDescriptorInfo.cachedDescriptorSetsUpdateData =
-				drawInfo.objectDescriptorInfo.createDescriptorSetsUpdateData(objectDescriptorSet);
-
-			objectDescriptorSet.update(device, drawInfo.objectDescriptorInfo.cachedDescriptorSetsUpdateData);
-		}
-
-		return true;
 	}
 
 }

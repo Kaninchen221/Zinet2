@@ -38,7 +38,7 @@ namespace zt::vulkan_renderer
 		else
 			allocatorCreateInfo.flags = 0;
 
-		const auto result = vmaCreateAllocator(&allocatorCreateInfo, &get());
+		const auto result = vmaCreateAllocator(&allocatorCreateInfo, &objectHandle);
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -55,8 +55,8 @@ namespace zt::vulkan_renderer
 		if (isValid())
 		{
 			freeBuildStatsString();
-			vmaDestroyAllocator(get());
-			invalidateInternal();
+			vmaDestroyAllocator(objectHandle);
+			objectHandle = nullptr;
 		}
 	}
 

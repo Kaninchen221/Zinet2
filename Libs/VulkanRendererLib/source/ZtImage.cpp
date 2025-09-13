@@ -39,7 +39,7 @@ namespace zt::vulkan_renderer
 			.usage = VMA_MEMORY_USAGE_AUTO
 		};
 
-		const auto result = vmaCreateImage(vma.get(), &createInfo, &allocationCreateInfo, &get(), &allocation, &allocationInfo);
+		const auto result = vmaCreateImage(vma.get(), &createInfo, &allocationCreateInfo, &objectHandle, &allocation, &allocationInfo);
 		if (result == VK_SUCCESS)
 		{
 			format = createInfo.format;
@@ -56,8 +56,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vmaDestroyImage(vma.get(), get(), allocation);
-			invalidateInternal();
+			vmaDestroyImage(vma.get(), objectHandle, allocation);
+			objectHandle = nullptr;
 		}
 	}
 

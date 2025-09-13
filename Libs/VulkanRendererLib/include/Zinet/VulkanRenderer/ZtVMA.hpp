@@ -31,8 +31,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		VMA(VulcanType newHandle)
-			: VulkanObject(newHandle) {}
+		VMA(HandleType newObjectHandle)
+			: VulkanObject(newObjectHandle) {}
 
 		VMA() noexcept = delete;
 		VMA(const VMA& other) noexcept = delete;

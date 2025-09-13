@@ -90,7 +90,7 @@ namespace zt::vulkan_renderer
 		if (isValid())
 			return false;
 
-		const auto result = vkCreateRenderPass(device.get(), &createInfo.vkCreateInfo, nullptr, &get());
+		const auto result = vkCreateRenderPass(device.get(), &createInfo.vkCreateInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
 		{
 			cachedCreateInfo = createInfo;
@@ -119,8 +119,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroyRenderPass(device.get(), get(), nullptr);
-			invalidateInternal();
+			vkDestroyRenderPass(device.get(), objectHandle, nullptr);
+			objectHandle = nullptr;
 		}
 	}
 

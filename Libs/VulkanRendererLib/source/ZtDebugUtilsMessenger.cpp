@@ -26,7 +26,7 @@ namespace zt::vulkan_renderer
 		auto createFunc = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance.get(), "vkCreateDebugUtilsMessengerEXT");
 		if (createFunc != nullptr)
 		{
-			VkResult result = std::invoke(createFunc, instance.get(), &createInfo, nullptr, &get());
+			VkResult result = std::invoke(createFunc, instance.get(), &createInfo, nullptr, &objectHandle);
 			
 			if (result != VK_SUCCESS)
 				Logger->error("Couldn't create DebugUtilsMessenger");
@@ -48,10 +48,10 @@ namespace zt::vulkan_renderer
 			auto destroyFunc = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance.get(), "vkDestroyDebugUtilsMessengerEXT");
 			if (destroyFunc != nullptr)
 			{
-				std::invoke(destroyFunc, instance.get(), get(), nullptr);
+				std::invoke(destroyFunc, instance.get(), objectHandle, nullptr);
 			}
 
-			invalidateInternal();
+			objectHandle = nullptr;
 		}
 	}
 

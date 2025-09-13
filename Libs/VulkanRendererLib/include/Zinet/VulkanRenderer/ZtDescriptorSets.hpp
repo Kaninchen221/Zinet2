@@ -27,13 +27,12 @@ namespace zt::vulkan_renderer
 		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::DescriptorSet");
 
 	public:
-		using VkDescriptorSetLayouts = std::vector<DescriptorSetLayout::VulcanType>;
+		using VkDescriptorSetLayouts = std::vector<DescriptorSetLayout::HandleType>;
 		using VkWriteDescriptorSets = std::vector<VkWriteDescriptorSet>;
 
-		DescriptorSets(VulcanType newHandle) noexcept
-			: VulkanObject(newHandle) 
-		{
-			if (newHandle)
+		DescriptorSets(HandleType newObjectHandle) noexcept
+			: VulkanObject(newObjectHandle) {
+			if (newObjectHandle) 
 				count = 1;
 		}
 
@@ -56,7 +55,7 @@ namespace zt::vulkan_renderer
 		// TODO: Add free method (vkFreeDescriptorSets) destroy it without destroying the pool
 		// And remove the invalidate method? So we never make a dangling handle
 
-		void invalidate() noexcept { invalidateInternal(); }
+		void invalidate() noexcept { objectHandle = nullptr; }
 
 		void update(const Device& device, const DescriptorSetsUpdateData& updateData) const noexcept;
 

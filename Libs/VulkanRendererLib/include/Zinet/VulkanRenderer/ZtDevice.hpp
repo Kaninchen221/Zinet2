@@ -29,8 +29,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Device(VulcanType newHandle) noexcept
-			: VulkanObject(newHandle)
+		Device(HandleType newObjectHandle) noexcept
+			: VulkanObject(newObjectHandle)
 		{}
 
 		Device() noexcept = delete;
@@ -51,7 +51,7 @@ namespace zt::vulkan_renderer
 
 		bool waitIdle() const;
 
-		bool setDebugName(const auto& vulkanObject, std::string_view debugName, VkObjectType objectType) const;
+		bool setDebugName(const IsVulkanObjectT auto& vulkanObject, std::string_view debugName, VkObjectType objectType) const;
 
 	protected:
 
@@ -62,8 +62,7 @@ namespace zt::vulkan_renderer
 
 	};
 
-	bool Device::setDebugName(
-		[[maybe_unused]] const auto& vulkanObject, [[maybe_unused]] std::string_view debugName, [[maybe_unused]] VkObjectType objectType) const
+	bool Device::setDebugName([[maybe_unused]] const IsVulkanObjectT auto& vulkanObject, [[maybe_unused]] std::string_view debugName, [[maybe_unused]] VkObjectType objectType) const
 	{
 		/// Should be empty for not debug builds
 #		if ZINET_DEBUG

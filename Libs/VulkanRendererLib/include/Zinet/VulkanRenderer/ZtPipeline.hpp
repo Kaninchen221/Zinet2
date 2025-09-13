@@ -23,8 +23,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Pipeline(VulcanType newHandle) noexcept
-			: VulkanObject(newHandle)
+		Pipeline(HandleType newObjectHandle) noexcept
+			: VulkanObject(newObjectHandle)
 		{}
 
 		Pipeline() noexcept = delete;

@@ -29,8 +29,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Buffer(VulcanType newHandle) noexcept
-			: VulkanObject(newHandle) {}
+		Buffer(HandleType newObjectHandle) noexcept
+			: VulkanObject(newObjectHandle) {}
 
 		Buffer() noexcept = delete;
 		Buffer(const Buffer& other) noexcept = delete;

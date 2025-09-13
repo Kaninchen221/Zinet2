@@ -16,7 +16,7 @@ namespace zt::vulkan_renderer
 			.flags = {}
 		};
 
-		const auto result = vkCreateSemaphore(device.get(), &createInfo, nullptr, &get());
+		const auto result = vkCreateSemaphore(device.get(), &createInfo, nullptr, &objectHandle);
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -32,8 +32,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroySemaphore(device.get(), get(), nullptr);
-			invalidateInternal();
+			vkDestroySemaphore(device.get(), objectHandle, nullptr);
+			objectHandle = nullptr;
 		}
 	}
 

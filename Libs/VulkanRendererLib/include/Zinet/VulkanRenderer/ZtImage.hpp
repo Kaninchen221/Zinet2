@@ -22,8 +22,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Image(VulcanType newHandle, VkFormat newFormat = VK_FORMAT_UNDEFINED) noexcept
-			: VulkanObject{ newHandle },
+		Image(HandleType newObjectHandle, VkFormat newFormat = VK_FORMAT_UNDEFINED) noexcept
+			: VulkanObject{ newObjectHandle },
 			format{ newFormat }
 		{}
 

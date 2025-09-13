@@ -20,8 +20,8 @@ namespace zt::vulkan_renderer
 	public:
 		using DescriptorPoolSizes = std::vector<VkDescriptorPoolSize>;
 
-		DescriptorPool(VulcanType newHandle) noexcept
-			: VulkanObject(newHandle) {}
+		DescriptorPool(HandleType newObjectHandle) noexcept
+			: VulkanObject(newObjectHandle) {}
 
 		DescriptorPool() noexcept = delete;
 		DescriptorPool(const DescriptorPool& other) noexcept = delete;
@@ -31,7 +31,8 @@ namespace zt::vulkan_renderer
 		DescriptorPool& operator = (const DescriptorPool& other) noexcept = delete;
 		DescriptorPool& operator = (DescriptorPool&& other) noexcept = default;
 
-		static uint32_t GetDefaultMaxSets() noexcept { return 100; } 
+		// Significant number of GPUs supports only 4 descriptor sets
+		static uint32_t GetDefaultMaxSets() noexcept { return 4; } 
 
 		static DescriptorPoolSizes GetDefaultPoolSizes() noexcept;
 

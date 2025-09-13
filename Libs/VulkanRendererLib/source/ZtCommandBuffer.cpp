@@ -21,7 +21,7 @@ namespace zt::vulkan_renderer
 			.commandBufferCount = 1
 		};
 
-		const auto result = vkAllocateCommandBuffers(device.get(), &allocInfo, &get());
+		const auto result = vkAllocateCommandBuffers(device.get(), &allocInfo, &objectHandle);
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -37,8 +37,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkFreeCommandBuffers(device.get(), commandPool.get(), 1u, &get());
-			invalidateInternal();
+			vkFreeCommandBuffers(device.get(), commandPool.get(), 1u, &objectHandle);
+			objectHandle = nullptr;
 		}
 	}
 
@@ -56,11 +56,11 @@ namespace zt::vulkan_renderer
 			.pClearValues = &clearValue
 		};
 
-		vkCmdBeginRenderPass(get(), &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
+		vkCmdBeginRenderPass(objectHandle, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
 	}
 
 	void CommandBuffer::bindPipeline(const Pipeline& pipeline) noexcept
 	{
-		vkCmdBindPipeline(get(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get());
+		vkCmdBindPipeline(objectHandle, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.get());
 	}
 }

@@ -19,8 +19,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Queue(VulcanType newHandle, std::uint32_t newQueueFamilyIndex = InvalidIndex) noexcept
-			: VulkanObject(newHandle),
+		Queue(HandleType newObjectHandle, std::uint32_t newQueueFamilyIndex = InvalidIndex) noexcept
+			: VulkanObject(newObjectHandle),
 			 queueFamilyIndex{ newQueueFamilyIndex }
 		{}
 
@@ -32,7 +32,7 @@ namespace zt::vulkan_renderer
 		Queue& operator = (const Queue& other) noexcept = delete;
 		Queue& operator = (Queue&& other) noexcept = default;
 
-		void invalidate() noexcept { invalidateInternal(); }
+		void invalidate() noexcept { objectHandle = nullptr; }
 
 		const auto& getQueueFamilyIndex() const noexcept { return queueFamilyIndex; }
 
