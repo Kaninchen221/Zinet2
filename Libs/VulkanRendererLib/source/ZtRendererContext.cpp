@@ -111,7 +111,7 @@ namespace zt::vulkan_renderer
 
 		DescriptorSets::VkDescriptorSetLayouts vkDescriptorSetLayouts = { globalDescriptorSetLayout.get() };
 		const auto allocateInfo = DescriptorSets::GetDefaultAllocateInfo(descriptorPool, vkDescriptorSetLayouts);
-		if (!globalDescriptorSet.create(device, allocateInfo))
+		if (!globalDescriptorSets.create(device, allocateInfo))
 			return false;
 
 		return true;
@@ -120,7 +120,7 @@ namespace zt::vulkan_renderer
 	void RendererContext::destroy()
 	{
 		globalDescriptorSetLayout.destroy(device);
-		globalDescriptorSet.invalidate();
+		globalDescriptorSets.invalidate();
 
 		descriptorPool.destroy(device);
 

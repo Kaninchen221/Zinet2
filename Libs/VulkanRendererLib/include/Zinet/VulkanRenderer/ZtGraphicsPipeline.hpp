@@ -22,6 +22,13 @@ namespace zt::vulkan_renderer
 	struct DrawInfo;
 	struct DescriptorInfo;
 
+	struct GraphicsPipelineCreateInfo
+	{
+		const RendererContext& rendererContext;
+		DrawInfo& drawInfo;
+		size_t descriptorSetsCount = 1;
+	};
+
 	class  GraphicsPipeline
 	{
 	protected:
@@ -38,7 +45,7 @@ namespace zt::vulkan_renderer
 		GraphicsPipeline& operator = (const GraphicsPipeline& other) noexcept = delete;
 		GraphicsPipeline& operator = (GraphicsPipeline&& other) noexcept = default;
 
-		bool create(const RendererContext& rendererContext, DrawInfo& drawInfo);
+		bool create(const GraphicsPipelineCreateInfo& createInfo);
 
 		void destroy(const RendererContext& rendererContext) noexcept;
 
@@ -57,16 +64,18 @@ namespace zt::vulkan_renderer
 		// TODO: Descriptors per frame (display image)
 
 		DescriptorSetLayout pipelineDescriptorSetLayout{ nullptr };
-		DescriptorSets pipelineDescriptorSet{ nullptr };
+		DescriptorSets pipelineDescriptorSets;
 
 		DescriptorSetLayout objectDescriptorSetLayout{ nullptr };
-		DescriptorSets objectDescriptorSet{ nullptr };
+		DescriptorSets objectDescriptorSets;
 
 		using VkDescriptorSets = std::vector<VkDescriptorSet>;
 		VkDescriptorSets vkDescriptorSets;
 
 		PipelineLayout pipelineLayout{ nullptr };
 		Pipeline pipeline{ nullptr };
+
+		bool createDescriptors(const GraphicsPipelineCreateInfo& graphicsPipelineCreateInfo);
 
 	};
 }

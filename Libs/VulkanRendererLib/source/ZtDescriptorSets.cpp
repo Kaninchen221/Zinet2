@@ -23,7 +23,8 @@ namespace zt::vulkan_renderer
 
 	bool DescriptorSets::create(const Device& device, const VkDescriptorSetAllocateInfo& allocateInfo)
 	{
-		const auto result = vkAllocateDescriptorSets(device.get(), &allocateInfo, &objectHandle);
+		handles.resize(allocateInfo.descriptorSetCount, nullptr);
+		const auto result = vkAllocateDescriptorSets(device.get(), &allocateInfo, handles.data());
 		if (result == VK_SUCCESS)
 		{
 			count = allocateInfo.descriptorSetCount;
@@ -34,6 +35,22 @@ namespace zt::vulkan_renderer
 			Logger->error("Couldn't create DescriptorSets, result: {}", static_cast<std::int32_t>(result));
 			return false;
 		}
+	}
+
+	void DescriptorSets::invalidate() noexcept
+	{
+		handles = { nullptr };
+	}
+
+	bool DescriptorSets::isValid() const noexcept
+	{
+		for (auto handle : handles)
+		{
+			if (!handle)
+				return false;
+		}
+
+		return true;
 	}
 
 	void DescriptorSets::update(const Device& device, const DescriptorSetsUpdateData& updateData) const noexcept

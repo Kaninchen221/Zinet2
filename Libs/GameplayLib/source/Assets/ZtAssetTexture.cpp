@@ -130,7 +130,7 @@ namespace zt::gameplay
 		auto& device = rendererContext.getDevice();
 		auto& vma = rendererContext.getVMA();
 
-		descriptorSet.invalidate();
+		descriptorSets.invalidate();
 		texture.destroy(device, vma);
 		loaded = false;
 	}
@@ -153,20 +153,20 @@ namespace zt::gameplay
 		if (!texture.isValid())
 			return;
 
-		if (!descriptorSet.isValid())
+		if (!descriptorSets.isValid())
 		{
 			auto vkDescriptorSet = ImGui_ImplVulkan_AddTexture(
 				sampler->sampler.get(),
 				texture.getImageView().get(),
 				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 			);
-			descriptorSet = vulkan_renderer::DescriptorSets{ vkDescriptorSet };
+			descriptorSets = vulkan_renderer::DescriptorSets{ {vkDescriptorSet} };
 		}
 
 		ImGui::Separator();
 		ImGui::TextCStr("Texture image:");
 		ImVec2 size = ImVec2(ImGui::GetContentRegionAvail());
-		ImGui::Image((ImTextureID)descriptorSet.get(), size);
+		ImGui::Image((ImTextureID)descriptorSets.get(), size);
 	}
 
 	bool AssetTexture::serialize(core::JsonArchive& archive)

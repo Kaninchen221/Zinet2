@@ -31,8 +31,7 @@ namespace zt::vulkan_renderer
 		DescriptorPool& operator = (const DescriptorPool& other) noexcept = delete;
 		DescriptorPool& operator = (DescriptorPool&& other) noexcept = default;
 
-		// Significant number of GPUs supports only 4 descriptor sets
-		static uint32_t GetDefaultMaxSets() noexcept { return 4; } 
+		static uint32_t GetDefaultMaxSets() noexcept { return 100; } 
 
 		static DescriptorPoolSizes GetDefaultPoolSizes() noexcept;
 

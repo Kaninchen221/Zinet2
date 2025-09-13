@@ -20,23 +20,31 @@ namespace zt::vulkan_renderer
 	class Sampler;
 	struct DescriptorSetsUpdateData;
 
-	class  DescriptorSets : public VulkanObject<VkDescriptorSet>
+	// TODO: Refactor it to some interface like VulkanObject but for more than one handle
+	class  DescriptorSets
 	{
 	protected:
 
 		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::DescriptorSet");
 
 	public:
+		using HandleType = VkDescriptorSet;
+		using Handles = std::vector<HandleType>;
+
 		using VkDescriptorSetLayouts = std::vector<DescriptorSetLayout::HandleType>;
 		using VkWriteDescriptorSets = std::vector<VkWriteDescriptorSet>;
 
-		DescriptorSets(HandleType newObjectHandle) noexcept
-			: VulkanObject(newObjectHandle) {
-			if (newObjectHandle) 
+		DescriptorSets(const Handles& newHandles) noexcept
+			: handles{ newHandles }
+		{
+			if (handles.empty())
+			{
+				handles = { nullptr };
 				count = 1;
+			}
 		}
 
-		DescriptorSets() noexcept = delete;
+		DescriptorSets() noexcept = default;
 		DescriptorSets(const DescriptorSets& other) noexcept = delete;
 		DescriptorSets(DescriptorSets&& other) noexcept = default;
 		~DescriptorSets() noexcept = default;
@@ -52,10 +60,20 @@ namespace zt::vulkan_renderer
 
 		bool create(const Device& device, const VkDescriptorSetAllocateInfo& allocateInfo);
 
+		bool isValid() const noexcept;
+
+		operator bool() const noexcept { return isValid(); }
+
+		HandleType& get(size_t index = 0) noexcept { return handles.at(index); }
+		const HandleType& get(size_t index = 0) const noexcept { return handles.at(index); }
+
+		HandleType* data() noexcept { return &handles.front(); }
+		const HandleType* data() const noexcept { return &handles.front(); }
+
 		// TODO: Add free method (vkFreeDescriptorSets) destroy it without destroying the pool
 		// And remove the invalidate method? So we never make a dangling handle
 
-		void invalidate() noexcept { objectHandle = nullptr; }
+		void invalidate() noexcept;
 
 		void update(const Device& device, const DescriptorSetsUpdateData& updateData) const noexcept;
 
@@ -63,7 +81,8 @@ namespace zt::vulkan_renderer
 
 	protected:
 
-		uint32_t count = 0;
+		uint32_t count = 1;
+		std::vector<VkDescriptorSet> handles = { nullptr };
 
 	};
 }

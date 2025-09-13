@@ -60,6 +60,8 @@ namespace zt::vulkan_renderer
 		auto& getCurrentDisplayImage() { return displayImages[currentDisplayImageIndex]; }
 		auto& getCurrentDisplayImage() const { return displayImages[currentDisplayImageIndex]; }
 
+		size_t getDisplayImagesCount() const noexcept { return displayImages.size(); }
+
 		auto getCurrentDisplayImageIndex() const noexcept { return currentDisplayImageIndex; }
 
 		auto& getInstance() noexcept { return instance; }
@@ -112,11 +114,13 @@ namespace zt::vulkan_renderer
 
 		// Descriptor set for global data (camera, time, global textures etc.)
 		DescriptorSetLayout globalDescriptorSetLayout{ nullptr };
-		DescriptorSets globalDescriptorSet{ nullptr };
+		DescriptorSets globalDescriptorSets;
 
 		// TODO: DescriptorSet for render pass?
 		//DescriptorSetLayout renderPassDescriptorSetLayout{ nullptr };
 		//DescriptorSets renderPassDescriptorSet{ nullptr };
+
+		size_t framesInFlight = 3;
 
 		void windowResized(const Vector2i& size);
 

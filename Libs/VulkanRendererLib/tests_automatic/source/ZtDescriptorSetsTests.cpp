@@ -67,13 +67,16 @@ namespace zt::vulkan_renderer::tests
 			ASSERT_TRUE(descriptorSetLayout.create(createInfo, device));
 			ASSERT_TRUE(descriptorSetLayout.isValid());
 
-			ASSERT_EQ(descriptorSets.getCount(), 0);
+			ASSERT_EQ(descriptorSets.getCount(), 1);
 
 			const std::vector descriptorSetLayouts{ descriptorSetLayout.get() };
 			const auto allocateInfo = DescriptorSets::GetDefaultAllocateInfo(descriptorPool, descriptorSetLayouts);
 			ASSERT_TRUE(descriptorSets.create(device, allocateInfo));
 			ASSERT_EQ(descriptorSets.getCount(), descriptorSetLayouts.size());
 			ASSERT_TRUE(descriptorSets.isValid());
+			ASSERT_TRUE(descriptorSets.get());
+			ASSERT_TRUE(descriptorSets.data());
+			ASSERT_TRUE(descriptorSets.operator bool());
 
 			const VkDescriptorBufferInfo descriptorBufferInfo = DescriptorInfo::GetBufferInfo(uniformBuffer);
 
@@ -129,9 +132,7 @@ namespace zt::vulkan_renderer::tests
 		Buffer uniformBuffer{ nullptr };
 		DescriptorPool descriptorPool{ nullptr };
 		DescriptorSetLayout descriptorSetLayout{ nullptr };
-		DescriptorSets descriptorSets{ nullptr };
-
-		static_assert(VulkanObjectDecoratorStaticTest<DescriptorSets, VkDescriptorSet>());
+		DescriptorSets descriptorSets;
 	};
 
 	TEST_F(DescriptorSetTests, PassTest)

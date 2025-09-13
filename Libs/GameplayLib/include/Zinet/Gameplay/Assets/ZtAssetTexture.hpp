@@ -49,7 +49,7 @@ namespace zt::gameplay
 		AssetProperty<AssetSampler> sampler{ "Sampler" };
 
 		vulkan_renderer::Texture texture;
-		vulkan_renderer::DescriptorSets descriptorSet{ nullptr };
+		vulkan_renderer::DescriptorSets descriptorSets;
 	};
 
 }

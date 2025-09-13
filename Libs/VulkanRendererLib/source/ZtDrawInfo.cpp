@@ -101,15 +101,18 @@ namespace zt::vulkan_renderer
 		}
 
 		/// Write Descriptor for uniform buffers
-		if (!uniformBuffers.empty())
+		for (size_t descriptorSetIndex = 0; descriptorSetIndex < descriptorSets.getCount(); ++descriptorSetIndex)
 		{
-			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(GetDefaultWriteDescriptorSet());
-			writeDescriptorSet.dstSet = descriptorSets.get();
-			writeDescriptorSet.dstBinding = cachedUniformBuffersBinding;
-			writeDescriptorSet.dstArrayElement = 0;
-			writeDescriptorSet.descriptorCount = static_cast<uint32_t>(descriptorBuffersInfos.size());
-			writeDescriptorSet.pBufferInfo = descriptorBuffersInfos.data();
-			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			if (!uniformBuffers.empty())
+			{
+				auto& writeDescriptorSet = writeDescriptorSets.emplace_back(GetDefaultWriteDescriptorSet());
+				writeDescriptorSet.dstSet = descriptorSets.get(descriptorSetIndex);
+				writeDescriptorSet.dstBinding = cachedUniformBuffersBinding;
+				writeDescriptorSet.dstArrayElement = 0;
+				writeDescriptorSet.descriptorCount = static_cast<uint32_t>(descriptorBuffersInfos.size());
+				writeDescriptorSet.pBufferInfo = descriptorBuffersInfos.data();
+				writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			}
 		}
 
 		for (auto& textureInfo : texturesInfos)
@@ -122,15 +125,18 @@ namespace zt::vulkan_renderer
 		}
 
 		/// Write Descriptor for textures
-		if (!texturesInfos.empty())
+		for (size_t descriptorSetIndex = 0; descriptorSetIndex < descriptorSets.getCount(); ++descriptorSetIndex)
 		{
-			auto& writeDescriptorSet = writeDescriptorSets.emplace_back(GetDefaultWriteDescriptorSet());
-			writeDescriptorSet.dstSet = descriptorSets.get();
-			writeDescriptorSet.dstBinding = cachedTexturesBinding;
-			writeDescriptorSet.dstArrayElement = 0;
-			writeDescriptorSet.descriptorCount = static_cast<uint32_t>(descriptorImagesInfos.size());
-			writeDescriptorSet.pImageInfo = descriptorImagesInfos.data();
-			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			if (!texturesInfos.empty())
+			{
+				auto& writeDescriptorSet = writeDescriptorSets.emplace_back(GetDefaultWriteDescriptorSet());
+				writeDescriptorSet.dstSet = descriptorSets.get(descriptorSetIndex);
+				writeDescriptorSet.dstBinding = cachedTexturesBinding;
+				writeDescriptorSet.dstArrayElement = 0;
+				writeDescriptorSet.descriptorCount = static_cast<uint32_t>(descriptorImagesInfos.size());
+				writeDescriptorSet.pImageInfo = descriptorImagesInfos.data();
+				writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			}
 		}
 
 		return result;

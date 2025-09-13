@@ -50,7 +50,14 @@ namespace zt::vulkan_renderer
 		if (graphicsPipeline.isValid())
 			return true;
 
-		return graphicsPipeline.create(rendererContext, drawInfo);
+		GraphicsPipelineCreateInfo createInfo
+		{
+			.rendererContext = rendererContext,
+			.drawInfo = drawInfo,
+			.descriptorSetsCount = rendererContext.getDisplayImagesCount()
+		};
+
+		return graphicsPipeline.create(createInfo);
 	}
 
 	void VulkanRenderer::draw(const DrawInfo& drawInfo)
