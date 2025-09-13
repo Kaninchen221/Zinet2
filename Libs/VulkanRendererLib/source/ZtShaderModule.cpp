@@ -20,7 +20,7 @@ namespace zt::vulkan_renderer
 			.pCode = compilationResult.data()
 		};
 
-		const auto result = vkCreateShaderModule(device.get(), &createInfo, nullptr, &objectHandle);
+		const auto result = vkCreateShaderModule(device.get(), &createInfo, nullptr, &get());
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -40,7 +40,7 @@ namespace zt::vulkan_renderer
 			.pNext = nullptr,
 			.flags = {},
 			.stage = ShaderTypeToVkShaderStage(shaderType),
-			.module = objectHandle,
+			.module = get(),
 			.pName = "main",
 			.pSpecializationInfo = nullptr
 		};
@@ -50,8 +50,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroyShaderModule(device.get(), objectHandle, nullptr);
-			objectHandle = nullptr;
+			vkDestroyShaderModule(device.get(), get(), nullptr);
+			invalidateInternal();
 		}
 	}
 

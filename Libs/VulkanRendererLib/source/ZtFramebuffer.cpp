@@ -26,7 +26,7 @@ namespace zt::vulkan_renderer
 			.layers = 1
 		};
 
-		const auto result = vkCreateFramebuffer(device.get(), &createInfo, nullptr, &objectHandle);
+		const auto result = vkCreateFramebuffer(device.get(), &createInfo, nullptr, &get());
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -42,8 +42,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroyFramebuffer(device.get(), objectHandle, nullptr);
-			objectHandle = nullptr;
+			vkDestroyFramebuffer(device.get(), get(), nullptr);
+			invalidateInternal();
 		}
 	}
 

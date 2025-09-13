@@ -19,8 +19,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		ImageView(HandleType newObjectHandle, VkFormat newFormat = VK_FORMAT_UNDEFINED) noexcept
-			: VulkanObject(newObjectHandle), 
+		ImageView(VulcanType newHandle, VkFormat newFormat = VK_FORMAT_UNDEFINED) noexcept
+			: VulkanObject(newHandle), 
 			 format{ newFormat }
 		{}
 

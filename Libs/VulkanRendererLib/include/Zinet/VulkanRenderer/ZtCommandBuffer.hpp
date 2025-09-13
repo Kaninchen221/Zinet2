@@ -27,8 +27,8 @@ namespace zt::vulkan_renderer
 
 		inline static const VkClearValue DefaultClearColor = VkClearValue{ VkClearColorValue{} };
 
-		CommandBuffer(HandleType newObjectHandle) noexcept
-			: VulkanObject(newObjectHandle) {}
+		CommandBuffer(VulcanType newHandle) noexcept
+			: VulkanObject(newHandle) {}
 
 		CommandBuffer() noexcept = delete;
 		CommandBuffer(const CommandBuffer& other) noexcept = delete;
@@ -42,7 +42,7 @@ namespace zt::vulkan_renderer
 
 		void destroy(const Device& device, const CommandPool& commandPool) noexcept;
 
-		void invalidate() noexcept { objectHandle = nullptr; }
+		void invalidate() noexcept { invalidateInternal(); }
 
 		bool reset();
 
@@ -70,7 +70,7 @@ namespace zt::vulkan_renderer
 
 	inline bool CommandBuffer::reset()
 	{
-		const auto result = vkResetCommandBuffer(objectHandle, VkCommandBufferResetFlags{});
+		const auto result = vkResetCommandBuffer(get(), VkCommandBufferResetFlags{});
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -92,7 +92,7 @@ namespace zt::vulkan_renderer
 			.pInheritanceInfo = nullptr,
 		};
 
-		const auto result = vkBeginCommandBuffer(objectHandle, &beginInfo);
+		const auto result = vkBeginCommandBuffer(get(), &beginInfo);
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -106,7 +106,7 @@ namespace zt::vulkan_renderer
 
 	inline bool CommandBuffer::end()
 	{
-		const auto result = vkEndCommandBuffer(objectHandle);
+		const auto result = vkEndCommandBuffer(get());
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -120,22 +120,22 @@ namespace zt::vulkan_renderer
 
 	inline void CommandBuffer::endRenderPass() noexcept
 	{
-		vkCmdEndRenderPass(objectHandle);
+		vkCmdEndRenderPass(get());
 	}
 
 	inline void CommandBuffer::setViewport(const VkViewport& viewport) noexcept
 	{
-		vkCmdSetViewport(objectHandle, 0, 1, &viewport);
+		vkCmdSetViewport(get(), 0, 1, &viewport);
 	}
 
 	inline void CommandBuffer::setScissor(const VkRect2D& scissor) noexcept
 	{
-		vkCmdSetScissor(objectHandle, 0, 1, &scissor);
+		vkCmdSetScissor(get(), 0, 1, &scissor);
 	}
 
 	inline void CommandBuffer::draw(std::uint32_t vertexCount, std::uint32_t instanceCount, std::uint32_t firstVertex, std::uint32_t firstInstance) noexcept
 	{
-		vkCmdDraw(objectHandle, vertexCount, instanceCount, firstVertex, firstInstance);
+		vkCmdDraw(get(), vertexCount, instanceCount, firstVertex, firstInstance);
 	}
 
 	inline VkSubmitInfo CommandBuffer::GetDefaultSubmitInfo() noexcept

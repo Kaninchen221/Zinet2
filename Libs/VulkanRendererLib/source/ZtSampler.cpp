@@ -33,7 +33,7 @@ namespace zt::vulkan_renderer
 		if (isValid())
 			return false;
 
-		const auto result = vkCreateSampler(device.get(), &createInfo, nullptr, &objectHandle);
+		const auto result = vkCreateSampler(device.get(), &createInfo, nullptr, &get());
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -49,8 +49,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroySampler(device.get(), objectHandle, nullptr);
-			objectHandle = nullptr;
+			vkDestroySampler(device.get(), get(), nullptr);
+			invalidateInternal();
 		}
 	}
 

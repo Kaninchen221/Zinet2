@@ -77,7 +77,7 @@ namespace zt::vulkan_renderer
 			.oldSwapchain = nullptr
 		};
 
-		const auto createResult = vkCreateSwapchainKHR(device.get(), &createInfo, nullptr, &objectHandle);
+		const auto createResult = vkCreateSwapchainKHR(device.get(), &createInfo, nullptr, &get());
 		if (createResult == VK_SUCCESS)
 		{
 			extent = newExtent;
@@ -95,15 +95,15 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroySwapchainKHR(device.get(), objectHandle, nullptr);
-			objectHandle = nullptr;
+			vkDestroySwapchainKHR(device.get(), get(), nullptr);
+			invalidateInternal();
 		}
 	}
 
 	std::vector<VkImage> SwapChain::getImages(const Device& device) const
 	{
 		std::uint32_t count;
-		vkGetSwapchainImagesKHR(device.get(), objectHandle, &count, nullptr);
+		vkGetSwapchainImagesKHR(device.get(), get(), &count, nullptr);
 
 		if (count == 0)
 		{
@@ -113,7 +113,7 @@ namespace zt::vulkan_renderer
 
 		std::vector<VkImage> images;
 		images.resize(count);
-		vkGetSwapchainImagesKHR(device.get(), objectHandle, &count, images.data());
+		vkGetSwapchainImagesKHR(device.get(), get(), &count, images.data());
 		return images;
 	}
 
@@ -121,7 +121,7 @@ namespace zt::vulkan_renderer
 	{
 		std::uint32_t imageIndex{};
 		const auto result =
-			vkAcquireNextImageKHR(device.get(), objectHandle, UINT64_MAX, semaphore.get(), VK_NULL_HANDLE, &imageIndex);
+			vkAcquireNextImageKHR(device.get(), get(), UINT64_MAX, semaphore.get(), VK_NULL_HANDLE, &imageIndex);
 
 		if (result == VK_SUCCESS)
 		{

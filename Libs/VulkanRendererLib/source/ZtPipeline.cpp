@@ -202,7 +202,7 @@ namespace zt::vulkan_renderer
 			.basePipelineIndex = -1
 		};
 
-		const auto result = vkCreateGraphicsPipelines(device.get(), VK_NULL_HANDLE, 1, &createInfo, nullptr, &objectHandle);
+		const auto result = vkCreateGraphicsPipelines(device.get(), VK_NULL_HANDLE, 1, &createInfo, nullptr, &get());
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -218,8 +218,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroyPipeline(device.get(), objectHandle, nullptr);
-			objectHandle = nullptr;
+			vkDestroyPipeline(device.get(), get(), nullptr);
+			invalidateInternal();
 		}
 	}
 

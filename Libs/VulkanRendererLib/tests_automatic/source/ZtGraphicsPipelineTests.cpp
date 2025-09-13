@@ -101,7 +101,14 @@ namespace zt::vulkan_renderer::tests
 			}
 		};
 
-		graphicsPipeline.create(rendererContext, drawInfo);
+		GraphicsPipelineCreateInfo createInfo
+		{
+			.rendererContext = rendererContext,
+			.drawInfo = drawInfo,
+			.descriptorsCopyCount = 1 // TODO: Set more than once
+		};
+
+		graphicsPipeline.create(createInfo);
 		graphicsPipeline.destroy(rendererContext);
 
 		texture.destroy(rendererContext.getDevice(), rendererContext.getVMA());

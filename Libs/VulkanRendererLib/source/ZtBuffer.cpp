@@ -27,7 +27,7 @@ namespace zt::vulkan_renderer
 			.usage = VMA_MEMORY_USAGE_AUTO
 		};
 
-		const auto result = vmaCreateBuffer(vma.get(), &createInfo, &allocInfo, &objectHandle, &allocation, nullptr);
+		const auto result = vmaCreateBuffer(vma.get(), &createInfo, &allocInfo, &get(), &allocation, nullptr);
 		if (result == VK_SUCCESS)
 		{
 			size = static_cast<std::uint32_t>(createInfo.size);
@@ -62,8 +62,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vmaDestroyBuffer(vma.get(), objectHandle, allocation);
-			objectHandle = nullptr;
+			vmaDestroyBuffer(vma.get(), get(), allocation);
+			invalidateInternal();
 			allocation = nullptr;
 			size = 0u;
 		}

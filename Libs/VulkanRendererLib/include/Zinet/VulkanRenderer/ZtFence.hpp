@@ -17,8 +17,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Fence(HandleType newObjectHandle) noexcept
-			: VulkanObject(newObjectHandle) {}
+		Fence(VulcanType newHandle) noexcept
+			: VulkanObject(newHandle) {}
 
 		Fence() noexcept = delete;
 		Fence(const Fence& other) noexcept = delete;

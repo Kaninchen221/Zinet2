@@ -20,8 +20,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		ShaderModule(HandleType newObjectHandle)
-			: VulkanObject(newObjectHandle)
+		ShaderModule(VulcanType newHandle)
+			: VulkanObject(newHandle)
 		{}
 
 		ShaderModule() noexcept = delete;

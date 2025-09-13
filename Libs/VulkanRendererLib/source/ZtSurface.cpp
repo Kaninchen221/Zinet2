@@ -10,7 +10,7 @@ namespace zt::vulkan_renderer
 		if (isValid())
 			return false;
 
-		VkResult result = glfwCreateWindowSurface(instance.get(), window.getInternal(), nullptr, &objectHandle);
+		VkResult result = glfwCreateWindowSurface(instance.get(), window.getInternal(), nullptr, &get());
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -26,8 +26,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroySurfaceKHR(instance.get(), objectHandle, nullptr);
-			objectHandle = nullptr;
+			vkDestroySurfaceKHR(instance.get(), get(), nullptr);
+			invalidateInternal();
 		}
 	}
 }

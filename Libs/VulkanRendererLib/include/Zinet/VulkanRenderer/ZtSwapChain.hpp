@@ -29,8 +29,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		SwapChain(HandleType newObjectHandle) noexcept
-			: VulkanObject(newObjectHandle)
+		SwapChain(VulcanType newHandle) noexcept
+			: VulkanObject(newHandle)
 		{}
 
 		SwapChain() noexcept = delete;

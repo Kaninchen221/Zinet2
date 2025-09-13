@@ -8,24 +8,24 @@ namespace zt::vulkan_renderer
 	VkPhysicalDeviceProperties PhysicalDevice::getVkPhysicalDeviceProperties() const noexcept
 	{
 		VkPhysicalDeviceProperties properties;
-		vkGetPhysicalDeviceProperties(objectHandle, &properties);
+		vkGetPhysicalDeviceProperties(get(), &properties);
 		return properties;
 	}
 
 	VkPhysicalDeviceFeatures PhysicalDevice::getVkPhysicalDeviceFeatures() const noexcept
 	{
 		VkPhysicalDeviceFeatures features;
-		vkGetPhysicalDeviceFeatures(objectHandle, &features);
+		vkGetPhysicalDeviceFeatures(get(), &features);
 		return features;
 	}
 
 	std::vector<VkQueueFamilyProperties> PhysicalDevice::getVkQueuesFamiliesProperties() const
 	{
 		std::uint32_t count = 0;
-		vkGetPhysicalDeviceQueueFamilyProperties(objectHandle, &count, nullptr);
+		vkGetPhysicalDeviceQueueFamilyProperties(get(), &count, nullptr);
 
 		std::vector<VkQueueFamilyProperties> queueFamilies(count);
-		vkGetPhysicalDeviceQueueFamilyProperties(objectHandle, &count, queueFamilies.data());
+		vkGetPhysicalDeviceQueueFamilyProperties(get(), &count, queueFamilies.data());
 
 		return queueFamilies;
 	}
@@ -90,17 +90,17 @@ namespace zt::vulkan_renderer
 	bool PhysicalDevice::isQueueFamilySupportingSurface(std::uint32_t index, const Surface& surface) const noexcept
 	{
 		VkBool32 surfaceSupport = false;
-		vkGetPhysicalDeviceSurfaceSupportKHR(objectHandle, index, surface.get(), &surfaceSupport);
+		vkGetPhysicalDeviceSurfaceSupportKHR(get(), index, surface.get(), &surfaceSupport);
 		return surfaceSupport;
 	}
 
 	std::vector<VkExtensionProperties> PhysicalDevice::getDeviceExtensionProperties() const
 	{
 		std::uint32_t extensionCount;
-		vkEnumerateDeviceExtensionProperties(objectHandle, nullptr, &extensionCount, nullptr);
+		vkEnumerateDeviceExtensionProperties(get(), nullptr, &extensionCount, nullptr);
 
 		std::vector<VkExtensionProperties> extensions(extensionCount);
-		vkEnumerateDeviceExtensionProperties(objectHandle, nullptr, &extensionCount, extensions.data());
+		vkEnumerateDeviceExtensionProperties(get(), nullptr, &extensionCount, extensions.data());
 
 		return extensions;
 	}
@@ -122,21 +122,21 @@ namespace zt::vulkan_renderer
 	VkSurfaceCapabilitiesKHR PhysicalDevice::getPhysicalDeviceSurfaceCapabilities(const Surface& surface) const noexcept
 	{
 		VkSurfaceCapabilitiesKHR surfaceCapabilities;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(objectHandle, surface.get(), &surfaceCapabilities);
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(get(), surface.get(), &surfaceCapabilities);
 		return surfaceCapabilities;
 	}
 
 	std::vector<VkSurfaceFormatKHR> PhysicalDevice::getPhysicalDeviceSurfaceFormats(const Surface& surface) const
 	{
 		std::uint32_t count;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(objectHandle, surface.get(), &count, nullptr);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(get(), surface.get(), &count, nullptr);
 
 		if (count == 0)
 			return {};
 
 		std::vector<VkSurfaceFormatKHR> formats;
 		formats.resize(count);
-		vkGetPhysicalDeviceSurfaceFormatsKHR(objectHandle, surface.get(), &count, formats.data());
+		vkGetPhysicalDeviceSurfaceFormatsKHR(get(), surface.get(), &count, formats.data());
 
 		return formats;
 	}
@@ -144,14 +144,14 @@ namespace zt::vulkan_renderer
 	std::vector<VkPresentModeKHR> PhysicalDevice::getPhysicalDeviceSurfacePresentModes(const Surface& surface) const
 	{
 		std::uint32_t count;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(objectHandle, surface.get(), &count, nullptr);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(get(), surface.get(), &count, nullptr);
 
 		if (count == 0)
 			return {};
 
 		std::vector<VkPresentModeKHR> presentModes;
 		presentModes.resize(count);
-		vkGetPhysicalDeviceSurfacePresentModesKHR(objectHandle, surface.get(), &count, presentModes.data());
+		vkGetPhysicalDeviceSurfacePresentModesKHR(get(), surface.get(), &count, presentModes.data());
 
 		return presentModes;
 	}

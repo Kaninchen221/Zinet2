@@ -36,7 +36,7 @@ namespace zt::vulkan_renderer
 
 	bool DescriptorPool::create(const Device& device, const VkDescriptorPoolCreateInfo& createInfo)
 	{
-		const auto result = vkCreateDescriptorPool(device.get(), &createInfo, nullptr, &objectHandle);
+		const auto result = vkCreateDescriptorPool(device.get(), &createInfo, nullptr, &get());
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -52,9 +52,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroyDescriptorPool(device.get(), objectHandle, nullptr);
-			objectHandle = nullptr;
+			vkDestroyDescriptorPool(device.get(), get(), nullptr);
+			invalidateInternal();
 		}
 	}
-
 }

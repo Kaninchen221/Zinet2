@@ -38,7 +38,7 @@ namespace zt::vulkan_renderer
 		if (isValid())
 			return false;
 
-		const auto createResult = vkCreateImageView(device.get(), &createInfo, nullptr, &objectHandle);
+		const auto createResult = vkCreateImageView(device.get(), &createInfo, nullptr, &get());
 		if (createResult == VK_SUCCESS)
 		{
 			format = createInfo.format;
@@ -55,8 +55,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroyImageView(device.get(), objectHandle, nullptr);
-			objectHandle = nullptr;
+			vkDestroyImageView(device.get(), get(), nullptr);
+			invalidateInternal();
 		}
 	}
 

@@ -20,8 +20,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		PipelineLayout(HandleType newObjectHandle)
-			: VulkanObject(newObjectHandle) {}
+		PipelineLayout(VulcanType newHandle)
+			: VulkanObject(newHandle) {}
 
 		PipelineLayout() noexcept = delete;
 		PipelineLayout(const PipelineLayout& other) noexcept = delete;
@@ -31,7 +31,7 @@ namespace zt::vulkan_renderer
 		PipelineLayout& operator = (const PipelineLayout& other) noexcept = delete;
 		PipelineLayout& operator = (PipelineLayout&& other) noexcept = default;
 	
-		static VkPipelineLayoutCreateInfo GetDefaultCreateInfo(const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) noexcept;
+		static VkPipelineLayoutCreateInfo GetDefaultCreateInfo(const std::vector<DescriptorSetLayout::VulcanType>& vkDescriptorSetLayouts) noexcept;
 
 		bool create(const Device& device, const VkPipelineLayoutCreateInfo& createInfo);
 

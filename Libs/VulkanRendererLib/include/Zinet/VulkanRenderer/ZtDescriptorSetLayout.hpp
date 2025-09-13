@@ -22,8 +22,8 @@ namespace zt::vulkan_renderer
 	public:
 		using Bindings = std::vector<VkDescriptorSetLayoutBinding>;
 
-		DescriptorSetLayout(HandleType newObjectHandle) noexcept
-			: VulkanObject(newObjectHandle) {}
+		DescriptorSetLayout(VulcanType newHandle) noexcept
+			: VulkanObject(newHandle) {}
 
 		DescriptorSetLayout() noexcept = delete;
 		DescriptorSetLayout(const DescriptorSetLayout& other) noexcept = delete;

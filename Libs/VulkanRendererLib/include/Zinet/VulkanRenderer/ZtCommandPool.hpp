@@ -20,8 +20,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		CommandPool(HandleType newObjectHandle)
-			: VulkanObject(newObjectHandle) {}
+		CommandPool(VulcanType newHandle)
+			: VulkanObject(newHandle) {}
 
 		CommandPool() noexcept = delete;
 		CommandPool(const CommandPool& other) noexcept = delete;

@@ -39,7 +39,7 @@ namespace zt::vulkan_renderer
 
 	bool DescriptorSetLayout::create(const VkDescriptorSetLayoutCreateInfo& createInfo, const Device& device)
 	{
-		const auto result = vkCreateDescriptorSetLayout(device.get(), &createInfo, nullptr, &objectHandle);
+		const auto result = vkCreateDescriptorSetLayout(device.get(), &createInfo, nullptr, &get());
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -55,8 +55,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroyDescriptorSetLayout(device.get(), objectHandle, nullptr);
-			objectHandle = nullptr;
+			vkDestroyDescriptorSetLayout(device.get(), get(), nullptr);
+			invalidateInternal();
 		}
 	}
 

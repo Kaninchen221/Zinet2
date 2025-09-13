@@ -24,8 +24,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Instance(HandleType newObjectHandle) noexcept
-			: VulkanObject(newObjectHandle) {}
+		Instance(VulcanType newHandle) noexcept
+			: VulkanObject(newHandle) {}
 
 		Instance() noexcept = delete;
 		Instance(const Instance& other) noexcept = delete;

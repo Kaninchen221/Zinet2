@@ -4,7 +4,7 @@
 namespace zt::vulkan_renderer
 {
 
-	VkPipelineLayoutCreateInfo PipelineLayout::GetDefaultCreateInfo(const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts) noexcept
+	VkPipelineLayoutCreateInfo PipelineLayout::GetDefaultCreateInfo(const std::vector<DescriptorSetLayout::VulcanType>& vkDescriptorSetLayouts) noexcept
 	{
 		return VkPipelineLayoutCreateInfo
 		{
@@ -23,7 +23,7 @@ namespace zt::vulkan_renderer
 		if (isValid())
 			return false;
 
-		const auto result = vkCreatePipelineLayout(device.get(), &createInfo, nullptr, &objectHandle);
+		const auto result = vkCreatePipelineLayout(device.get(), &createInfo, nullptr, &get());
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -39,8 +39,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroyPipelineLayout(device.get(), objectHandle, nullptr);
-			objectHandle = nullptr;
+			vkDestroyPipelineLayout(device.get(), get(), nullptr);
+			invalidateInternal();
 		}
 	}
 

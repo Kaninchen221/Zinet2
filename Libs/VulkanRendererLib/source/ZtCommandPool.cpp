@@ -18,7 +18,7 @@ namespace zt::vulkan_renderer
 			.queueFamilyIndex = queue.getQueueFamilyIndex()
 		};
 
-		const auto result = vkCreateCommandPool(device.get(), &createInfo, nullptr, &objectHandle);
+		const auto result = vkCreateCommandPool(device.get(), &createInfo, nullptr, &get());
 		if (result == VK_SUCCESS)
 		{
 			return true;
@@ -34,8 +34,8 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			vkDestroyCommandPool(device.get(), objectHandle, nullptr);
-			objectHandle = nullptr;
+			vkDestroyCommandPool(device.get(), get(), nullptr);
+			invalidateInternal();
 		}
 	}
 
