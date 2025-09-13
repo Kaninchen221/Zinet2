@@ -24,6 +24,7 @@
 #include "Zinet/Window/ZtGLFW.hpp"
 #include "Zinet/Window/ZtWindow.hpp"
 #include "Zinet/Window/ZtWindowEvents.hpp"
+
 #include "imgui_impl_vulkan.h"
 #include "imgui_impl_glfw.h"
 
@@ -50,13 +51,14 @@ namespace zt::vulkan_renderer::tests
 			window.makeWindowTransparentWhileUsingVulkan();
 
 			renderer.init(window);
+			auto& rendererContext = renderer.getRendererContext();
 
 			imGuiIntegration.init(renderer.getRendererContext(), window);
 
-			vertexShaderModule = createShaderModule("shader.vert", ShaderType::Vertex);
+			vertexShaderModule = CreateShaderModule("shader.vert", ShaderType::Vertex, rendererContext.getDevice());
 			ASSERT_TRUE(vertexShaderModule.isValid());
 
-			fragmentShaderModule = createShaderModule("shader.frag", ShaderType::Fragment);
+			fragmentShaderModule = CreateShaderModule("shader.frag", ShaderType::Fragment, rendererContext.getDevice());
 			ASSERT_TRUE(fragmentShaderModule.isValid());
 
 			auto& vma = renderer.getRendererContext().getVMA();
@@ -88,26 +90,22 @@ namespace zt::vulkan_renderer::tests
 			// Uniform Buffers
 			{ // #0
 				Buffer& uniformBuffer = uniformBuffers.emplace_back(nullptr);
-				const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(uniformData);
-				ASSERT_TRUE(uniformBuffer.createBuffer(uniformBufferCreateInfo, vma));
+				uniformBuffer = CreateUniformBuffer(uniformData, vma);
 
 				ASSERT_TRUE(device.setDebugName(uniformBuffer, "UniformBuffer_0", VK_OBJECT_TYPE_BUFFER));
 			}
 
 			{ // #1
 				Buffer& uniformBuffer = uniformBuffers.emplace_back(nullptr);
-				const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(uniformData);
-				ASSERT_TRUE(uniformBuffer.createBuffer(uniformBufferCreateInfo, vma));
+				uniformBuffer = CreateUniformBuffer(uniformData, vma);
 
 				ASSERT_TRUE(device.setDebugName(uniformBuffer, "UniformBuffer_1", VK_OBJECT_TYPE_BUFFER));
 			}
 
-			createTexture();
+			texture = CreateTexture(rendererContext);
+			sampler = CreateSampler(device);
 
-			const auto samplerCreateInfo = Sampler::GetDefaultCreateInfo();
-			ASSERT_TRUE(sampler.create(device, samplerCreateInfo));
-
-			// Set default data for unfiorm buffers
+			// Set default data for uniform buffers
 			const auto windowSize = window.getSize();
 
 			transform.setPosition({ 0, 0, 0 });
@@ -178,33 +176,8 @@ namespace zt::vulkan_renderer::tests
 
 		Camera camera;
 
-		ShaderModule createShaderModule(std::string_view sourceCodeFileName, ShaderType shaderType);
-
 		void updateUniformBuffersData();
-
-		void createTexture();
 	};
-
-	ShaderModule VulkanRendererTests::createShaderModule(std::string_view sourceCodeFileName, ShaderType shaderType)
-	{
-		ShadersCompiler shadersCompiler;
-		ShaderModule shaderModule{ nullptr };
-
-		const auto contentFolderPath = core::Paths::CurrentProjectRootPath() / "test_files";
-
-		const auto fullPath = contentFolderPath / sourceCodeFileName;
-		const auto compileResult = shadersCompiler.compileFromFile(fullPath, shaderType);
-		if (compileResult.empty())
-		{
-			Ensure(false, "Compile returned empty result");
-			return shaderModule;
-		}
-
-		const auto& device = renderer.getRendererContext().getDevice();
-		shaderModule.create(device, compileResult);
-
-		return shaderModule;
-	}
 
 	void VulkanRendererTests::updateUniformBuffersData()
 	{
@@ -222,44 +195,6 @@ namespace zt::vulkan_renderer::tests
 
 		auto& secondBuffer = uniformBuffers[1];
 		secondBuffer.fillWithObject(uniformData, vma);
-	}
-
-	void VulkanRendererTests::createTexture()
-	{
-		const auto& rendererContext = renderer.getRendererContext();
-		const auto& vma = rendererContext.getVMA();
-		const auto& device = rendererContext.getDevice();
-		const auto& queue = rendererContext.getQueue();
-		const auto& commandPool = rendererContext.getCommandPool();
-
-		const std::filesystem::path testFolderPath = core::Paths::CurrentProjectRootPath() / "test_files";
-		const std::filesystem::path imagePath = testFolderPath / "image.png";
-
-		core::Image sourceImage;
-		ASSERT_TRUE(sourceImage.loadFromFile(imagePath, 4));
-
-		Buffer buffer{ nullptr };
-		const auto bufferCreateInfo = Buffer::GetImageBufferCreateInfo(sourceImage);
-		ASSERT_TRUE(buffer.createBuffer(bufferCreateInfo, vma));
-
-		ASSERT_TRUE(buffer.fillWithImage(sourceImage, vma));
-
-		ASSERT_TRUE(texture.create(device, vma, { sourceImage.getWidth(), sourceImage.getHeight() }));
-		ASSERT_TRUE(texture.isValid());
-
-		const auto commands = [&texture = texture, &sourceImage = sourceImage, &buffer = buffer](const CommandBuffer& commandBuffer)
-		{
-			FillWithImageBufferInput input
-			{
-				.buffer = buffer,
-				.commandBuffer = commandBuffer,
-				.imageExtent = { sourceImage.getWidth(), sourceImage.getHeight() }
-			};
-			texture.fillWithImageBuffer(input);
-		};
-		SubmitSingleCommandBufferWaitIdle(device, queue, commandPool, commands);
-
-		buffer.destroy(vma);
 	}
 
 	TEST_F(VulkanRendererTests, VulkanRendererTest)
