@@ -27,7 +27,7 @@ namespace zt::vulkan_renderer
 
 		// TODO: Use global descriptor set
 		//auto& globalDescriptorSetLayout = rendererContext.globalDescriptorSetLayout;
-		const std::vector<DescriptorSetLayout::HandleType>& vkDescriptorSetLayouts = 
+		const std::vector<DescriptorSetLayout::VulcanType>& vkDescriptorSetLayouts = 
 		{
 			//globalDescriptorSetLayout.get(),
 			pipelineDescriptorSetLayout.get(),

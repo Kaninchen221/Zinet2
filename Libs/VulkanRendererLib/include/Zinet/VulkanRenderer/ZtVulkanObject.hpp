@@ -44,7 +44,7 @@ namespace zt::vulkan_renderer
 
 	private:
 
-		HandleType handles;
+		HandleType handles{ nullptr };
 
 	};
 
