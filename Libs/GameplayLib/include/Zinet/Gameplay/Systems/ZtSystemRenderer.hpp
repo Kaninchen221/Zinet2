@@ -58,6 +58,8 @@ namespace zt::gameplay
 
 		bool deinit() override;
 
+		void addNode(const ObjectWeakHandle<Node>& node) override;
+
 		void update() override;
 
 		void show() override;

@@ -100,7 +100,7 @@ namespace zt::gameplay::tests
 			);
 
 			ZT_TIME_LOG_NAME(CreateSprites,
-				for (size_t i = 0; i < 5; ++i)
+				for (size_t i = 0; i < 100; ++i)
 				{
 					auto sprite = CreateObject<NodeSprite>(fmt::format("Sprite_{}", i));
 					sprite->transform.getPosition().x = random.real<float>(-10, 10);

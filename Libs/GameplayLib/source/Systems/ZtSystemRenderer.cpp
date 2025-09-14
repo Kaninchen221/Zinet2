@@ -98,6 +98,22 @@ namespace zt::gameplay
 		return true;
 	}
 
+	void SystemRenderer::addNode(const ObjectWeakHandle<Node>& node)
+	{
+		if (!node)
+			return;
+
+		System::addNode(node);
+
+		auto node2D = dynamic_cast<Node2D*>(node.get());
+		if (!node2D)
+			return;
+
+		drawInfo.pipelineDescriptorInfo += node2D->getPipelineDescriptorInfos();
+		drawInfo.objectDescriptorInfo += node2D->getDrawCallDescriptorInfos();
+		drawInfo.instances++;
+	}
+
 	void SystemRenderer::update()
 	{
 		System::update();
@@ -110,23 +126,6 @@ namespace zt::gameplay
 		{
 			drawInfo.vertexShaderModule = &vertexShader.getAssetHandle()->shaderModule;
 			drawInfo.fragmentShaderModule = &fragmentShader.getAssetHandle()->shaderModule;
-
-			drawInfo.pipelineDescriptorInfo = {};
-			drawInfo.objectDescriptorInfo = {};
-			drawInfo.instances = 0;
-			for (const auto& node : nodes)
-			{
-				if (!node)
-					continue;
-
-				auto node2D = dynamic_cast<Node2D*>(node.get());
-				if (!node2D)
-					continue;
-
-				drawInfo.pipelineDescriptorInfo += node2D->getPipelineDescriptorInfos();
-				drawInfo.objectDescriptorInfo += node2D->getDrawCallDescriptorInfos();
-				drawInfo.instances++;
-			}
 		}
 		else
 		{
