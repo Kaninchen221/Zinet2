@@ -137,6 +137,8 @@ namespace zt::vulkan_renderer
 
 	void RendererContext::windowResized(const Vector2i& size)
 	{
+		queue.waitIdle();
+
 		renderPass.destroy(device);
 		if (!renderPass.recreate(device))
 		{
@@ -151,6 +153,13 @@ namespace zt::vulkan_renderer
 			return;
 		}
 
+		for (auto& displayImage : displayImages)
+		{
+			displayImage.destroy(*this);
+		}
 		createDisplayImages();
+
+		currentDisplayImageIndex = 0;
+		nextDisplayImageIndex = 0;
 	}
 }
