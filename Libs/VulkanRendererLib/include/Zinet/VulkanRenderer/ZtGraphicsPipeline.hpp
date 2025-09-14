@@ -69,7 +69,7 @@ namespace zt::vulkan_renderer
 		DescriptorSetLayout objectDescriptorSetLayout{ nullptr };
 		DescriptorSets objectDescriptorSets;
 
-		using VkDescriptorSets = std::vector<VkDescriptorSet>;
+		using VkDescriptorSets = std::array<VkDescriptorSet, 2>;
 		VkDescriptorSets vkDescriptorSets;
 
 		PipelineLayout pipelineLayout{ nullptr };
