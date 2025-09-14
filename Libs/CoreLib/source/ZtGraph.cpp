@@ -23,6 +23,9 @@ namespace zt::core
 			values.erase(values.begin());
 		}
 
+		average += newValue;
+		average /= 2.f;
+
 		values.push_back(newValue);
 
 		if (largestValue < newValue)
@@ -38,17 +41,19 @@ namespace zt::core
 		auto checkboxLabel = fmt::format("Plot {}", displayName);
 		ImGui::Checkbox(checkboxLabel.c_str(), &plot);
 
-		ImGui::TextFMT("Largest: {} Smallest: {}", largestValue, smallestValue);
+		ImGui::TextFMT("Largest: {} Smallest: {} Average: {}", largestValue, smallestValue, average);
 
 		if (ImGui::Button("Reset"))
 			reset();
 
 		auto plotLabel = fmt::format("##{}", checkboxLabel);
 		static ImPlotAxisFlags plotFlags = ImPlotFlags_NoFrame | ImPlotFlags_NoLegend;
-		static ImPlotAxisFlags axisFlags = ImPlotAxisFlags_NoTickLabels | ImPlotAxisFlags_AutoFit;
+		static ImPlotAxisFlags axisFlags = ImPlotAxisFlags_NoTickLabels;// | ImPlotAxisFlags_AutoFit;
 		if (ImPlot::BeginPlot(plotLabel.c_str(), ImVec2(-1, 140), plotFlags))
 		{
 			ImPlot::SetupAxes(nullptr, nullptr, axisFlags, axisFlags);
+			ImPlot::SetupAxisLimits(ImAxis_Y1, smallestValue, largestValue, ImPlotCond_Always);
+			ImPlot::SetupAxisLimits(ImAxis_X1, 0, static_cast<double>(values.size()), ImPlotCond_Always);
 			ImPlot::PlotLine(displayName.c_str(), values.data(), static_cast<int>(values.size()));
 			ImPlot::EndPlot();
 		}
@@ -79,6 +84,7 @@ namespace zt::core
 		values.clear();
 		smallestValue = std::numeric_limits<ValueT>::max();
 		largestValue = std::numeric_limits<ValueT>::lowest();
+		average = 0;
 	}
 
 }

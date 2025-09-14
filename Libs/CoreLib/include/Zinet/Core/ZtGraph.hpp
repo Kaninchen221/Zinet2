@@ -61,6 +61,7 @@ namespace zt::core
 		std::vector<ValueT> values;
 		ValueT minValue{};
 		ValueT maxValue{};
+		ValueT average{};
 		size_t maxPoints{ 1000 };
 		bool plot = true;
 		// TODO: Write some NumericLimits class because I'm getting "not enough arguments for function-like macro invocation 'max'" is some situations when using std::numeric_limits
