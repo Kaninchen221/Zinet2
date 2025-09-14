@@ -320,93 +320,83 @@ namespace zt::vulkan_renderer::tests
 		core::Graph endFrameTimeGraph{ "End Frame", 0.f, 0.1f, 1000 };
 		core::Clock endFrameClock;
 
-		// Weird as f*ck but manual tests are not touching the CI/CD
-		std::thread renderThread(
-			[
-				&
-			]()
-		{
-			while (window.isOpen())
-			{
-				if (useImGui)
-				{
-					ImGuiIntegration::ImplSpecificNewFrame();
-
-					ImGui::NewFrame();
-					ImGui::ShowDemoWindow();
-
-					ImGui::SetNextWindowBgAlpha(0.80f); // Transparent background
-
-					const float padding = 10.0f;
-					const ImGuiViewport* viewport = ImGui::GetMainViewport();
-					ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
-					ImVec2 workSize = viewport->WorkSize;
-
-					ImVec2 windowPos, windowPivot;
-					windowPos.x = work_pos.x + padding;
-					windowPos.y = work_pos.y + padding;
-					windowPivot.x = 0.0f;
-					windowPivot.y = 0.0f;
-					ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPivot);
-					//ImGui::SetNextWindowSize(workSize, ImGuiCond_Once);
-					ImGui::SetNextWindowSizeConstraints(
-						ImVec2(0, workSize.y - padding * 2),
-						ImVec2(workSize.x - padding * 2, workSize.y - padding * 2)
-					);
-
-					ImGuiWindowFlags windowFlags =
-						ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
-						ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
-
-					bool isOpen = false;
-					if (ImGui::Begin("EditorOverlay", &isOpen, windowFlags))
-					{
-						if (ImGui::CollapsingHeader("Sprite1"))
-						{
-							transform.show();
-						}
-
-						if (ImGui::CollapsingHeader("Sprite2"))
-						{
-							transform2.show();
-						}
-					}
-					ImGui::End();
-
-					core::Graph::ShowPlotAny();
-					beginFrameTimeGraph.show();
-					drawTimeGraph.show();
-					submitTimeGraph.show();
-					endFrameTimeGraph.show();
-
-					ImGui::EndFrame();
-
-					imGuiIntegration.prepareRenderData();
-				}
-
-				ASSERT_TRUE(renderer.createPipeline(drawInfo));
-				ASSERT_TRUE(renderer.getGraphicsPipeline().isValid());
-				
-				beginFrameClock.restart();
-				ASSERT_TRUE(renderer.nextFrame());
-				beginFrameTimeGraph.update(beginFrameClock.restart().getAsMilliseconds());
-
-				drawClock.restart();
-				renderer.draw(drawInfo);
-				drawTimeGraph.update(drawClock.restart().getAsMilliseconds());
-
-				submitClock.restart();
-				ASSERT_TRUE(renderer.submitDrawInfo());
-				submitTimeGraph.update(submitClock.restart().getAsMilliseconds());
-
-				endFrameClock.restart();
-				ASSERT_TRUE(renderer.displayCurrentFrame());
-				endFrameTimeGraph.update(endFrameClock.restart().getAsMilliseconds());
-			}
-		});
-
 		while (window.isOpen())
 		{
+			if (useImGui)
+			{
+				ImGuiIntegration::ImplSpecificNewFrame();
+
+				ImGui::NewFrame();
+				ImGui::ShowDemoWindow();
+
+				ImGui::SetNextWindowBgAlpha(0.80f); // Transparent background
+
+				const float padding = 10.0f;
+				const ImGuiViewport* viewport = ImGui::GetMainViewport();
+				ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
+				ImVec2 workSize = viewport->WorkSize;
+
+				ImVec2 windowPos, windowPivot;
+				windowPos.x = work_pos.x + padding;
+				windowPos.y = work_pos.y + padding;
+				windowPivot.x = 0.0f;
+				windowPivot.y = 0.0f;
+				ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPivot);
+				//ImGui::SetNextWindowSize(workSize, ImGuiCond_Once);
+				ImGui::SetNextWindowSizeConstraints(
+					ImVec2(0, workSize.y - padding * 2),
+					ImVec2(workSize.x - padding * 2, workSize.y - padding * 2)
+				);
+
+				ImGuiWindowFlags windowFlags =
+					ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
+					ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+
+				bool isOpen = false;
+				if (ImGui::Begin("EditorOverlay", &isOpen, windowFlags))
+				{
+					if (ImGui::CollapsingHeader("Sprite1"))
+					{
+						transform.show();
+					}
+
+					if (ImGui::CollapsingHeader("Sprite2"))
+					{
+						transform2.show();
+					}
+				}
+				ImGui::End();
+
+				core::Graph::ShowPlotAny();
+				beginFrameTimeGraph.show();
+				drawTimeGraph.show();
+				submitTimeGraph.show();
+				endFrameTimeGraph.show();
+
+				ImGui::EndFrame();
+
+				imGuiIntegration.prepareRenderData();
+			}
+
+			ASSERT_TRUE(renderer.createPipeline(drawInfo));
+			ASSERT_TRUE(renderer.getGraphicsPipeline().isValid());
+
+			beginFrameClock.restart();
+			ASSERT_TRUE(renderer.nextFrame());
+			beginFrameTimeGraph.update(beginFrameClock.restart().getAsMilliseconds());
+
+			drawClock.restart();
+			renderer.draw(drawInfo);
+			drawTimeGraph.update(drawClock.restart().getAsMilliseconds());
+
+			submitClock.restart();
+			ASSERT_TRUE(renderer.submitDrawInfo());
+			submitTimeGraph.update(submitClock.restart().getAsMilliseconds());
+
+			endFrameClock.restart();
+			ASSERT_TRUE(renderer.displayCurrentFrame());
+			endFrameTimeGraph.update(endFrameClock.restart().getAsMilliseconds());
+
 			windowEvents.pollEvents();
 
 			// Game logic
@@ -424,9 +414,6 @@ namespace zt::vulkan_renderer::tests
 				fpsClock.restart();
 			}
 		}
-
-		if (renderThread.joinable())
-			renderThread.join();
 
 	}
 }
