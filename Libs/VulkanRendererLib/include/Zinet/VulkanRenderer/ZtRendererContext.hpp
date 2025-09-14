@@ -64,6 +64,12 @@ namespace zt::vulkan_renderer
 
 		auto getCurrentDisplayImageIndex() const noexcept { return currentDisplayImageIndex; }
 
+		auto& getNextDisplayImage() { return displayImages[nextDisplayImageIndex]; }
+		auto& getNextDisplayImage() const { return displayImages[nextDisplayImageIndex]; }
+
+		uint32_t getNextDisplayImageIndex() noexcept { return nextDisplayImageIndex; }
+		uint32_t getNextDisplayImageIndex() const noexcept { return nextDisplayImageIndex; }
+
 		auto& getInstance() noexcept { return instance; }
 		auto& getInstance() const noexcept { return instance; }
 		auto& getDebugUtilsMessenger() noexcept { return debugUtilsMessenger; }
@@ -101,12 +107,10 @@ namespace zt::vulkan_renderer
 
 		RenderPass renderPass{ nullptr };
 
-		Semaphore imageAvailableSemaphore{ nullptr };
-		Semaphore renderFinishedSemaphore{ nullptr };
-
 		using DisplayImages = std::vector<DisplayImage>;
 		DisplayImages displayImages;
-		uint32_t currentDisplayImageIndex{};
+		uint32_t currentDisplayImageIndex = 0;
+		uint32_t nextDisplayImageIndex = 0;
 
 		bool createDisplayImages();
 

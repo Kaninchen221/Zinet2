@@ -19,10 +19,10 @@ namespace zt::vulkan_renderer
 		displayImages.shrink_to_fit();
 		displayImages.resize(swapChainImages.size());
 
-		size_t imageIndex = 0;
+		uint32_t imageIndex = 0;
 		for (auto& displayImage : displayImages)
 		{
-			if (!displayImage.create(*this, swapChainImages[imageIndex]))
+			if (!displayImage.create(*this, swapChainImages[imageIndex], imageIndex))
 			{
 				Logger->error("Couldn't create a display image of the index: {}", imageIndex);
 				return false;
@@ -89,12 +89,6 @@ namespace zt::vulkan_renderer
 			return false;
 		}
 
-		if (!imageAvailableSemaphore.create(device))
-			return false;
-
-		if (!renderFinishedSemaphore.create(device))
-			return false;
-
 		const auto poolSizes = DescriptorPool::GetDefaultPoolSizes();		
 
 		const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(poolSizes);
@@ -123,9 +117,6 @@ namespace zt::vulkan_renderer
 		globalDescriptorSets.invalidate();
 
 		descriptorPool.destroy(device);
-
-		renderFinishedSemaphore.destroy(device);
-		imageAvailableSemaphore.destroy(device);
 
 		for (auto& displayImage : displayImages)
 		{

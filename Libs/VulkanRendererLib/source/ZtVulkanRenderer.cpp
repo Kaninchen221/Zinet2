@@ -24,15 +24,23 @@ namespace zt::vulkan_renderer
 		rendererContext.destroy();
 	}
 
-	bool VulkanRenderer::nextFrame()
+	bool VulkanRenderer::nextImage()
 	{
 		auto& swapChain = rendererContext.swapChain;
 		auto& device = rendererContext.device;
 		auto& currentDisplayImageIndex = rendererContext.currentDisplayImageIndex;
+		auto& imageAvailableSemaphore = rendererContext.getNextDisplayImage().imageAvailableSemaphore;
 
-		currentDisplayImageIndex = swapChain.acquireNextImage(device, rendererContext.imageAvailableSemaphore);
+		currentDisplayImageIndex = swapChain.acquireNextImage(device, imageAvailableSemaphore);
 		if (currentDisplayImageIndex == SwapChain::InvalidIndex)
 			return false;
+
+		auto& nextDisplayImageIndex = rendererContext.nextDisplayImageIndex;
+		nextDisplayImageIndex = currentDisplayImageIndex + 1;
+		if (nextDisplayImageIndex >= rendererContext.framesInFlight)
+			nextDisplayImageIndex = 0;
+
+		//Logger->debug("Acquired next image with index: {}", currentDisplayImageIndex);
 
 		auto& fence = rendererContext.getCurrentDisplayImage().fence;
 
@@ -63,10 +71,11 @@ namespace zt::vulkan_renderer
 	void VulkanRenderer::draw(const DrawInfo& drawInfo)
 	{
 		auto& swapChain = rendererContext.swapChain;
-		//auto& device = rendererContext.device;
 		auto& renderPass = rendererContext.renderPass;
 		auto& displayImage = rendererContext.getCurrentDisplayImage();
 		auto& commandBuffer = displayImage.commandBuffer;
+
+		//Logger->debug("Drawing on image with index: {}", rendererContext.currentDisplayImageIndex);
 
 		// Begin draw start
 		commandBuffer.reset();
@@ -113,10 +122,13 @@ namespace zt::vulkan_renderer
 	bool VulkanRenderer::submitDrawInfo()
 	{
 		auto& queue = rendererContext.queue;
-		auto& fence = rendererContext.getCurrentDisplayImage().fence;
-		auto& commandBuffer = rendererContext.getCurrentDisplayImage().commandBuffer;
+		auto& currentDisplayImage = rendererContext.getCurrentDisplayImage();
+		auto& fence = currentDisplayImage.fence;
+		auto& commandBuffer = currentDisplayImage.commandBuffer;
 
-		std::vector<VkSemaphore> waitSemaphores = { rendererContext.imageAvailableSemaphore.get() };
+		//Logger->debug("Submitting draw command buffer for image with index: {}", rendererContext.currentDisplayImageIndex);
+
+		std::vector<VkSemaphore> waitSemaphores = { currentDisplayImage.imageAvailableSemaphore.get() };
 		
 		std::vector<VkPipelineStageFlags> waitStages = {
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
@@ -135,7 +147,7 @@ namespace zt::vulkan_renderer
 		vkCommandBuffers.push_back(commandBuffer.get());
 
 		std::vector<VkSemaphore> signalSemaphores;
-		signalSemaphores.push_back(rendererContext.renderFinishedSemaphore.get());
+		signalSemaphores.push_back(currentDisplayImage.renderFinishedSemaphore.get());
 
 		const VkSubmitInfo submitInfo
 		{
@@ -161,13 +173,16 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	bool VulkanRenderer::displayCurrentFrame()
+	bool VulkanRenderer::displayCurrentImage()
 	{
-		const auto& swapChain = rendererContext.swapChain;
-		const auto& queue = rendererContext.queue;
+		auto& swapChain = rendererContext.swapChain;
+		auto& queue = rendererContext.queue;
+		auto& currentDisplayImage = rendererContext.getCurrentDisplayImage();
 		auto currentDisplayImageIndex = rendererContext.currentDisplayImageIndex;
 
-		std::vector<VkSemaphore> waitSemaphores = { rendererContext.renderFinishedSemaphore.get() };
+		//Logger->debug("Presenting image with index: {}", currentDisplayImageIndex);
+
+		std::vector<VkSemaphore> waitSemaphores = { currentDisplayImage.renderFinishedSemaphore.get() };
 		std::vector<VkSwapchainKHR> swapChains = { swapChain.get() };
 		const VkPresentInfoKHR presentInfo
 		{

@@ -308,8 +308,8 @@ namespace zt::vulkan_renderer::tests
 
 		bool useImGui = true;
 
-		core::Graph beginFrameTimeGraph{ "Begin Frame", 0.f, 0.1f, 1000 };
-		core::Clock beginFrameClock;
+		core::Graph beginFrameTimeGraph{ "Next Image", 0.f, 0.1f, 1000 };
+		core::Clock nextImageClock;
 
 		core::Graph drawTimeGraph{ "Draw", 0.f, 0.1f, 1000 };
 		core::Clock drawClock;
@@ -317,8 +317,8 @@ namespace zt::vulkan_renderer::tests
 		core::Graph submitTimeGraph{ "Submit", 0.f, 0.1f, 1000 };
 		core::Clock submitClock;
 
-		core::Graph endFrameTimeGraph{ "End Frame", 0.f, 0.1f, 1000 };
-		core::Clock endFrameClock;
+		core::Graph endFrameTimeGraph{ "Display Current Image", 0.f, 0.1f, 1000 };
+		core::Clock displayCurrentImageClock;
 
 		while (window.isOpen())
 		{
@@ -381,9 +381,9 @@ namespace zt::vulkan_renderer::tests
 			ASSERT_TRUE(renderer.createPipeline(drawInfo));
 			ASSERT_TRUE(renderer.getGraphicsPipeline().isValid());
 
-			beginFrameClock.restart();
-			ASSERT_TRUE(renderer.nextFrame());
-			beginFrameTimeGraph.update(beginFrameClock.restart().getAsMilliseconds());
+			nextImageClock.restart();
+			ASSERT_TRUE(renderer.nextImage());
+			beginFrameTimeGraph.update(nextImageClock.restart().getAsMilliseconds());
 
 			drawClock.restart();
 			renderer.draw(drawInfo);
@@ -393,9 +393,9 @@ namespace zt::vulkan_renderer::tests
 			ASSERT_TRUE(renderer.submitDrawInfo());
 			submitTimeGraph.update(submitClock.restart().getAsMilliseconds());
 
-			endFrameClock.restart();
-			ASSERT_TRUE(renderer.displayCurrentFrame());
-			endFrameTimeGraph.update(endFrameClock.restart().getAsMilliseconds());
+			displayCurrentImageClock.restart();
+			ASSERT_TRUE(renderer.displayCurrentImage());
+			endFrameTimeGraph.update(displayCurrentImageClock.restart().getAsMilliseconds());
 
 			windowEvents.pollEvents();
 

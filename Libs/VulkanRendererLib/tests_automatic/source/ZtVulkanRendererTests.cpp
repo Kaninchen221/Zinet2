@@ -297,7 +297,7 @@ namespace zt::vulkan_renderer::tests
 			ASSERT_TRUE(renderer.createPipeline(drawInfo));
 			ASSERT_TRUE(renderer.getGraphicsPipeline().isValid());
 
-			ASSERT_TRUE(renderer.nextFrame());
+			ASSERT_TRUE(renderer.nextImage());
 
 			imGuiIntegration.prepareRenderData();
 
@@ -305,7 +305,7 @@ namespace zt::vulkan_renderer::tests
 
 			ASSERT_TRUE(renderer.submitDrawInfo());
 
-			ASSERT_TRUE(renderer.displayCurrentFrame());
+			ASSERT_TRUE(renderer.displayCurrentImage());
 
 			// Post logic
 

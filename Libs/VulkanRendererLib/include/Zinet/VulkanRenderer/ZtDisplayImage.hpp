@@ -5,6 +5,7 @@
 #include "Zinet/VulkanRenderer/ZtFramebuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtFence.hpp"
 #include "Zinet/VulkanRenderer/ZtCommandBuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtSemaphore.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -23,10 +24,14 @@ namespace zt::vulkan_renderer
 		VkImage image{};
 		ImageView imageView{ nullptr };
 		Framebuffer framebuffer{ nullptr };
-		Fence fence{ nullptr };
 		CommandBuffer commandBuffer{ nullptr };
 
-		bool create(RendererContext& rendererContext, VkImage swapChainImage);
+		Fence fence{ nullptr };
+
+		Semaphore imageAvailableSemaphore{ nullptr };
+		Semaphore renderFinishedSemaphore{ nullptr };
+
+		bool create(RendererContext& rendererContext, VkImage swapChainImage, uint32_t index);
 
 		void destroy(RendererContext& rendererContext);
 

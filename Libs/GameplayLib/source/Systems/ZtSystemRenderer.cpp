@@ -146,7 +146,7 @@ namespace zt::gameplay
 			return;
 		}
 
-		renderer.nextFrame();
+		renderer.nextImage();
 
 		imGuiIntegration.prepareRenderData();
 
@@ -154,7 +154,7 @@ namespace zt::gameplay
 
 		renderer.submitDrawInfo();
 
-		renderer.displayCurrentFrame();
+		renderer.displayCurrentImage();
 	}
 
 	void SystemRenderer::show()

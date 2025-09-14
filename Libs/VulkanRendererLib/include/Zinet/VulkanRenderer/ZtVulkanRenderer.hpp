@@ -22,7 +22,7 @@ namespace zt::vulkan_renderer
 	{
 	protected:
 
-		inline static auto Logger = core::ConsoleLogger::Create("VulkanRenderer");
+		inline static auto Logger = core::ConsoleLogger::Create("VulkanRenderer", spdlog::level::debug);
 
 	public:
 
@@ -38,7 +38,7 @@ namespace zt::vulkan_renderer
 
 		void deinit();
 
-		bool nextFrame();
+		bool nextImage();
 
 		bool createPipeline(DrawInfo& drawInfo);
 		
@@ -46,7 +46,7 @@ namespace zt::vulkan_renderer
 
 		bool submitDrawInfo();
 
-		bool displayCurrentFrame();
+		bool displayCurrentImage();
 
 		const auto& getRendererContext() const { return rendererContext; }
 		auto& getRendererContext() { return rendererContext; }
