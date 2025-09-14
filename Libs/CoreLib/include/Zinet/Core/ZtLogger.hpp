@@ -52,7 +52,7 @@ namespace zt::core
 	{
 	public:
 
-		inline static ConsoleLogger Create(std::string name);
+		inline static ConsoleLogger Create(std::string name, spdlog::level::level_enum level = spdlog::level::info);
 
 	protected:
 
@@ -86,12 +86,15 @@ namespace zt::core
 
 	};
 
-	ConsoleLogger ConsoleLogger::Create(std::string name)
+	ConsoleLogger ConsoleLogger::Create(std::string name, spdlog::level::level_enum level)
 	{
 		ConsoleLogger logger;
 		logger.internal = spdlog::get(name);
 		if (!logger)
 			logger.internal = spdlog::stdout_color_mt(name);
+
+		logger->set_level(level);
+		logger.lastLevel = level;
 
 		auto sink = std::make_shared<SimpleCallbackSink>();
 		auto& sinks = logger.internal->sinks();
