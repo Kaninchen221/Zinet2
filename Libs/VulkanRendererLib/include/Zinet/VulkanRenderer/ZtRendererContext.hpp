@@ -124,6 +124,7 @@ namespace zt::vulkan_renderer
 		//DescriptorSetLayout renderPassDescriptorSetLayout{ nullptr };
 		//DescriptorSets renderPassDescriptorSet{ nullptr };
 
+		// TODO: Handle situations when GPU support less than 3 images
 		size_t framesInFlight = 3;
 
 		bool invalidWindowSizeForPresent = false;
