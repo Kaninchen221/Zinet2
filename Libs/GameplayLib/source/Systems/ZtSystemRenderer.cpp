@@ -118,6 +118,9 @@ namespace zt::gameplay
 	{
 		System::update();
 
+		if (renderer.shouldBePaused())
+			return;
+
 		if (nodes.size() == 0 && drawInfo.additionalCommands.empty())
 			return;
 

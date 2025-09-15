@@ -137,6 +137,15 @@ namespace zt::vulkan_renderer
 
 	void RendererContext::windowResized(const Vector2i& size)
 	{
+		if (size.x <= 0 || size.y <= 0)
+		{
+			invalidWindowSizeForPresent = true;
+		}
+		else
+		{
+			invalidWindowSizeForPresent = false;
+		}
+
 		queue.waitIdle();
 
 		renderPass.destroy(device);
@@ -147,17 +156,20 @@ namespace zt::vulkan_renderer
 		}
 
 		swapChain.destroy(device);
-		if (!swapChain.create(device, physicalDevice, surface, size))
+		if (!invalidWindowSizeForPresent)
 		{
-			Logger->error("Couldn't recreate swap chain after window resized");
-			return;
-		}
+			if (!swapChain.create(device, physicalDevice, surface, size))
+			{
+				Logger->error("Couldn't recreate swap chain after window resized");
+				return;
+			}
 
-		for (auto& displayImage : displayImages)
-		{
-			displayImage.destroy(*this);
+			for (auto& displayImage : displayImages)
+			{
+				displayImage.destroy(*this);
+			}
+			createDisplayImages();
 		}
-		createDisplayImages();
 
 		currentDisplayImageIndex = 0;
 		nextDisplayImageIndex = 0;

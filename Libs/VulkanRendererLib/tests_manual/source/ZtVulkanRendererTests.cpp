@@ -384,24 +384,27 @@ namespace zt::vulkan_renderer::tests
 			}
 			imguiTimeGraph.update(imguiClock.restart().getAsMilliseconds());
 
-			ASSERT_TRUE(renderer.createPipeline(drawInfo));
-			ASSERT_TRUE(renderer.getGraphicsPipeline().isValid());
+			if (!renderer.shouldBePaused())
+			{
+				ASSERT_TRUE(renderer.createPipeline(drawInfo));
+				ASSERT_TRUE(renderer.getGraphicsPipeline().isValid());
 
-			nextImageClock.restart();
-			ASSERT_TRUE(renderer.nextImage());
-			beginFrameTimeGraph.update(nextImageClock.restart().getAsMilliseconds());
+				nextImageClock.restart();
+				ASSERT_TRUE(renderer.nextImage());
+				beginFrameTimeGraph.update(nextImageClock.restart().getAsMilliseconds());
 
-			drawClock.restart();
-			renderer.draw(drawInfo);
-			drawTimeGraph.update(drawClock.restart().getAsMilliseconds());
+				drawClock.restart();
+				renderer.draw(drawInfo);
+				drawTimeGraph.update(drawClock.restart().getAsMilliseconds());
 
-			submitClock.restart();
-			ASSERT_TRUE(renderer.submitDrawInfo());
-			submitTimeGraph.update(submitClock.restart().getAsMilliseconds());
+				submitClock.restart();
+				ASSERT_TRUE(renderer.submitDrawInfo());
+				submitTimeGraph.update(submitClock.restart().getAsMilliseconds());
 
-			displayCurrentImageClock.restart();
-			ASSERT_TRUE(renderer.displayCurrentImage());
-			endFrameTimeGraph.update(displayCurrentImageClock.restart().getAsMilliseconds());
+				displayCurrentImageClock.restart();
+				ASSERT_TRUE(renderer.displayCurrentImage());
+				endFrameTimeGraph.update(displayCurrentImageClock.restart().getAsMilliseconds());
+			}
 
 			windowEvents.pollEvents();
 

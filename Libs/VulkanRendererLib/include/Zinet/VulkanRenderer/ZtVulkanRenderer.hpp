@@ -54,6 +54,8 @@ namespace zt::vulkan_renderer
 		const auto& getGraphicsPipeline() const { return graphicsPipeline; }
 		auto& getGraphicsPipeline() { return graphicsPipeline; }
 
+		bool shouldBePaused() const noexcept { return rendererContext.invalidWindowSizeForPresent; }
+
 	protected:
 
 		RendererContext rendererContext;

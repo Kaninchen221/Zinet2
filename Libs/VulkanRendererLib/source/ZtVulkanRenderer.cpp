@@ -209,7 +209,7 @@ namespace zt::vulkan_renderer
 
 	void VulkanRenderer::WindowResizedCallback(void* userPointer, const Vector2i& size)
 	{
-		Logger->info("Window resized");
+		Logger->info("Window resized x: {}, y: {}", size.x, size.y);
 
 		VulkanRenderer& vulkanRenderer = *(VulkanRenderer*)userPointer;
 		auto& rendererContext = vulkanRenderer.getRendererContext();

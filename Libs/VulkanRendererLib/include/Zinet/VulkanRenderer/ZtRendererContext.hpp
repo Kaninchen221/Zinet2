@@ -126,6 +126,8 @@ namespace zt::vulkan_renderer
 
 		size_t framesInFlight = 3;
 
+		bool invalidWindowSizeForPresent = false;
+
 		void windowResized(const Vector2i& size);
 
 	};
