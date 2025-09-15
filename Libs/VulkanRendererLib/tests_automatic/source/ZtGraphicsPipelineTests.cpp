@@ -88,16 +88,12 @@ namespace zt::vulkan_renderer::tests
 			.pipelineDescriptorInfo =
 			{
 				.uniformBuffers = {},
-				.cachedUniformBuffersBinding = {},
 				.texturesInfos = {},
-				.cachedTexturesBinding = {}
 			},
 			.objectDescriptorInfo =
 			{
 				.uniformBuffers = {},
-				.cachedUniformBuffersBinding = {},
 				.texturesInfos = {},
-				.cachedTexturesBinding = {}
 			}
 		};
 

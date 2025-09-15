@@ -130,10 +130,10 @@ namespace zt::vulkan_renderer
 			if (!pipelineDescriptorSets.create(device, allocateInfo))
 				return false;
 
-			drawInfo.pipelineDescriptorInfo.cachedDescriptorSetsUpdateData =
+			auto descriptorSetsUpdateData =
 				drawInfo.pipelineDescriptorInfo.createDescriptorSetsUpdateData(pipelineDescriptorSets);
 
-			pipelineDescriptorSets.update(device, drawInfo.pipelineDescriptorInfo.cachedDescriptorSetsUpdateData);
+			pipelineDescriptorSets.update(device, descriptorSetsUpdateData);
 		}
 
 		{ // Object descriptor set & layout
@@ -148,10 +148,10 @@ namespace zt::vulkan_renderer
 			if (!objectDescriptorSets.create(device, allocateInfo))
 				return false;
 
-			drawInfo.objectDescriptorInfo.cachedDescriptorSetsUpdateData =
+			auto descriptorSetsUpdateData =
 				drawInfo.objectDescriptorInfo.createDescriptorSetsUpdateData(objectDescriptorSets);
 
-			objectDescriptorSets.update(device, drawInfo.objectDescriptorInfo.cachedDescriptorSetsUpdateData);
+			objectDescriptorSets.update(device, descriptorSetsUpdateData);
 		}
 
 		return true;

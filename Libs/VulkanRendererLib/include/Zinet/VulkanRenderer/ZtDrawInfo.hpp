@@ -51,7 +51,6 @@ namespace zt::vulkan_renderer
 
 		uint32_t cachedUniformBuffersBinding = 0;
 		uint32_t cachedTexturesBinding = 0;
-		DescriptorSetsUpdateData cachedDescriptorSetsUpdateData;
 
 		DescriptorSetLayout::Bindings createBindings();
 
