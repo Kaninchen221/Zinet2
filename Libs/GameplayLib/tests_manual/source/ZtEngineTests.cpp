@@ -99,8 +99,15 @@ namespace zt::gameplay::tests
 				ASSERT_TRUE(textureForSprites->load(core::Paths::RootPath()))
 			);
 
+			// TODO
+			// - We should have one descriptor for all MVP buffers
+			// - We should have atlas for textures
+			// Solution: Create InstancedSprites class
+			// We need: 
+			// - SSBO (Shader storage buffer object) to store a lot of MVPs
+			// - Atlas texture
 			ZT_TIME_LOG_NAME(CreateSprites,
-				for (size_t i = 0; i < 100; ++i)
+				for (size_t i = 0; i < 5; ++i)
 				{
 					auto sprite = CreateObject<NodeSprite>(fmt::format("Sprite_{}", i));
 					sprite->transform.getPosition().x = random.real<float>(-10, 10);
@@ -111,6 +118,7 @@ namespace zt::gameplay::tests
 					sprite->transform.getRotation() = random.real<float>(0, 360);
 					sprite->texture = textureForSprites;
 					rootNode->addChild(sprite);
+					//sprite->update(1.f);
 					systemTickable->addNode(sprite);
 					systemRenderer->addNode(sprite);
 				}

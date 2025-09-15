@@ -91,7 +91,9 @@ namespace zt::vulkan_renderer
 
 	void ImGuiIntegration::prepareRenderData() const
 	{
+#if ZINET_USE_IMGUI
 		ImGui::Render();
+#endif
 	}
 
 	void ImGuiIntegration::ImplSpecificNewFrame()
