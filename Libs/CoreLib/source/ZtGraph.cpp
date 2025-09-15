@@ -23,8 +23,16 @@ namespace zt::core
 			values.erase(values.begin());
 		}
 
-		average += newValue;
-		average /= 2.f;
+		// Calc average value
+		if (values.empty()) 
+		{
+			average = newValue;
+		}
+		else
+		{
+			const ValueT diff = newValue - average;
+			average += diff / values.size();
+		}
 
 		values.push_back(newValue);
 

@@ -38,20 +38,19 @@ namespace zt::vulkan_renderer
 		std::vector<VkDescriptorBufferInfo> descriptorBuffersInfos;
 		std::vector<VkDescriptorImageInfo> descriptorImagesInfos;
 	};
-
-	// TODO: Refactor?
+	
 	struct DescriptorInfo
 	{
 		using VkWriteDescriptorSets = std::vector<VkWriteDescriptorSet>;
 
 		/// Uniform buffer per instance
 		std::vector<UniformBufferInfo> uniformBuffers;
-		uint32_t cachedUniformBuffersBinding = 0;
 
 		/// Texture per instance
 		std::vector<TextureInfo> texturesInfos;
-		uint32_t cachedTexturesBinding = 0;
 
+		uint32_t cachedUniformBuffersBinding = 0;
+		uint32_t cachedTexturesBinding = 0;
 		DescriptorSetsUpdateData cachedDescriptorSetsUpdateData;
 
 		DescriptorSetLayout::Bindings createBindings();
