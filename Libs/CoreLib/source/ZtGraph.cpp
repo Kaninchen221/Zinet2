@@ -52,7 +52,11 @@ namespace zt::core
 		if (ImPlot::BeginPlot(plotLabel.c_str(), ImVec2(-1, 140), plotFlags))
 		{
 			ImPlot::SetupAxes(nullptr, nullptr, axisFlags, axisFlags);
-			ImPlot::SetupAxisLimits(ImAxis_Y1, smallestValue, largestValue, ImPlotCond_Always);
+			ImPlot::SetupAxisLimits(
+				ImAxis_Y1, 
+				resizeToSmallest ? smallestValue : minValue,
+				resizeToLargest ? largestValue : maxValue, 
+				ImPlotCond_Always);
 			ImPlot::SetupAxisLimits(ImAxis_X1, 0, static_cast<double>(values.size()), ImPlotCond_Always);
 			ImPlot::PlotLine(displayName.c_str(), values.data(), static_cast<int>(values.size()));
 			ImPlot::EndPlot();

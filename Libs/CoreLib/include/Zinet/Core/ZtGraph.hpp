@@ -24,9 +24,9 @@ namespace zt::core
 		using ValueT = float;
 
 		Graph() = default;
-		Graph(const std::string& name, ValueT newMinValue, ValueT newMaxValue, size_t newMaxPoints) 
+		Graph(const std::string& name, ValueT newMinValue, ValueT newMaxValue, size_t newMaxPoints, bool newResizeToLargest = true, bool newResizeToSmallest = true)
 			: Object{ name },
-			minValue{ newMinValue }, maxValue{ newMaxValue }, maxPoints{ newMaxPoints }
+			minValue{ newMinValue }, maxValue{ newMaxValue }, maxPoints{ newMaxPoints }, resizeToLargest{ newResizeToLargest }, resizeToSmallest{ newResizeToSmallest }
 		{
 			Ensure(maxPoints > 0, "maxPoints must be greater than 0");
 			Ensure(maxValue >= minValue, "maxValue must be greater than minValue");
@@ -54,6 +54,12 @@ namespace zt::core
 		void setMaxPoints(const size_t newMaxPoints) noexcept;
 		auto getMaxPoints() const noexcept { return maxPoints; }
 
+		void setResizeToLargest(bool value) noexcept { resizeToLargest = value; }
+		bool getResizeToLargest() const noexcept { return resizeToLargest; }
+
+		void setResizeToSmallest(bool value) noexcept { resizeToSmallest = value; }
+		bool getResizeToSmallest() const noexcept { return resizeToSmallest; }
+
 		void reset();
 
 	protected:
@@ -67,6 +73,8 @@ namespace zt::core
 		// TODO: Write some NumericLimits class because I'm getting "not enough arguments for function-like macro invocation 'max'" is some situations when using std::numeric_limits
 		ValueT smallestValue{ FLT_MAX }; 
 		ValueT largestValue{ FLT_MIN };
+		bool resizeToLargest = true;
+		bool resizeToSmallest = true;
 
 	};
 

@@ -308,6 +308,9 @@ namespace zt::vulkan_renderer::tests
 
 		bool useImGui = true;
 
+		core::Graph	imguiTimeGraph{ "ImGui", 0.f, 0.1f, 1000 };
+		core::Clock imguiClock;
+
 		core::Graph beginFrameTimeGraph{ "Next Image", 0.f, 0.1f, 1000 };
 		core::Clock nextImageClock;
 
@@ -322,6 +325,7 @@ namespace zt::vulkan_renderer::tests
 
 		while (window.isOpen())
 		{
+			imguiClock.restart();
 			if (useImGui)
 			{
 				ImGuiIntegration::ImplSpecificNewFrame();
@@ -368,6 +372,7 @@ namespace zt::vulkan_renderer::tests
 				ImGui::End();
 
 				core::Graph::ShowPlotAny();
+				imguiTimeGraph.show();
 				beginFrameTimeGraph.show();
 				drawTimeGraph.show();
 				submitTimeGraph.show();
@@ -377,6 +382,7 @@ namespace zt::vulkan_renderer::tests
 
 				imGuiIntegration.prepareRenderData();
 			}
+			imguiTimeGraph.update(imguiClock.restart().getAsMilliseconds());
 
 			ASSERT_TRUE(renderer.createPipeline(drawInfo));
 			ASSERT_TRUE(renderer.getGraphicsPipeline().isValid());
