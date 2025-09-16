@@ -92,14 +92,14 @@ namespace zt::vulkan_renderer::tests
 		};
 
 		const auto createInfo = Buffer::GetVertexBufferCreateInfo(vertices);
-		ASSERT_TRUE(buffer.createBuffer(createInfo, vma));
+		ASSERT_TRUE(buffer.createBuffer(vma, createInfo));
 		ASSERT_EQ(sizeof(Vertices::value_type) * vertices.size(), buffer.getSize());
 		ASSERT_TRUE(buffer.getAllocation());
 
-		ASSERT_TRUE(buffer.fillWithSTDContainer(vertices, vma));
+		ASSERT_TRUE(buffer.fillWithSTDContainer(vma, vertices));
 
 		Vertices actualVertices(vertices.size(), Vertices::value_type{});
-		ASSERT_TRUE(buffer.getDataToSTDContainer(actualVertices, vma));
+		ASSERT_TRUE(buffer.getDataToSTDContainer(vma, actualVertices));
 
 		ASSERT_TRUE(core::CompareContainers(vertices, actualVertices));
 	}
@@ -114,14 +114,14 @@ namespace zt::vulkan_renderer::tests
 		};
 
 		const auto createInfo = Buffer::GetIndexBufferCreateInfo(indices);
-		ASSERT_TRUE(buffer.createBuffer(createInfo, vma));
+		ASSERT_TRUE(buffer.createBuffer(vma, createInfo));
 		ASSERT_EQ(sizeof(Indices::value_type) * indices.size(), buffer.getSize());
 		ASSERT_TRUE(buffer.getAllocation());
 
-		ASSERT_TRUE(buffer.fillWithSTDContainer(indices, vma));
+		ASSERT_TRUE(buffer.fillWithSTDContainer(vma, indices));
 
 		Indices actualIndices(indices.size(), Indices::value_type{});
-		ASSERT_TRUE(buffer.getDataToSTDContainer(actualIndices, vma));
+		ASSERT_TRUE(buffer.getDataToSTDContainer(vma, actualIndices));
 
 		ASSERT_TRUE(core::CompareContainers(indices, actualIndices));
 	}
@@ -132,14 +132,14 @@ namespace zt::vulkan_renderer::tests
 		const DataT uniformBufferData{ 123.7842f, 0.8823f };
 
 		const auto createInfo = Buffer::GetUniformBufferCreateInfo(uniformBufferData);
-		ASSERT_TRUE(buffer.createBuffer(createInfo, vma));
+		ASSERT_TRUE(buffer.createBuffer(vma, createInfo));
 		ASSERT_EQ(sizeof(DataT), buffer.getSize());
 		ASSERT_TRUE(buffer.getAllocation());
 
-		ASSERT_TRUE(buffer.fillWithObject(uniformBufferData, vma));
+		ASSERT_TRUE(buffer.fillWithObject(vma, uniformBufferData));
 		
 		DataT actualData{};
-		ASSERT_TRUE(buffer.getDataToObject(actualData, vma));
+		ASSERT_TRUE(buffer.getDataToObject(vma, actualData));
 		
 		ASSERT_EQ(uniformBufferData, actualData);
 	}
@@ -153,7 +153,60 @@ namespace zt::vulkan_renderer::tests
 		ASSERT_TRUE(sourceImage.loadFromFile(imagePath, 4));
 
 		const auto createInfo = Buffer::GetImageBufferCreateInfo(sourceImage);
-		ASSERT_TRUE(buffer.createBuffer(createInfo, vma));
+		ASSERT_TRUE(buffer.createBuffer(vma, createInfo));
+	}
+
+	TEST_F(BufferTests, StorageBufferTest)
+	{
+		std::vector<std::byte> chonker;
+		chonker.resize(1024 * 1024 * 64); // 64MB
+
+		const auto createInfo = Buffer::GetStorageBufferCreateInfo(chonker);
+		ASSERT_TRUE(buffer.createBuffer(vma, createInfo));
+
+		buffer.fillWithSTDContainer(vma, chonker);
+	}
+
+	TEST_F(BufferTests, FillWithOffsetTest)
+	{
+		struct Data
+		{
+			int32_t id{};
+			float value{};
+
+			bool operator == (const Data& other) const noexcept
+			{
+				return id == other.id && value == other.value;
+			}
+		};
+
+		std::vector<Data> container;
+		container.resize(1000);
+
+		const auto createInfo = Buffer::GetStorageBufferCreateInfo(container);
+		ASSERT_TRUE(buffer.createBuffer(vma, createInfo));
+
+		buffer.fillWithSTDContainer(vma, container, 0);
+
+		const Data expectedData{ .id = 50, .value = 23.43432f };
+		const size_t bytesOffset = sizeof(expectedData) * 512 /* ElementIndex */;
+		buffer.fillWithObject(vma, expectedData, bytesOffset);
+
+		{ // Test changed data
+			Data actualData{};
+			buffer.getDataToObject(vma, actualData, bytesOffset);
+
+			ASSERT_EQ(expectedData, actualData);
+		}
+
+		{ // Test data around changed region
+			Data actualData{};
+			buffer.getDataToObject(vma, actualData, bytesOffset + sizeof(expectedData));
+			ASSERT_EQ(Data{}, actualData);
+
+			buffer.getDataToObject(vma, actualData, bytesOffset - sizeof(expectedData));
+			ASSERT_EQ(Data{}, actualData);
+		}
 	}
 
 }

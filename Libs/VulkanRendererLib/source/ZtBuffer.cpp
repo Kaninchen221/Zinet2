@@ -16,7 +16,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	bool Buffer::createBuffer(const VkBufferCreateInfo& createInfo, const VMA& vma)
+	bool Buffer::createBuffer(const VMA& vma, const VkBufferCreateInfo& createInfo)
 	{
 		if (isValid())
 			return false;
@@ -40,12 +40,12 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	bool Buffer::fillWithImage(const core::Image& image, const VMA& vma)
+	bool Buffer::fillWithImage(const VMA& vma, const core::Image& image, size_t bytesOffset)
 	{
 		if (!isValid())
 			return false;
 
-		const auto result = fillWithData(image.getData(), image.getSize(), vma);
+		const auto result = fillWithData(vma, image.getData(), image.getSize(), bytesOffset);
 
 		if (result == VK_SUCCESS)
 		{
@@ -69,39 +69,39 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	VkResult Buffer::fillWithData(const void* src, size_t srcSize, const VMA& vma) const
+	VkResult Buffer::fillWithData(const VMA& vma, const void* src, size_t srcSize, size_t bytesDstOffset) const
 	{
-		if (srcSize != size)
+		if (srcSize + bytesDstOffset > size)
 		{
 			Logger->error("Invalid size");
 			return VK_ERROR_MEMORY_MAP_FAILED;
 		}
 
-		void* mappedData{};
-		const auto mapResult = vmaMapMemory(vma.get(), allocation, &mappedData);
+		std::byte* mappedData{};
+		const auto mapResult = vmaMapMemory(vma.get(), allocation, reinterpret_cast<void**>(&mappedData));
 		if (mapResult != VK_SUCCESS)
 		{
 			Logger->error("vmaMapMemory returned non VK_SUCCESS value");
 			return mapResult;
 		}
 
-		std::memcpy(mappedData, src, size);
+		std::memcpy(mappedData + bytesDstOffset, src, srcSize);
 		vmaUnmapMemory(vma.get(), allocation);
 
 		return VK_SUCCESS;
 	}
 
-	VkResult Buffer::getData(void* dst, size_t dstSize, const VMA& vma) const noexcept
+	VkResult Buffer::getData(const VMA& vma, void* dst, size_t dstSize, size_t bytesSrcOffset) const noexcept
 	{
-		if (dstSize != size)
+		if (dstSize + bytesSrcOffset > size)
 			return VK_ERROR_MEMORY_MAP_FAILED;
 
-		void* mappedData{};
-		const auto mapResult = vmaMapMemory(vma.get(), allocation, &mappedData);
+		std::byte* mappedData{};
+		const auto mapResult = vmaMapMemory(vma.get(), allocation, reinterpret_cast<void**>(&mappedData));
 		if (mapResult != VK_SUCCESS)
 			return mapResult;
 
-		std::memcpy(dst, mappedData, size);
+		std::memcpy(dst, mappedData + bytesSrcOffset, dstSize);
 		vmaUnmapMemory(vma.get(), allocation);
 
 		return VK_SUCCESS;

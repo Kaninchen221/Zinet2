@@ -61,8 +61,8 @@ namespace zt::vulkan_renderer::tests
 		UniformData uniformData{};
 
 		std::vector<Buffer> uniformBuffers;
-		uniformBuffers.emplace_back(CreateUniformBuffer(uniformData, rendererContext.getVMA()));
-		uniformBuffers.emplace_back(CreateUniformBuffer(uniformData, rendererContext.getVMA()));
+		uniformBuffers.emplace_back(CreateUniformBuffer(rendererContext.getVMA(), uniformData));
+		uniformBuffers.emplace_back(CreateUniformBuffer(rendererContext.getVMA(), uniformData));
 
 		Texture texture = CreateTexture(rendererContext);
 		Sampler sampler = CreateSampler(rendererContext.getDevice());
