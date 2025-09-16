@@ -3,6 +3,7 @@
 namespace zt::gameplay
 {
 
+	// TODO: Change it to priority as number?
 	enum class UpdatePhase
 	{
 		Pre = 0,
