@@ -53,11 +53,11 @@ namespace zt::vulkan_renderer::tests
 		return shaderModule;
 	}
 
-	inline Buffer CreateUniformBuffer(const auto& uniformData, const VMA& vma)
+	inline Buffer CreateUniformBuffer(const VMA& vma, const auto& uniformData)
 	{
 		Buffer buffer{ nullptr };
 		const auto createInfo = Buffer::GetUniformBufferCreateInfo(uniformData);
-		if (!buffer.createBuffer(createInfo, vma))
+		if (!buffer.createBuffer(vma, createInfo))
 		{
 			Ensure(false, "Buffer create returned false");
 			return Buffer{ nullptr };
@@ -84,13 +84,13 @@ namespace zt::vulkan_renderer::tests
 
 		Buffer buffer{ nullptr };
 		const auto bufferCreateInfo = Buffer::GetImageBufferCreateInfo(sourceImage);
-		if (!buffer.createBuffer(bufferCreateInfo, vma))
+		if (!buffer.createBuffer(vma, bufferCreateInfo))
 		{
 			Ensure(false, "Buffer create returned false");
 			return {};
 		}
 
-		if (!buffer.fillWithImage(sourceImage, vma))
+		if (!buffer.fillWithImage(vma, sourceImage))
 		{
 			Ensure(false, "Buffer fill returned false");
 			return {};

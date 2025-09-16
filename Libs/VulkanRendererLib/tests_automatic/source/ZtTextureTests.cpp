@@ -119,9 +119,9 @@ namespace zt::vulkan_renderer::tests
 		
 		Buffer buffer{ nullptr };
 		const auto bufferCreateInfo = Buffer::GetImageBufferCreateInfo(sourceImage);
-		ASSERT_TRUE(buffer.createBuffer(bufferCreateInfo, vma));
+		ASSERT_TRUE(buffer.createBuffer(vma, bufferCreateInfo));
 
-		ASSERT_TRUE(buffer.fillWithImage(sourceImage, vma));
+		ASSERT_TRUE(buffer.fillWithImage(vma, sourceImage));
 
 		ASSERT_TRUE(texture.create(device, vma, { sourceImage.getWidth(), sourceImage.getHeight() }));
 		ASSERT_TRUE(texture.isValid());

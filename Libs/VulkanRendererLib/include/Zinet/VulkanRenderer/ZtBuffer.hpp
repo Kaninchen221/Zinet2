@@ -51,21 +51,24 @@ namespace zt::vulkan_renderer
 
 		static VkBufferCreateInfo GetImageBufferCreateInfo(const core::Image& image) noexcept;
 
-		bool createBuffer(const VkBufferCreateInfo& createInfo, const VMA& vma);
+		template<core::STDContainer ContainerT>
+		static VkBufferCreateInfo GetStorageBufferCreateInfo(const ContainerT& container) noexcept;
+
+		bool createBuffer(const VMA& vma, const VkBufferCreateInfo& createInfo);
 
 		template<core::STDContainer ContainerT>
-		bool fillWithSTDContainer(const ContainerT& contiguousContainer, const VMA& vma);
+		bool fillWithSTDContainer(const VMA& vma, const ContainerT& contiguousContainer, size_t bytesDstOffset = 0);
 
 		template<core::NotSTDContainer ObjectT>
-		bool fillWithObject(const ObjectT& object, const VMA& vma);
+		bool fillWithObject(const VMA& vma, const ObjectT& object, size_t bytesDstOffset = 0);
 
-		bool fillWithImage(const core::Image& image, const VMA& vma);
+		bool fillWithImage(const VMA& vma, const core::Image& image, size_t bytesDstOffset = 0);
 
 		template<core::STDContainer ContainerT>
-		bool getDataToSTDContainer(ContainerT& contiguousContainer, const VMA& vma) const;
+		bool getDataToSTDContainer(const VMA& vma, ContainerT& contiguousContainer, size_t bytesSrcOffset = 0) const;
 
 		template<core::NotSTDContainer ObjectT>
-		bool getDataToObject(ObjectT& object, const VMA& vma) const;
+		bool getDataToObject(const VMA& vma, ObjectT& object, size_t bytesSrcOffset = 0) const;
 
 		void destroy(const VMA& vma) noexcept;
 
@@ -75,9 +78,9 @@ namespace zt::vulkan_renderer
 
 	protected:
 
-		VkResult fillWithData(const void* src, size_t srcSize, const VMA& vma) const;
+		VkResult fillWithData(const VMA& vma, const void* src, size_t srcSize, size_t bytesDstOffset = 0) const;
 
-		VkResult getData(void* dst, size_t dstSize, const VMA& vma) const noexcept;
+		VkResult getData(const VMA& vma, void* dst, size_t dstSize, size_t bytesDstOffset = 0) const noexcept;
 
 		VmaAllocation allocation{};
 		std::uint32_t size{};
@@ -121,13 +124,25 @@ namespace zt::vulkan_renderer
 	}
 
 	template<core::STDContainer ContainerT>
-	bool Buffer::fillWithSTDContainer(const ContainerT& stdContainer, const VMA& vma)
+	VkBufferCreateInfo Buffer::GetStorageBufferCreateInfo(const ContainerT& container) noexcept
+	{
+		return VkBufferCreateInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+			.size = sizeof(typename ContainerT::value_type) * container.size(),
+			.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			.sharingMode = VK_SHARING_MODE_EXCLUSIVE
+		};
+	}
+
+	template<core::STDContainer ContainerT>
+	bool Buffer::fillWithSTDContainer(const VMA& vma, const ContainerT& stdContainer, size_t bytesOffset)
 	{
 		if (!isValid())
 			return false;
 
 		const auto containerSize = sizeof(typename ContainerT::value_type) * stdContainer.size();
-		const auto result = fillWithData(stdContainer.data(), containerSize, vma);
+		const auto result = fillWithData(vma, stdContainer.data(), containerSize, bytesOffset);
 
 		if (result == VK_SUCCESS)
 		{
@@ -141,12 +156,12 @@ namespace zt::vulkan_renderer
 	}
 
 	template<core::NotSTDContainer ObjectT>
-	bool Buffer::fillWithObject(const ObjectT& object, const VMA& vma)
+	bool Buffer::fillWithObject(const VMA& vma, const ObjectT& object, size_t bytesOffset)
 	{
 		if (!isValid())
 			return false;
 
-		const auto result = fillWithData(&object, sizeof(ObjectT), vma);
+		const auto result = fillWithData(vma, &object, sizeof(ObjectT), bytesOffset);
 
 		if (result == VK_SUCCESS)
 		{
@@ -160,13 +175,13 @@ namespace zt::vulkan_renderer
 	}
 
 	template<core::STDContainer ContainerT>
-	bool Buffer::getDataToSTDContainer(ContainerT& stdContainer, const VMA& vma) const
+	bool Buffer::getDataToSTDContainer(const VMA& vma, ContainerT& stdContainer, size_t bytesSrcOffset) const
 	{
 		if (!isValid())
 			return false;
 
 		const auto containerSize = sizeof(typename ContainerT::value_type) * stdContainer.size();
-		const auto result = getData(stdContainer.data(), containerSize, vma);
+		const auto result = getData(vma, stdContainer.data(), containerSize, bytesSrcOffset);
 
 		if (result == VK_SUCCESS)
 		{
@@ -180,12 +195,12 @@ namespace zt::vulkan_renderer
 	}
 
 	template<core::NotSTDContainer ObjectT>
-	bool Buffer::getDataToObject(ObjectT& object, const VMA& vma) const
+	bool Buffer::getDataToObject(const VMA& vma, ObjectT& object, size_t bytesSrcOffset) const
 	{
 		if (!isValid())
 			return false;
 
-		const auto result = getData(&object, sizeof(object), vma);
+		const auto result = getData(vma, &object, sizeof(object), bytesSrcOffset);
 
 		if (result == VK_SUCCESS)
 		{

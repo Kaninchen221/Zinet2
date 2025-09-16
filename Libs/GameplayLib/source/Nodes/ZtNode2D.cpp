@@ -22,7 +22,7 @@ namespace zt::gameplay
 		auto& vma = systemRenderer->getRenderer().getRendererContext().getVMA();
 
 		const auto bufferCreateInfo = Buffer::GetUniformBufferCreateInfo<MVP>(mvp);
-		if (!Ensure(MVPBuffer.createBuffer(bufferCreateInfo, vma)))
+		if (!Ensure(MVPBuffer.createBuffer(vma, bufferCreateInfo)))
 		{
 			Logger->error("Failed to create MVP uniform buffer");
 		}
@@ -88,7 +88,7 @@ namespace zt::gameplay
 		mvp.projection = camera->getCamera().getPerspectiveMatrix();
 
 		auto& vma = engineContext.getSystem<SystemRenderer>()->getRenderer().getRendererContext().getVMA();
-		MVPBuffer.fillWithObject(mvp, vma);
+		MVPBuffer.fillWithObject(vma, mvp);
 	}
 
 }
