@@ -6,6 +6,7 @@
 #include <type_traits>
 #include <array>
 #include <math.h>
+#include <utility>
 
 namespace zt::math
 {
@@ -40,10 +41,9 @@ namespace zt::math
 		return result;
 	}
 
-	inline std::uint32_t GetMaximumMipmapLevelsCount(const Vector2ui& textureSize);
+	std::uint32_t GetMaximumMipmapLevelsCount(const Vector2ui& textureSize);
 
-	inline float Distance(const Vector2f& vector1, const Vector2f& vector2);
+	float Distance(const Vector2f& vector1, const Vector2f& vector2);
 
-	inline bool IsInsideRect(const RectF& rect, const Vector2f& position);
-	
+	bool IsInsideRect(const RectF& rect, const Vector2f& position);
 }

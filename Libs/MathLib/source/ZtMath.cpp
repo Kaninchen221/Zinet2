@@ -26,5 +26,4 @@ namespace zt::math
 
 		return position.x > min.x && position.x < max.x && position.y > min.y && position.y < max.y;
 	}
-
 }

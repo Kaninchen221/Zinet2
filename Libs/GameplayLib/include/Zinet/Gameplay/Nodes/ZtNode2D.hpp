@@ -41,6 +41,9 @@ namespace zt::gameplay
 
 		void update(float deltaTime) override;
 
+		// TODO
+		// Only one function that returns Descriptor Info
+		// Rename to getDescriptorInfo
 		virtual vulkan_renderer::DescriptorInfo getPipelineDescriptorInfos();
 		virtual vulkan_renderer::DescriptorInfo getDrawCallDescriptorInfos();
 
