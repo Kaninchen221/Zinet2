@@ -12,15 +12,15 @@ namespace zt::vulkan_renderer
 	{
 		DescriptorSetLayout::Bindings result;
 
-		if (!uniformBuffers.empty())
+		for (auto& [descriptorType, buffers] : buffersPerType)
 		{
-			cachedUniformBuffersBinding = static_cast<uint32_t>(result.size());
+			cachedBuffersBinding = static_cast<uint32_t>(result.size());
 			result.push_back(
 				VkDescriptorSetLayoutBinding
 				{
-					.binding = cachedUniformBuffersBinding,
-					.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-					.descriptorCount = static_cast<uint32_t>(uniformBuffers.size()),
+					.binding = cachedBuffersBinding,
+					.descriptorType = descriptorType,
+					.descriptorCount = static_cast<uint32_t>(buffers.size()),
 					.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS,
 					.pImmutableSamplers = nullptr
 				}
@@ -90,28 +90,30 @@ namespace zt::vulkan_renderer
 		auto& descriptorBuffersInfos = result.descriptorBuffersInfos;
 		auto& descriptorImagesInfos = result.descriptorImagesInfos;
 
-		for (const auto& uniformBufferInfo : uniformBuffers)
+		for (auto& [descriptorType, buffers] : buffersPerType)
 		{
-			auto& uniformBuffer = uniformBufferInfo.uniformBuffer;
-			if (!uniformBuffer || !uniformBuffer->isValid())
-				continue;
-
-			auto& descriptorBufferInfo = descriptorBuffersInfos.emplace_back(GetBufferInfo(*uniformBuffer));
-			descriptorBufferInfo.offset = 0;
-		}
-
-		/// Write Descriptor for uniform buffers
-		for (size_t descriptorSetIndex = 0; descriptorSetIndex < descriptorSets.getCount(); ++descriptorSetIndex)
-		{
-			if (!uniformBuffers.empty())
+			for (const auto& buffer : buffers)
 			{
-				auto& writeDescriptorSet = writeDescriptorSets.emplace_back(GetDefaultWriteDescriptorSet());
-				writeDescriptorSet.dstSet = descriptorSets.get(descriptorSetIndex);
-				writeDescriptorSet.dstBinding = cachedUniformBuffersBinding;
-				writeDescriptorSet.dstArrayElement = 0;
-				writeDescriptorSet.descriptorCount = static_cast<uint32_t>(descriptorBuffersInfos.size());
-				writeDescriptorSet.pBufferInfo = descriptorBuffersInfos.data();
-				writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+				if (!buffer || !buffer->isValid())
+					continue;
+
+				auto& descriptorBufferInfo = descriptorBuffersInfos.emplace_back(GetBufferInfo(*buffer));
+				descriptorBufferInfo.offset = 0;
+			}
+
+			/// Write Descriptor for uniform buffers
+			for (size_t descriptorSetIndex = 0; descriptorSetIndex < descriptorSets.getCount(); ++descriptorSetIndex)
+			{
+				if (!buffers.empty())
+				{
+					auto& writeDescriptorSet = writeDescriptorSets.emplace_back(GetDefaultWriteDescriptorSet());
+					writeDescriptorSet.dstSet = descriptorSets.get(descriptorSetIndex);
+					writeDescriptorSet.dstBinding = cachedBuffersBinding;
+					writeDescriptorSet.dstArrayElement = 0;
+					writeDescriptorSet.descriptorCount = static_cast<uint32_t>(descriptorBuffersInfos.size());
+					writeDescriptorSet.pBufferInfo = descriptorBuffersInfos.data();
+					writeDescriptorSet.descriptorType = descriptorType;
+				}
 			}
 		}
 
@@ -144,7 +146,19 @@ namespace zt::vulkan_renderer
 
 	DescriptorInfo& DescriptorInfo::operator += (const DescriptorInfo& other)
 	{
-		uniformBuffers.append_range(other.uniformBuffers);
+		for (auto& [descriptorType, buffers] : other.buffersPerType)
+		{
+			auto findResult = buffersPerType.find(descriptorType);
+			if (findResult != buffersPerType.end())
+			{
+				findResult->second.append_range(buffers);
+			}
+			else
+			{
+				buffersPerType.insert({ descriptorType, buffers });
+			}
+		}
+
 		texturesInfos.append_range(other.texturesInfos);
 		return *this;
 	}

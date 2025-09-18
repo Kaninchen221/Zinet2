@@ -86,7 +86,13 @@ namespace zt::vulkan_renderer::tests
 				.vertexBuffer = &vertexBuffer,
 				.indexBuffer = &indexBuffer,
 				.indexCount = 0,
-				.pipelineDescriptorInfo = { .uniformBuffers{ { &uniformBuffers[0] } } }
+				.pipelineDescriptorInfo = 
+				{ 
+					.buffersPerType = 
+					{ 
+						{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0] } } 
+					}
+				}
 			};
 
 			ASSERT_TRUE(

@@ -62,9 +62,9 @@ namespace zt::gameplay
 
 		return vulkan_renderer::DescriptorInfo
 		{
-			.uniformBuffers = std::vector<vulkan_renderer::UniformBufferInfo>
+			.buffersPerType =
 			{
-				vulkan_renderer::UniformBufferInfo{ &MVPBuffer }
+				{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &MVPBuffer } }
 			}
 		};
 	}

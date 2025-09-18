@@ -151,7 +151,8 @@ namespace zt::gameplay
 
 		renderer.nextImage();
 
-		imGuiIntegration.prepareRenderData();
+		if (GetUseImGui())
+			imGuiIntegration.prepareRenderData();
 
 		renderer.draw(drawInfo);
 

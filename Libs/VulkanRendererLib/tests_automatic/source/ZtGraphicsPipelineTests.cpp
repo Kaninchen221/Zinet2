@@ -87,12 +87,12 @@ namespace zt::vulkan_renderer::tests
 			.instances = 1,
 			.pipelineDescriptorInfo =
 			{
-				.uniformBuffers = {},
+				.buffersPerType = {},
 				.texturesInfos = {},
 			},
 			.objectDescriptorInfo =
 			{
-				.uniformBuffers = {},
+				.buffersPerType = {},
 				.texturesInfos = {},
 			}
 		};

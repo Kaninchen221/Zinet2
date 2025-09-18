@@ -89,7 +89,7 @@ namespace zt::gameplay
 
 		destroyNodes(rootNode);
 
-		// Deinit systems in reverse order like the RAII
+		// Deinit systems in reverse order like RAII
 		for (auto systemIt = systems.rbegin(); systemIt != systems.rend(); ++systemIt)
 		{
 			auto& system = *systemIt;

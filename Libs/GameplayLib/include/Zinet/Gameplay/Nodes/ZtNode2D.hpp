@@ -11,15 +11,10 @@
 
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 
+#include "Zinet/Math/ZtMVP.hpp"
+
 namespace zt::gameplay
 {
-	struct MVP
-	{
-		alignas(16) glm::mat4 model;
-		alignas(16) glm::mat4 view;
-		alignas(16) glm::mat4 projection;
-	};
-
 	class  Node2D : public Node
 	{
 	private:

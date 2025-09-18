@@ -218,12 +218,15 @@ namespace zt::vulkan_renderer::tests
 			.instances = 2u,
 			.pipelineDescriptorInfo =
 			{
-				.uniformBuffers = {},
+				.buffersPerType = {},
 				.texturesInfos = { textureInfo },
 			},
 			.objectDescriptorInfo =
 			{
-				.uniformBuffers = { { &uniformBuffers[0] }, { &uniformBuffers[1] } },
+				.buffersPerType = 
+				{ 
+					{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0], &uniformBuffers[1] } }
+				},
 				.texturesInfos{}
 			},
 			.additionalCommands = { ImGuiIntegration::DrawCommand }

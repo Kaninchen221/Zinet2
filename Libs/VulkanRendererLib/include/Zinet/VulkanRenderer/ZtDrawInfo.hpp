@@ -8,6 +8,7 @@
 #include "Zinet/Core/ZtFunction.hpp"
 
 #include <span>
+#include <map>
 
 namespace zt::vulkan_renderer
 {
@@ -26,11 +27,6 @@ namespace zt::vulkan_renderer
 		ShaderType shaderType = ShaderType::Invalid;
 	};
 
-	struct  UniformBufferInfo
-	{
-		Buffer* uniformBuffer{};
-	};
-
 	// TODO: Refactor ~ move it to separate file
 	struct DescriptorSetsUpdateData
 	{
@@ -43,13 +39,12 @@ namespace zt::vulkan_renderer
 	{
 		using VkWriteDescriptorSets = std::vector<VkWriteDescriptorSet>;
 
-		/// Uniform buffer per instance
-		std::vector<UniformBufferInfo> uniformBuffers;
+		using Buffers = std::vector<Buffer*>;
+		std::map<VkDescriptorType, Buffers> buffersPerType;
 
-		/// Texture per instance
 		std::vector<TextureInfo> texturesInfos;
 
-		uint32_t cachedUniformBuffersBinding = 0;
+		uint32_t cachedBuffersBinding = 0;
 		uint32_t cachedTexturesBinding = 0;
 
 		DescriptorSetLayout::Bindings createBindings();

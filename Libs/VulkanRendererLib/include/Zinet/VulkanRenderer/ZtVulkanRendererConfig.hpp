@@ -47,7 +47,7 @@ namespace zt::vulkan_renderer
     {
         if (!exprResult)
         {
-            throw std::exception(exprText);
+            throw std::exception(exprText); // TODO: Change it, because it can't be catched
         }
     }
 }

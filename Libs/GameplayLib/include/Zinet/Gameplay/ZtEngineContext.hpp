@@ -30,7 +30,6 @@ namespace zt::gameplay
 
 	public:
 		using Systems = std::vector<ObjectHandle<System>>;
-		using SystemsPerUpdatePhase = std::array<Systems, static_cast<size_t>(UpdatePhase::Max)>;
 
 		EngineContext();
 		EngineContext(const EngineContext& other) = default;
