@@ -61,8 +61,6 @@ namespace zt::vulkan_renderer
 
 	protected:
 
-		// TODO: Descriptors per frame (display image)
-
 		DescriptorSetLayout pipelineDescriptorSetLayout{ nullptr };
 		DescriptorSets pipelineDescriptorSets;
 
