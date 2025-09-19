@@ -64,6 +64,7 @@ namespace zt::vulkan_renderer
 		DescriptorSetLayout pipelineDescriptorSetLayout{ nullptr };
 		DescriptorSets pipelineDescriptorSets;
 
+		// TODO: Should be in a class that manages an object
 		DescriptorSetLayout objectDescriptorSetLayout{ nullptr };
 		DescriptorSets objectDescriptorSets;
 
