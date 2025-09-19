@@ -30,7 +30,7 @@ namespace zt::gameplay
 
 		void show() override;
 
-		vulkan_renderer::DescriptorInfo getPipelineDescriptorInfos() override;
+		vulkan_renderer::DescriptorInfo getDescriptorInfo() override;
 
 		AssetProperty<AssetTexture> texture{ "Texture" };
 

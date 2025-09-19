@@ -109,8 +109,7 @@ namespace zt::gameplay
 		if (!node2D)
 			return;
 
-		drawInfo.pipelineDescriptorInfo += node2D->getPipelineDescriptorInfos();
-		drawInfo.objectDescriptorInfo += node2D->getDrawCallDescriptorInfos();
+		drawInfo.objectDescriptorInfo += node2D->getDescriptorInfo();
 		drawInfo.instances++;
 	}
 

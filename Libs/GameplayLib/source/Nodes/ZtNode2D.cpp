@@ -50,12 +50,7 @@ namespace zt::gameplay
 		updateMVP();
 	}
 
-	vulkan_renderer::DescriptorInfo Node2D::getPipelineDescriptorInfos()
-	{
-		return {};
-	}
-
-	vulkan_renderer::DescriptorInfo Node2D::getDrawCallDescriptorInfos()
+	vulkan_renderer::DescriptorInfo Node2D::getDescriptorInfo()
 	{
 		if (!MVPBuffer.isValid())
 			return {};

@@ -23,6 +23,8 @@ namespace zt::gameplay
 
 	public:
 
+		// TODO: Remove that 
+		// The default texture should be passed from global descriptor set to shaders
 		inline static AssetProperty<AssetTexture, core::Static::Yes> DefaultTexture{ "Default Texture" };
 
 		Node2D() = default;
@@ -41,11 +43,7 @@ namespace zt::gameplay
 
 		void update(float deltaTime) override;
 
-		// TODO
-		// Only one function that returns Descriptor Info
-		// Rename to getDescriptorInfo
-		virtual vulkan_renderer::DescriptorInfo getPipelineDescriptorInfos();
-		virtual vulkan_renderer::DescriptorInfo getDrawCallDescriptorInfos();
+		virtual vulkan_renderer::DescriptorInfo getDescriptorInfo();
 
 		vulkan_renderer::Transform transform{};
 

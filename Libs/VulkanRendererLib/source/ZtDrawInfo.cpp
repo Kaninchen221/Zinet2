@@ -162,4 +162,12 @@ namespace zt::vulkan_renderer
 		texturesInfos.append_range(other.texturesInfos);
 		return *this;
 	}
+
+	DescriptorInfo operator+(const DescriptorInfo& first, const DescriptorInfo& second)
+	{
+		auto result = first;
+		result += second;
+		return result;
+	}
+
 }

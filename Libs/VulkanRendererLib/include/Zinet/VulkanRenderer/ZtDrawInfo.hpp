@@ -57,8 +57,12 @@ namespace zt::vulkan_renderer
 
 		DescriptorSetsUpdateData createDescriptorSetsUpdateData(const DescriptorSets& descriptorSets) const;
 
+		// TODO: Test it
+		// REALY TEST IT
 		DescriptorInfo& operator += (const DescriptorInfo& other);
 	};
+
+	DescriptorInfo operator + (const DescriptorInfo& first, const DescriptorInfo& second);
 
 	struct DrawInfo
 	{

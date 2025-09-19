@@ -8,7 +8,7 @@ layout(location = 2) flat in uint instanceIndex;
 
 layout(location = 0) out vec4 outColor;
 
-layout(set = 0, binding = 0) uniform sampler2D texSamplers[];
+layout(set = 1, binding = 1) uniform sampler2D texSamplers[];
 
 void main() {
     outColor = fragColor;

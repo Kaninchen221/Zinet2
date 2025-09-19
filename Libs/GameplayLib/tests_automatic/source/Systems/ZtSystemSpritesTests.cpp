@@ -63,6 +63,7 @@ namespace zt::gameplay::tests
 
 		// TODO
 		// A fake sprite class just to pass the descriptor info from the SystemSprites to the renderer
+		// Perhaps the SystemSprites should communicate with the renderer system directly instead of using a fake node
 		class FakeSprite : public Node2D
 		{
 		private:
@@ -77,7 +78,7 @@ namespace zt::gameplay::tests
 			FakeSprite& operator = (const FakeSprite& other) = default;
 			FakeSprite& operator = (FakeSprite&& other) noexcept = default;
 
-			vulkan_renderer::DescriptorInfo getDrawCallDescriptorInfos() override
+			vulkan_renderer::DescriptorInfo getDescriptorInfo() override
 			{
 				auto& engContext = EngineContext::Get();
 				auto sysSprites = engContext.getSystem<SystemSprites>();

@@ -12,7 +12,7 @@ namespace zt::gameplay
 		texture.show();
 	}
 
-	vulkan_renderer::DescriptorInfo NodeSprite::getPipelineDescriptorInfos()
+	vulkan_renderer::DescriptorInfo NodeSprite::getDescriptorInfo()
 	{
 		auto descriptorInfo = [](AssetTexture* assetTexture) -> vulkan_renderer::DescriptorInfo
 		{
@@ -39,10 +39,10 @@ namespace zt::gameplay
 				TerminateDebug();
 			}
 
-			return descriptorInfo(DefaultTexture.get());
+			return Node2D::getDescriptorInfo() + descriptorInfo(DefaultTexture.get());
 		}
 
-		return descriptorInfo(texture.get());
+		return Node2D::getDescriptorInfo() + descriptorInfo(texture.get());
 	}
 
 }
