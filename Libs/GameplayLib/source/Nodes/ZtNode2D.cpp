@@ -7,8 +7,10 @@
 
 namespace zt::gameplay
 {
-	void Node2D::onCreate()
+	void Node2D::onCreate(ObjectWeakHandle<Object> newSelf)
 	{
+		core::Object::onCreate(newSelf);
+
 		using namespace vulkan_renderer;
 
 		auto& engineContext = EngineContext::Get();

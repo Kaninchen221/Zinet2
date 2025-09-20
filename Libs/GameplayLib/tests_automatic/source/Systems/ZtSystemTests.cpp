@@ -33,7 +33,6 @@ namespace zt::gameplay::tests
 		ObjectHandle<Node> node = objectsStorage.createObject<Node>("node");
 		system.addNode(node.createWeakHandle());
 		ASSERT_EQ(node.getRefCount(), 1);
-
 		ASSERT_EQ(system.getNodes().size(), 1);
 	}
 }

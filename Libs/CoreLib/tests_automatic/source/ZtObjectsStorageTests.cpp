@@ -14,7 +14,7 @@ namespace zt::core::tests
 
 		ObjectsStorage objectsStorage;
 
-		class TestObject : public core::Object
+		class TestObject : public Object
 		{
 		public:
 
@@ -22,8 +22,9 @@ namespace zt::core::tests
 			~TestObject() {}
 
 			bool onCreateInvoked = false;
-			void onCreate() override
+			void onCreate(ObjectWeakHandle<Object> newSelf) override
 			{
+				Object::onCreate(newSelf);
 				onCreateInvoked = true;
 			}
 			MOCK_METHOD(void, onDestroy, (), (override));
@@ -39,6 +40,7 @@ namespace zt::core::tests
 	{
 		ObjectHandle<TestObject> objHandle = objectsStorage.createObject<TestObject>("");
 		ASSERT_TRUE(objHandle->onCreateInvoked);
+		ASSERT_EQ(objHandle.get(), objHandle->getSelf().get());
 
 		EXPECT_CALL(*objHandle.get(), onDestroy())
 			.Times(1);

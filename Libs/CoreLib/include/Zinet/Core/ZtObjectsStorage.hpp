@@ -43,9 +43,11 @@ namespace zt::core
 
 		auto& objectRefCount = objects.emplace_back();
 		objectRefCount.create<ObjectT>(displayName);
-		objectRefCount->onCreate();
 
-		return ObjectHandle<ObjectT>(&objectRefCount);
+		ObjectHandle<ObjectT> result{ &objectRefCount };
+		objectRefCount->onCreate(result);
+
+		return result;
 	}
 
 }

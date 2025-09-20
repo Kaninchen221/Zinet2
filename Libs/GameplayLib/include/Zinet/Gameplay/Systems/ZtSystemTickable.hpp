@@ -25,7 +25,7 @@ namespace zt::gameplay
 		SystemTickable& operator = (const SystemTickable& other) = default;
 		SystemTickable& operator = (SystemTickable&& other) noexcept = default;
 
-		void onCreate() override;
+		void onCreate(ObjectWeakHandle<Object> newSelf) override;
 
 		void update() override;
 

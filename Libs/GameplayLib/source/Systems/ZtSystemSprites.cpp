@@ -30,7 +30,7 @@ namespace zt::gameplay
 		if (!Ensure(sprite.isValid()))
 			return;
 
-		sprite->systemSprites = self;
+		sprite->systemSprites = getSelf().castTo<SystemSprites, false>();
 		const uint32_t id = ids.emplace_back(static_cast<uint32_t>(ids.size()));
 		sprite->id = id;
 		transforms.emplace_back();

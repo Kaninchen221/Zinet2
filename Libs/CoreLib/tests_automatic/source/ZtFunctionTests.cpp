@@ -28,15 +28,15 @@ namespace zt::core::tests
         {
         }
 
-        static int MarkAndReturnI(ObjectHandle<Object>, int i) { fooInvoked = true; return i; }
+        static int MarkAndReturnI(ObjectHandle<Object>&, int i) { fooInvoked = true; return i; }
 
         inline static bool fooInvoked = false;
     };
 
 	TEST_F(FunctionTests, Test)
 	{
-		auto lambda = [](ObjectHandle<Object>, int) -> int { return {}; };
-		Function<int, ObjectHandle<Object>, int> function{ lambda };
+		auto lambda = [](ObjectHandle<Object>&, int) -> int { return {}; };
+		Function<int, ObjectHandle<Object>&, int> function{ lambda };
 
 		ASSERT_EQ(function.getInternalFunction(), lambda);
 		ASSERT_TRUE(function.isValid());

@@ -35,7 +35,7 @@ namespace zt::gameplay
 		Node2D& operator = (const Node2D& other) = default;
 		Node2D& operator = (Node2D&& other) noexcept = default;
 
-		void onCreate() override;
+		void onCreate(ObjectWeakHandle<Object> newSelf) override;
 
 		void onDestroy() override;
 

@@ -28,8 +28,6 @@ namespace zt::gameplay::tests
 			engineContext.addSystem<SystemWindow>("window");
 			systemRenderer = engineContext.addSystem<SystemRenderer>("renderer");
 			systemSprites = engineContext.addSystem<SystemSprites>("sprites", UpdatePhase::Pre);
-			// TODO: Every object should have self handle automatically set in the ObjectsStorage class
-			systemSprites->self = systemSprites;
 
 			ASSERT_TRUE(engineContext.init());
 		}

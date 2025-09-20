@@ -2,8 +2,10 @@
 
 namespace zt::gameplay
 {
-	void SystemTickable::onCreate()
+	void SystemTickable::onCreate(ObjectWeakHandle<Object> newSelf)
 	{
+		System::onCreate(newSelf);
+
 		clock.start();
 	}
 

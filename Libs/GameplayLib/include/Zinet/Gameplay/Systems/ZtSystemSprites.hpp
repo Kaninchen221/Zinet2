@@ -22,8 +22,6 @@ namespace zt::gameplay
 
 	public:
 
-		ObjectHandle<SystemSprites> self;
-
 		SystemSprites() = default;
 		SystemSprites(const SystemSprites& other) = default;
 		SystemSprites(SystemSprites&& other) noexcept = default;

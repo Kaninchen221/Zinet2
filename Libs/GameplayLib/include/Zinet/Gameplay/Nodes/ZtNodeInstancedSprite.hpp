@@ -33,7 +33,7 @@ namespace zt::gameplay
 
 	protected:
 
-		ObjectHandle<SystemSprites> systemSprites;
+		ObjectWeakHandle<SystemSprites> systemSprites;
 
 		uint32_t id = 0;
 

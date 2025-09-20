@@ -12,60 +12,12 @@
 
 #include <fmt/format.h>
 
+// TODO: Refactor move to separate files and move functions to .cpp
 namespace zt::core
 {
+	class Object;
 	class Archive;
 	class JsonArchive;
-
-	class Object : public ObjectBase
-	{
-	public:
-
-		using ObjectPtr = std::unique_ptr<Object>;
-
-		Object() = default;
-		Object(const std::string& newDisplayName) : displayName{ newDisplayName } {}
-		Object(const Object& other) = default;
-		Object(Object&& other) noexcept = default;
-		~Object() noexcept = default;
-
-		Object& operator = (const Object& other) = default;
-		Object& operator = (Object&& other) noexcept = default;
-
-		virtual void onCreate() {}
-
-		virtual void onDestroy() {}
-
-		virtual ObjectPtr createCopy() const { return {}; }
-
-		virtual std::string asString() const { return "Object"; }
-
-		virtual void operator << ([[maybe_unused]] Archive& archive) {}
-
-		virtual bool serialize([[maybe_unused]] JsonArchive& archive) { return true; }
-
-		virtual bool deserialize([[maybe_unused]] JsonArchive& archive) { return true; }
-
-		virtual const std::string_view getClassName() const { return "zt::core::Object"; }
-
-		void setDisplayName(const std::string_view newDisplayName) { displayName = newDisplayName; }
-		const auto& getDisplayName() const { return displayName; }
-
-		void setInspectable(bool value) noexcept { inspectable = value; }
-		bool isInspectable() const noexcept { return inspectable; }
-
-		void setSaveable(bool value) noexcept { saveable = value; }
-		bool isSaveable() const noexcept { return saveable; }
-
-		virtual void show() {}
-
-	protected:
-
-		bool inspectable = true;
-		bool saveable = false;
-		std::string displayName{};
-
-	};
 
 	class ObjectRefCounter
 	{
@@ -74,82 +26,33 @@ namespace zt::core
 	public:
 
 		ObjectRefCounter() noexcept = default;
-		ObjectRefCounter(Object* objectPtr) noexcept
-			: object{ objectPtr }
-		{}
+		ObjectRefCounter(Object* objectPtr) noexcept;
 		ObjectRefCounter(const ObjectRefCounter& other) = delete;
-		ObjectRefCounter(ObjectRefCounter&& other) noexcept
-		{
-			*this = std::forward<ObjectRefCounter>(other);
-		}
+		ObjectRefCounter(ObjectRefCounter&& other) noexcept;
 
-		~ObjectRefCounter() noexcept
-		{
-			object.reset();
-		}
+		~ObjectRefCounter() noexcept;
 
 		ObjectRefCounter& operator = (const ObjectRefCounter& other) noexcept = delete;
-		ObjectRefCounter& operator = (ObjectRefCounter&& other) noexcept
-		{
-			refCount = other.refCount;
-			other.refCount = 0;
-			object = std::move(other.object);
-			return *this;
-		}
+		ObjectRefCounter& operator = (ObjectRefCounter&& other) noexcept;
 
 		template<std::derived_from<Object> ObjectT>
-		void create(const std::string_view displayName)
-		{
-			if (isValid())
-			{
-				Logger->warn("Object already exists");
-				Ensure(false);
-				return;
-			}
+		void create(const std::string_view displayName);
 
-			object = std::make_unique<ObjectT>();
-			object->setDisplayName(displayName);
-			refCount = 0;
-		}
+		void increment() noexcept;
 
-		void increment() noexcept
-		{
-			++refCount;
-		}
-
-		void decrement() noexcept
-		{
-			if (refCount <= 0)
-			{
-				Ensure(false, "refCount couldn't be less than 0");
-				return;
-			}
-
-			--refCount;
-		}
+		void decrement() noexcept;
 
 		inline void destroy() { reset(); }
 
-		void reset()
-		{
-			refCount = 0;
-			object->onDestroy();
-			object.reset();
-		}
+		void reset();
 
-		bool isValid() const noexcept { return object.operator bool(); }
+		bool isValid() const noexcept;
 
 		operator bool() const noexcept { return isValid(); }
 
 		size_t getRefCount() const noexcept { return refCount; }
 
-		Object* get() const noexcept
-		{ 
-			if (!isValid())
-				Terminate();
-
-			return object.get(); 
-		}
+		Object* get() const noexcept;
 
 		Object* operator->() const noexcept { return get(); }
 
@@ -158,7 +61,7 @@ namespace zt::core
 		// TODO: Objects should be stored in a better way than some random place in the memory
 		std::unique_ptr<Object> object;
 	};
-	
+
 	template<class ObjectType = Object, bool StrongRef = true>
 	class ObjectHandle
 	{
@@ -183,7 +86,8 @@ namespace zt::core
 		template<class ObjectHandleT>
 		ObjectHandle(ObjectHandleT& objectHandle) noexcept
 			: ObjectHandle(objectHandle.getRefCounter())
-		{}
+		{
+		}
 
 		ObjectHandle(const ObjectHandle<ObjectT>& other) noexcept { *this = other; }
 		ObjectHandle(ObjectHandle<ObjectT>&& other) noexcept { *this = std::forward<ObjectHandle<ObjectT>>(other); }
@@ -252,10 +156,10 @@ namespace zt::core
 
 		void invalidate() noexcept { decrement(); objectRefCounter = nullptr; }
 
-		ObjectRefCounter* release() noexcept 
-		{ 
+		ObjectRefCounter* release() noexcept
+		{
 			ObjectRefCounter* temp = objectRefCounter;
-			objectRefCounter = nullptr; 
+			objectRefCounter = nullptr;
 			return temp;
 		}
 
@@ -276,6 +180,22 @@ namespace zt::core
 		}
 
 		void destroy() { Ensure(objectRefCounter); objectRefCounter->reset(); }
+
+		// TODO: Test it
+		template<class DerivedT, bool CastedStrongRef>
+		ObjectHandle<DerivedT, CastedStrongRef> castTo() noexcept
+		{
+			if (!isValid())
+				return {};
+		
+			DerivedT* castedPtr = dynamic_cast<DerivedT*>(get());
+			if (!Ensure(castedPtr, "DerivedT is not a derived type from base class"))
+				return {};
+		
+			auto refCounter = getRefCounter();
+			auto newObjectHandle = ObjectHandle<DerivedT, CastedStrongRef>(refCounter);
+			return newObjectHandle;
+		}
 
 	protected:
 
@@ -312,4 +232,79 @@ namespace zt
 	/// Doesn't increment/decrement ref count
 	template<class ObjectT = core::Object>
 	using ObjectWeakHandle = core::ObjectHandle<ObjectT, false>;
+}
+
+namespace zt::core
+{
+	class Object : public ObjectBase
+	{
+		ObjectWeakHandle<Object> self;
+
+	public:
+
+		using ObjectPtr = std::unique_ptr<Object>;
+
+		Object() = default;
+		Object(const std::string& newDisplayName) : displayName{ newDisplayName } {}
+		Object(const Object& other) = default;
+		Object(Object&& other) noexcept = default;
+		~Object() noexcept = default;
+
+		Object& operator = (const Object& other) = default;
+		Object& operator = (Object&& other) noexcept = default;
+
+		ObjectWeakHandle<Object> getSelf() const noexcept { return self; }
+
+		virtual void onCreate(ObjectWeakHandle<Object> newSelf) { self = newSelf; }
+
+		virtual void onDestroy() {}
+
+		virtual ObjectPtr createCopy() const { return {}; }
+
+		virtual std::string asString() const { return "Object"; }
+
+		virtual void operator << ([[maybe_unused]] Archive& archive) {}
+
+		virtual bool serialize([[maybe_unused]] JsonArchive& archive) { return true; }
+
+		virtual bool deserialize([[maybe_unused]] JsonArchive& archive) { return true; }
+
+		virtual const std::string_view getClassName() const { return "zt::core::Object"; }
+
+		void setDisplayName(const std::string_view newDisplayName) { displayName = newDisplayName; }
+		const auto& getDisplayName() const { return displayName; }
+
+		void setInspectable(bool value) noexcept { inspectable = value; }
+		bool isInspectable() const noexcept { return inspectable; }
+
+		void setSaveable(bool value) noexcept { saveable = value; }
+		bool isSaveable() const noexcept { return saveable; }
+
+		virtual void show() {}
+
+	protected:
+
+		bool inspectable = true;
+		bool saveable = false;
+		std::string displayName{};
+
+	};
+}
+
+namespace zt::core
+{
+	template<std::derived_from<Object> ObjectT>
+	void ObjectRefCounter::create(const std::string_view displayName)
+	{
+		if (isValid())
+		{
+			Logger->warn("Object already exists");
+			Ensure(false);
+			return;
+		}
+
+		object = std::make_unique<ObjectT>();
+		object->setDisplayName(displayName);
+		refCount = 0;
+	}
 }
