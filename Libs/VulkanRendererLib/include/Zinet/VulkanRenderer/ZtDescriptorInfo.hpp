@@ -19,7 +19,6 @@ namespace zt::vulkan_renderer
 	class Buffer;
 	class ImageView;
 
-	// TODO: Refactor ~ move it to separate file
 	struct DescriptorSetsUpdateData
 	{
 		std::vector<VkWriteDescriptorSet> writeDescriptorSets;
