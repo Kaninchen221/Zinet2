@@ -95,7 +95,10 @@ namespace zt::vulkan_renderer
 			for (const auto& buffer : buffers)
 			{
 				if (!buffer || !buffer->isValid())
+				{
+					Ensure(false, "Invalid Buffer");
 					continue;
+				}
 
 				auto& descriptorBufferInfo = descriptorBuffersInfos.emplace_back(GetBufferInfo(*buffer));
 				descriptorBufferInfo.offset = 0;

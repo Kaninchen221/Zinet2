@@ -11,6 +11,7 @@
 #include "Zinet/VulkanRenderer/ZtPipeline.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtDescriptorSets.hpp"
+#include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -26,6 +27,7 @@ namespace zt::vulkan_renderer
 	{
 		const RendererContext& rendererContext;
 		DrawInfo& drawInfo;
+		DescriptorInfo& pipelineDescriptorInfo;
 		size_t descriptorSetsCount = 1;
 	};
 

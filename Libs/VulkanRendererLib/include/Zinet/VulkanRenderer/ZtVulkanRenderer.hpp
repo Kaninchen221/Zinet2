@@ -40,7 +40,14 @@ namespace zt::vulkan_renderer
 
 		bool nextImage();
 
-		bool createPipeline(DrawInfo& drawInfo);
+		// TODO: Remove this
+		struct CameraData
+		{
+			glm::mat4 view;
+			glm::mat4 projection;
+		};
+
+		bool createPipeline(DrawInfo& drawInfo, CameraData cameraData = {});
 		
 		void draw(const DrawInfo& drawInfo);
 
@@ -60,6 +67,9 @@ namespace zt::vulkan_renderer
 
 		RendererContext rendererContext;
 		GraphicsPipeline graphicsPipeline;
+		// TODO: Refactor remove this two lines
+		DescriptorInfo pipelineDescriptorInfo;
+		Buffer cameraBuffer{ nullptr };
 
 		static void WindowResizedCallback(void* userPointer, const Vector2i& size);
 

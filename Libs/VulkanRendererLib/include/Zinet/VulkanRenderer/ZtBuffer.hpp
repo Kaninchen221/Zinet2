@@ -54,6 +54,7 @@ namespace zt::vulkan_renderer
 		template<core::STDContainer ContainerT>
 		static VkBufferCreateInfo GetStorageBufferCreateInfo(const ContainerT& container) noexcept;
 
+		// TODO: Rename to create
 		bool createBuffer(const VMA& vma, const VkBufferCreateInfo& createInfo);
 
 		template<core::STDContainer ContainerT>

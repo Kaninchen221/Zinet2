@@ -29,6 +29,13 @@ namespace zt::gameplay::tests
 			systemRenderer = engineContext.addSystem<SystemRenderer>("renderer");
 			systemSprites = engineContext.addSystem<SystemSprites>("sprites", UpdatePhase::Pre);
 
+			auto nodeCamera = CreateObject<NodeCamera>("Camera");
+			auto& camera = nodeCamera->getCamera();
+			camera.setPosition(Vector3f(0.00001, 0, 150));
+			camera.setLookingAt(Vector3f(0.0f, 0.0f, 0.0f));
+			camera.setUpVector(Vector3f(0, 1, 0));
+			systemRenderer->setCameraNode(nodeCamera);
+
 			ASSERT_TRUE(engineContext.init());
 		}
 
@@ -126,7 +133,7 @@ namespace zt::gameplay::tests
 			{}
 
 			using namespace std::chrono_literals;
-			std::this_thread::sleep_for(10ms);
+			std::this_thread::sleep_for(10000000ms);
 			engineContext.stopLooping();
 		});
 

@@ -134,14 +134,8 @@ namespace zt::gameplay
 			return;
 		}
 
-		// TODO: Add possibility to recreate graphics pipeline
-		//if (renderer.getGraphicsPipeline().isValid())
-		//{
-		//	renderer.getRendererContext().device.waitIdle();
-		//	renderer.getGraphicsPipeline().destroy(renderer.getRendererContext());
-		//}
-
-		renderer.createPipeline(drawInfo);
+		auto& internalCamera = camera->getCamera();
+		renderer.createPipeline(drawInfo, { internalCamera.getViewMatrix(), internalCamera.getPerspectiveMatrix() });
 		if (!Ensure(renderer.getGraphicsPipeline().isValid()))
 		{
 			Logger->error("Graphics Pipeline is invalid");

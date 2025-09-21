@@ -114,12 +114,13 @@ namespace zt::vulkan_renderer
 	{
 		auto& rendererContext = graphicsPipelineCreateInfo.rendererContext;
 		auto& drawInfo = graphicsPipelineCreateInfo.drawInfo;
+		auto& pipelineDescriptorInfo = graphicsPipelineCreateInfo.pipelineDescriptorInfo;
 		auto descriptorSetsCount = graphicsPipelineCreateInfo.descriptorSetsCount;
 		auto& device = rendererContext.getDevice();
 		auto& descriptorPool = rendererContext.getDescriptorPool();
 
 		{ // Pipeline descriptor set & layout
-			const auto bindings = drawInfo.pipelineDescriptorInfo.createBindings();
+			const auto bindings = pipelineDescriptorInfo.createBindings();
 			const auto createInfo = DescriptorSetLayout::GetDefaultCreateInfo(bindings);
 			if (!pipelineDescriptorSetLayout.create(createInfo, device))
 				return false;
@@ -131,7 +132,7 @@ namespace zt::vulkan_renderer
 				return false;
 
 			auto descriptorSetsUpdateData =
-				drawInfo.pipelineDescriptorInfo.createDescriptorSetsUpdateData(pipelineDescriptorSets);
+				pipelineDescriptorInfo.createDescriptorSetsUpdateData(pipelineDescriptorSets);
 
 			pipelineDescriptorSets.update(device, descriptorSetsUpdateData);
 		}

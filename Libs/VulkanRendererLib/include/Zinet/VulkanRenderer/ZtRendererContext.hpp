@@ -116,7 +116,7 @@ namespace zt::vulkan_renderer
 
 		DescriptorPool descriptorPool{ nullptr };
 
-		// Descriptor set for global data (camera, time, global textures etc.)
+		// Descriptor set for global data (time, etc.)
 		DescriptorSetLayout globalDescriptorSetLayout{ nullptr };
 		DescriptorSets globalDescriptorSets;
 
@@ -125,7 +125,7 @@ namespace zt::vulkan_renderer
 		//DescriptorSets renderPassDescriptorSet{ nullptr };
 
 		// TODO: Handle situations when GPU support less than 3 images
-		size_t framesInFlight = 3;
+		size_t framesInFlight = 2;
 
 		bool invalidWindowSizeForPresent = false;
 

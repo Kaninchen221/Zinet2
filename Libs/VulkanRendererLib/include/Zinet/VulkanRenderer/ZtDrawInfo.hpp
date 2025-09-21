@@ -76,7 +76,6 @@ namespace zt::vulkan_renderer
 		uint32_t indexCount{};
 		uint32_t instances = 1;
 
-		DescriptorInfo pipelineDescriptorInfo;
 		DescriptorInfo objectDescriptorInfo;
 
 		using AdditionalCommands = std::vector<core::Function<void, const CommandBuffer&>>;
