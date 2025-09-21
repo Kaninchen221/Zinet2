@@ -120,6 +120,7 @@ namespace zt::vulkan_renderer
 	std::uint32_t SwapChain::acquireNextImage(const Device& device, Semaphore& semaphore) const
 	{
 		std::uint32_t imageIndex{};
+		// TODO: Fix validation layers error about semaphore on AMD integrated GPU (on laptop)
 		const auto result =
 			vkAcquireNextImageKHR(device.get(), objectHandle, UINT64_MAX, semaphore.get(), VK_NULL_HANDLE, &imageIndex);
 
