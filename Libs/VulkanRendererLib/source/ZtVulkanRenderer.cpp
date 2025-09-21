@@ -162,7 +162,6 @@ namespace zt::vulkan_renderer
 			.pSignalSemaphores = signalSemaphores.data()
 		};
 
-		// TODO: Fix the problem occuring on the laptop about semaphore
 		const auto result = vkQueueSubmit(queue.get(), 1, &submitInfo, fence.get());
 
 		if (result != VK_SUCCESS)
