@@ -4,19 +4,32 @@
 
 namespace zt::gameplay
 {
+	EngineContext& EngineContext::Get() noexcept
+	{
+#	if ZINET_DEBUG
+		if (!Instance)
+		{
+			Logger->critical("Invalid instance");
+			Terminate();
+		}
+#	endif
+
+		return *Instance;
+	}
+
 	EngineContext::EngineContext()
 	{
-		if (instance)
+		if (Instance)
 		{
 			Ensure(false, "We should have only a one instance of the Engine Context");
 		}
 
-		instance = this;
+		Instance = this;
 	};
 
 	bool EngineContext::init()
 	{
-		if (initialized && instance)
+		if (initialized && Instance)
 		{
 			Ensure(false, "Init should be called only once and we should have only one instance of the EngineContext");
 			return true;
@@ -24,7 +37,7 @@ namespace zt::gameplay
 
 		Logger->info("Initialize engine context");
 
-		instance = this;
+		Instance = this;
 
 		for (auto& system : systems)
 		{
@@ -104,12 +117,12 @@ namespace zt::gameplay
 		renderingThread.clearSystems();
 		mainThread.clearSystems();
 
-		instance = nullptr;
+		Instance = nullptr;
 	}
 
 	EngineContext::~EngineContext() noexcept
 	{
-		if (instance)
+		if (Instance)
 		{
 			Logger->error("EngineContext must be manually deinitialized");
 		}

@@ -26,10 +26,12 @@ namespace zt::gameplay
 
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::EngineContext");
 
-		inline static EngineContext* instance = nullptr;
+		inline static EngineContext* Instance = nullptr;
 
 	public:
 		using Systems = std::vector<ObjectHandle<System>>;
+
+		static EngineContext& Get() noexcept;
 
 		EngineContext();
 		EngineContext(const EngineContext& other) = default;
@@ -38,9 +40,6 @@ namespace zt::gameplay
 
 		EngineContext& operator = (const EngineContext& other) = default;
 		EngineContext& operator = (EngineContext&& other) noexcept = default;
-
-		// TODO: Change it to an object handle to be consistent with rest of the code?
-		static auto& Get() noexcept { Ensure(instance); return *instance; }
 
 		bool init();
 		
