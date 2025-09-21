@@ -108,7 +108,7 @@ namespace zt::core
 
 		ObjectHandle<ObjectT>& operator = (ObjectHandle<ObjectT>&& other) noexcept
 		{
-			if (!Ensure(other.isValid()))
+			if (!other.isValid())
 				return *this;
 
 			if (isValid())

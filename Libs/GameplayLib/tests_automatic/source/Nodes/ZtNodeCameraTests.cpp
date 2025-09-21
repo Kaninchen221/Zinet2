@@ -1,6 +1,9 @@
 #pragma once
 
+#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 #include "Zinet/Gameplay/Nodes/ZtNodeCamera.hpp"
+#include "Zinet/Gameplay/ZtEngineContext.hpp"
 
 #include "Zinet/Core/ZtObjectsStorage.hpp"
 
@@ -14,14 +17,21 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
+			engineContext.addSystem<SystemWindow>("window", {});
+			engineContext.addSystem<SystemRenderer>("renderer", {});
+
+			ASSERT_TRUE(engineContext.init());
+			node = CreateObject<NodeCamera>("camera");
 		}
 
 		void TearDown() override
 		{
+			node.destroy();
+			engineContext.deinit();
 		}
 
-		core::ObjectsStorage objectsStorage;
-		ObjectHandle<NodeCamera> node = objectsStorage.createObject<NodeCamera>("TestNode");
+		EngineContext engineContext;
+		ObjectHandle<NodeCamera> node;
 	};
 
 	TEST_F(NodeCameraTests, PassTest)

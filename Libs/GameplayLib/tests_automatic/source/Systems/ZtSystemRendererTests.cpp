@@ -35,7 +35,7 @@ namespace zt::gameplay::tests
 	{
 		auto system = engineContext.getSystem<SystemRenderer>();
 		ASSERT_TRUE(system);
-		auto node = CreateObject<Node2D>("node2d");
+		auto node2D = CreateObject<Node2D>("node2d");
 		//systemRenderer.addNode(node);
 
 		auto cameraNode = CreateObject<NodeCamera>("Camera");
@@ -44,6 +44,7 @@ namespace zt::gameplay::tests
 
 		system->update();
 
-		node.destroy();
+		node2D.destroy();
+		cameraNode.destroy();
 	}
 }
