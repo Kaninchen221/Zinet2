@@ -108,11 +108,11 @@ namespace zt::core
 
 		ObjectHandle<ObjectT>& operator = (ObjectHandle<ObjectT>&& other) noexcept
 		{
+			if (!Ensure(other.isValid()))
+				return *this;
+
 			if (isValid())
 				invalidate();
-
-			if (!other.isValid())
-				return *this;
 
 			objectRefCounter = other.objectRefCounter;
 			other.objectRefCounter = nullptr;
@@ -150,7 +150,15 @@ namespace zt::core
 			return getRefCounter() == other.getRefCounter();
 		}
 
-		ObjectRefCounter* getRefCounter() const noexcept { return objectRefCounter; }
+		ObjectRefCounter* getRefCounter() const noexcept 
+		{ 
+#		if ZINET_DEBUG
+			if (!objectRefCounter)
+				Terminate();
+#		endif
+
+			return objectRefCounter; 
+		}
 
 		size_t getRefCount() const noexcept { return objectRefCounter ? objectRefCounter->getRefCount() : 0; }
 

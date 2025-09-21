@@ -134,8 +134,14 @@ namespace zt::gameplay
 			return;
 		}
 
-		auto& internalCamera = camera->getCamera();
-		renderer.createPipeline(drawInfo, { internalCamera.getViewMatrix(), internalCamera.getPerspectiveMatrix() });
+		static bool addedCamera = false;
+		if (camera && !addedCamera)
+		{
+			addedCamera = true;
+			drawInfo.pipelineDescriptorInfo += camera->getDescriptorInfo();
+		}
+
+		renderer.createPipeline(drawInfo);
 		if (!Ensure(renderer.getGraphicsPipeline().isValid()))
 		{
 			Logger->error("Graphics Pipeline is invalid");

@@ -85,12 +85,12 @@ namespace zt::vulkan_renderer::tests
 			.indexBuffer = &indexBuffer,
 			.indexCount = 0,
 			.instances = 1,
-			.pipelineDescriptorInfo =
+			.objectDescriptorInfo =
 			{
 				.buffersPerType = {},
 				.texturesInfos = {},
 			},
-			.objectDescriptorInfo =
+			.pipelineDescriptorInfo =
 			{
 				.buffersPerType = {},
 				.texturesInfos = {},

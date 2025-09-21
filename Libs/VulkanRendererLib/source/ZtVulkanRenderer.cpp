@@ -54,33 +54,15 @@ namespace zt::vulkan_renderer
 	}
 
 	// TODO: Renderer shouldn't contain any pipeline? Store them outside?
-	bool VulkanRenderer::createPipeline(DrawInfo& drawInfo, CameraData cameraData)
+	bool VulkanRenderer::createPipeline(DrawInfo& drawInfo)
 	{
 		if (graphicsPipeline.isValid())
 			return true;
-
-		auto& vma = rendererContext.getVMA();
-		auto bufferCreateInfo = Buffer::GetUniformBufferCreateInfo(cameraData);
-		if (!cameraBuffer.createBuffer(vma, bufferCreateInfo))
-		{
-			Logger->error("Couldn't create camera buffer");
-			return false;
-		}
-
-		// TODO: CameraData is not filled with any usefull data so now do this <----------------------------------------
-		if (!cameraBuffer.fillWithObject(vma, cameraData))
-		{
-			Logger->error("Couldn't fill camera buffer with data");
-			return false;
-		}
-
-		pipelineDescriptorInfo.buffersPerType[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER] = std::vector<Buffer*>{ &cameraBuffer };
 
 		GraphicsPipelineCreateInfo createInfo
 		{
 			.rendererContext = rendererContext,
 			.drawInfo = drawInfo,
-			.pipelineDescriptorInfo = pipelineDescriptorInfo,
 			.descriptorSetsCount = rendererContext.getDisplayImagesCount()
 		};
 

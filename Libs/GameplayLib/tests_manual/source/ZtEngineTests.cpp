@@ -62,10 +62,13 @@ namespace zt::gameplay::tests
 			ASSERT_TRUE(engine.init());
 			vulkan_renderer::ImGuiIntegration::SetStyle_Dark();
 
+			auto& rootNode = engineContext.getRootNode();
+
 			Node2D::DefaultTexture = assetsStorage.getAs<AssetTexture>("Content/Textures/default_texture.png");
 			Node2D::DefaultTexture->load(core::Paths::RootPath());
 
 			auto nodeCamera = CreateObject<NodeCamera>("Camera");
+			rootNode->addChild(nodeCamera);
 			auto& camera = nodeCamera->getCamera();
 			camera.setPosition(Vector3f(0.00001, 0, 150));
 			camera.setLookingAt(Vector3f(0.0f, 0.0f, 0.0f));
@@ -78,8 +81,6 @@ namespace zt::gameplay::tests
 			camera.setClipping(Vector2f{ 0.0000001f, 10000000.0f });
 
 			systemRenderer->setCameraNode(nodeCamera);
-
-			auto& rootNode = engineContext.getRootNode();
 
 			auto editorNode = CreateObject<NodeEditor>("Editor");
 			rootNode->addChild(editorNode);

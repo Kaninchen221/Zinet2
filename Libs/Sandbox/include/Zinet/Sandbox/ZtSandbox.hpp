@@ -101,6 +101,7 @@ namespace zt::sandbox
 			systemRenderer->fragmentShader = shaderFrag;
 
 			auto nodeCamera = CreateObject<NodeCamera>("Camera");
+			rootNode->addChild(nodeCamera);
 			auto& camera = nodeCamera->getCamera();
 			camera.setPosition(Vector3f(0.00001, 0, 150));
 			camera.setLookingAt(Vector3f(0.0f, 0.0f, 0.0f));

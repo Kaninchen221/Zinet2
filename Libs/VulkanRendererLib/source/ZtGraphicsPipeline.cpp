@@ -114,7 +114,7 @@ namespace zt::vulkan_renderer
 	{
 		auto& rendererContext = graphicsPipelineCreateInfo.rendererContext;
 		auto& drawInfo = graphicsPipelineCreateInfo.drawInfo;
-		auto& pipelineDescriptorInfo = graphicsPipelineCreateInfo.pipelineDescriptorInfo;
+		auto& pipelineDescriptorInfo = drawInfo.pipelineDescriptorInfo;
 		auto descriptorSetsCount = graphicsPipelineCreateInfo.descriptorSetsCount;
 		auto& device = rendererContext.getDevice();
 		auto& descriptorPool = rendererContext.getDescriptorPool();

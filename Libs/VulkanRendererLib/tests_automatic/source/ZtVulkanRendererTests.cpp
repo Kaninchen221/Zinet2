@@ -216,11 +216,6 @@ namespace zt::vulkan_renderer::tests
 			.indexBuffer = &indexBuffer,
 			.indexCount = static_cast<std::uint32_t>(indices.size()),
 			.instances = 2u,
-			.pipelineDescriptorInfo =
-			{
-				.buffersPerType = {},
-				.texturesInfos = { textureInfo },
-			},
 			.objectDescriptorInfo =
 			{
 				.buffersPerType = 
@@ -228,6 +223,11 @@ namespace zt::vulkan_renderer::tests
 					{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0], &uniformBuffers[1] } }
 				},
 				.texturesInfos{}
+			},
+			.pipelineDescriptorInfo =
+			{
+				.buffersPerType = {},
+				.texturesInfos = { textureInfo },
 			},
 			.additionalCommands = { ImGuiIntegration::DrawCommand }
 		};

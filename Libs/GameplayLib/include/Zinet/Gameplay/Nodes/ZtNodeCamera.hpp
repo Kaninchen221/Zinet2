@@ -6,13 +6,12 @@
 #include "Zinet/Core/ZtLogger.hpp"
 
 #include "Zinet/VulkanRenderer/ZtCamera.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorInfo.hpp"
 
 namespace zt::gameplay
 {
 	class  NodeCamera : public Node
 	{
-	protected:
-
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::NodeCamera");
 
 	public:
@@ -27,16 +26,30 @@ namespace zt::gameplay
 		NodeCamera& operator = (const NodeCamera& other) = default;
 		NodeCamera& operator = (NodeCamera&& other) noexcept = default;
 
+		void onCreate(ObjectWeakHandle<Object> newSelf) override;
+
+		void onDestroy() override;
+
 		void show() override;
+
+		virtual void update(float deltaTime) override;
 
 		void setCamera(const CameraT& newCamera) { camera = newCamera; }
 		const auto& getCamera() const noexcept { return camera; }
 		auto& getCamera() noexcept { return camera; }
 
+		vulkan_renderer::DescriptorInfo getDescriptorInfo();
+
 	protected:
 
 		CameraT camera;
+		vulkan_renderer::Buffer buffer{ nullptr };
 
+		struct BufferData
+		{
+			glm::mat4 view;
+			glm::mat4 perspective;
+		};
 	};
 
 }

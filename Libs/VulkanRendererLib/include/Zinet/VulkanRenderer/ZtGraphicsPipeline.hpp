@@ -27,7 +27,6 @@ namespace zt::vulkan_renderer
 	{
 		const RendererContext& rendererContext;
 		DrawInfo& drawInfo;
-		DescriptorInfo& pipelineDescriptorInfo;
 		size_t descriptorSetsCount = 1;
 	};
 

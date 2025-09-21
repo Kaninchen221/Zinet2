@@ -4,6 +4,7 @@
 #include "Zinet/VulkanRenderer/ZtVulkanObject.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtDescriptorInfo.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -19,7 +20,7 @@ namespace zt::vulkan_renderer
 	{
 	protected:
 
-		inline static auto Logger = core::ConsoleLogger::Create("VRCamera");
+		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::Camera");
 
 	public:
 		using MatrixT = glm::mat4;

@@ -1,9 +1,58 @@
 ﻿#include "Zinet/Gameplay/Nodes/ZtNodeCamera.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
+#include "Zinet/Gameplay/ZtEngineContext.hpp"
 
 #include "Zinet/Core/ZtImgui.hpp"
 
 namespace zt::gameplay
 {
+	void NodeCamera::onCreate(ObjectWeakHandle<Object> newSelf)
+	{
+		using namespace vulkan_renderer;
+
+		Node::onCreate(newSelf);
+
+		auto& engineContext = EngineContext::Get();
+		auto systemRenderer = engineContext.getSystem<SystemRenderer>();
+		if (!systemRenderer)
+		{
+			Logger->error("System renderer is invalid");
+			return;
+		}
+
+		auto& rendererContext = systemRenderer->getRenderer().getRendererContext();
+		auto& vma = rendererContext.getVMA();
+		BufferData data{ .view = camera.getViewMatrix(), .perspective = camera.getPerspectiveMatrix() };
+		const auto createInfo = Buffer::GetUniformBufferCreateInfo(data);
+		if (!buffer.createBuffer(vma, createInfo))
+		{
+			Logger->error("Couldn't create buffer");
+			return;
+		}
+
+		if (!buffer.fillWithObject(vma, data))
+		{
+			Logger->error("Couldn't fill buffer");
+			return;
+		}
+	}
+
+	void NodeCamera::onDestroy()
+	{
+		Node::onDestroy();
+
+		auto& engineContext = EngineContext::Get();
+		auto systemRenderer = engineContext.getSystem<SystemRenderer>();
+		if (!systemRenderer)
+		{
+			Logger->error("System renderer is invalid");
+			return;
+		}
+
+		auto& rendererContext = systemRenderer->getRenderer().getRendererContext();
+		auto& vma = rendererContext.getVMA();
+		buffer.destroy(vma);
+	}
 
 	void NodeCamera::show()
 	{
@@ -61,4 +110,32 @@ namespace zt::gameplay
 #		endif 
 	}
 
+	void NodeCamera::update(float deltaTime)
+	{
+		Node::update(deltaTime);
+
+		auto& engineContext = EngineContext::Get();
+		auto systemRenderer = engineContext.getSystem<SystemRenderer>();
+		if (!systemRenderer)
+		{
+			Logger->error("System renderer is invalid");
+			return;
+		}
+
+		auto& rendererContext = systemRenderer->getRenderer().getRendererContext();
+		auto& vma = rendererContext.getVMA();
+
+		BufferData data{ .view = camera.getViewMatrix(), .perspective = camera.getPerspectiveMatrix() };
+		buffer.fillWithObject(vma, data);
+	}
+
+	vulkan_renderer::DescriptorInfo NodeCamera::getDescriptorInfo()
+	{
+		using namespace vulkan_renderer;
+
+		DescriptorInfo descriptorInfo;
+		descriptorInfo.buffersPerType[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER] = std::vector<Buffer*>{ &buffer };
+
+		return descriptorInfo;
+	}
 }
