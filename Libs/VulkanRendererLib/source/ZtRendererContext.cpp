@@ -19,6 +19,8 @@ namespace zt::vulkan_renderer
 		displayImages.shrink_to_fit();
 		displayImages.resize(swapChainImages.size());
 
+		framesInFlight = swapChainImages.size();
+
 		uint32_t imageIndex = 0;
 		for (auto& displayImage : displayImages)
 		{

@@ -40,7 +40,8 @@ namespace zt::vulkan_renderer
 		if (nextDisplayImageIndex >= rendererContext.framesInFlight)
 			nextDisplayImageIndex = 0;
 
-		//Logger->debug("Acquired next image with index: {}", currentDisplayImageIndex);
+		//Logger->debug("Current display image index: {}", currentDisplayImageIndex);
+		//Logger->debug("Next display image index: {}", nextDisplayImageIndex);
 
 		auto& fence = rendererContext.getCurrentDisplayImage().fence;
 
