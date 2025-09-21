@@ -60,8 +60,6 @@ namespace zt::vulkan_renderer
 
 		RendererContext rendererContext;
 		GraphicsPipeline graphicsPipeline;
-		// TODO: remove this two lines
-		DescriptorInfo pipelineDescriptorInfo;
 
 		static void WindowResizedCallback(void* userPointer, const Vector2i& size);
 
