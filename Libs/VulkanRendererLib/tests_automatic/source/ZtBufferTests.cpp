@@ -92,7 +92,7 @@ namespace zt::vulkan_renderer::tests
 		};
 
 		const auto createInfo = Buffer::GetVertexBufferCreateInfo(vertices);
-		ASSERT_TRUE(buffer.createBuffer(vma, createInfo));
+		ASSERT_TRUE(buffer.create(vma, createInfo));
 		ASSERT_EQ(sizeof(Vertices::value_type) * vertices.size(), buffer.getSize());
 		ASSERT_TRUE(buffer.getAllocation());
 
@@ -114,7 +114,7 @@ namespace zt::vulkan_renderer::tests
 		};
 
 		const auto createInfo = Buffer::GetIndexBufferCreateInfo(indices);
-		ASSERT_TRUE(buffer.createBuffer(vma, createInfo));
+		ASSERT_TRUE(buffer.create(vma, createInfo));
 		ASSERT_EQ(sizeof(Indices::value_type) * indices.size(), buffer.getSize());
 		ASSERT_TRUE(buffer.getAllocation());
 
@@ -132,7 +132,7 @@ namespace zt::vulkan_renderer::tests
 		const DataT uniformBufferData{ 123.7842f, 0.8823f };
 
 		const auto createInfo = Buffer::GetUniformBufferCreateInfo(uniformBufferData);
-		ASSERT_TRUE(buffer.createBuffer(vma, createInfo));
+		ASSERT_TRUE(buffer.create(vma, createInfo));
 		ASSERT_EQ(sizeof(DataT), buffer.getSize());
 		ASSERT_TRUE(buffer.getAllocation());
 
@@ -153,7 +153,7 @@ namespace zt::vulkan_renderer::tests
 		ASSERT_TRUE(sourceImage.loadFromFile(imagePath, 4));
 
 		const auto createInfo = Buffer::GetImageBufferCreateInfo(sourceImage);
-		ASSERT_TRUE(buffer.createBuffer(vma, createInfo));
+		ASSERT_TRUE(buffer.create(vma, createInfo));
 	}
 
 	TEST_F(BufferTests, StorageBufferTest)
@@ -162,7 +162,7 @@ namespace zt::vulkan_renderer::tests
 		chonker.resize(1024 * 1024 * 64); // 64MB
 
 		const auto createInfo = Buffer::GetStorageBufferCreateInfo(chonker);
-		ASSERT_TRUE(buffer.createBuffer(vma, createInfo));
+		ASSERT_TRUE(buffer.create(vma, createInfo));
 
 		buffer.fillWithSTDContainer(vma, chonker);
 	}
@@ -184,7 +184,7 @@ namespace zt::vulkan_renderer::tests
 		container.resize(1000);
 
 		const auto createInfo = Buffer::GetStorageBufferCreateInfo(container);
-		ASSERT_TRUE(buffer.createBuffer(vma, createInfo));
+		ASSERT_TRUE(buffer.create(vma, createInfo));
 
 		buffer.fillWithSTDContainer(vma, container, 0);
 

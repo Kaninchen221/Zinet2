@@ -57,7 +57,7 @@ namespace zt::vulkan_renderer::tests
 	{
 		Buffer buffer{ nullptr };
 		const auto createInfo = Buffer::GetUniformBufferCreateInfo(uniformData);
-		if (!buffer.createBuffer(vma, createInfo))
+		if (!buffer.create(vma, createInfo))
 		{
 			Ensure(false, "Buffer create returned false");
 			return Buffer{ nullptr };
@@ -84,7 +84,7 @@ namespace zt::vulkan_renderer::tests
 
 		Buffer buffer{ nullptr };
 		const auto bufferCreateInfo = Buffer::GetImageBufferCreateInfo(sourceImage);
-		if (!buffer.createBuffer(vma, bufferCreateInfo))
+		if (!buffer.create(vma, bufferCreateInfo))
 		{
 			Ensure(false, "Buffer create returned false");
 			return {};

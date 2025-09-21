@@ -76,7 +76,7 @@ namespace zt::gameplay
 		}
 
 		auto createInfo = Buffer::GetStorageBufferCreateInfo(transformsMatrices);
-		transformsMatricesBuffer.createBuffer(vma, createInfo);
+		transformsMatricesBuffer.create(vma, createInfo);
 	}
 
 	void SystemSprites::updateTransformsBufferData()

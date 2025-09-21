@@ -24,7 +24,7 @@ namespace zt::gameplay
 		auto& vma = systemRenderer->getRenderer().getRendererContext().getVMA();
 
 		const auto bufferCreateInfo = Buffer::GetUniformBufferCreateInfo<MVP>(mvp);
-		if (!Ensure(MVPBuffer.createBuffer(vma, bufferCreateInfo)))
+		if (!Ensure(MVPBuffer.create(vma, bufferCreateInfo)))
 		{
 			Logger->error("Failed to create MVP uniform buffer");
 		}

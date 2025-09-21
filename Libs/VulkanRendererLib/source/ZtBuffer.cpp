@@ -16,7 +16,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	bool Buffer::createBuffer(const VMA& vma, const VkBufferCreateInfo& createInfo)
+	bool Buffer::create(const VMA& vma, const VkBufferCreateInfo& createInfo)
 	{
 		if (isValid())
 			return false;

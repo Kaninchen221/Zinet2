@@ -24,7 +24,7 @@ namespace zt::gameplay
 		auto& vma = rendererContext.getVMA();
 		BufferData data{ .view = camera.getViewMatrix(), .perspective = camera.getPerspectiveMatrix() };
 		const auto createInfo = Buffer::GetUniformBufferCreateInfo(data);
-		if (!buffer.createBuffer(vma, createInfo))
+		if (!buffer.create(vma, createInfo))
 		{
 			Logger->error("Couldn't create buffer");
 			return;

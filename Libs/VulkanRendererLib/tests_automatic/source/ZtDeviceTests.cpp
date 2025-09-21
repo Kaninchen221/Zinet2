@@ -106,7 +106,7 @@ namespace zt::vulkan_renderer::tests
 		Buffer buffer{ nullptr };
 		int i = 50;
 		auto bufferCreateInfo = Buffer::GetUniformBufferCreateInfo(i);
-		buffer.createBuffer(vma, bufferCreateInfo);
+		buffer.create(vma, bufferCreateInfo);
 		ASSERT_TRUE(buffer.isValid());
 
 		std::string_view bufferDebugName = "BufferDebugName";

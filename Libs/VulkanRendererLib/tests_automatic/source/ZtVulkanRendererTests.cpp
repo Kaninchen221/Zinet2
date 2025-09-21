@@ -73,7 +73,7 @@ namespace zt::vulkan_renderer::tests
 			};
 
 			const auto vertexBufferCreateInfo = Buffer::GetVertexBufferCreateInfo(vertices);
-			ASSERT_TRUE(vertexBuffer.createBuffer(vma, vertexBufferCreateInfo));
+			ASSERT_TRUE(vertexBuffer.create(vma, vertexBufferCreateInfo));
 			ASSERT_TRUE(vertexBuffer.fillWithSTDContainer(vma, vertices));
 
 			// Index Buffer
@@ -84,7 +84,7 @@ namespace zt::vulkan_renderer::tests
 			};
 
 			const auto indexBufferCreateInfo = Buffer::GetIndexBufferCreateInfo(indices);
-			ASSERT_TRUE(indexBuffer.createBuffer(vma, indexBufferCreateInfo));
+			ASSERT_TRUE(indexBuffer.create(vma, indexBufferCreateInfo));
 			ASSERT_TRUE(indexBuffer.fillWithSTDContainer(vma, indices));
 
 			// Uniform Buffers

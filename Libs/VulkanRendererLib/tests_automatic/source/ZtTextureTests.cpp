@@ -119,7 +119,7 @@ namespace zt::vulkan_renderer::tests
 		
 		Buffer buffer{ nullptr };
 		const auto bufferCreateInfo = Buffer::GetImageBufferCreateInfo(sourceImage);
-		ASSERT_TRUE(buffer.createBuffer(vma, bufferCreateInfo));
+		ASSERT_TRUE(buffer.create(vma, bufferCreateInfo));
 
 		ASSERT_TRUE(buffer.fillWithImage(vma, sourceImage));
 

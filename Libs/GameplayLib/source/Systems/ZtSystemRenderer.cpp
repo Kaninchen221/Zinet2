@@ -55,7 +55,7 @@ namespace zt::gameplay
 		};
 
 		const auto vertexBufferCreateInfo = vr::Buffer::GetVertexBufferCreateInfo(vertices);
-		vertexBuffer.createBuffer(vma, vertexBufferCreateInfo);
+		vertexBuffer.create(vma, vertexBufferCreateInfo);
 		vertexBuffer.fillWithSTDContainer(vma, vertices);
 
 		const vr::DrawInfo::Indices indices =
@@ -65,7 +65,7 @@ namespace zt::gameplay
 		};
 
 		const auto indexBufferCreateInfo = vr::Buffer::GetIndexBufferCreateInfo(indices);
-		indexBuffer.createBuffer(vma, indexBufferCreateInfo);
+		indexBuffer.create(vma, indexBufferCreateInfo);
 		indexBuffer.fillWithSTDContainer(vma, indices);
 
 		initialized = true;

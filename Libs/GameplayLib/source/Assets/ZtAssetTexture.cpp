@@ -74,7 +74,7 @@ namespace zt::gameplay
 
 		vulkan_renderer::Buffer buffer{ nullptr };
 		const auto bufferCreateInfo = vulkan_renderer::Buffer::GetImageBufferCreateInfo(image);
-		if (!buffer.createBuffer(vma, bufferCreateInfo))
+		if (!buffer.create(vma, bufferCreateInfo))
 		{
 			Logger->error("Couldn't create an image buffer");
 			return false;

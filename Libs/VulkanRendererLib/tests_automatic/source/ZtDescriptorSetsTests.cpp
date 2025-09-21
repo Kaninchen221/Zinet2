@@ -54,7 +54,7 @@ namespace zt::vulkan_renderer::tests
 
 			const Vector2f position{};
 			const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(position);
-			uniformBuffer.createBuffer(vma, uniformBufferCreateInfo);
+			uniformBuffer.create(vma, uniformBufferCreateInfo);
 
 			const auto descriptorPoolSizes = DescriptorPool::GetDefaultPoolSizes();
 			const auto descriptorPoolCreateInfo = DescriptorPool::GetDefaultCreateInfo(descriptorPoolSizes);

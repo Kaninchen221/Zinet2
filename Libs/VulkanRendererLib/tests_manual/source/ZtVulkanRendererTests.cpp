@@ -76,7 +76,7 @@ namespace zt::vulkan_renderer::tests
 			};
 
 			const auto vertexBufferCreateInfo = Buffer::GetVertexBufferCreateInfo(vertices);
-			ASSERT_TRUE(vertexBuffer.createBuffer(vma, vertexBufferCreateInfo));
+			ASSERT_TRUE(vertexBuffer.create(vma, vertexBufferCreateInfo));
 			ASSERT_TRUE(vertexBuffer.fillWithSTDContainer(vma, vertices));
 
 			// Index Buffer
@@ -87,14 +87,14 @@ namespace zt::vulkan_renderer::tests
 			};
 
 			const auto indexBufferCreateInfo = Buffer::GetIndexBufferCreateInfo(indices);
-			ASSERT_TRUE(indexBuffer.createBuffer(vma, indexBufferCreateInfo));
+			ASSERT_TRUE(indexBuffer.create(vma, indexBufferCreateInfo));
 			ASSERT_TRUE(indexBuffer.fillWithSTDContainer(vma, indices));
 
 			// Uniform Buffers
 			{ // #0
 				Buffer& uniformBuffer = uniformBuffers.emplace_back(nullptr);
 				const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(uniformData);
-				ASSERT_TRUE(uniformBuffer.createBuffer(vma, uniformBufferCreateInfo));
+				ASSERT_TRUE(uniformBuffer.create(vma, uniformBufferCreateInfo));
 
 				ASSERT_TRUE(device.setDebugName(uniformBuffer, "UniformBuffer_0", VK_OBJECT_TYPE_BUFFER));
 			}
@@ -102,7 +102,7 @@ namespace zt::vulkan_renderer::tests
 			{ // #1
 				Buffer& uniformBuffer = uniformBuffers.emplace_back(nullptr);
 				const auto uniformBufferCreateInfo = Buffer::GetUniformBufferCreateInfo(uniformData);
-				ASSERT_TRUE(uniformBuffer.createBuffer(vma, uniformBufferCreateInfo));
+				ASSERT_TRUE(uniformBuffer.create(vma, uniformBufferCreateInfo));
 
 				ASSERT_TRUE(device.setDebugName(uniformBuffer, "UniformBuffer_1", VK_OBJECT_TYPE_BUFFER));
 			}
@@ -245,7 +245,7 @@ namespace zt::vulkan_renderer::tests
 
 		Buffer buffer{ nullptr };
 		const auto bufferCreateInfo = Buffer::GetImageBufferCreateInfo(sourceImage);
-		ASSERT_TRUE(buffer.createBuffer(vma, bufferCreateInfo));
+		ASSERT_TRUE(buffer.create(vma, bufferCreateInfo));
 
 		ASSERT_TRUE(buffer.fillWithImage(vma, sourceImage));
 
