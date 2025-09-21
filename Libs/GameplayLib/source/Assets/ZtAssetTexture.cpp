@@ -115,8 +115,6 @@ namespace zt::gameplay
 		if (!isLoaded())
 			return;
 
-		// TODO: Use ImGui_ImplVulkan_RemoveTexture
-
 		auto& engineContext = EngineContext::Get();
 		auto systemRenderer = engineContext.getSystem<SystemRenderer>();
 		if (!systemRenderer)
@@ -130,7 +128,12 @@ namespace zt::gameplay
 		auto& device = rendererContext.getDevice();
 		auto& vma = rendererContext.getVMA();
 
-		descriptorSets.invalidate();
+		if (descriptorSets.isValid())
+		{
+			ImGui_ImplVulkan_RemoveTexture(descriptorSets.get());
+			descriptorSets.invalidate();
+		}
+
 		texture.destroy(device, vma);
 		loaded = false;
 	}
