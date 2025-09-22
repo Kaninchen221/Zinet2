@@ -54,8 +54,13 @@ namespace zt::core
 
 	Object* ObjectRefCounter::get() const noexcept
 	{
+#	if ZINET_DEBUG // Sanity check
 		if (!isValid())
+		{
+			Ensure(false, "ObjectRefCounter is invalid");
 			TerminateDebug();
+		}
+#	endif
 
 		return object.get();
 	}

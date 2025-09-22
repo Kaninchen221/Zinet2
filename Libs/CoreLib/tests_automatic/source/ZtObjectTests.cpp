@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/Core/ZtObject.hpp"
+#include "Zinet/Core/ZtObjectRefCounter.hpp"
 #include "Zinet/Core/ZtArchive.hpp"
 
 #include <gtest/gtest.h>
@@ -37,12 +38,15 @@ namespace zt::core::tests
 		Object object;
 	};
 
-	TEST_F(ObjectTests, Test)
+	TEST_F(ObjectTests, PassTest)
 	{
 		const std::string asString = object.asString();
 
 		Archive::BufferT buffer;
 		Archive archive{ &buffer };
 		archive << object;
+
+		auto self = object.getSelf();
+		ASSERT_FALSE(self.isValid());
 	}
 }

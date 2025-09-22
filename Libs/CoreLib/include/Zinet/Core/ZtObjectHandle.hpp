@@ -24,11 +24,6 @@ namespace zt::core
 
 		using ObjectT = ObjectType;
 
-		/// Not in template to avoid compile time error
-		/// Example: std::vector<ObjectHandle<Node>> in the Node class
-		/// TODO: Check base class
-		//static_assert(std::derived_from<ObjectType, Object> || std::is_base_of_v<Object, ObjectT>, "ObjectType must be derived from Object");
-
 		ObjectHandle() noexcept = default;
 		ObjectHandle(ObjectRefCounter* newObjectRefCounter) noexcept
 		{
@@ -142,7 +137,6 @@ namespace zt::core
 
 		void destroy() { Ensure(objectRefCounter); objectRefCounter->reset(); }
 
-		// TODO: Test it
 		template<class DerivedT, bool CastedStrongRef>
 		ObjectHandle<DerivedT, CastedStrongRef> castTo() noexcept
 		{
