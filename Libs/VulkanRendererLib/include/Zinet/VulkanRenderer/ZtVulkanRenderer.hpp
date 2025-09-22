@@ -20,9 +20,7 @@ namespace zt::vulkan_renderer
 
 	class  VulkanRenderer : public core::Object
 	{
-	protected:
-
-		inline static auto Logger = core::ConsoleLogger::Create("VulkanRenderer", spdlog::level::debug);
+		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::VulkanRenderer", spdlog::level::debug);
 
 	public:
 

@@ -1,5 +1,6 @@
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
 #include "Zinet/Core/ZtFile.hpp"
+#include "Zinet/Core/ZtObjectRefCounter.hpp"
 
 #include <ranges>
 #include <algorithm>

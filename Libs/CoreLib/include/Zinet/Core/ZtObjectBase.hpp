@@ -8,6 +8,7 @@ namespace zt::core
 
 	class  ObjectBase
 	{
+
 	public:
 
 		ObjectBase() noexcept = default;
@@ -17,6 +18,5 @@ namespace zt::core
 
 		ObjectBase& operator = (const ObjectBase& other) noexcept = default;
 		ObjectBase& operator = (ObjectBase&& other) noexcept = default;
-
 	};
 }

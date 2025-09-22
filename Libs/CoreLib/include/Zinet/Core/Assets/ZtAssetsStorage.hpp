@@ -2,6 +2,7 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtObject.hpp"
+#include "Zinet/Core/ZtObjectRefCounter.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtClassRegistry.hpp"
 

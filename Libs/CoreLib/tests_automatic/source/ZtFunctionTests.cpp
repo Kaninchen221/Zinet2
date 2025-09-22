@@ -2,6 +2,7 @@
 
 #include "Zinet/Core/ZtFunction.hpp"
 #include "Zinet/Core/ZtObject.hpp"
+#include "Zinet/Core/ZtObjectRefCounter.hpp"
 
 #include <gtest/gtest.h>
 

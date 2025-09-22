@@ -4,6 +4,7 @@
 
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtObject.hpp"
+#include "Zinet/Core/ZtObjectRefCounter.hpp"
 
 namespace zt::gameplay
 {
