@@ -68,11 +68,13 @@ namespace zt::gameplay
 				camera.setLookingAt(Vector3f{});
 			}
 
+			ImGui::SliderFloat("Sliders Limit", &slidersLimit, 0.f, 1000000.f);
+
 			Vector3f position = camera.getPosition();
-			ImGui::SliderFloat3("Position", reinterpret_cast<float*>(&position), -1000, 1000);
+			ImGui::SliderFloat3("Position", reinterpret_cast<float*>(&position), -slidersLimit, slidersLimit);
 
 			Vector3f lookingAt = camera.getLookingAt();
-			ImGui::SliderFloat3("Looking At", reinterpret_cast<float*>(&lookingAt), -1000, 1000);
+			ImGui::SliderFloat3("Looking At", reinterpret_cast<float*>(&lookingAt), -slidersLimit, slidersLimit);
 
 			if (ImGui::Button(">"))
 			{

@@ -50,6 +50,10 @@ namespace zt::gameplay
 			alignas(16) glm::mat4 view;
 			alignas(16) glm::mat4 perspective;
 		};
+
+#		if ZINET_USE_IMGUI
+		float slidersLimit = 10000.f;
+#		endif
 	};
 
 }
