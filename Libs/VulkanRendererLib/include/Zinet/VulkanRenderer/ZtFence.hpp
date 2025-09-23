@@ -32,7 +32,7 @@ namespace zt::vulkan_renderer
 
 		void destroy(const Device& device);
 
-		bool wait(const Device& device, std::uint64_t timeout = UINT64_MAX) const;
+		bool wait(const Device& device, std::uint64_t timeout = std::numeric_limits<uint64_t>::max()) const;
 
 		bool isSignaled(const Device& device) const;
 

@@ -70,9 +70,8 @@ namespace zt::core
 		ValueT average{};
 		size_t maxPoints{ 1000 };
 		bool plot = true;
-		// TODO: Write some NumericLimits class because I'm getting "not enough arguments for function-like macro invocation 'max'" is some situations when using std::numeric_limits
-		ValueT smallestValue{ FLT_MAX }; 
-		ValueT largestValue{ FLT_MIN };
+		ValueT smallestValue{ std::numeric_limits<ValueT>::max() };
+		ValueT largestValue{ std::numeric_limits<ValueT>::lowest() };
 		bool resizeToLargest = true;
 		bool resizeToSmallest = true;
 

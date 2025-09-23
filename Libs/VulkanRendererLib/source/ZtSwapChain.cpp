@@ -122,7 +122,7 @@ namespace zt::vulkan_renderer
 		std::uint32_t imageIndex{};
 		// TODO: Fix validation layers error about semaphore on AMD integrated GPU (on laptop)
 		const auto result =
-			vkAcquireNextImageKHR(device.get(), objectHandle, UINT64_MAX, semaphore.get(), VK_NULL_HANDLE, &imageIndex);
+			vkAcquireNextImageKHR(device.get(), objectHandle, std::numeric_limits<uint64_t>::max(), semaphore.get(), VK_NULL_HANDLE, &imageIndex);
 
 		if (result == VK_SUCCESS)
 		{

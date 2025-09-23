@@ -100,7 +100,7 @@ namespace zt::gameplay::tests
 			{
 				random.real<float>(-1000, 1000),
 				random.real<float>(-1000, 1000),
-				50.f
+				random.real<float>(-50, 50)
 			};
 
 			const float scale = random.real<float>(5, 15);
