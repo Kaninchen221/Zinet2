@@ -99,12 +99,7 @@ namespace zt::core
 		}
 
 		ObjectRefCounter* getRefCounter() const noexcept 
-		{ 
-#		if ZINET_DEBUG
-			if (!objectRefCounter)
-				Terminate();
-#		endif
-
+		{
 			return objectRefCounter; 
 		}
 

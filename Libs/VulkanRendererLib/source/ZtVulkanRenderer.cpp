@@ -31,6 +31,14 @@ namespace zt::vulkan_renderer
 		auto& currentDisplayImageIndex = rendererContext.currentDisplayImageIndex;
 		auto& imageAvailableSemaphore = rendererContext.getNextDisplayImage().imageAvailableSemaphore;
 
+		auto& fence = rendererContext.getNextDisplayImage().fence;
+
+		if (!fence.wait(device))
+			return false;
+
+		if (!fence.reset(device))
+			return false;
+
 		currentDisplayImageIndex = swapChain.acquireNextImage(device, imageAvailableSemaphore);
 		if (currentDisplayImageIndex == SwapChain::InvalidIndex)
 			return false;
@@ -40,16 +48,9 @@ namespace zt::vulkan_renderer
 		if (nextDisplayImageIndex >= rendererContext.framesInFlight)
 			nextDisplayImageIndex = 0;
 
-		//Logger->debug("Current display image index: {}", currentDisplayImageIndex);
-		//Logger->debug("Next display image index: {}", nextDisplayImageIndex);
+		Logger->debug("Current display image index: {}", currentDisplayImageIndex);
+		Logger->debug("Next display image index: {}", nextDisplayImageIndex);
 
-		auto& fence = rendererContext.getCurrentDisplayImage().fence;
-
-		if (!fence.wait(device))
-			return false;
-
-		if (!fence.reset(device))
-			return false;
 
 		return true;
 	}

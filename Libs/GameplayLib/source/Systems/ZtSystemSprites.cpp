@@ -3,6 +3,7 @@
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Nodes/ZtNodeInstancedSprite.hpp"
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
+#include "Zinet/Core/ZtTimeLog.hpp"
 
 namespace zt::gameplay
 {
@@ -16,7 +17,10 @@ namespace zt::gameplay
 			isDirty = false;
 		}
 
-		updateTransformsBufferData();
+		ZT_TIME_LOG(
+			// TODO: Optimize this. We should update only changed transforms
+			updateTransformsBufferData();
+		);
 	}
 
 	void SystemSprites::addNode(const ObjectWeakHandle<Node>& node)
@@ -111,7 +115,9 @@ namespace zt::gameplay
 		}
 		auto& vma = systemRenderer->getRenderer().getRendererContext().getVMA();
 
-		transformsMatricesBuffer.fillWithSTDContainer(vma, transformsMatrices);
+		ZT_TIME_LOG(
+			transformsMatricesBuffer.fillWithSTDContainer(vma, transformsMatrices);
+		);
 	}
 
 	bool SystemSprites::deinit()

@@ -45,7 +45,7 @@ namespace zt::gameplay::tests
 
 			auto nodeCamera = CreateObject<NodeCamera>("Camera");
 			auto& camera = nodeCamera->getCamera();
-			camera.setPosition(Vector3f(0.00001, 0, 150));
+			camera.setPosition(Vector3f(0.00001, 0, 10000));
 			camera.setLookingAt(Vector3f(0.0f, 0.0f, 0.0f));
 			camera.setUpVector(Vector3f(0, 1, 0));
 
@@ -77,7 +77,11 @@ namespace zt::gameplay::tests
 		ObjectHandle<SystemImGui> systemImGui;
 		std::vector<ObjectHandle<NodeInstancedSprite>> sprites;
 
-		ObjectHandle<NodeInstancedSprite> AddSpriteTest()
+		ObjectHandle<NodeInstancedSprite> AddSpriteTest(
+			[[maybe_unused]] const auto x,
+			[[maybe_unused]] const auto y, 
+			[[maybe_unused]] const auto width, 
+			[[maybe_unused]] const auto height)
 		{
 			auto& transforms = systemSprites->getTransforms();
 		
@@ -94,8 +98,8 @@ namespace zt::gameplay::tests
 
 			const Vector3f position =
 			{
-				random.real<float>(-20, 20),
-				random.real<float>(-20, 20),
+				random.real<float>(-1000, 1000),
+				random.real<float>(-1000, 1000),
 				50.f
 			};
 
@@ -146,8 +150,11 @@ namespace zt::gameplay::tests
 
 	TEST_F(SystemSpritesTests, PassTest)
 	{
-		for (size_t i = 0; i < 100000; ++i)
-			AddSpriteTest();
+		const size_t width = 100;
+		const size_t height = 100;
+		for (size_t x = 0; x < width; ++x)
+			for (size_t y = 0; y < height; ++y)
+				AddSpriteTest(x, y, width, height);
 
 		systemSprites->update();
 

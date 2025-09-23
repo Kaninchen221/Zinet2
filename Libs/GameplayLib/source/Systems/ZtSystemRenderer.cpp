@@ -1,10 +1,11 @@
-#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
+﻿#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
 
 #include <imgui.h>
 
 #include "Zinet/Core/ZtPaths.hpp"
+#include "Zinet/Core/ZtTimeLog.hpp"
 
 namespace zt::gameplay
 {
@@ -148,16 +149,24 @@ namespace zt::gameplay
 			return;
 		}
 
-		renderer.nextImage();
+		ZT_TIME_LOG(
+			renderer.nextImage();
+		);
 
 		if (GetUseImGui())
 			imGuiIntegration.prepareRenderData();
 
-		renderer.draw(drawInfo);
+		ZT_TIME_LOG(
+			renderer.draw(drawInfo);
+		);
 
-		renderer.submitDrawInfo();
+		ZT_TIME_LOG(
+			renderer.submitDrawInfo();
+		);
 
-		renderer.displayCurrentImage();
+		ZT_TIME_LOG(
+			renderer.displayCurrentImage();
+		);
 	}
 
 	void SystemRenderer::show()
