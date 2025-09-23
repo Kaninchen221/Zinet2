@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/Gameplay/Systems/ZtSystem.hpp"
+#include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtClock.hpp"
@@ -41,6 +42,9 @@ namespace zt::gameplay
 
 		vulkan_renderer::DescriptorInfo getDescriptorInfo();
 
+		void setAssetTexture(const ObjectHandle<AssetTexture>& newAssetTexture) { assetTexture = newAssetTexture; }
+		const AssetProperty<AssetTexture>& getAssetTexture() const { return assetTexture; }
+
 	protected:
 
 		bool isDirty = true;
@@ -52,6 +56,8 @@ namespace zt::gameplay
 		vulkan_renderer::Buffer transformsMatricesBuffer{ nullptr };
 		void recreateTransformsBuffer();
 		void updateTransformsBufferData();
+
+		AssetProperty<AssetTexture> assetTexture{ "Texture" };
 
 	};
 

@@ -17,6 +17,8 @@ namespace zt::gameplay
 	{
 	public:
 
+		using AssetHandleT = typename core::AssetHandle<AssetT>;
+
 		using IsStatic = Static;
 
 		AssetProperty() = default;
@@ -36,8 +38,6 @@ namespace zt::gameplay
 		AssetProperty& operator = (AssetProperty&& other) noexcept = default;
 
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::AssetProperty");
-
-		using AssetHandleT = typename core::AssetHandle<AssetT>;
 
 		AssetProperty& operator = (AssetHandleT otherAssetHandle) noexcept { assetHandle = otherAssetHandle; return *this; }
 

@@ -1,4 +1,4 @@
-﻿#include "Zinet/Gameplay/Systems/ZtSystemSprites.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemSprites.hpp"
 
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Nodes/ZtNodeInstancedSprite.hpp"
@@ -43,13 +43,31 @@ namespace zt::gameplay
 		if (!transformsMatricesBuffer.isValid())
 			return {};
 
-		return vulkan_renderer::DescriptorInfo
+		vulkan_renderer::DescriptorInfo result
 		{
 			.buffersPerType =
 			{
 				{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, { &transformsMatricesBuffer } }
 			}
 		};
+
+		if (!assetTexture || !assetTexture->isLoaded())
+		{
+			Logger->error("AssetTexture is invalid");
+			return result;
+		}
+
+		result.texturesInfos =
+		{
+			vulkan_renderer::TextureInfo
+			{
+				.texture = &assetTexture->texture,
+				.sampler = &assetTexture->sampler.get()->sampler,
+				.shaderType = vulkan_renderer::ShaderType::Fragment
+			}
+		};
+
+		return result;
 	}
 
 	void SystemSprites::recreateTransformsBuffer()

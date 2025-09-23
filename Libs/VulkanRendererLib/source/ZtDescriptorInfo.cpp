@@ -122,7 +122,10 @@ namespace zt::vulkan_renderer
 
 		for (auto& textureInfo : texturesInfos)
 		{
-			if (!textureInfo.texture || !textureInfo.texture->isValid() || !textureInfo.sampler || !textureInfo.sampler->isValid())
+			if (!textureInfo.texture || !textureInfo.sampler)
+				continue;
+
+			if (!textureInfo.texture->isValid() || !textureInfo.sampler->isValid())
 				continue;
 
 			[[maybe_unused]]

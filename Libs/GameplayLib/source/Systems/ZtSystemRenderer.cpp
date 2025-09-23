@@ -1,4 +1,4 @@
-﻿#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
 
@@ -110,7 +110,7 @@ namespace zt::gameplay
 			return;
 
 		drawInfo.objectDescriptorInfo += node2D->getDescriptorInfo();
-		drawInfo.instances++;
+		drawInfo.instances += node2D->getInstancesCount();
 	}
 
 	void SystemRenderer::update()

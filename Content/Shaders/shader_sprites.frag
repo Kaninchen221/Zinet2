@@ -8,11 +8,11 @@ layout(location = 2) flat in uint instanceIndex;
 
 layout(location = 0) out vec4 outColor;
 
-//layout(set = 0, binding = 0) uniform sampler2D texSamplers[];
+layout(set = 1, binding = 1) uniform sampler2D texSampler;
 
 void main() {
     outColor = fragColor;
-	outColor = vec4(1.0); // TODO: Remove that after adding handling atlas textures
-	//vec4 texColor = texture(texSamplers[instanceIndex], fragTexCoord);
-	//outColor.rgba *= texColor.rgba;
+	
+	vec4 texColor = texture(texSampler, fragTexCoord);
+	outColor.rgba *= texColor.rgba;
 }

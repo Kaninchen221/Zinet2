@@ -10,9 +10,9 @@ layout(location = 0) out vec4 fragColor;
 layout(location = 1) out vec2 fragTexCoord;
 layout(location = 2) out uint instanceIndex;
 
-layout(set = 1, binding = 0) buffer SpritesModels {
-	readonly mat4 model;
-} spritesModels[];
+layout(set = 1, binding = 0) buffer Instances {
+	readonly mat4 model[];
+} instances;
 
 layout(set = 0, binding = 0) uniform Camera {
 	mat4 view;
@@ -20,14 +20,11 @@ layout(set = 0, binding = 0) uniform Camera {
 } camera;
 
 void main() {
-	mat4 model = spritesModels[gl_InstanceIndex].model;
-	//mat4 view = uniforms[gl_InstanceIndex].view; // TODO
-	//mat4 projection = uniforms[gl_InstanceIndex].projection; // TODO
+	mat4 model = instances.model[gl_InstanceIndex];
 
 	vec4 position = vec4(inPosition, 1.0);
-	//gl_Position = position;
     gl_Position = camera.projection * camera.view * model * position;
-    fragColor = inColor;
+	fragColor = inColor;
     fragTexCoord = inTexCoord;
 	instanceIndex = gl_InstanceIndex;
 }

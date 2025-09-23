@@ -45,6 +45,8 @@ namespace zt::gameplay
 
 		virtual vulkan_renderer::DescriptorInfo getDescriptorInfo();
 
+		virtual uint32_t getInstancesCount() const noexcept { return 1; }
+
 		vulkan_renderer::Transform transform{};
 
 	protected:

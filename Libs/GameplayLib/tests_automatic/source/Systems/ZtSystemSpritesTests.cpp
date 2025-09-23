@@ -3,10 +3,14 @@
 #include "Zinet/Gameplay/Systems/ZtSystemSprites.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemTickable.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
 #include "Zinet/Gameplay/Nodes/ZtNodeInstancedSprite.hpp"
+#include "Zinet/Gameplay/Nodes/ZtNodeEditor.hpp"
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
 
 #include "Zinet/Core/ZtObjectsStorage.hpp"
+#include "Zinet/Core/ZtRandom.hpp"
 
 #include <gtest/gtest.h>
 
@@ -20,24 +24,44 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
-			SystemRenderer::SetUseImGui(false);
+			//SystemRenderer::SetUseImGui(false);
 
 			auto& assetsStorage = engineContext.getAssetsStorage();
 			assetsStorage.registerAssetClass<gameplay::AssetShader>();
+			assetsStorage.registerAssetClass<gameplay::AssetSampler>();
+			assetsStorage.registerAssetClass<gameplay::AssetTexture>();
 
-			engineContext.addSystem<SystemWindow>("window");
+			systemWindow = engineContext.addSystem<SystemWindow>("window");
+			systemImGui = engineContext.addSystem<SystemImGui>("imgui");
 			systemRenderer = engineContext.addSystem<SystemRenderer>("renderer");
+			systemTickable = engineContext.addSystem<SystemTickable>("tickable");
 			systemSprites = engineContext.addSystem<SystemSprites>("sprites", UpdatePhase::Pre);
 
 			ASSERT_TRUE(engineContext.init());
+
+			auto nodeEditor = CreateObject<NodeEditor>("Editor");
+			engineContext.getRootNode()->addChild(nodeEditor);
+			systemImGui->addNode(nodeEditor);
 
 			auto nodeCamera = CreateObject<NodeCamera>("Camera");
 			auto& camera = nodeCamera->getCamera();
 			camera.setPosition(Vector3f(0.00001, 0, 150));
 			camera.setLookingAt(Vector3f(0.0f, 0.0f, 0.0f));
 			camera.setUpVector(Vector3f(0, 1, 0));
+
+			auto& window = systemWindow->getWindow();
+			auto windowSize = window.getSize();
+			camera.setFieldOfView(45.f);
+			camera.setAspectRatio(windowSize.x / static_cast<float>(windowSize.y));
+			camera.setClipping(Vector2f{ 0.0000001f, 10000000.0f });
+
 			systemRenderer->setCameraNode(nodeCamera);
+			systemTickable->addNode(nodeCamera);
 			engineContext.getRootNode()->addChild(nodeCamera);
+
+			auto texture = engineContext.getAssetsStorage().getAs<AssetTexture>("Content/Textures/image.png");
+			ASSERT_TRUE(texture->load(core::Paths::RootPath()));
+			systemSprites->setAssetTexture(texture);
 		}
 
 		void TearDown() override
@@ -46,16 +70,18 @@ namespace zt::gameplay::tests
 		}
 
 		EngineContext engineContext;
+		ObjectHandle<SystemTickable> systemTickable;
+		ObjectHandle<SystemWindow> systemWindow;
 		ObjectHandle<SystemSprites> systemSprites;
 		ObjectHandle<SystemRenderer> systemRenderer;
+		ObjectHandle<SystemImGui> systemImGui;
 		std::vector<ObjectHandle<NodeInstancedSprite>> sprites;
 
 		ObjectHandle<NodeInstancedSprite> AddSpriteTest()
 		{
-			auto& objectsStorage = engineContext.getObjectsStorage();
 			auto& transforms = systemSprites->getTransforms();
 		
-			ObjectHandle<NodeInstancedSprite> sprite = objectsStorage.createObject<NodeInstancedSprite>("Sprite");
+			ObjectHandle<NodeInstancedSprite> sprite = CreateObject<NodeInstancedSprite>("Sprite");
 			sprites.push_back(sprite);
 
 			systemSprites->addNode(sprite);
@@ -63,7 +89,25 @@ namespace zt::gameplay::tests
 			EXPECT_EQ(&sprite->getTransform(), &transforms[sprite->getID()]);
 		
 			EXPECT_EQ(transforms.size(), sprites.size());
-		
+
+			core::Random random;
+
+			const Vector3f position =
+			{
+				random.real<float>(-20, 20),
+				random.real<float>(-20, 20),
+				50.f
+			};
+
+			const float scale = random.real<float>(5, 15);
+
+			const float rotation = random.real<float>(0, 360);
+
+			auto& transform = sprite->getTransform();
+			transform.setScale(Vector3f(scale, scale, 1.0f));
+			transform.setPosition(position);
+			transform.setRotation(rotation);
+
 			return sprite;
 		}
 
@@ -94,14 +138,16 @@ namespace zt::gameplay::tests
 				return sysSprites->getDescriptorInfo();
 			}
 
+			uint32_t instancesCount = 1;
+			uint32_t getInstancesCount() const noexcept override { return instancesCount; }
+
 		};
 	};
 
 	TEST_F(SystemSpritesTests, PassTest)
 	{
-		AddSpriteTest();
-		AddSpriteTest();
-		AddSpriteTest();
+		for (size_t i = 0; i < 100000; ++i)
+			AddSpriteTest();
 
 		systemSprites->update();
 
@@ -122,19 +168,20 @@ namespace zt::gameplay::tests
 		ASSERT_TRUE(shaderFrag->load(core::Paths::RootPath()));
 		systemRenderer->fragmentShader = shaderFrag;
 
-		auto& objectsStorage = engineContext.getObjectsStorage();
-		auto fakeSprite = objectsStorage.createObject<FakeSprite>("Fake Sprite");
+		auto fakeSprite = CreateObject<FakeSprite>("Fake Sprite");
+		fakeSprite->instancesCount = static_cast<uint32_t>(sprites.size());
 		engineContext.getRootNode()->addChild(fakeSprite);
 		systemRenderer->addNode(fakeSprite);
 
 		std::jthread exitThread(
-		[&engineContext = engineContext]()
+			[&engineContext = engineContext]()
 		{
 			while (!engineContext.isLooping())
-			{}
+			{
+			}
 
 			using namespace std::chrono_literals;
-			std::this_thread::sleep_for(2000ms);
+			std::this_thread::sleep_for(100ms);
 			engineContext.stopLooping();
 		});
 

@@ -81,6 +81,7 @@ namespace zt::gameplay::tests
 			camera.setClipping(Vector2f{ 0.0000001f, 10000000.0f });
 
 			systemRenderer->setCameraNode(nodeCamera);
+			systemTickable->addNode(nodeCamera);
 
 			auto editorNode = CreateObject<NodeEditor>("Editor");
 			rootNode->addChild(editorNode);
