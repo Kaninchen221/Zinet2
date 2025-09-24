@@ -57,6 +57,7 @@ namespace zt::vulkan_renderer
 
 	protected:
 
+		// TODO: Use Transform
 		Vector3f position{ 0.00001, 0, 1 };
 		Vector3f lookingAt{ 0, 0, 0 };
 		Vector3f upVector{ 0, 0, 1 };
