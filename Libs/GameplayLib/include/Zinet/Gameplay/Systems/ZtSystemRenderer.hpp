@@ -14,13 +14,10 @@
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
 #include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
+#include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
+#include "Zinet/VulkanRenderer/ZtGraphicsPipelineCreateInfo.hpp"
 
 #include "Zinet/Window/ZtWindow.hpp"
-
-namespace
-{
-	namespace vr = zt::vulkan_renderer;
-}
 
 namespace zt::gameplay
 {
@@ -67,7 +64,7 @@ namespace zt::gameplay
 		auto& getRenderer() noexcept { return renderer; }
 		const auto& getRenderer() const noexcept { return renderer; }
 
-		void setCameraNode(ObjectHandle<NodeCamera> newCamera) noexcept { camera = newCamera; }
+		void setCameraNode(ObjectHandle<NodeCamera> newCamera) noexcept;
 		auto getCameraNode() const noexcept { return camera; }
 
 		AssetProperty<AssetShader> vertexShader{ "Vertex Shader" };
@@ -75,23 +72,38 @@ namespace zt::gameplay
 
 	protected:
 
-		vr::ImGuiIntegration imGuiIntegration;
-		vr::VulkanRenderer renderer;
-		
+		vulkan_renderer::ImGuiIntegration imGuiIntegration;
+		vulkan_renderer::VulkanRenderer renderer;
+		vulkan_renderer::GraphicsPipeline graphicsPipeline;
+
 		ObjectHandle<NodeCamera> camera;
 
-		vr::ShaderModule vertexShaderModule{ nullptr };
-		vr::ShaderModule fragmentShaderModule{ nullptr };
-		vr::Buffer vertexBuffer{ nullptr };
-		vr::Buffer indexBuffer{ nullptr };
-		vr::DrawInfo drawInfo
+		vulkan_renderer::Buffer vertexBuffer{ nullptr };
+		vulkan_renderer::Buffer indexBuffer{ nullptr };
+		vulkan_renderer::DrawInfo drawInfo
 		{
-			.vertexShaderModule = &vertexShaderModule,
-			.fragmentShaderModule = &fragmentShaderModule,
 			.vertexBuffer = &vertexBuffer,
 			.indexBuffer = &indexBuffer,
 			.indexCount = static_cast<uint32_t>(6),
 			.instances = 0
+		};
+
+		vulkan_renderer::
+		GraphicsPipelineCreateInfo graphicsPipelineCreateInfo
+		{
+			.rendererContext = renderer.getRendererContext(),
+			.shaderModules =
+			{
+				// Set after the assets are ready to use
+				// { vulkan_renderer::ShaderType::Vertex, nullptr },
+				// { vulkan_renderer::ShaderType::Fragment, nullptr }
+			},
+			.descriptorInfos =
+			{
+				// [0] Pipeline descriptor set info
+				// [1] Object descriptor set info
+			},
+			// .descriptorSetsCount = Set after init renderer
 		};
 	};
 

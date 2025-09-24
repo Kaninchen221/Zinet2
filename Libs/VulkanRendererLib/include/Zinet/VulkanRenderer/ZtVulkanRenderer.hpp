@@ -20,7 +20,7 @@ namespace zt::vulkan_renderer
 
 	class  VulkanRenderer : public core::Object
 	{
-		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::VulkanRenderer", spdlog::level::debug);
+		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::VulkanRenderer", spdlog::level::info);
 
 	public:
 
@@ -37,10 +37,8 @@ namespace zt::vulkan_renderer
 		void deinit();
 
 		bool nextImage();
-
-		bool createPipeline(DrawInfo& drawInfo);
 		
-		void draw(const DrawInfo& drawInfo);
+		void draw(GraphicsPipeline& graphicsPipeline, const DrawInfo& drawInfo);
 
 		bool submitCurrentDisplayImage();
 
@@ -49,15 +47,11 @@ namespace zt::vulkan_renderer
 		const auto& getRendererContext() const { return rendererContext; }
 		auto& getRendererContext() { return rendererContext; }
 
-		const auto& getGraphicsPipeline() const { return graphicsPipeline; }
-		auto& getGraphicsPipeline() { return graphicsPipeline; }
-
 		bool shouldBePaused() const noexcept { return rendererContext.invalidWindowSizeForPresent; }
 
 	protected:
 
 		RendererContext rendererContext;
-		GraphicsPipeline graphicsPipeline;
 
 		static void WindowResizedCallback(void* userPointer, const Vector2i& size);
 

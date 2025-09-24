@@ -33,7 +33,7 @@ namespace zt::core
 
 		std::string getDisplayName() { return metaData.value("fileNameExt", "fileNameExt_DefaultName"); }
 
-		bool isLoaded() noexcept { return loaded; }
+		bool isLoaded() const noexcept { return loaded; }
 
 		virtual bool load([[maybe_unused]] const Path& rootPath) { return false; }
 

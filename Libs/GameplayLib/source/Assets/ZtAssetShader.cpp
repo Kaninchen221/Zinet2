@@ -81,4 +81,12 @@ namespace zt::gameplay
 		ImGui::Text(text);
 	}
 
+	const ShaderModule* AssetShader::getShaderModule() const
+	{
+		if (!isLoaded())
+			return nullptr;
+
+		return &shaderModule;
+	}
+
 }

@@ -31,6 +31,10 @@ namespace zt::gameplay
 
 		void show() override;
 
+		const vulkan_renderer::ShaderModule* getShaderModule() const;
+
+	protected:
+
 		vulkan_renderer::ShaderModule shaderModule{ nullptr };
 	};
 

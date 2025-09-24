@@ -12,6 +12,7 @@
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtDescriptorSets.hpp"
 #include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
+#include "Zinet/VulkanRenderer/ZtGraphicsPipelineCreateInfo.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -21,14 +22,6 @@ namespace zt::vulkan_renderer
 {
 	class RendererContext;
 	struct DrawInfo;
-	struct DescriptorInfo;
-
-	struct GraphicsPipelineCreateInfo
-	{
-		const RendererContext& rendererContext;
-		DrawInfo& drawInfo;
-		size_t descriptorSetsCount = 1;
-	};
 
 	class  GraphicsPipeline
 	{
@@ -46,7 +39,7 @@ namespace zt::vulkan_renderer
 		GraphicsPipeline& operator = (const GraphicsPipeline& other) noexcept = delete;
 		GraphicsPipeline& operator = (GraphicsPipeline&& other) noexcept = default;
 
-		bool create(const GraphicsPipelineCreateInfo& createInfo);
+		bool create(GraphicsPipelineCreateInfo& createInfo);
 
 		void destroy(const RendererContext& rendererContext) noexcept;
 
@@ -75,7 +68,7 @@ namespace zt::vulkan_renderer
 		PipelineLayout pipelineLayout{ nullptr };
 		Pipeline pipeline{ nullptr };
 
-		bool createDescriptors(const GraphicsPipelineCreateInfo& graphicsPipelineCreateInfo);
+		bool createDescriptors(GraphicsPipelineCreateInfo& graphicsPipelineCreateInfo);
 
 	};
 }

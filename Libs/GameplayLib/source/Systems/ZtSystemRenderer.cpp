@@ -9,6 +9,8 @@
 
 namespace zt::gameplay
 {
+	using namespace zt::vulkan_renderer;
+
 	bool SystemRenderer::init()
 	{
 		auto& engineContext = EngineContext::Get();
@@ -42,32 +44,34 @@ namespace zt::gameplay
 
 		if (UseImGui)
 		{
-			if (!imGuiIntegration.init(renderer.getRendererContext(), window))
+			if (!imGuiIntegration.init(rendererContext, window))
 				return false;
 
-			drawInfo.additionalCommands = { vr::ImGuiIntegration::DrawCommand };
+			drawInfo.additionalCommands = { ImGuiIntegration::DrawCommand };
 		}
 
-		const vr::DrawInfo::Vertices vertices = {
+		const DrawInfo::Vertices vertices = {
 			{{-0.5f, 0.5f, 1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {0.f, 0.f}},
 			{{0.5f,  0.5f, 1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {1.f, 0.f}},
 			{{0.5f,  -0.5f,  1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {1.f, 1.f}},
 			{{-0.5f, -0.5f,  1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {0.f, 1.f}}
 		};
 
-		const auto vertexBufferCreateInfo = vr::Buffer::GetVertexBufferCreateInfo(vertices);
+		const auto vertexBufferCreateInfo = Buffer::GetVertexBufferCreateInfo(vertices);
 		vertexBuffer.create(vma, vertexBufferCreateInfo);
 		vertexBuffer.fillWithSTDContainer(vma, vertices);
 
-		const vr::DrawInfo::Indices indices =
+		const DrawInfo::Indices indices =
 		{
 			0, 1, 2,
 			2, 3, 0
 		};
 
-		const auto indexBufferCreateInfo = vr::Buffer::GetIndexBufferCreateInfo(indices);
+		const auto indexBufferCreateInfo = Buffer::GetIndexBufferCreateInfo(indices);
 		indexBuffer.create(vma, indexBufferCreateInfo);
 		indexBuffer.fillWithSTDContainer(vma, indices);
+
+		graphicsPipelineCreateInfo.descriptorSetsCount = rendererContext.getDisplayImagesCount();
 
 		initialized = true;
 		return true;
@@ -78,21 +82,21 @@ namespace zt::gameplay
 		if (!System::deinit())
 			return false;
 
-		auto& device = renderer.getRendererContext().getDevice();
-		auto& vma = renderer.getRendererContext().getVMA();
+		auto& rendererContext = renderer.getRendererContext();
+		auto& device = rendererContext.getDevice();
+		auto& vma = rendererContext.getVMA();
 
 		device.waitIdle();
-
-		vertexShaderModule.destroy(device);
-		fragmentShaderModule.destroy(device);
 
 		vertexBuffer.destroy(vma);
 		indexBuffer.destroy(vma);
 
 		if (UseImGui)
 		{
-			imGuiIntegration.deinit(renderer.getRendererContext());
+			imGuiIntegration.deinit(rendererContext);
 		}
+
+		graphicsPipeline.destroy(rendererContext);
 
 		renderer.deinit();
 
@@ -110,7 +114,8 @@ namespace zt::gameplay
 		if (!node2D)
 			return;
 
-		drawInfo.objectDescriptorInfo += node2D->getDescriptorInfo();
+		// Add descriptor info to the object descriptor
+		graphicsPipelineCreateInfo.descriptorInfos[1] += node2D->getDescriptorInfo();
 		drawInfo.instances += node2D->getInstancesCount();
 	}
 
@@ -124,29 +129,15 @@ namespace zt::gameplay
 		if (nodes.size() == 0 && drawInfo.additionalCommands.empty())
 			return;
 
-		if (vertexShader && vertexShader.getAssetHandle()->isLoaded() &&
-			fragmentShader && fragmentShader.getAssetHandle()->isLoaded())
+		if (!graphicsPipeline.isValid())
 		{
-			drawInfo.vertexShaderModule = &vertexShader.getAssetHandle()->shaderModule;
-			drawInfo.fragmentShaderModule = &fragmentShader.getAssetHandle()->shaderModule;
-		}
-		else
-		{
-			return;
-		}
+			if (vertexShader)
+				graphicsPipelineCreateInfo.shaderModules[ShaderType::Vertex] = vertexShader->getShaderModule();
 
-		static bool addedCamera = false;
-		if (camera && !addedCamera)
-		{
-			addedCamera = true;
-			drawInfo.pipelineDescriptorInfo += camera->getDescriptorInfo();
-		}
+			if (fragmentShader)
+				graphicsPipelineCreateInfo.shaderModules[ShaderType::Fragment] = fragmentShader->getShaderModule();
 
-		renderer.createPipeline(drawInfo);
-		if (!Ensure(renderer.getGraphicsPipeline().isValid()))
-		{
-			Logger->error("Graphics Pipeline is invalid");
-			return;
+			graphicsPipeline.create(graphicsPipelineCreateInfo);
 		}
 
 		ZT_TIME_LOG(
@@ -157,7 +148,7 @@ namespace zt::gameplay
 			imGuiIntegration.prepareRenderData();
 
 		ZT_TIME_LOG(
-			renderer.draw(drawInfo);
+			renderer.draw(graphicsPipeline, drawInfo);
 		);
 
 		ZT_TIME_LOG(
@@ -177,6 +168,19 @@ namespace zt::gameplay
 		fragmentShader.show();
 		if (camera)
 			camera->show();
+	}
+
+	void SystemRenderer::setCameraNode(ObjectHandle<NodeCamera> newCamera) noexcept
+	{
+		if (newCamera)
+		{
+			camera = newCamera;
+			graphicsPipelineCreateInfo.descriptorInfos[0] = camera->getDescriptorInfo();
+		}
+		else
+		{
+			Logger->error("You passed an invalid node camera to the system renderer");
+		}
 	}
 
 }

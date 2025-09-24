@@ -134,8 +134,9 @@ namespace zt::vulkan_renderer::tests
 
 		void TearDown() override
 		{
-			auto& device = renderer.getRendererContext().getDevice();
-			auto& vma = renderer.getRendererContext().getVMA();
+			auto& rendererContext = renderer.getRendererContext();
+			auto& device = rendererContext.getDevice();
+			auto& vma = rendererContext.getVMA();
 
 			device.waitIdle();
 
@@ -149,7 +150,9 @@ namespace zt::vulkan_renderer::tests
 			texture.destroy(device, vma);
 			sampler.destroy(device);
 
-			imGuiIntegration.deinit(renderer.getRendererContext());
+			imGuiIntegration.deinit(rendererContext);
+
+			graphicsPipeline.destroy(rendererContext);
 
 			renderer.deinit();
 
@@ -168,6 +171,7 @@ namespace zt::vulkan_renderer::tests
 		DrawInfo::Indices indices;
 		Transform transform;
 		Transform transform2;
+		GraphicsPipeline graphicsPipeline;
 
 		std::vector<Buffer> uniformBuffers;
 		struct UniformData
@@ -280,24 +284,40 @@ namespace zt::vulkan_renderer::tests
 
 		DrawInfo drawInfo
 		{
-			.vertexShaderModule = &vertexShaderModule,
-			.fragmentShaderModule = &fragmentShaderModule,
 			.vertexBuffer = &vertexBuffer,
 			.indexBuffer = &indexBuffer,
 			.indexCount = static_cast<std::uint32_t>(indices.size()),
 			.instances = 2u,
-			.objectDescriptorInfo =
-			{
-				.buffersPerType = { { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0], &uniformBuffers[1] } } },
-				.texturesInfos{}
-			},
-			.pipelineDescriptorInfo =
-			{
-				.buffersPerType = {},
-				.texturesInfos = { textureInfo },
-			},
 			.additionalCommands = { ImGuiIntegration::DrawCommand }
 		};
+
+		{ // Create Graphics Pipeline
+			auto& rendererContext = renderer.getRendererContext();
+			GraphicsPipelineCreateInfo createInfo
+			{
+				.rendererContext = rendererContext,
+				.shaderModules = 
+				{ 
+					{ ShaderType::Vertex, &vertexShaderModule }, 
+					{ ShaderType::Fragment, &fragmentShaderModule } 
+				},
+				.descriptorInfos = 
+				{  
+					DescriptorInfo
+					{
+						.buffersPerType = {},
+						.texturesInfos = { textureInfo },
+					},
+					DescriptorInfo
+					{
+						.buffersPerType = { { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0], &uniformBuffers[1] } } },
+						.texturesInfos{}
+					}
+				},
+				.descriptorSetsCount = rendererContext.getDisplayImagesCount()
+			};
+			graphicsPipeline.create(createInfo);
+		}
 
 		core::Clock fpsClock;
 		size_t fpsCount = 0;
@@ -386,15 +406,12 @@ namespace zt::vulkan_renderer::tests
 
 			if (!renderer.shouldBePaused())
 			{
-				ASSERT_TRUE(renderer.createPipeline(drawInfo));
-				ASSERT_TRUE(renderer.getGraphicsPipeline().isValid());
-
 				nextImageClock.restart();
 				ASSERT_TRUE(renderer.nextImage());
 				beginFrameTimeGraph.update(nextImageClock.restart().getAsMilliseconds());
 
 				drawClock.restart();
-				renderer.draw(drawInfo);
+				renderer.draw(graphicsPipeline, drawInfo);
 				drawTimeGraph.update(drawClock.restart().getAsMilliseconds());
 
 				submitClock.restart();

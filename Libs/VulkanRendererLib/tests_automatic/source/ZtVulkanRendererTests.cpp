@@ -127,8 +127,9 @@ namespace zt::vulkan_renderer::tests
 
 		void TearDown() override
 		{
-			auto& device = renderer.getRendererContext().getDevice();
-			auto& vma = renderer.getRendererContext().getVMA();
+			auto& rendererContext = renderer.getRendererContext();
+			auto& device = rendererContext.getDevice();
+			auto& vma = rendererContext.getVMA();
 
 			device.waitIdle();
 
@@ -142,7 +143,9 @@ namespace zt::vulkan_renderer::tests
 			texture.destroy(device, vma);
 			sampler.destroy(device);
 
-			imGuiIntegration.deinit(renderer.getRendererContext());
+			imGuiIntegration.deinit(rendererContext);
+
+			graphicsPipeline.destroy(rendererContext);
 
 			renderer.deinit();
 
@@ -161,6 +164,7 @@ namespace zt::vulkan_renderer::tests
 		DrawInfo::Indices indices;
 		Transform transform;
 		Transform transform2;
+		GraphicsPipeline graphicsPipeline;
 
 		std::vector<Buffer> uniformBuffers;
 		struct UniformData
@@ -210,27 +214,40 @@ namespace zt::vulkan_renderer::tests
 
 		DrawInfo drawInfo
 		{
-			.vertexShaderModule = &vertexShaderModule,
-			.fragmentShaderModule = &fragmentShaderModule,
 			.vertexBuffer = &vertexBuffer,
 			.indexBuffer = &indexBuffer,
 			.indexCount = static_cast<std::uint32_t>(indices.size()),
 			.instances = 2u,
-			.objectDescriptorInfo =
-			{
-				.buffersPerType = 
-				{ 
-					{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0], &uniformBuffers[1] } }
-				},
-				.texturesInfos{}
-			},
-			.pipelineDescriptorInfo =
-			{
-				.buffersPerType = {},
-				.texturesInfos = { textureInfo },
-			},
 			.additionalCommands = { ImGuiIntegration::DrawCommand }
 		};
+
+		{ // Create Graphics Pipeline
+			auto& rendererContext = renderer.getRendererContext();
+			GraphicsPipelineCreateInfo createInfo
+			{
+				.rendererContext = rendererContext,
+				.shaderModules =
+				{
+					{ ShaderType::Vertex, &vertexShaderModule },
+					{ ShaderType::Fragment, &fragmentShaderModule }
+				},
+				.descriptorInfos =
+				{
+					DescriptorInfo
+					{
+						.buffersPerType = {},
+						.texturesInfos = { textureInfo },
+					},
+					DescriptorInfo
+					{
+						.buffersPerType = { { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0], &uniformBuffers[1] } } },
+						.texturesInfos{}
+					}
+				},
+				.descriptorSetsCount = rendererContext.getDisplayImagesCount()
+			};
+			graphicsPipeline.create(createInfo);
+		}
 
 		core::Clock fpsClock;
 		size_t fpsCount = 0;
@@ -239,76 +256,79 @@ namespace zt::vulkan_renderer::tests
 		core::Clock turnOffTest;
 		turnOffTest.start();
 
+		bool useImGui = true;
+
 		while (window.isOpen())
 		{
-			if (turnOffTest.getElapsedTime().getAsSeconds() > 4.f)
+			if (turnOffTest.getElapsedTime().getAsSeconds() >= 2.0f)
 				window.requestCloseWindow();
+
+			if (useImGui)
+			{
+				ImGuiIntegration::ImplSpecificNewFrame();
+
+				ImGui::NewFrame();
+				ImGui::ShowDemoWindow();
+
+				ImGui::SetNextWindowBgAlpha(0.80f); // Transparent background
+
+				const float padding = 10.0f;
+				const ImGuiViewport* viewport = ImGui::GetMainViewport();
+				ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
+				ImVec2 workSize = viewport->WorkSize;
+
+				ImVec2 windowPos, windowPivot;
+				windowPos.x = work_pos.x + padding;
+				windowPos.y = work_pos.y + padding;
+				windowPivot.x = 0.0f;
+				windowPivot.y = 0.0f;
+				ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPivot);
+				//ImGui::SetNextWindowSize(workSize, ImGuiCond_Once);
+				ImGui::SetNextWindowSizeConstraints(
+					ImVec2(0, workSize.y - padding * 2),
+					ImVec2(workSize.x - padding * 2, workSize.y - padding * 2)
+				);
+
+				ImGuiWindowFlags windowFlags =
+					ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
+					ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+
+				bool isOpen = false;
+				if (ImGui::Begin("EditorOverlay", &isOpen, windowFlags))
+				{
+					if (ImGui::CollapsingHeader("Sprite1"))
+					{
+						transform.show();
+					}
+
+					if (ImGui::CollapsingHeader("Sprite2"))
+					{
+						transform2.show();
+					}
+				}
+				ImGui::End();
+
+				ImGui::EndFrame();
+
+				imGuiIntegration.prepareRenderData();
+			}
+
+			if (!renderer.shouldBePaused())
+			{
+				ASSERT_TRUE(renderer.nextImage());
+
+				renderer.draw(graphicsPipeline, drawInfo);
+
+				ASSERT_TRUE(renderer.submitCurrentDisplayImage());
+
+				ASSERT_TRUE(renderer.displayCurrentImage());
+			}
 
 			windowEvents.pollEvents();
 
 			// Game logic
 
-			ImGuiIntegration::ImplSpecificNewFrame();
-
-			ImGui::NewFrame();
-			ImGui::ShowDemoWindow();
-
-			ImGui::SetNextWindowBgAlpha(0.80f); // Transparent background
-
-			const float padding = 10.0f;
-			const ImGuiViewport* viewport = ImGui::GetMainViewport();
-			ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
-			ImVec2 workSize = viewport->WorkSize;
-
-			ImVec2 windowPos, windowPivot;
-			windowPos.x = work_pos.x + padding;
-			windowPos.y = work_pos.y + padding;
-			windowPivot.x = 0.0f;
-			windowPivot.y = 0.0f;
-			ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPivot);
-			//ImGui::SetNextWindowSize(workSize, ImGuiCond_Once);
-			ImGui::SetNextWindowSizeConstraints(
-				ImVec2(0, workSize.y - padding * 2),
-				ImVec2(workSize.x - padding * 2, workSize.y - padding * 2)
-			);
-
-			ImGuiWindowFlags windowFlags =
-				ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
-				ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
-			
-			bool isOpen = false;
-			if (ImGui::Begin("EditorOverlay", &isOpen, windowFlags))
-			{
-				if (ImGui::CollapsingHeader("Sprite1"))
-				{
-					transform.show();
-				}
-
-				if (ImGui::CollapsingHeader("Sprite2"))
-				{
-					transform2.show();
-				}
-			}
-			ImGui::End();
-
-			ImGui::EndFrame();
-
 			updateUniformBuffersData();
-
-			// Rendering logic
-
-			ASSERT_TRUE(renderer.createPipeline(drawInfo));
-			ASSERT_TRUE(renderer.getGraphicsPipeline().isValid());
-
-			ASSERT_TRUE(renderer.nextImage());
-
-			imGuiIntegration.prepareRenderData();
-
-			renderer.draw(drawInfo);
-
-			ASSERT_TRUE(renderer.submitCurrentDisplayImage());
-
-			ASSERT_TRUE(renderer.displayCurrentImage());
 
 			// Post logic
 
@@ -321,6 +341,5 @@ namespace zt::vulkan_renderer::tests
 				fpsClock.restart();
 			}
 		}
-
 	}
 }

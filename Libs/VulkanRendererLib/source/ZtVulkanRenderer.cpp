@@ -20,7 +20,6 @@ namespace zt::vulkan_renderer
 	{
 		rendererContext.device.waitIdle();
 
-		graphicsPipeline.destroy(rendererContext);
 		rendererContext.destroy();
 	}
 
@@ -55,23 +54,7 @@ namespace zt::vulkan_renderer
 		return true;
 	}
 
-	// TODO: Renderer shouldn't contain any pipeline? Store them outside?
-	bool VulkanRenderer::createPipeline(DrawInfo& drawInfo)
-	{
-		if (graphicsPipeline.isValid())
-			return true;
-
-		GraphicsPipelineCreateInfo createInfo
-		{
-			.rendererContext = rendererContext,
-			.drawInfo = drawInfo,
-			.descriptorSetsCount = rendererContext.getDisplayImagesCount()
-		};
-
-		return graphicsPipeline.create(createInfo);
-	}
-
-	void VulkanRenderer::draw(const DrawInfo& drawInfo)
+	void VulkanRenderer::draw(GraphicsPipeline& graphicsPipeline, const DrawInfo& drawInfo)
 	{
 		auto& swapChain = rendererContext.swapChain;
 		auto& renderPass = rendererContext.renderPass;
@@ -217,15 +200,12 @@ namespace zt::vulkan_renderer
 		auto& rendererContext = vulkanRenderer.getRendererContext();
 
 		auto& device = rendererContext.device;
-		auto& graphicsPipeline = vulkanRenderer.getGraphicsPipeline();
 		auto& fence = rendererContext.getCurrentDisplayImage().fence;
 
 		device.waitIdle();
 		fence.wait(device);
 
 		rendererContext.windowResized(size);
-
-		graphicsPipeline.destroy(rendererContext);
 	}
 
 }

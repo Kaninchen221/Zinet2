@@ -28,8 +28,6 @@ namespace zt::vulkan_renderer
 	
 	struct DescriptorInfo
 	{
-		using VkWriteDescriptorSets = std::vector<VkWriteDescriptorSet>;
-
 		using Buffers = std::vector<Buffer*>;
 		std::map<VkDescriptorType, Buffers> buffersPerType;
 

@@ -78,25 +78,15 @@ namespace zt::vulkan_renderer::tests
 
 			uniformBuffers.emplace_back(nullptr);
 
-			// DrawInfo
-			DrawInfo drawInfo =
+			ShaderModules shaderModules =
 			{
-				.vertexShaderModule = &vertexShaderModule,
-				.fragmentShaderModule = &fragmentShaderModule,
-				.vertexBuffer = &vertexBuffer,
-				.indexBuffer = &indexBuffer,
-				.indexCount = 0,
-				.pipelineDescriptorInfo = 
-				{ 
-					.buffersPerType = 
-					{ 
-						{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0] } } 
-					}
-				}
+				{ ShaderType::Vertex, &vertexShaderModule },
+				{ ShaderType::Fragment, &fragmentShaderModule }
 			};
 
+			const bool createVertexInput = false;
 			ASSERT_TRUE(
-				pipeline.create(device, pipelineLayout, renderPass, viewport, scissor, drawInfo)
+				pipeline.create(device, pipelineLayout, renderPass, viewport, scissor, shaderModules, createVertexInput)
 			);
 
 			ASSERT_TRUE(pipeline.isValid());

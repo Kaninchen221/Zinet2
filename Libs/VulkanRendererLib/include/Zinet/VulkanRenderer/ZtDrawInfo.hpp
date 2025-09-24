@@ -24,15 +24,10 @@ namespace zt::vulkan_renderer
 		using Vertices = std::vector<Vertex>;
 		using Indices = std::vector<std::uint16_t>;
 
-		ShaderModule* vertexShaderModule{};
-		ShaderModule* fragmentShaderModule{};
 		Buffer* vertexBuffer{};
 		Buffer* indexBuffer{};
 		uint32_t indexCount{};
 		uint32_t instances = 1;
-
-		DescriptorInfo objectDescriptorInfo;
-		DescriptorInfo pipelineDescriptorInfo;
 
 		using AdditionalCommands = std::vector<core::Function<void, const CommandBuffer&>>;
 		AdditionalCommands additionalCommands;

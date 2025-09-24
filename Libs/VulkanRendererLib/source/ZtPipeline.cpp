@@ -147,7 +147,8 @@ namespace zt::vulkan_renderer
 		const RenderPass& renderPass,
 		const VkViewport& viewport,
 		const VkRect2D& scissor,
-		const DrawInfo& drawInfo)
+		const ShaderModules& shaderModules,
+		const bool createVertexInput)
 	{
 		if (isValid())
 			return false;
@@ -161,7 +162,7 @@ namespace zt::vulkan_renderer
 		const auto vertexInputAttributesDescriptions = GetVertexInputAttributesDescriptions();
 
 		VkPipelineVertexInputStateCreateInfo vertexInputStateCreateInfo;
-		if (drawInfo.vertexBuffer && drawInfo.vertexBuffer->isValid())
+		if (createVertexInput)
 		{
 			vertexInputStateCreateInfo = createVkPipelineVertexInputStateCreateInfo(&vertexInputBindingDescription, &vertexInputAttributesDescriptions);
 		}
@@ -178,7 +179,7 @@ namespace zt::vulkan_renderer
 		const auto colorBlendAttachmentState = createVkPipelineColorBlendAttachmentState();
 		const auto colorBlendStateCreateInfo = createVkPipelineColorBlendStateCreateInfo(colorBlendAttachmentState);
 
-		const auto shadersStages = createShadersStages(drawInfo);
+		const auto shadersStages = createShadersStages(shaderModules);
 
 		const VkGraphicsPipelineCreateInfo createInfo
 		{
@@ -223,26 +224,20 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	Pipeline::ShadersStages Pipeline::createShadersStages(const DrawInfo& drawInfo) const
+	Pipeline::ShadersStages Pipeline::createShadersStages(const ShaderModules& shaderModules) const
 	{
 		Pipeline::ShadersStages shadersStages;
 
-		if (drawInfo.vertexShaderModule && drawInfo.vertexShaderModule->isValid())
+		for (const auto& [shaderType, shaderModule] : shaderModules)
 		{
-			shadersStages.push_back(drawInfo.vertexShaderModule->createPipelineShaderStageCreateInfo(ShaderType::Vertex));
-		}
-		else
-		{
-			Logger->error("Vertex shader module is invalid");
-		}
-
-		if (drawInfo.fragmentShaderModule && drawInfo.fragmentShaderModule->isValid())
-		{
-			shadersStages.push_back(drawInfo.fragmentShaderModule->createPipelineShaderStageCreateInfo(ShaderType::Fragment));
-		}
-		else
-		{
-			Logger->error("Fragment shader module is invalid");
+			if (shaderModule && shaderModule->isValid())
+			{
+				shadersStages.push_back(shaderModule->createPipelineShaderStageCreateInfo(shaderType));
+			}
+			else
+			{
+				Logger->error("Shader module is invalid, shader type: {}", static_cast<int>(shaderType));
+			}
 		}
 
 		return shadersStages;

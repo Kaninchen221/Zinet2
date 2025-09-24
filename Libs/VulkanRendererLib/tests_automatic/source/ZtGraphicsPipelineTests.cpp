@@ -79,33 +79,40 @@ namespace zt::vulkan_renderer::tests
 
 		DrawInfo drawInfo
 		{
-			.vertexShaderModule = &vertexShaderModule,
-			.fragmentShaderModule = &fragmentShaderModule,
 			.vertexBuffer = &vertexBuffer,
 			.indexBuffer = &indexBuffer,
 			.indexCount = 0,
-			.instances = 1,
-			.objectDescriptorInfo =
-			{
-				.buffersPerType = {},
-				.texturesInfos = {},
-			},
-			.pipelineDescriptorInfo =
-			{
-				.buffersPerType = {},
-				.texturesInfos = {},
-			}
+			.instances = 1
 		};
 
-		GraphicsPipelineCreateInfo createInfo
-		{
-			.rendererContext = rendererContext,
-			.drawInfo = drawInfo,
-			.descriptorSetsCount = rendererContext.getDisplayImagesCount()
-		};
-
-		graphicsPipeline.create(createInfo);
-		graphicsPipeline.destroy(rendererContext);
+		{ // Create and destroy Graphics Pipeline
+			GraphicsPipelineCreateInfo createInfo
+			{
+				.rendererContext = rendererContext,
+				.shaderModules =
+				{
+					{ ShaderType::Vertex, &vertexShaderModule },
+					{ ShaderType::Fragment, &fragmentShaderModule }
+				},
+				.descriptorInfos =
+				{
+					DescriptorInfo
+					{
+						.buffersPerType = {},
+						.texturesInfos = { textureInfo },
+					},
+					DescriptorInfo
+					{
+						.buffersPerType = { { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0], &uniformBuffers[1] } } },
+						.texturesInfos{}
+					}
+				},
+				.descriptorSetsCount = rendererContext.getDisplayImagesCount(),
+				.createVertexInput = false
+			};
+			graphicsPipeline.create(createInfo);
+			graphicsPipeline.destroy(rendererContext);
+		}
 
 		texture.destroy(rendererContext.getDevice(), rendererContext.getVMA());
 		sampler.destroy(rendererContext.getDevice());

@@ -41,7 +41,18 @@ namespace zt::gameplay
 
 		AssetProperty& operator = (AssetHandleT otherAssetHandle) noexcept { assetHandle = otherAssetHandle; return *this; }
 
-		AssetT* operator->() noexcept { return assetHandle.operator->(); }
+		AssetT* operator->() noexcept 
+		{ 
+#		if ZINET_DEBUG
+			if (!assetHandle)
+			{
+				Logger->critical("Asset handle is invalid");
+				Ensure(false);
+			}
+#		endif
+
+			return assetHandle.operator->(); 
+		}
 
 		AssetT* get() noexcept { return assetHandle.get(); }
 

@@ -181,7 +181,7 @@ namespace zt::gameplay::tests
 		systemRenderer->addNode(fakeSprite);
 
 		std::jthread exitThread(
-			[&engineContext = engineContext]()
+		[&engineContext = engineContext]()
 		{
 			while (!engineContext.isLooping())
 			{

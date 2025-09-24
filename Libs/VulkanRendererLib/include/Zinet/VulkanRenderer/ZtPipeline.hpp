@@ -3,6 +3,7 @@
 #include "Zinet/VulkanRenderer/ZtVulkanRendererConfig.hpp"
 #include "Zinet/VulkanRenderer/ZtVulkanObject.hpp"
 #include "Zinet/VulkanRenderer/ZtVertex.hpp"
+#include "Zinet/VulkanRenderer/ZtGraphicsPipelineCreateInfo.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -43,11 +44,12 @@ namespace zt::vulkan_renderer
 			const RenderPass& renderPass, 
 			const VkViewport& viewport, 
 			const VkRect2D& scissor, 
-			const DrawInfo& drawInfo);
+			const ShaderModules& shaderModules,
+			const bool createVertexInput = true);
 
 		void destroy(const Device& device) noexcept;
 
-		Pipeline::ShadersStages createShadersStages(const DrawInfo& drawInfo) const;
+		Pipeline::ShadersStages createShadersStages(const ShaderModules& shaderModules) const;
 
 		VkPipelineDynamicStateCreateInfo createVkPipelineDynamicStateCreateInfo(
 			const std::vector<VkDynamicState>& dynamicStates) const noexcept;
