@@ -306,7 +306,7 @@ namespace zt::vulkan_renderer::tests
 
 			renderer.draw(drawInfo);
 
-			ASSERT_TRUE(renderer.submitDrawInfo());
+			ASSERT_TRUE(renderer.submitCurrentDisplayImage());
 
 			ASSERT_TRUE(renderer.displayCurrentImage());
 

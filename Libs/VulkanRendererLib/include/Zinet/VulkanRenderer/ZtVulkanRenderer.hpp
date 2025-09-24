@@ -42,7 +42,7 @@ namespace zt::vulkan_renderer
 		
 		void draw(const DrawInfo& drawInfo);
 
-		bool submitDrawInfo();
+		bool submitCurrentDisplayImage();
 
 		bool displayCurrentImage();
 

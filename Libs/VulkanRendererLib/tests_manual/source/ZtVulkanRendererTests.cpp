@@ -398,7 +398,7 @@ namespace zt::vulkan_renderer::tests
 				drawTimeGraph.update(drawClock.restart().getAsMilliseconds());
 
 				submitClock.restart();
-				ASSERT_TRUE(renderer.submitDrawInfo());
+				ASSERT_TRUE(renderer.submitCurrentDisplayImage());
 				submitTimeGraph.update(submitClock.restart().getAsMilliseconds());
 
 				displayCurrentImageClock.restart();

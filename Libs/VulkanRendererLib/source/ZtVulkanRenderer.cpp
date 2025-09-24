@@ -122,7 +122,7 @@ namespace zt::vulkan_renderer
 		commandBuffer.end();
 	}
 
-	bool VulkanRenderer::submitDrawInfo()
+	bool VulkanRenderer::submitCurrentDisplayImage()
 	{
 		auto& queue = rendererContext.queue;
 		auto& currentDisplayImage = rendererContext.getCurrentDisplayImage();

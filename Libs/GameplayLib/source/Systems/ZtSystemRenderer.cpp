@@ -161,7 +161,7 @@ namespace zt::gameplay
 		);
 
 		ZT_TIME_LOG(
-			renderer.submitDrawInfo();
+			renderer.submitCurrentDisplayImage();
 		);
 
 		ZT_TIME_LOG(
