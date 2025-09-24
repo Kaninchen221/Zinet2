@@ -182,17 +182,17 @@ namespace zt::gameplay::tests
 		engineContext.getRootNode()->addChild(fakeSprite);
 		systemRenderer->addNode(fakeSprite);
 
-		//std::jthread exitThread(
-		//[&engineContext = engineContext]()
-		//{
-		//	while (!engineContext.isLooping())
-		//	{
-		//	}
-		//
-		//	using namespace std::chrono_literals;
-		//	std::this_thread::sleep_for(100ms);
-		//	engineContext.stopLooping();
-		//});
+		std::jthread exitThread(
+		[&engineContext = engineContext]()
+		{
+			while (!engineContext.isLooping())
+			{
+			}
+		
+			using namespace std::chrono_literals;
+			std::this_thread::sleep_for(100ms);
+			engineContext.stopLooping();
+		});
 
 		engineContext.loop();
 	}
