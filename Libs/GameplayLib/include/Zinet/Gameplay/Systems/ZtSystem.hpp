@@ -10,6 +10,10 @@ namespace zt::gameplay
 {
 	class EngineContext;
 
+	// TODO: Maybe even the systems should be nodes?
+	// So we can have a system tree like with nodes
+	// It will be more consistent
+	// And then we don't need to create node as a bridge between systems
 	class System : public core::Object
 	{
 

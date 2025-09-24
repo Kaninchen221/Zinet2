@@ -32,6 +32,7 @@ namespace zt::gameplay
 		auto& getChildren() noexcept { return children; }
 		const auto& getChildren() const noexcept { return children; }
 
+		// TODO: Node can be a child of only one parent
 		void addChild(ObjectHandle<Node> ObjectHandle) { children.push_back(ObjectHandle); }
 
 		// TODO: Remove child
