@@ -48,6 +48,7 @@ namespace zt::vulkan_renderer
 
 	protected:
 
+		// TODO: Store them as matrix and change the matrix when need with glm functions instead of recreating it
 		Vector3f position{ 0, 0, 0 };
 		float rotation{ 0 };
 		Vector3f scale{ 1, 1, 1 };

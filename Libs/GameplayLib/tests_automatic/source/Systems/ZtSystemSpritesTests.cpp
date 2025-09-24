@@ -45,8 +45,8 @@ namespace zt::gameplay::tests
 
 			auto nodeCamera = CreateObject<NodeCamera>("Camera");
 			auto& camera = nodeCamera->getCamera();
-			camera.setPosition(Vector3f(0.00001, 0, 10000));
-			camera.setLookingAt(Vector3f(0.0f, 0.0f, 0.0f));
+			camera.setPosition(Vector3f(100, 100, 1000));
+			camera.setLookingAt(Vector3f(100, 100, 0.0f));
 			camera.setUpVector(Vector3f(0, 1, 0));
 
 			auto& window = systemWindow->getWindow();
@@ -94,18 +94,16 @@ namespace zt::gameplay::tests
 		
 			EXPECT_EQ(transforms.size(), sprites.size());
 
-			core::Random random;
-
 			const Vector3f position =
 			{
-				random.real<float>(-1000, 1000),
-				random.real<float>(-1000, 1000),
-				random.real<float>(-50, 50)
+				x,
+				y,
+				50
 			};
 
-			const float scale = random.real<float>(5, 15);
+			const float scale = 1;
 
-			const float rotation = random.real<float>(0, 360);
+			const float rotation = 0;
 
 			auto& transform = sprite->getTransform();
 			transform.setScale(Vector3f(scale, scale, 1.0f));
@@ -156,6 +154,10 @@ namespace zt::gameplay::tests
 			for (size_t y = 0; y < height; ++y)
 				AddSpriteTest(x, y, width, height);
 
+		auto& camera = systemRenderer->getCameraNode()->getCamera();
+		camera.setPosition(Vector3f(width / 2.f, height / 2.f, 300));
+		camera.setLookingAt(Vector3f(width / 2.f, height / 2.f, 0));
+
 		systemSprites->update();
 
 		auto descriptorInfo = systemSprites->getDescriptorInfo();
@@ -180,17 +182,17 @@ namespace zt::gameplay::tests
 		engineContext.getRootNode()->addChild(fakeSprite);
 		systemRenderer->addNode(fakeSprite);
 
-		std::jthread exitThread(
-		[&engineContext = engineContext]()
-		{
-			while (!engineContext.isLooping())
-			{
-			}
-
-			using namespace std::chrono_literals;
-			std::this_thread::sleep_for(100ms);
-			engineContext.stopLooping();
-		});
+		//std::jthread exitThread(
+		//[&engineContext = engineContext]()
+		//{
+		//	while (!engineContext.isLooping())
+		//	{
+		//	}
+		//
+		//	using namespace std::chrono_literals;
+		//	std::this_thread::sleep_for(100ms);
+		//	engineContext.stopLooping();
+		//});
 
 		engineContext.loop();
 	}

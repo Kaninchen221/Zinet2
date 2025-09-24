@@ -40,6 +40,9 @@ namespace zt::gameplay
 		auto& getTransforms() const noexcept { return transforms; }
 		auto& getTransforms() noexcept { return transforms; }
 
+		auto& getTransformsMatrices() const noexcept { return transformsMatrices; }
+		auto& getTransformsMatrices() noexcept { return transformsMatrices; }
+
 		vulkan_renderer::DescriptorInfo getDescriptorInfo();
 
 		void setAssetTexture(const ObjectHandle<AssetTexture>& newAssetTexture) { assetTexture = newAssetTexture; }

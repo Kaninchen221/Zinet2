@@ -102,6 +102,20 @@ namespace zt::gameplay
 				position.y -= 10;
 				lookingAt.y -= 10;
 			}
+			ImGui::SameLine();
+
+			if (ImGui::Button("+"))
+			{
+				position.z -= 10;
+				lookingAt.z -= 10;
+			}
+			ImGui::SameLine();
+
+			if (ImGui::Button("-"))
+			{
+				position.z += 10;
+				lookingAt.z += 10;
+			}
 
 			camera.setPosition(position);
 			camera.setLookingAt(lookingAt);
