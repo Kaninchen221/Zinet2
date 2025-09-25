@@ -92,6 +92,7 @@ namespace zt::gameplay
 			transformsMatricesBuffer.destroy(vma);
 		}
 
+		transformsMatrices.clear();
 		for (const auto& transform : transforms)
 		{
 			transformsMatrices.emplace_back(transform.getMatrix());

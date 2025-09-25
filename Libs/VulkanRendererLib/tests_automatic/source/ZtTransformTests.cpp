@@ -16,14 +16,6 @@ namespace zt::vulkan_renderer::tests
 	{
 	protected:
 
-		void SetUp() override
-		{
-		}
-
-		void TearDown() override
-		{
-		}
-
 		Transform transform;
 
 		static_assert(std::is_default_constructible_v<Transform>);
