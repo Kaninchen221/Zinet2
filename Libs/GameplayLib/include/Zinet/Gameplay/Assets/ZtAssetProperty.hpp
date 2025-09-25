@@ -56,7 +56,9 @@ namespace zt::gameplay
 
 		AssetT* get() noexcept { return assetHandle.get(); }
 
-		operator bool() noexcept { return assetHandle; }
+		bool isValid() const noexcept { return assetHandle.isValid(); }
+
+		operator bool() const noexcept { return isValid(); }
 
 		bool serialize(core::JsonArchive& archive);
 

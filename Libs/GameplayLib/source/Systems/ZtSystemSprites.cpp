@@ -55,10 +55,17 @@ namespace zt::gameplay
 			}
 		};
 
-		if (!assetTexture || !assetTexture->isLoaded())
+		if (!assetTexture.isValid() || !assetTexture->isLoaded())
 		{
 			Logger->error("AssetTexture is invalid");
 			return result;
+		}
+		auto& sampler = assetTexture->sampler;
+
+		if (!sampler.isValid() || !sampler->isLoaded())
+		{
+			Logger->error("Sampler of texture is invalid");
+			return {};
 		}
 
 		result.texturesInfos =
@@ -66,7 +73,7 @@ namespace zt::gameplay
 			vulkan_renderer::TextureInfo
 			{
 				.texture = &assetTexture->texture,
-				.sampler = &assetTexture->sampler.get()->sampler,
+				.sampler = &sampler.get()->sampler,
 				.shaderType = vulkan_renderer::ShaderType::Fragment
 			}
 		};

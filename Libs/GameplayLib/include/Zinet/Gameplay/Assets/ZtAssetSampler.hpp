@@ -24,7 +24,7 @@ namespace zt::gameplay
 		AssetSampler(AssetSampler&& other) noexcept = default;
 		~AssetSampler() noexcept = default;
 
-		AssetSampler& operator = (const AssetSampler& other) { assetSamplerData = other.assetSamplerData; return *this; }
+		AssetSampler& operator = (const AssetSampler& other) { typeStr = other.typeStr; return *this; }
 		AssetSampler& operator = (AssetSampler&& other) noexcept = default;
 
 		const std::string_view getClassName() const override { return "zt::gameplay::AssetSampler"; }
@@ -41,14 +41,13 @@ namespace zt::gameplay
 		void unload() override;
 
 		void show() override;
+
+		// TODO: Add getter
 		Sampler sampler{ nullptr };
 
 	protected:
 
-		struct {
-			std::string typeStr = "Invalid";
-		} assetSamplerData;
-		std::string& typeStr = assetSamplerData.typeStr;
+		std::string typeStr = "Invalid";
 	};
 
 }

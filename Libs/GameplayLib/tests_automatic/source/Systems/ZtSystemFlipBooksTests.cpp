@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Zinet/Gameplay/Systems/ZtSystemSprites.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemFlipBooks.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemTickable.hpp"
@@ -18,7 +18,7 @@
 
 namespace zt::gameplay::tests
 {
-	class SystemSpritesTests : public ::testing::Test
+	class SystemFlipBooksTests : public ::testing::Test
 	{
 	protected:
 
@@ -35,7 +35,7 @@ namespace zt::gameplay::tests
 			systemImGui = engineContext.addSystem<SystemImGui>("imgui");
 			systemRenderer = engineContext.addSystem<SystemRenderer>("renderer");
 			systemTickable = engineContext.addSystem<SystemTickable>("tickable");
-			systemSprites = engineContext.addSystem<SystemSprites>("sprites", UpdatePhase::Pre);
+			systemFlipBooks = engineContext.addSystem<SystemFlipBooks>("sprites", UpdatePhase::Pre);
 
 			ASSERT_TRUE(engineContext.init());
 
@@ -59,9 +59,9 @@ namespace zt::gameplay::tests
 			systemTickable->addNode(nodeCamera);
 			engineContext.getRootNode()->addChild(nodeCamera);
 
-			auto texture = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
+			auto texture = assetsStorage.getAs<AssetTexture>("Content/Textures/player.png");
 			ASSERT_TRUE(texture->load(core::Paths::RootPath()));
-			systemSprites->setAssetTexture(texture);
+			systemFlipBooks->setAssetTexture(texture);
 
 			auto shaderVert = assetsStorage.getAs<AssetShader>("Content/Shaders/shader_sprites.vert");
 			ASSERT_TRUE(shaderVert);
@@ -82,7 +82,7 @@ namespace zt::gameplay::tests
 		EngineContext engineContext;
 		ObjectHandle<SystemTickable> systemTickable;
 		ObjectHandle<SystemWindow> systemWindow;
-		ObjectHandle<SystemSprites> systemSprites;
+		ObjectHandle<SystemFlipBooks> systemFlipBooks;
 		ObjectHandle<SystemRenderer> systemRenderer;
 		ObjectHandle<SystemImGui> systemImGui;
 		std::vector<ObjectHandle<NodeInstancedSprite>> sprites;
@@ -93,12 +93,12 @@ namespace zt::gameplay::tests
 			[[maybe_unused]] const auto width, 
 			[[maybe_unused]] const auto height)
 		{
-			auto& transforms = systemSprites->getTransforms();
+			auto& transforms = systemFlipBooks->getTransforms();
 		
 			ObjectHandle<NodeInstancedSprite> sprite = CreateObject<NodeInstancedSprite>("Sprite");
 			sprites.push_back(sprite);
 
-			systemSprites->addNode(sprite);
+			systemFlipBooks->addNode(sprite);
 			EXPECT_EQ(sprite->getID(), sprites.size() - 1);
 			EXPECT_EQ(&sprite->getTransform(), &transforms[sprite->getID()]);
 		
@@ -124,8 +124,8 @@ namespace zt::gameplay::tests
 		}
 
 		// TODO
-		// A fake sprite class just to pass the descriptor info from the SystemSprites to the renderer
-		// Perhaps the SystemSprites should communicate with the renderer system directly instead of using a fake node
+		// A fake sprite class just to pass the descriptor info from the SystemFlipBooks to the renderer
+		// Perhaps the SystemFlipBooks should communicate with the renderer system directly instead of using a fake node
 		class FakeSprite : public Node2D
 		{
 		private:
@@ -143,7 +143,7 @@ namespace zt::gameplay::tests
 			vulkan_renderer::DescriptorInfo getDescriptorInfo() override
 			{
 				auto& engContext = EngineContext::Get();
-				auto sysSprites = engContext.getSystem<SystemSprites>();
+				auto sysSprites = engContext.getSystem<SystemFlipBooks>();
 				if (!Ensure(sysSprites))
 					return {};
 
@@ -156,21 +156,21 @@ namespace zt::gameplay::tests
 		};
 	};
 
-	TEST_F(SystemSpritesTests, PassTest)
+	TEST_F(SystemFlipBooksTests, PassTest)
 	{
-		const size_t width = 100;
-		const size_t height = 100;
+		const size_t width = 1;
+		const size_t height = 1;
 		for (size_t x = 0; x < width; ++x)
 			for (size_t y = 0; y < height; ++y)
 				AddSpriteTest(x, y, width, height);
 
 		auto& camera = systemRenderer->getCameraNode()->getCamera();
-		camera.setPosition(Vector3f(width / 2.f, height / 2.f, 300));
+		camera.setPosition(Vector3f(width / 2.f, height / 2.f, 55));
 		camera.setLookingAt(Vector3f(width / 2.f, height / 2.f, 0));
 
-		systemSprites->update();
+		systemFlipBooks->update();
 
-		auto descriptorInfo = systemSprites->getDescriptorInfo();
+		auto descriptorInfo = systemFlipBooks->getDescriptorInfo();
 		ASSERT_TRUE(descriptorInfo.buffersPerType.size() == 1);
 		ASSERT_TRUE(descriptorInfo.buffersPerType[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER].size() == 1);
 		ASSERT_TRUE(descriptorInfo.buffersPerType[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER].front());
@@ -180,17 +180,17 @@ namespace zt::gameplay::tests
 		engineContext.getRootNode()->addChild(fakeSprite);
 		systemRenderer->addNode(fakeSprite);
 
-		std::jthread exitThread(
-		[&engineContext = engineContext]()
-		{
-			while (!engineContext.isLooping())
-			{
-			}
-		
-			using namespace std::chrono_literals;
-			std::this_thread::sleep_for(100ms);
-			engineContext.stopLooping();
-		});
+		//std::jthread exitThread(
+		//[&engineContext = engineContext]()
+		//{
+		//	while (!engineContext.isLooping())
+		//	{
+		//	}
+		//
+		//	using namespace std::chrono_literals;
+		//	std::this_thread::sleep_for(100ms);
+		//	engineContext.stopLooping();
+		//});
 
 		engineContext.loop();
 	}
