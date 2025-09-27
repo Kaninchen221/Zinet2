@@ -8,6 +8,11 @@
 #include <math.h>
 #include <utility>
 
+namespace zt
+{
+	using Matrix = glm::mat4;
+}
+
 namespace zt::math
 {
 	ZINET_MATH_API void GenerateLib();

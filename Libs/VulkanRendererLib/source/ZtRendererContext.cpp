@@ -15,11 +15,11 @@ namespace zt::vulkan_renderer
 			return false;
 		}
 
+		framesInFlight = swapChainImages.size();
+
 		displayImages.clear();
 		displayImages.shrink_to_fit();
-		displayImages.resize(swapChainImages.size());
-
-		framesInFlight = swapChainImages.size();
+		displayImages.resize(framesInFlight);
 
 		uint32_t imageIndex = 0;
 		for (auto& displayImage : displayImages)

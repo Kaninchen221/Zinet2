@@ -34,7 +34,11 @@ namespace zt::gameplay
 		if (!Ensure(sprite.isValid()))
 			return;
 
-		sprite->systemSprites = getSelf().castTo<SystemSprites, false>();
+		auto selfHandle = getSelf();
+		if (!Ensure(selfHandle.isValid()))
+			return;
+
+		sprite->systemSprites = selfHandle.castTo<SystemSprites, false>();
 		const uint32_t id = ids.emplace_back(static_cast<uint32_t>(ids.size()));
 		sprite->id = id;
 		transforms.emplace_back();
@@ -47,25 +51,27 @@ namespace zt::gameplay
 		if (!transformsMatricesBuffer.isValid())
 			return {};
 
-		vulkan_renderer::DescriptorInfo result
+		vulkan_renderer::DescriptorInfo result;
+
+		result.buffersInfos.push_back(
 		{
 			.buffersPerType =
 			{
 				{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, { &transformsMatricesBuffer } }
 			}
-		};
+		});
 
 		if (!assetTexture.isValid() || !assetTexture->isLoaded())
 		{
 			Logger->error("AssetTexture is invalid");
 			return result;
 		}
-		auto& sampler = assetTexture->sampler;
 
+		auto& sampler = assetTexture->sampler;
 		if (!sampler.isValid() || !sampler->isLoaded())
 		{
 			Logger->error("Sampler of texture is invalid");
-			return {};
+			return result;
 		}
 
 		result.texturesInfos =
@@ -92,7 +98,8 @@ namespace zt::gameplay
 			Logger->error("System renderer is invalid");
 			return;
 		}
-		auto& vma = systemRenderer->getRenderer().getRendererContext().getVMA();
+		auto& rendererContext = systemRenderer->getRenderer().getRendererContext();
+		auto& vma = rendererContext.getVMA();
 
 		if (transformsMatricesBuffer.isValid())
 		{
@@ -107,6 +114,9 @@ namespace zt::gameplay
 
 		auto createInfo = Buffer::GetStorageBufferCreateInfo(transformsMatrices);
 		transformsMatricesBuffer.create(vma, createInfo);
+
+		auto& device = rendererContext.getDevice();
+		device.setDebugName(transformsMatricesBuffer, "SystemSprites transforms matrices", VK_OBJECT_TYPE_BUFFER);
 	}
 
 	void SystemSprites::updateTransformsBufferData()

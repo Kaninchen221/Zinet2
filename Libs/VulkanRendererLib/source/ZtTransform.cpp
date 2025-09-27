@@ -7,7 +7,7 @@ namespace zt::vulkan_renderer
 
 	Transform::MatrixT Transform::getMatrix() const noexcept
 	{
-		MatrixT matrix = glm::mat4(1.0f);
+		MatrixT matrix = MatrixT(1.0f);
 		matrix *= glm::translate(position);
 		matrix *= glm::rotate(glm::radians(rotation), Vector3f{ 0.f, 0.f, 1.f });
 		matrix *= glm::scale(scale);

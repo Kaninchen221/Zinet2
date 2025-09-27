@@ -26,14 +26,18 @@ namespace zt::vulkan_renderer
 		std::vector<VkDescriptorImageInfo> descriptorImagesInfos;
 	};
 	
-	struct DescriptorInfo
+	struct BufferInfo
 	{
 		using Buffers = std::vector<Buffer*>;
 		std::map<VkDescriptorType, Buffers> buffersPerType;
+		uint32_t cachedBuffersBinding = 0;
+	};
 
+	struct DescriptorInfo
+	{
+		std::vector<BufferInfo> buffersInfos;
 		std::vector<TextureInfo> texturesInfos;
 
-		uint32_t cachedBuffersBinding = 0;
 		uint32_t cachedTexturesBinding = 0;
 
 		DescriptorSetLayout::Bindings createBindings();

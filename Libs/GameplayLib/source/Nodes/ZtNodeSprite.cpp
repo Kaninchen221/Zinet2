@@ -18,7 +18,7 @@ namespace zt::gameplay
 		{
 			return
 			{
-				.buffersPerType = {},
+				.buffersInfos = {},
 				.texturesInfos =
 				{
 					vulkan_renderer::TextureInfo

@@ -7,6 +7,7 @@
 #include <vulkan/vulkan.h>
 
 #include "Zinet/Math/ZtVecTypes.hpp"
+#include "Zinet/Math/ZtMath.hpp"
 
 namespace zt::vulkan_renderer
 {
@@ -19,7 +20,7 @@ namespace zt::vulkan_renderer
 		inline static auto Logger = core::ConsoleLogger::Create("VRTransform");
 
 	public:
-		using MatrixT = glm::mat4;
+		using MatrixT = Matrix;
 
 		Transform() noexcept = default;
 		Transform(const Transform& other) noexcept = default;

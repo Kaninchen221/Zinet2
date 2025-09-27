@@ -23,6 +23,7 @@ namespace zt::vulkan_renderer
 	class RendererContext;
 	struct DrawInfo;
 
+	// TODO: Add option to recreate pipeline so we can hot reload shaders
 	class  GraphicsPipeline
 	{
 	protected:

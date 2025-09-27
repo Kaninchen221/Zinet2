@@ -5,7 +5,7 @@
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemTickable.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
-#include "Zinet/Gameplay/Nodes/ZtNodeInstancedSprite.hpp"
+#include "Zinet/Gameplay/Nodes/ZtNodeInstancedFlipBook.hpp"
 #include "Zinet/Gameplay/Nodes/ZtNodeEditor.hpp"
 #include "Zinet/Gameplay/ZtEngineContext.hpp"
 
@@ -35,7 +35,7 @@ namespace zt::gameplay::tests
 			systemImGui = engineContext.addSystem<SystemImGui>("imgui");
 			systemRenderer = engineContext.addSystem<SystemRenderer>("renderer");
 			systemTickable = engineContext.addSystem<SystemTickable>("tickable");
-			systemFlipBooks = engineContext.addSystem<SystemFlipBooks>("sprites", UpdatePhase::Pre);
+			system = engineContext.addSystem<SystemFlipBooks>("sprites", UpdatePhase::Pre);
 
 			ASSERT_TRUE(engineContext.init());
 
@@ -61,14 +61,14 @@ namespace zt::gameplay::tests
 
 			auto texture = assetsStorage.getAs<AssetTexture>("Content/Textures/player.png");
 			ASSERT_TRUE(texture->load(core::Paths::RootPath()));
-			systemFlipBooks->setAssetTexture(texture);
+			system->setAssetTexture(texture);
 
-			auto shaderVert = assetsStorage.getAs<AssetShader>("Content/Shaders/shader_sprites.vert");
+			auto shaderVert = assetsStorage.getAs<AssetShader>("Content/Shaders/shader_flip_books.vert");
 			ASSERT_TRUE(shaderVert);
 			ASSERT_TRUE(shaderVert->load(core::Paths::RootPath()));
 			systemRenderer->vertexShader = shaderVert;
 
-			auto shaderFrag = assetsStorage.getAs<AssetShader>("Content/Shaders/shader_sprites.frag");
+			auto shaderFrag = assetsStorage.getAs<AssetShader>("Content/Shaders/shader_flip_books.frag");
 			ASSERT_TRUE(shaderFrag);
 			ASSERT_TRUE(shaderFrag->load(core::Paths::RootPath()));
 			systemRenderer->fragmentShader = shaderFrag;
@@ -82,27 +82,31 @@ namespace zt::gameplay::tests
 		EngineContext engineContext;
 		ObjectHandle<SystemTickable> systemTickable;
 		ObjectHandle<SystemWindow> systemWindow;
-		ObjectHandle<SystemFlipBooks> systemFlipBooks;
 		ObjectHandle<SystemRenderer> systemRenderer;
 		ObjectHandle<SystemImGui> systemImGui;
-		std::vector<ObjectHandle<NodeInstancedSprite>> sprites;
 
-		ObjectHandle<NodeInstancedSprite> AddSpriteTest(
+		using SystemT = SystemFlipBooks;
+		ObjectHandle<SystemT> system;
+
+		using NodeT = NodeInstancedFlipBook;
+		std::vector<ObjectHandle<NodeT>> nodes;
+
+		ObjectHandle<NodeT> AddNodeTest(
 			[[maybe_unused]] const auto x,
 			[[maybe_unused]] const auto y, 
 			[[maybe_unused]] const auto width, 
 			[[maybe_unused]] const auto height)
 		{
-			auto& transforms = systemFlipBooks->getTransforms();
+			auto& transforms = system->getTransforms();
 		
-			ObjectHandle<NodeInstancedSprite> sprite = CreateObject<NodeInstancedSprite>("Sprite");
-			sprites.push_back(sprite);
+			ObjectHandle<NodeT> node = CreateObject<NodeT>("NodeName");
+			nodes.push_back(node);
 
-			systemFlipBooks->addNode(sprite);
-			EXPECT_EQ(sprite->getID(), sprites.size() - 1);
-			EXPECT_EQ(&sprite->getTransform(), &transforms[sprite->getID()]);
+			system->addNode(node);
+			EXPECT_EQ(node->getID(), nodes.size() - 1);
+			EXPECT_EQ(&node->getTransform(), &transforms[node->getID()]);
 		
-			EXPECT_EQ(transforms.size(), sprites.size());
+			EXPECT_EQ(transforms.size(), nodes.size());
 
 			const Vector3f position =
 			{
@@ -115,39 +119,53 @@ namespace zt::gameplay::tests
 
 			const float rotation = 0;
 
-			auto& transform = sprite->getTransform();
+			auto& transform = node->getTransform();
 			transform.setScale(Vector3f(scale, scale, 1.0f));
 			transform.setPosition(position);
 			transform.setRotation(rotation);
 
-			return sprite;
+			auto& frames = node->getFrames();
+			FlipBookFrame frame
+			{
+				.textureCoords =
+				{
+					Vector2f{ 0, 0 },
+					{ 0.25, 0 },
+					{ 0.25, 0.25 },
+					{ 0, 0.25 }
+				},
+				.time = 1.f
+			};
+			frames.push_back(frame);
+
+			return node;
 		}
 
 		// TODO
-		// A fake sprite class just to pass the descriptor info from the SystemFlipBooks to the renderer
+		// A node class just to pass the descriptor info from the SystemFlipBooks to the renderer
 		// Perhaps the SystemFlipBooks should communicate with the renderer system directly instead of using a fake node
-		class FakeSprite : public Node2D
+		class NodeBridge : public Node2D
 		{
 		private:
 
 		public:
 
-			FakeSprite() = default;
-			FakeSprite(const FakeSprite& other) = default;
-			FakeSprite(FakeSprite&& other) noexcept = default;
-			~FakeSprite() noexcept = default;
+			NodeBridge() = default;
+			NodeBridge(const NodeBridge& other) = default;
+			NodeBridge(NodeBridge&& other) noexcept = default;
+			~NodeBridge() noexcept = default;
 
-			FakeSprite& operator = (const FakeSprite& other) = default;
-			FakeSprite& operator = (FakeSprite&& other) noexcept = default;
+			NodeBridge& operator = (const NodeBridge& other) = default;
+			NodeBridge& operator = (NodeBridge&& other) noexcept = default;
 
 			vulkan_renderer::DescriptorInfo getDescriptorInfo() override
 			{
-				auto& engContext = EngineContext::Get();
-				auto sysSprites = engContext.getSystem<SystemFlipBooks>();
-				if (!Ensure(sysSprites))
+				auto& localEngineContext = EngineContext::Get();
+				auto localSystem = localEngineContext.getSystem<SystemT>();
+				if (!Ensure(localSystem))
 					return {};
 
-				return sysSprites->getDescriptorInfo();
+				return localSystem->getDescriptorInfo();
 			}
 
 			uint32_t instancesCount = 1;
@@ -162,23 +180,26 @@ namespace zt::gameplay::tests
 		const size_t height = 1;
 		for (size_t x = 0; x < width; ++x)
 			for (size_t y = 0; y < height; ++y)
-				AddSpriteTest(x, y, width, height);
+				AddNodeTest(x, y, width, height);
 
 		auto& camera = systemRenderer->getCameraNode()->getCamera();
 		camera.setPosition(Vector3f(width / 2.f, height / 2.f, 55));
 		camera.setLookingAt(Vector3f(width / 2.f, height / 2.f, 0));
 
-		systemFlipBooks->update();
+		system->update();
 
-		auto descriptorInfo = systemFlipBooks->getDescriptorInfo();
-		ASSERT_TRUE(descriptorInfo.buffersPerType.size() == 1);
-		ASSERT_TRUE(descriptorInfo.buffersPerType[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER].size() == 1);
-		ASSERT_TRUE(descriptorInfo.buffersPerType[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER].front());
+		auto descriptorInfo = system->getDescriptorInfo();
+		ASSERT_EQ(descriptorInfo.buffersInfos.size(), 2);
+		ASSERT_EQ(descriptorInfo.buffersInfos[0].buffersPerType.size(), 1);
+		ASSERT_EQ(descriptorInfo.buffersInfos[0].buffersPerType[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER].size(), 1);
 
-		auto fakeSprite = CreateObject<FakeSprite>("Fake Sprite");
-		fakeSprite->instancesCount = static_cast<uint32_t>(sprites.size());
-		engineContext.getRootNode()->addChild(fakeSprite);
-		systemRenderer->addNode(fakeSprite);
+		ASSERT_EQ(descriptorInfo.buffersInfos[1].buffersPerType.size(), 1);
+		ASSERT_EQ(descriptorInfo.buffersInfos[1].buffersPerType[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER].size(), 1);
+
+		auto nodeBridge = CreateObject<NodeBridge>("Fake Sprite");
+		nodeBridge->instancesCount = static_cast<uint32_t>(nodes.size());
+		engineContext.getRootNode()->addChild(nodeBridge);
+		systemRenderer->addNode(nodeBridge);
 
 		//std::jthread exitThread(
 		//[&engineContext = engineContext]()
