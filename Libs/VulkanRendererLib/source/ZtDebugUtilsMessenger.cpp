@@ -1,6 +1,11 @@
 #include "Zinet/VulkanRenderer/ZtDebugUtilsMessenger.hpp"
 #include "Zinet/VulkanRenderer/ZtInstance.hpp"
 
+namespace
+{
+	auto Logger = zt::core::ConsoleLogger::Create("zt::vulkan_renderer::DebugUtilsMessenger");
+}
+
 namespace zt::vulkan_renderer
 {
 	bool DebugUtilsMessenger::create(const Instance& instance)
@@ -61,8 +66,6 @@ namespace zt::vulkan_renderer
 		const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
 		[[maybe_unused]] void* userData)
 	{
-		static auto Logger = core::ConsoleLogger::Create("DebugUtilsMessenger_DebugCallback");
-
 		switch (messageSeverity)
 		{
 		case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:

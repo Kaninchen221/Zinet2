@@ -40,7 +40,6 @@ namespace zt::vulkan_renderer
 			if (handles.empty())
 			{
 				handles = { nullptr };
-				count = 1;
 			}
 		}
 
@@ -77,11 +76,10 @@ namespace zt::vulkan_renderer
 
 		void update(const Device& device, const DescriptorSetsUpdateData& updateData) const noexcept;
 
-		auto getCount() const noexcept { return count; }
+		auto getCount() const noexcept { return handles.size(); }
 
 	protected:
 
-		uint32_t count = 1;
 		std::vector<VkDescriptorSet> handles = { nullptr };
 
 	};

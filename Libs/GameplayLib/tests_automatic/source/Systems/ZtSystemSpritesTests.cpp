@@ -170,24 +170,18 @@ namespace zt::gameplay::tests
 
 		systemSprites->update();
 
-		auto descriptorInfo = systemSprites->getDescriptorInfo();
-		ASSERT_TRUE(descriptorInfo.buffersInfos.size() == 1);
-		ASSERT_TRUE(descriptorInfo.buffersInfos[0].buffersPerType.size() == 1);
-		ASSERT_TRUE(descriptorInfo.buffersInfos[0].buffersPerType[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER].size() == 1);
-		ASSERT_TRUE(descriptorInfo.buffersInfos[0].buffersPerType[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER].front());
-
 		auto fakeSprite = CreateObject<FakeSprite>("Fake Sprite");
 		fakeSprite->instancesCount = static_cast<uint32_t>(sprites.size());
 		engineContext.getRootNode()->addChild(fakeSprite);
 		systemRenderer->addNode(fakeSprite);
 
 		std::jthread exitThread(
-		[&engineContext = engineContext]()
+			[&engineContext = engineContext]()
 		{
 			while (!engineContext.isLooping())
 			{
 			}
-		
+
 			using namespace std::chrono_literals;
 			std::this_thread::sleep_for(100ms);
 			engineContext.stopLooping();

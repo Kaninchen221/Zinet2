@@ -14,7 +14,7 @@ layout(set = 1, binding = 0, std140) buffer Models {
 	readonly mat4 data[];
 } models;
 
-layout(set = 1, binding = 1, std140) buffer Coords {
+layout(set = 1, binding = 1, std430) buffer Coords {
 	readonly float data[];
 } coords;
 
@@ -32,12 +32,10 @@ void main() {
 	fragColor = inColor;
 	
 	//uint coordsIndex = (gl_InstanceIndex * 2) + clamp(uint(ceil(gl_VertexIndex / 2)), 0, 0xffffffffU);
-	uint coordsIndex = gl_VertexIndex;
-	//uint coordsIndex = gl_VertexIndex / 2;
-	//uint coordsIndex = 0;
+	uint coordsIndex = gl_VertexIndex * 2;
 	fragTexCoord.r = coords.data[coordsIndex];
 	fragTexCoord.g = coords.data[coordsIndex + 1];
-	fragColor = vec4(fragTexCoord.r, fragTexCoord.g, 0, 1);
+	//fragColor = vec4(fragTexCoord.r, fragTexCoord.g, 0, 1);
 	
 	instanceIndex = gl_InstanceIndex;
 }

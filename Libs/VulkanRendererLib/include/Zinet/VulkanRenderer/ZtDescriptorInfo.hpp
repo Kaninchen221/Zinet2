@@ -25,17 +25,22 @@ namespace zt::vulkan_renderer
 		std::vector<VkDescriptorBufferInfo> descriptorBuffersInfos;
 		std::vector<VkDescriptorImageInfo> descriptorImagesInfos;
 	};
-	
-	struct BufferInfo
+
+	struct BuffersPack
 	{
 		using Buffers = std::vector<Buffer*>;
+
+		uint32_t binding = 0;
 		std::map<VkDescriptorType, Buffers> buffersPerType;
-		uint32_t cachedBuffersBinding = 0;
+
+		BuffersPack& operator += (const BuffersPack& other);
 	};
 
+	BuffersPack operator + (const BuffersPack& first, const BuffersPack& second);
+	
 	struct DescriptorInfo
 	{
-		std::vector<BufferInfo> buffersInfos;
+		std::vector<BuffersPack> buffersPacks;
 		std::vector<TextureInfo> texturesInfos;
 
 		uint32_t cachedTexturesBinding = 0;

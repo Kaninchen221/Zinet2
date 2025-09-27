@@ -149,15 +149,9 @@ namespace zt::gameplay
 	{
 		using namespace vulkan_renderer;
 
-		DescriptorInfo result;
-		result.buffersInfos.push_back(
-		{
-			.buffersPerType =
-			{
-				{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &buffer } }
-			}
-		});
+		DescriptorInfo descriptorInfo;
+		descriptorInfo.buffersPacks.emplace_back().buffersPerType[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER] = std::vector<Buffer*>{ &buffer };
 
-		return result;
+		return descriptorInfo;
 	}
 }

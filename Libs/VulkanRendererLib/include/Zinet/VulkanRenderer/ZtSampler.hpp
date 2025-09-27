@@ -7,6 +7,11 @@
 
 #include <vulkan/vulkan.h>
 
+namespace
+{
+	auto Logger = zt::core::ConsoleLogger::Create("zt::vulkan_renderer:: Sampler Utils");
+}
+
 namespace zt::vulkan_renderer
 {
 	class Device;
@@ -20,7 +25,6 @@ namespace zt::vulkan_renderer
 		else if (str == "cubic")
 			return VkFilter::VK_FILTER_CUBIC_EXT;
 
-		auto Logger = core::ConsoleLogger::Create("SamplerTypeFromString");
 		Logger->warn("Couldn't match str: {} to any filter type, using nearest as default", str);
 		return VkFilter::VK_FILTER_NEAREST;
 	}

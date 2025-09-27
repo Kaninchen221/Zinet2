@@ -57,18 +57,20 @@ namespace zt::gameplay
 		if (!MVPBuffer.isValid())
 			return {};
 
-
-		vulkan_renderer::DescriptorInfo result;
-
-		result.buffersInfos.push_back(
+		return vulkan_renderer::DescriptorInfo
 		{
-			.buffersPerType =
+			.buffersPacks =
 			{
-				{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, { &MVPBuffer } }
+				vulkan_renderer::BuffersPack
+				{
+					.binding = 0,
+					.buffersPerType =
+					{
+						{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &MVPBuffer } }
+					}
+				}
 			}
-		});
-
-		return result;
+		};
 	}
 
 	void Node2D::updateMVP()

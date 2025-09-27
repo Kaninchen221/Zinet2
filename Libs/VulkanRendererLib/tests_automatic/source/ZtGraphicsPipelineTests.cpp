@@ -98,12 +98,19 @@ namespace zt::vulkan_renderer::tests
 				{
 					DescriptorInfo
 					{
-						.buffersPerType = {},
+						.buffersPacks = {},
 						.texturesInfos = { textureInfo },
 					},
 					DescriptorInfo
 					{
-						.buffersPerType = { { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0], &uniformBuffers[1] } } },
+						.buffersPacks =
+						{
+							BuffersPack
+							{
+								.binding = 1,
+								.buffersPerType = { { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0] } } }
+							}
+						},
 						.texturesInfos{}
 					}
 				},

@@ -19,6 +19,8 @@ namespace zt::vulkan_renderer
 	template<class HandleT>
 	class VulkanObject
 	{
+		inline static auto Logger = zt::core::ConsoleLogger::Create("zt::vulkan_renderer::VulkanObject");
+
 	public:
 
 		inline static constexpr std::uint32_t InvalidIndex = std::numeric_limits<uint32_t>::max();
@@ -83,7 +85,6 @@ namespace zt::vulkan_renderer
 	{
 		if (isValid())
 		{
-			auto Logger = core::ConsoleLogger::Create("VulkanObject");
 			Logger->error("Object must be manually destroyed/invalidated before move call");
 		}
 
@@ -100,7 +101,6 @@ namespace zt::vulkan_renderer
 			Ensure(false);
 			try 
 			{
-				auto Logger = core::ConsoleLogger::Create("VulkanObject");
 				Logger->error("Object must be manually destroyed/invalidated before destructor call");
 			}
 			catch ([[maybe_unused]] std::exception& ex)

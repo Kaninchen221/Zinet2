@@ -53,13 +53,7 @@ namespace zt::gameplay
 
 		vulkan_renderer::DescriptorInfo result;
 
-		result.buffersInfos.push_back(
-		{
-			.buffersPerType =
-			{
-				{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, { &transformsMatricesBuffer } }
-			}
-		});
+		result.buffersPacks.emplace_back().buffersPerType[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER].push_back(&transformsMatricesBuffer);
 
 		if (!assetTexture.isValid() || !assetTexture->isLoaded())
 		{

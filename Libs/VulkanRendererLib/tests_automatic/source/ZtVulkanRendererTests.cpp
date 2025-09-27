@@ -235,18 +235,28 @@ namespace zt::vulkan_renderer::tests
 				{
 					DescriptorInfo
 					{
-						.buffersPerType = {},
+						.buffersPacks = {},
 						.texturesInfos = { textureInfo },
 					},
 					DescriptorInfo
 					{
-						.buffersPerType = { { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0], &uniformBuffers[1] } } },
+						.buffersPacks = 
+						{ 
+							vulkan_renderer::BuffersPack
+							{
+								.binding = 0,
+								.buffersPerType =
+								{
+									{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0], &uniformBuffers[1] } }
+								}
+							}
+						},
 						.texturesInfos{}
 					}
 				},
 				.descriptorSetsCount = rendererContext.getDisplayImagesCount()
 			};
-			graphicsPipeline.create(createInfo);
+			ASSERT_TRUE(graphicsPipeline.create(createInfo));
 		}
 
 		core::Clock fpsClock;

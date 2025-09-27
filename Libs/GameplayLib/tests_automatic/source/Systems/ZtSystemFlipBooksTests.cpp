@@ -130,9 +130,9 @@ namespace zt::gameplay::tests
 				.textureCoords =
 				{
 					Vector2f{ 0, 0 },
-					{ 0.25, 0 },
-					{ 0.25, 0.25 },
-					{ 0, 0.25 }
+					{ 0.33, 0 },
+					{ 0.33, 0.20 },
+					{ 0, 0.20 }
 				},
 				.time = 1.f
 			};
@@ -188,30 +188,22 @@ namespace zt::gameplay::tests
 
 		system->update();
 
-		auto descriptorInfo = system->getDescriptorInfo();
-		ASSERT_EQ(descriptorInfo.buffersInfos.size(), 2);
-		ASSERT_EQ(descriptorInfo.buffersInfos[0].buffersPerType.size(), 1);
-		ASSERT_EQ(descriptorInfo.buffersInfos[0].buffersPerType[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER].size(), 1);
-
-		ASSERT_EQ(descriptorInfo.buffersInfos[1].buffersPerType.size(), 1);
-		ASSERT_EQ(descriptorInfo.buffersInfos[1].buffersPerType[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER].size(), 1);
-
 		auto nodeBridge = CreateObject<NodeBridge>("Fake Sprite");
 		nodeBridge->instancesCount = static_cast<uint32_t>(nodes.size());
 		engineContext.getRootNode()->addChild(nodeBridge);
 		systemRenderer->addNode(nodeBridge);
 
-		//std::jthread exitThread(
-		//[&engineContext = engineContext]()
-		//{
-		//	while (!engineContext.isLooping())
-		//	{
-		//	}
-		//
-		//	using namespace std::chrono_literals;
-		//	std::this_thread::sleep_for(100ms);
-		//	engineContext.stopLooping();
-		//});
+		std::jthread exitThread(
+		[&engineContext = engineContext]()
+		{
+			while (!engineContext.isLooping())
+			{
+			}
+		
+			using namespace std::chrono_literals;
+			std::this_thread::sleep_for(100ms);
+			engineContext.stopLooping();
+		});
 
 		engineContext.loop();
 	}

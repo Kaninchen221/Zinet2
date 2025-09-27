@@ -8,19 +8,48 @@
 
 namespace zt::vulkan_renderer
 {
+	namespace
+	{
+		inline static auto Logger = core::ConsoleLogger::Create("DescriptorInfo");
+	}
+
+	BuffersPack& BuffersPack::operator+=(const BuffersPack& other)
+	{
+		for (auto& [descriptorType, buffers] : other.buffersPerType)
+		{
+			auto findResult = buffersPerType.find(descriptorType);
+			if (findResult != buffersPerType.end())
+			{
+				findResult->second.append_range(buffers);
+			}
+			else
+			{
+				buffersPerType.insert({ descriptorType, buffers });
+			}
+		}
+
+		return *this;
+	}
+
+	BuffersPack operator+(const BuffersPack& first, const BuffersPack& second)
+	{
+		auto result = first;
+		result += second;
+		return result;
+	}
+
 	DescriptorSetLayout::Bindings DescriptorInfo::createBindings()
 	{
 		DescriptorSetLayout::Bindings result;
 
-		for (auto& buffersInfo : buffersInfos)
+		for (auto& buffersPack : buffersPacks)
 		{
-			for (auto& [descriptorType, buffers] : buffersInfo.buffersPerType)
+			for (auto& [descriptorType, buffers] : buffersPack.buffersPerType)
 			{
-				buffersInfo.cachedBuffersBinding = static_cast<uint32_t>(result.size());
 				result.push_back(
 					VkDescriptorSetLayoutBinding
 					{
-						.binding = buffersInfo.cachedBuffersBinding,
+						.binding = buffersPack.binding,
 						.descriptorType = descriptorType,
 						.descriptorCount = static_cast<uint32_t>(buffers.size()),
 						.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS,
@@ -93,50 +122,62 @@ namespace zt::vulkan_renderer
 		auto& descriptorBuffersInfos = result.descriptorBuffersInfos;
 		auto& descriptorImagesInfos = result.descriptorImagesInfos;
 
+		// Reserve to avoid reallocation
+		writeDescriptorSets.reserve(descriptorSets.getCount());
+
 		size_t buffersCount = 0;
-		for (const auto& buffersInfo : buffersInfos)
+		for (const auto& buffersPack : buffersPacks)
 		{
-			for (auto& [descriptorType, buffers] : buffersInfo.buffersPerType)
+			for (const auto& [descriptorType, buffers] : buffersPack.buffersPerType)
 			{
 				buffersCount += buffers.size();
 			}
 		}
-
-		// Reserve to avoid reallocation
-		writeDescriptorSets.reserve(descriptorSets.getCount());
 		descriptorBuffersInfos.reserve(buffersCount);
+
 		descriptorImagesInfos.reserve(texturesInfos.size());
 
-		for (const auto& buffersInfo : buffersInfos)
+		size_t buffersOffset = 0;
+		for (auto& buffersPack : buffersPacks)
 		{
-			for (auto& [descriptorType, buffers] : buffersInfo.buffersPerType)
+			for (auto& [descriptorType, buffers] : buffersPack.buffersPerType)
 			{
 				for (const auto& buffer : buffers)
 				{
 					if (!buffer || !buffer->isValid())
 					{
-						Ensure(false, "Invalid Buffer");
+						Logger->critical("Found an invalid buffer");
+						return {};
+					}
+
+#				if ZINET_DEBUG // Sanity check
+					if (descriptorBuffersInfos.size() >= descriptorBuffersInfos.capacity())
+					{
+						Logger->error("We can't reallocate the container because the pointers in the writeDescriptorSets will be invalid");
 						continue;
 					}
+#				endif
 
 					auto& descriptorBufferInfo = descriptorBuffersInfos.emplace_back(GetBufferInfo(*buffer));
 					descriptorBufferInfo.offset = 0;
 				}
 
-				/// Write Descriptor for uniform buffers
+				/// Write Descriptor for buffers per descriptor set
 				for (size_t descriptorSetIndex = 0; descriptorSetIndex < descriptorSets.getCount(); ++descriptorSetIndex)
 				{
 					if (!buffers.empty())
 					{
 						auto& writeDescriptorSet = writeDescriptorSets.emplace_back(GetDefaultWriteDescriptorSet());
 						writeDescriptorSet.dstSet = descriptorSets.get(descriptorSetIndex);
-						writeDescriptorSet.dstBinding = buffersInfo.cachedBuffersBinding;
+						writeDescriptorSet.dstBinding = buffersPack.binding;
 						writeDescriptorSet.dstArrayElement = 0;
 						writeDescriptorSet.descriptorCount = static_cast<uint32_t>(buffers.size());
-						writeDescriptorSet.pBufferInfo = &descriptorBuffersInfos.back(); // TODO: Invalid when we have more than one buffer for the same type of buffer
+						writeDescriptorSet.pBufferInfo = &descriptorBuffersInfos[buffersOffset];
 						writeDescriptorSet.descriptorType = descriptorType;
 					}
 				}
+
+				buffersOffset += buffers.size();
 			}
 		}
 
@@ -172,9 +213,8 @@ namespace zt::vulkan_renderer
 
 	DescriptorInfo& DescriptorInfo::operator += (const DescriptorInfo& other)
 	{
-		buffersInfos.append_range(other.buffersInfos);
+		buffersPacks.append_range(other.buffersPacks);
 		texturesInfos.append_range(other.texturesInfos);
-
 		return *this;
 	}
 
@@ -184,4 +224,5 @@ namespace zt::vulkan_renderer
 		result += second;
 		return result;
 	}
+
 }

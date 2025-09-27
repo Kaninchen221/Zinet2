@@ -83,13 +83,9 @@ namespace zt::gameplay
 	{
 		auto result = SystemSprites::getDescriptorInfo();
 
-		result.buffersInfos.push_back(
-		{
-			.buffersPerType =
-			{
-				{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, { &frameTexCoordsBuffer } }
-			}
-		});
+		auto& buffersPack = result.buffersPacks.emplace_back();
+		buffersPack.buffersPerType[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER].push_back(&frameTexCoordsBuffer);
+		buffersPack.binding = 1;
 
 		return result;
 	}

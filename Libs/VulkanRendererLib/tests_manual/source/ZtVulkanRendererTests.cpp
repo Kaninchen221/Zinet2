@@ -296,27 +296,37 @@ namespace zt::vulkan_renderer::tests
 			GraphicsPipelineCreateInfo createInfo
 			{
 				.rendererContext = rendererContext,
-				.shaderModules = 
-				{ 
-					{ ShaderType::Vertex, &vertexShaderModule }, 
-					{ ShaderType::Fragment, &fragmentShaderModule } 
+				.shaderModules =
+				{
+					{ ShaderType::Vertex, &vertexShaderModule },
+					{ ShaderType::Fragment, &fragmentShaderModule }
 				},
-				.descriptorInfos = 
-				{  
+				.descriptorInfos =
+				{
 					DescriptorInfo
 					{
-						.buffersPerType = {},
+						.buffersPacks = {},
 						.texturesInfos = { textureInfo },
 					},
 					DescriptorInfo
 					{
-						.buffersPerType = { { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0], &uniformBuffers[1] } } },
+						.buffersPacks =
+						{
+							vulkan_renderer::BuffersPack
+							{
+								.binding = 0,
+								.buffersPerType =
+								{
+									{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &uniformBuffers[0], &uniformBuffers[1] } }
+								}
+							}
+						},
 						.texturesInfos{}
 					}
 				},
 				.descriptorSetsCount = rendererContext.getDisplayImagesCount()
 			};
-			graphicsPipeline.create(createInfo);
+			ASSERT_TRUE(graphicsPipeline.create(createInfo));
 		}
 
 		core::Clock fpsClock;
