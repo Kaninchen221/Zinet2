@@ -5,6 +5,8 @@
 
 #include "Zinet/Gameplay/Nodes/ZtNodeInstancedFlipBook.hpp"
 
+#include "Zinet/Core/ZtClock.hpp"
+
 namespace zt::gameplay
 {
 	class  SystemFlipBooks : public SystemSprites
@@ -40,11 +42,13 @@ namespace zt::gameplay
 
 		using FlipBooksFrames = std::vector<FlipBookFrames>;
 		FlipBooksFrames flipBooksFrames;
-		std::vector<uint32_t> currentFramesIndices;
-		std::vector<FlipBookFrame::Coords> currentFrames;
+		std::vector<int32_t> currentFramesIndices;
+		std::vector<FlipBookFrame::Coords> currentFramesCoords;
+		std::vector<float> framesTimeouts; // TODO: Change the type to core::Time
 		vulkan_renderer::Buffer frameTexCoordsBuffer{ nullptr };
 		void recreateFrameTexCoordsBuffer();
 
+		core::Clock clock;
 	};
 
 }

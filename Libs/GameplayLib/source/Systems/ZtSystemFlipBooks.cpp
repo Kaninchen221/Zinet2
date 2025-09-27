@@ -11,21 +11,52 @@ namespace zt::gameplay
 	{
 		SystemSprites::update();
 
+		auto elapsedTime = clock.getElapsedTime().getAsSeconds();
+		for (size_t i = 0; i < ids.size(); ++i)
+		{
+			auto& currentIndex = currentFramesIndices[i];
+			auto& frames = flipBooksFrames[i];
+			auto& currentFrameCoords = currentFramesCoords[i];
+			auto& frameTimeout = framesTimeouts[i];
+
+			frameTimeout -= elapsedTime;
+			if (frameTimeout > 0.f)
+				continue;
+
+			++currentIndex;
+			if (currentIndex >= frames.size())
+				currentIndex = 0;
+
+			auto& currentFrame = frames[currentIndex];
+			frameTimeout = currentFrame.time;
+			currentFrameCoords = currentFrame.textureCoords;
+
+		}
+		clock.restart();
+
+		{ // Update buffer data
+			auto& engineContext = EngineContext::Get();
+			auto systemRenderer = engineContext.getSystem<SystemRenderer>();
+			if (!Ensure(systemRenderer))
+			{
+				Logger->error("System renderer is invalid");
+				return;
+			}
+			auto& vma = systemRenderer->getRenderer().getRendererContext().getVMA();
+
+			if (frameTexCoordsBuffer.isValid())
+			{
+				if (!frameTexCoordsBuffer.fillWithSTDContainer(vma, currentFramesCoords))
+				{
+					Logger->error("Failed filling frame tex coords buffer with data");
+				}
+			}
+		}
+
 		if (!frameTexCoordsBuffer.isValid())
 		{
 			recreateFrameTexCoordsBuffer();
 		}
-
-		auto& engineContext = EngineContext::Get();
-		auto systemRenderer = engineContext.getSystem<SystemRenderer>();
-		if (!Ensure(systemRenderer))
-		{
-			Logger->error("System renderer is invalid");
-			return;
-		}
-		auto& vma = systemRenderer->getRenderer().getRendererContext().getVMA();
-
-		frameTexCoordsBuffer.fillWithSTDContainer(vma, currentFrames);
 	}
 
 	bool SystemFlipBooks::init()
@@ -74,7 +105,9 @@ namespace zt::gameplay
 		flipBook->id = id;
 		transforms.emplace_back();
 		flipBooksFrames.emplace_back();
-		currentFramesIndices.emplace_back(0); // Default frame
+		currentFramesIndices.emplace_back(-1);
+		currentFramesCoords.emplace_back();
+		framesTimeouts.emplace_back(0.f);
 
 		isDirty = true;
 	}
@@ -104,10 +137,10 @@ namespace zt::gameplay
 		auto& rendererContext = systemRenderer->getRenderer().getRendererContext();
 		auto& vma = systemRenderer->getRenderer().getRendererContext().getVMA();
 
-		currentFrames.clear();
+		currentFramesCoords.clear();
 		for (const auto& [frames, currentIndex] : std::views::zip(flipBooksFrames, currentFramesIndices))
 		{
-			currentFrames.emplace_back(frames[currentIndex].textureCoords);
+			currentFramesCoords.emplace_back(frames[currentIndex].textureCoords);
 		}
 
 		if (frameTexCoordsBuffer.isValid())
@@ -115,7 +148,7 @@ namespace zt::gameplay
 			frameTexCoordsBuffer.destroy(vma);
 		}
 
-		auto createInfo = Buffer::GetStorageBufferCreateInfo(currentFrames);
+		auto createInfo = Buffer::GetStorageBufferCreateInfo(currentFramesCoords);
 		frameTexCoordsBuffer.create(vma, createInfo);
 
 		auto& device = rendererContext.getDevice();

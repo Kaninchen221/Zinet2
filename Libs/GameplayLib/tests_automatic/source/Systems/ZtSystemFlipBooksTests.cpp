@@ -124,6 +124,8 @@ namespace zt::gameplay::tests
 			transform.setPosition(position);
 			transform.setRotation(rotation);
 
+			const float time = 0.50f; // Seconds
+
 			auto& frames = node->getFrames();
 			FlipBookFrame frame
 			{
@@ -134,7 +136,33 @@ namespace zt::gameplay::tests
 					{ 0.33, 0.20 },
 					{ 0, 0.20 }
 				},
-				.time = 1.f
+				.time = time
+			};
+			frames.push_back(frame);
+
+			frame = 
+			{
+				.textureCoords =
+				{
+					Vector2f{ 0.33, 0 },
+					{ 0.66, 0 },
+					{ 0.66, 0.20 },
+					{ 0.33, 0.20 }
+				},
+				.time = time
+			};
+			frames.push_back(frame);
+
+			frame =
+			{
+				.textureCoords =
+				{
+					Vector2f{ 0.66, 0 },
+					{ 1, 0 },
+					{ 1, 0.20 },
+					{ 0.66, 0.20 }
+				},
+				.time = time
 			};
 			frames.push_back(frame);
 
@@ -194,7 +222,7 @@ namespace zt::gameplay::tests
 		systemRenderer->addNode(nodeBridge);
 
 		std::jthread exitThread(
-		[&engineContext = engineContext]()
+			[&engineContext = engineContext]()
 		{
 			while (!engineContext.isLooping())
 			{
