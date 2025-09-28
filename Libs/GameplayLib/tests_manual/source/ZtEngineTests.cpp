@@ -128,9 +128,9 @@ namespace zt::gameplay::tests
 			systemRenderer->vertexShader = shaderVert;
 
 			auto shaderFrag = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.frag");
-			ZT_TIME_LOG(
+			ZT_TIME_LOG( // TODO: Optimize shader loading
 				ASSERT_TRUE(shaderFrag->load(core::Paths::RootPath()));
-			); // TODO: Optimize shader loading
+			);
 			systemRenderer->fragmentShader = shaderFrag;
 		}
 

@@ -14,7 +14,6 @@
 
 namespace zt::gameplay
 {
-	// TODO: Rename to SystemInstancedSprites
 	class  SystemSprites : public System
 	{
 	protected:

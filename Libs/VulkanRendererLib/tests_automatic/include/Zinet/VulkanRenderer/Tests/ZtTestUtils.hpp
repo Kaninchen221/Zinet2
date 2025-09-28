@@ -14,7 +14,6 @@
 #include "Zinet/Core/ZtPaths.hpp"
 #include "Zinet/Core/ZtImage.hpp"
 
-// TODO: Create lib with utils for tests
 namespace zt::vulkan_renderer::tests
 {
 	template<class ClassT, class ObjectHandleT, class ...ConstructorArgsTs>

@@ -87,8 +87,7 @@ namespace zt::gameplay
 	template<std::derived_from<System> SystemT>
 	ObjectHandle<SystemT> EngineThread::getSystem()
 	{
-		// TODO: Handle multiple systems of the same type or derived type or not? 
-		// Else: assert that there is only one system of the type or derived type during addSystem
+		// TODO: Handle multiple systems of the same type or derived type
 		for (auto& system : systems)
 		{
 			auto ptr = dynamic_cast<SystemT*>(system.get());

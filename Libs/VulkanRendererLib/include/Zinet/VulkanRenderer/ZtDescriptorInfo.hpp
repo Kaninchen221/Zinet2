@@ -37,7 +37,8 @@ namespace zt::vulkan_renderer
 	};
 
 	BuffersPack operator + (const BuffersPack& first, const BuffersPack& second);
-	
+
+	// TODO: REALY TEST IT
 	struct DescriptorInfo
 	{
 		std::vector<BuffersPack> buffersPacks;
@@ -55,8 +56,6 @@ namespace zt::vulkan_renderer
 
 		DescriptorSetsUpdateData createDescriptorSetsUpdateData(const DescriptorSets& descriptorSets) const;
 
-		// TODO: Test it
-		// REALY TEST IT
 		DescriptorInfo& operator += (const DescriptorInfo& other);
 	};
 

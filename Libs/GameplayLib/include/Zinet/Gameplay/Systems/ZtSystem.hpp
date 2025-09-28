@@ -40,6 +40,7 @@ namespace zt::gameplay
 		virtual void update() {}
 
 		// TODO: Every system should implement its own addNode without overriding to avoid casting
+		// But this function should invoke the system specific add node method to allow us to add nodes generically
 		virtual void addNode(const ObjectWeakHandle<Node>& node) { nodes.push_back(node); }
 
 		virtual Nodes& getNodes() noexcept { return nodes; }
