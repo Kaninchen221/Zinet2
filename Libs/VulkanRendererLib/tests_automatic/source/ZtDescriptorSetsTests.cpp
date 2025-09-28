@@ -100,9 +100,6 @@ namespace zt::vulkan_renderer::tests
 			descriptorPool.destroy(device);
 			ASSERT_FALSE(descriptorPool.isValid());
 
-			descriptorSets.invalidate();
-			ASSERT_FALSE(descriptorSets.isValid());
-
 			uniformBuffer.destroy(vma);
 			ASSERT_FALSE(uniformBuffer.isValid());
 
@@ -135,8 +132,15 @@ namespace zt::vulkan_renderer::tests
 		DescriptorSets descriptorSets;
 	};
 
-	TEST_F(DescriptorSetTests, PassTest)
+	TEST_F(DescriptorSetTests, DestroyTest)
 	{
+		ASSERT_TRUE(descriptorSets.destroy(device, descriptorPool));
+		ASSERT_FALSE(descriptorSets.isValid());
+	}
 
+	TEST_F(DescriptorSetTests, InvalidateTest)
+	{
+		descriptorSets.invalidate();
+		ASSERT_FALSE(descriptorSets.isValid());
 	}
 }

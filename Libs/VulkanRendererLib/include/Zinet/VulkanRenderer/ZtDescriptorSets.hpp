@@ -59,6 +59,8 @@ namespace zt::vulkan_renderer
 
 		bool create(const Device& device, const VkDescriptorSetAllocateInfo& allocateInfo);
 
+		bool destroy(const Device& device, const DescriptorPool& descriptorPool);
+
 		bool isValid() const noexcept;
 
 		operator bool() const noexcept { return isValid(); }
@@ -68,9 +70,6 @@ namespace zt::vulkan_renderer
 
 		HandleType* data() noexcept { return &handles.front(); }
 		const HandleType* data() const noexcept { return &handles.front(); }
-
-		// TODO: Add free method (vkFreeDescriptorSets) destroy it without destroying the pool
-		// And remove the invalidate method? So we never make a dangling handle
 
 		void invalidate() noexcept;
 

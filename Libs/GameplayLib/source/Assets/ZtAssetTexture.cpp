@@ -127,11 +127,12 @@ namespace zt::gameplay
 		auto& rendererContext = systemRenderer->getRenderer().getRendererContext();
 		auto& device = rendererContext.getDevice();
 		auto& vma = rendererContext.getVMA();
+		auto& descriptorPool = rendererContext.getDescriptorPool();
 
 		if (descriptorSets.isValid())
 		{
 			ImGui_ImplVulkan_RemoveTexture(descriptorSets.get());
-			descriptorSets.invalidate();
+			descriptorSets.destroy(device, descriptorPool);
 		}
 
 		texture.destroy(device, vma);

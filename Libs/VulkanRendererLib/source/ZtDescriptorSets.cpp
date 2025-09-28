@@ -16,7 +16,7 @@ namespace zt::vulkan_renderer
 			.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
 			.pNext = nullptr,
 			.descriptorPool = descriptorPool.get(),
-			.descriptorSetCount = static_cast<std::uint32_t>(vkDescriptorSetLayouts.size()),
+			.descriptorSetCount = static_cast<uint32_t>(vkDescriptorSetLayouts.size()),
 			.pSetLayouts = vkDescriptorSetLayouts.data()
 		};
 	}
@@ -31,10 +31,30 @@ namespace zt::vulkan_renderer
 		}
 		else
 		{
-			Logger->error("Couldn't create DescriptorSets, result: {}", static_cast<std::int32_t>(result));
+			Logger->error("Couldn't create DescriptorSets, result: {}", static_cast<int32_t>(result));
 			handles.clear();
 			return false;
 		}
+	}
+
+	bool DescriptorSets::destroy(const Device& device, const DescriptorPool& descriptorPool)
+	{
+		if (isValid())
+		{
+			auto result = vkFreeDescriptorSets(device.get(), descriptorPool.get(), static_cast<uint32_t>(handles.size()), handles.data());
+			if (result == VK_SUCCESS)
+			{
+				invalidate();
+				return true;
+			}
+			else
+			{
+				Logger->error("Couldn't free DescriptorSets, result: {}", static_cast<int32_t>(result));
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	void DescriptorSets::invalidate() noexcept

@@ -116,6 +116,7 @@ namespace zt::vulkan_renderer
 	void RendererContext::destroy()
 	{
 		globalDescriptorSetLayout.destroy(device);
+		// Only invalidate because descriptor sets will be destroyed with descriptor pool
 		globalDescriptorSets.invalidate();
 
 		descriptorPool.destroy(device);

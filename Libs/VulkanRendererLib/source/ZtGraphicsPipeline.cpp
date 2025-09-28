@@ -49,14 +49,15 @@ namespace zt::vulkan_renderer
 	void GraphicsPipeline::destroy(const RendererContext& rendererContext) noexcept
 	{
 		const auto& device = rendererContext.getDevice();
+		const auto& descriptorPool = rendererContext.getDescriptorPool();
 
 		pipeline.destroy(device);
 		pipelineLayout.destroy(device);
 
-		pipelineDescriptorSets.invalidate(); // TODO: Replace it with free after writing it
+		pipelineDescriptorSets.destroy(device, descriptorPool);
 		pipelineDescriptorSetLayout.destroy(device);
 
-		objectDescriptorSets.invalidate(); // TODO: Replace it with free after writing it
+		objectDescriptorSets.destroy(device, descriptorPool);
 		objectDescriptorSetLayout.destroy(device);
 	}
 
