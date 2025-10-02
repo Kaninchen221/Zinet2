@@ -84,4 +84,12 @@ namespace zt::core::ecs
 		}
 	}
 
+	TEST_F(ECSTypeLessVectorTests, HasTypeTest)
+	{
+		TypeLessVector components = TypeLessVector::Create<Sprite>();
+
+		ASSERT_TRUE(components.hasType<Sprite>());
+		ASSERT_FALSE(components.hasType<Position>());
+
+	}
 }
