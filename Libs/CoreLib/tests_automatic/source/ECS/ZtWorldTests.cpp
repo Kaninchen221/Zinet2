@@ -17,7 +17,7 @@ namespace zt::core::ecs
 		struct Sprite { int textureID; };
 	};
 
-	TEST_F(ECSWorldTests, IDTest)
+	TEST_F(ECSWorldTests, SpawnEntityIDTest)
 	{
 		Entity entity_0 = world.spawn();
 		ASSERT_EQ(entity_0.id(), 0);
@@ -26,44 +26,12 @@ namespace zt::core::ecs
 		ASSERT_EQ(entity_1.id(), 1);
 	}
 
-	TEST_F(ECSWorldTests, GetComponentsTest)
+	TEST_F(ECSWorldTests, SpawnOneEntityWithOneComponentTest)
 	{
-		world.spawn(Position{});
-		world.spawn(Position{}, Velocity{});
+		const Position expectedPosition{ 1, 2 };
+		Entity entity = world.spawn(expectedPosition);
 
-		[[maybe_unused]] auto positions = world.getComponents<Position>();
+		//const auto component = world.getComponent<Position>(entity);
+		//ASSERT_TRUE(component);
 	}
 }
-
-/*
-World
-{
-	Chunk<Position>
-	Chunk<Position, Velocity>
-	Chunk<Position, Sprite>
-	...
-	...
-	...
-}
-
-Chunk<Position, Velocity, ..., N>
-{
-	std::vector<Position> components_0;
-	std::vector<Velocity> components_1;
-	...
-	...
-	...
-	std::vector<N> components_Index_N;
-}
-
-Chunk<Position, Velocity, ..., N>
-{
-	std::vector<Position> components_0;
-	std::vector<Velocity> components_1;
-	...
-	...
-	...
-	std::vector<N> components_Index_N;
-}
-
-*/

@@ -20,6 +20,13 @@ namespace zt::core::ecs
 
 		std::vector<const std::type_info*> types;
 
+		template<class Component>
+		void addSingleComponent(const Component& component)
+		{
+			auto components = getComponentsOfType<Component>();
+			components->add(component);
+		}
+
 	public:
 
 		Archetype(Archetype&& other) noexcept = default;
@@ -29,6 +36,9 @@ namespace zt::core::ecs
 
 		template<class... Components>
 		static Archetype Create();
+
+		template<class... Components>
+		void add(const Components&... components);
 
 		template<class Component>
 		TypeLessVector* getComponentsOfType() noexcept;
@@ -47,6 +57,12 @@ namespace zt::core::ecs
 		(archetype.types.push_back(&typeid(Components)), ...);
 
 		return archetype;
+	}
+
+	template<class... Components>
+	void Archetype::add([[maybe_unused]] const Components&... components)
+	{
+		(addSingleComponent(components), ...);
 	}
 
 	template<class Component>

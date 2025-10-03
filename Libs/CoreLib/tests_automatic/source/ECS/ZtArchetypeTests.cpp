@@ -10,14 +10,62 @@ namespace zt::core::ecs
 	{
 	protected:
 
-		struct Position { float x; float y; };
-		struct Sprite { int id; };
-		struct Velocity { float x; float y; };
+		struct Sprite 
+		{ 
+			int id;
+			bool operator == (const Sprite& other) const noexcept { return id == other.id; }
+
+		};
+
+		struct Position 
+		{ 
+			float x; 
+			float y; 
+
+			bool operator == (const Position& other) const noexcept
+			{
+				return x == other.x && y == other.y;
+			}
+		};
+
+		struct Velocity 
+		{ 
+			float x; 
+			float y;
+
+			bool operator == (const Velocity& other) const noexcept
+			{
+				return x == other.x && y == other.y;
+			}
+		};
 	};
 
 	TEST_F(ECSArchetypeTests, CreateTest)
 	{
 		Archetype archetype = Archetype::Create<Position, Sprite>();
+	}
+
+	TEST_F(ECSArchetypeTests, AddTest)
+	{
+		Archetype archetype = Archetype::Create<Position, Sprite>();
+
+		const Position expectedPosition{ 1, 2 };
+		const Sprite expectedSprite{ 10 };
+		archetype.add(expectedPosition, expectedSprite);
+
+		auto* positionComponents = archetype.getComponentsOfType<Position>();
+		ASSERT_EQ(positionComponents->getSize(), 1);
+		
+		const auto actualPosition = positionComponents->get<Position>(0);
+		ASSERT_TRUE(actualPosition);
+		ASSERT_EQ(*actualPosition, expectedPosition);
+
+		auto* spriteComponents = archetype.getComponentsOfType<Sprite>();
+		ASSERT_EQ(spriteComponents->getSize(), 1);
+
+		const auto actualSprite = spriteComponents->get<Sprite>(0);
+		ASSERT_TRUE(actualSprite);
+		ASSERT_EQ(*actualSprite, expectedSprite);
 	}
 
 	TEST_F(ECSArchetypeTests, GetComponentsTest)
@@ -63,7 +111,7 @@ namespace zt::core::ecs
 		// The archetype doesn't have the Velocity type
 		ASSERT_FALSE(archetype.hasTypes<Velocity>());
 
-		{ // Invalid because the arcvhetype doesn't have velocity
+		{ // Invalid because the archetype doesn't have velocity
 			const bool result = archetype.hasTypes<Position, Velocity>();
 			ASSERT_FALSE(result);
 		}

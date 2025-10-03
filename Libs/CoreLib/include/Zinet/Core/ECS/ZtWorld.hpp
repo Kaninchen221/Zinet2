@@ -4,6 +4,7 @@
 
 #include "Zinet/Core/ECS/ZtEntity.hpp"
 #include "Zinet/Core/ECS/ZtTypes.hpp"
+#include "Zinet/Core/ECS/ZtArchetype.hpp"
 #include "Zinet/Core/ZtDebug.hpp"
 
 namespace zt::core::ecs
@@ -21,25 +22,35 @@ namespace zt::core::ecs
 		World& operator = (World&& other) noexcept = default;
 
 		template<class ...Components>
-		Entity spawn([[maybe_unused]] const Components&... components)
-		{
-			++lastID;
+		Entity spawn(const Components&... components);
 
-			Entity entity{ lastID };
-			return entity;
-		}
-
-		template<class ...Components>
-		auto getComponents()
-		{
-			return 0;
-		}
+		template<class Component>
+		Component* getComponent(const Entity& entity);
 
 	private:
 
 		ID lastID = -1;
 
-		//std::vector<Archetype> archetypes;
+		std::vector<Archetype> archetypes;
 
 	};
+
+	template<class... Components>
+	Entity World::spawn([[maybe_unused]] const Components&... components)
+	{
+		++lastID;
+
+		//auto& archetype = archetypes.emplace_back(Archetype::Create<Components...>());
+		//archetype.add(components...);
+
+		Entity entity{ lastID };
+		return entity;
+	}
+
+	template<class Component>
+	Component* World::getComponent([[maybe_unused]] const Entity& entity)
+	{
+		return {};
+	}
+
 }
