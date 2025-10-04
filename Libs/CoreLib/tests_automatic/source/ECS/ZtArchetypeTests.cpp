@@ -4,40 +4,14 @@
 
 #include "Zinet/Core/ECS/ZtArchetype.hpp"
 
-namespace zt::core::ecs
+#include "Zinet/Core/Tests/ZtTestTypes.hpp"
+
+namespace zt::core::ecs::tests
 {
 	class ECSArchetypeTests : public ::testing::Test
 	{
 	protected:
 
-		struct Sprite 
-		{ 
-			int id;
-			bool operator == (const Sprite& other) const noexcept { return id == other.id; }
-
-		};
-
-		struct Position 
-		{ 
-			float x; 
-			float y; 
-
-			bool operator == (const Position& other) const noexcept
-			{
-				return x == other.x && y == other.y;
-			}
-		};
-
-		struct Velocity 
-		{ 
-			float x; 
-			float y;
-
-			bool operator == (const Velocity& other) const noexcept
-			{
-				return x == other.x && y == other.y;
-			}
-		};
 	};
 
 	TEST_F(ECSArchetypeTests, CreateTest)
@@ -49,26 +23,60 @@ namespace zt::core::ecs
 	{
 		Archetype archetype = Archetype::Create<Position, Sprite>();
 
+		const Entity firstEntity{ 0 };
 		const Position expectedPosition{ 1, 2 };
 		const Sprite expectedSprite{ 10 };
-		archetype.add(expectedPosition, expectedSprite);
+		const auto index = archetype.add(firstEntity, expectedPosition, expectedSprite);
+		ASSERT_EQ(index, 0);
+
+		ASSERT_TRUE(archetype.hasEntity(firstEntity));
 
 		auto* positionComponents = archetype.getComponentsOfType<Position>();
 		ASSERT_EQ(positionComponents->getSize(), 1);
 		
-		const auto actualPosition = positionComponents->get<Position>(0);
+		const auto actualPosition = positionComponents->get<Position>(index);
 		ASSERT_TRUE(actualPosition);
 		ASSERT_EQ(*actualPosition, expectedPosition);
 
 		auto* spriteComponents = archetype.getComponentsOfType<Sprite>();
 		ASSERT_EQ(spriteComponents->getSize(), 1);
 
-		const auto actualSprite = spriteComponents->get<Sprite>(0);
+		const auto actualSprite = spriteComponents->get<Sprite>(index);
+		ASSERT_TRUE(actualSprite);
+		ASSERT_EQ(*actualSprite, expectedSprite);
+
+		const Entity secondEntity{ 1 };
+		ASSERT_EQ(archetype.add(secondEntity, Position{}, Sprite{}), 1);
+
+		ASSERT_TRUE(archetype.hasEntity(secondEntity));
+	}
+
+	TEST_F(ECSArchetypeTests, TryAddInvalidCountOfComponentsTest)
+	{
+		Archetype archetype = Archetype::Create<Position, Sprite>();
+
+		const auto index = archetype.add(Entity{0}, Position{});
+		ASSERT_EQ(index, InvalidIndex);
+	}
+
+	TEST_F(ECSArchetypeTests, GetComponentOfTypeTest)
+	{
+		Archetype archetype = Archetype::Create<Position, Sprite>();
+		Position expectedPosition{ 34, 2 };
+		Sprite expectedSprite{ 40 };
+		archetype.add(Entity{0}, expectedPosition, expectedSprite);
+		archetype.add(Entity{0}, Position{ 1, 1 }, Sprite{ 10 });
+
+		auto actualPosition = archetype.getComponentOfType<Position>(0);
+		ASSERT_TRUE(actualPosition);
+		ASSERT_EQ(*actualPosition, expectedPosition);
+
+		auto actualSprite = archetype.getComponentOfType<Sprite>(0);
 		ASSERT_TRUE(actualSprite);
 		ASSERT_EQ(*actualSprite, expectedSprite);
 	}
 
-	TEST_F(ECSArchetypeTests, GetComponentsTest)
+	TEST_F(ECSArchetypeTests, GetComponentsOfTypeTest)
 	{
 		Archetype archetype = Archetype::Create<Position, Sprite>();
 

@@ -4,7 +4,9 @@
 
 #include "Zinet/Core/ECS/ZtComponent.hpp"
 
-namespace zt::core::ecs
+#include "Zinet/Core/Tests/ZtTestTypes.hpp"
+
+namespace zt::core::ecs::tests
 {
 	class ECSComponentTests : public ::testing::Test
 	{

@@ -3,10 +3,12 @@
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
 #include <cstdint>
+#include <limits>
 
 namespace zt::core::ecs
 {
-	using ID = int64_t;
+	constexpr inline static size_t InvalidIndex = std::numeric_limits<size_t>::max();
 
-	constexpr inline static ID InvalidID = -1;
+	using ID = size_t;
+	constexpr inline static ID InvalidID = InvalidIndex;
 }

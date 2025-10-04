@@ -2,10 +2,12 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
+#include "Zinet/Core/ECS/ZtEntity.hpp"
 #include "Zinet/Core/ECS/ZtTypes.hpp"
 #include "Zinet/Core/ECS/ZtTypeLessVector.hpp"
 
 #include <algorithm>
+#include <ranges>
 
 namespace zt::core::ecs
 {
@@ -20,11 +22,13 @@ namespace zt::core::ecs
 
 		std::vector<const std::type_info*> types;
 
+		std::vector<Entity> entities;
+
 		template<class Component>
-		void addSingleComponent(const Component& component)
+		size_t addSingleComponent(const Component& component)
 		{
 			auto components = getComponentsOfType<Component>();
-			components->add(component);
+			return components->add(component);
 		}
 
 	public:
@@ -38,7 +42,12 @@ namespace zt::core::ecs
 		static Archetype Create();
 
 		template<class... Components>
-		void add(const Components&... components);
+		size_t add(const Entity& entity, const Components&... components);
+
+		bool hasEntity(const Entity& entity) const;
+
+		template<class Component>
+		Component* getComponentOfType(size_t index) noexcept;
 
 		template<class Component>
 		TypeLessVector* getComponentsOfType() noexcept;
@@ -60,9 +69,36 @@ namespace zt::core::ecs
 	}
 
 	template<class... Components>
-	void Archetype::add([[maybe_unused]] const Components&... components)
+	size_t Archetype::add(const Entity& entity, const Components&... components)
 	{
-		(addSingleComponent(components), ...);
+		if (sizeof...(Components) != componentsPack.size())
+			return InvalidIndex;
+
+		size_t index = InvalidIndex;
+		((index = addSingleComponent(components)), ...);
+
+		if (index != InvalidIndex)
+			entities.emplace_back(entity);
+
+		return index;
+	}
+
+	inline bool Archetype::hasEntity(const Entity& entity) const
+	{
+		return std::ranges::contains(entities, entity);
+	}
+
+	template<class Component>
+	Component* Archetype::getComponentOfType(size_t index) noexcept
+	{
+		auto components = getComponentsOfType<Component>();
+		if (!components)
+			return nullptr;
+
+		if (index >= components->getSize())
+			return nullptr;
+
+		return components->get<Component>(index);
 	}
 
 	template<class Component>

@@ -4,7 +4,9 @@
 
 #include "Zinet/Core/ECS/ZtEntity.hpp"
 
-namespace zt::core::ecs
+#include "Zinet/Core/Tests/ZtTestTypes.hpp"
+
+namespace zt::core::ecs::tests
 {
 	class ECSEntityTests : public ::testing::Test
 	{

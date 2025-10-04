@@ -21,6 +21,10 @@ namespace zt::core::ecs
 
 		ID id() { return idValue; }
 
+		size_t componentsIndex = InvalidIndex;
+
+		bool operator == (const Entity& other) const noexcept { return idValue == other.idValue; }
+
 	private:
 
 		ID idValue = InvalidID;

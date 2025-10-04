@@ -1,16 +1,21 @@
 #pragma once
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
+#include "Zinet/Core/ZtLogger.hpp"
 
 #include "Zinet/Core/ECS/ZtEntity.hpp"
 #include "Zinet/Core/ECS/ZtTypes.hpp"
 #include "Zinet/Core/ECS/ZtArchetype.hpp"
 #include "Zinet/Core/ZtDebug.hpp"
 
+#include <utility>
+
 namespace zt::core::ecs
 {
 	class ZINET_CORE_API World
 	{
+		inline static auto Logger = ConsoleLogger::Create("zt::core::ecs::World");
+
 	public:
 
 		World() noexcept = default;
@@ -21,36 +26,65 @@ namespace zt::core::ecs
 		World& operator = (const World& other) noexcept = default;
 		World& operator = (World&& other) noexcept = default;
 
-		template<class ...Components>
-		Entity spawn(const Components&... components);
+		template<class... Components>
+		Entity spawn(Components&&... components);
 
 		template<class Component>
 		Component* getComponent(const Entity& entity);
 
+		size_t getArchetypesCount() const noexcept { return archetypes.size(); }
+
 	private:
 
-		ID lastID = -1;
+		template<class... Components>
+		size_t addComponents(const Entity& entity, Components&&... components);
+
+		ID lastID = InvalidID;
 
 		std::vector<Archetype> archetypes;
 
 	};
 
 	template<class... Components>
-	Entity World::spawn([[maybe_unused]] const Components&... components)
+	Entity World::spawn(Components&&... components)
 	{
 		++lastID;
 
-		//auto& archetype = archetypes.emplace_back(Archetype::Create<Components...>());
-		//archetype.add(components...);
-
 		Entity entity{ lastID };
+		
+		auto componentsIndex = addComponents(entity, std::forward<Components>(components)...);
+		entity.componentsIndex = componentsIndex;
+
 		return entity;
 	}
 
 	template<class Component>
-	Component* World::getComponent([[maybe_unused]] const Entity& entity)
+	Component* World::getComponent(const Entity& entity)
 	{
+		for (auto& archetype : archetypes)
+		{
+			if (!archetype.hasTypes<Component>())
+				continue;
+
+			if (!archetype.hasEntity(entity))
+				continue;
+
+			return archetype.getComponentOfType<Component>(entity.componentsIndex);
+		}
+
 		return {};
 	}
 
+	template<class... Components>
+	size_t World::addComponents(const Entity& entity, Components&&... components)
+	{
+		for (auto& archetype : archetypes)
+		{
+			if (archetype.hasTypes<Components...>())
+				return archetype.add(entity, components...);
+		}
+
+		auto& archetype = archetypes.emplace_back(Archetype::Create<Components...>());
+		return archetype.add(entity, components...);
+	}
 }
