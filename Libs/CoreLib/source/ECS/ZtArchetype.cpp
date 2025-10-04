@@ -23,4 +23,14 @@ namespace zt::core::ecs
 		return false;
 	}
 
+	bool Archetype::hasEntity(const Entity& entity) const
+	{
+		for (const Entity& ourEntity : entities)
+		{
+			if (ourEntity.getID() == entity.getID())
+				return true;
+		}
+
+		return false;
+	}
 }

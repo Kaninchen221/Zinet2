@@ -29,6 +29,8 @@ namespace zt::core::ecs
 		template<class... Components>
 		Entity spawn(Components&&... components);
 
+		bool remove(const Entity& entity);
+
 		template<class Component>
 		Component* getComponent(const Entity& entity);
 

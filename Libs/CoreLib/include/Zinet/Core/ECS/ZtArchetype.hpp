@@ -86,17 +86,6 @@ namespace zt::core::ecs
 		return index;
 	}
 
-	inline bool Archetype::hasEntity(const Entity& entity) const
-	{
-		for (const Entity& ourEntity : entities)
-		{
-			if (ourEntity.getID() == entity.getID())
-				return true;
-		}
-
-		return false;
-	}
-
 	template<class Component>
 	Component* Archetype::getComponentOfType(size_t index) noexcept
 	{

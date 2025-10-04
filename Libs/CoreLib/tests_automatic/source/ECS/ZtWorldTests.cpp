@@ -93,7 +93,7 @@ namespace zt::core::ecs::tests
 		}
 	}
 
-	TEST_F(ECSWorldTests, MultipleArchetypesTest)
+	TEST_F(ECSWorldTests, SpawnMultipleArchetypesTest)
 	{
 		const auto entityStaticSprite = world.spawn(Position{}, Sprite{});
 		const auto entitySprite = world.spawn(Position{}, Velocity{}, Sprite{});
@@ -105,5 +105,15 @@ namespace zt::core::ecs::tests
 		ASSERT_TRUE(world.getComponent<Position>(entitySprite));
 		ASSERT_TRUE(world.getComponent<Sprite>(entitySprite));
 		ASSERT_TRUE(world.getComponent<Velocity>(entitySprite));
+	}
+
+	TEST_F(ECSWorldTests, RemoveTest)
+	{
+		const auto entity = world.spawn(Position{}, Sprite{});
+		ASSERT_TRUE(world.getComponent<Position>(entity));
+
+		ASSERT_TRUE(world.remove(entity));
+		ASSERT_FALSE(world.remove(entity));
+		ASSERT_FALSE(world.getComponent<Position>(entity));
 	}
 }
