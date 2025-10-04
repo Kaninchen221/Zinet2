@@ -11,7 +11,9 @@ namespace zt::core::ecs
 	public:
 
 		Entity() noexcept = delete;
-		Entity(ID newID) : idValue{ newID } {}
+		Entity(ID newID, size_t newComponentsIndex) 
+			: id{ newID }, componentsIndex{ newComponentsIndex } 
+		{}
 		Entity(const Entity& other) noexcept = default;
 		Entity(Entity&& other) noexcept = default;
 		~Entity() noexcept = default;
@@ -19,16 +21,16 @@ namespace zt::core::ecs
 		Entity& operator = (const Entity& other) noexcept = default;
 		Entity& operator = (Entity&& other) noexcept = default;
 
-		ID id() { return idValue; }
+		ID getID() const noexcept { return id; }
 
-		size_t componentsIndex = InvalidIndex;
+		size_t getComponentsIndex() const noexcept { return componentsIndex; }
 
-		bool operator == (const Entity& other) const noexcept { return idValue == other.idValue; }
+		bool operator == (const Entity& other) const noexcept { return id == other.id && componentsIndex == other.componentsIndex; }
 
 	private:
 
-		ID idValue = InvalidID;
-
+		ID id = InvalidID;
+		size_t componentsIndex = InvalidIndex;
 	};
 
 }

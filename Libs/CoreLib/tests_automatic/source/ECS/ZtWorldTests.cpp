@@ -18,10 +18,10 @@ namespace zt::core::ecs::tests
 	TEST_F(ECSWorldTests, SpawnEntityIDTest)
 	{
 		Entity entity_0 = world.spawn();
-		ASSERT_EQ(entity_0.id(), 0);
+		ASSERT_EQ(entity_0.getID(), 0);
 
 		Entity entity_1 = world.spawn();
-		ASSERT_EQ(entity_1.id(), 1);
+		ASSERT_EQ(entity_1.getID(), 1);
 	}
 
 	TEST_F(ECSWorldTests, SpawnOneEntityWithOneComponentTest)

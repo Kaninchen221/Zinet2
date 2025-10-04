@@ -85,7 +85,13 @@ namespace zt::core::ecs
 
 	inline bool Archetype::hasEntity(const Entity& entity) const
 	{
-		return std::ranges::contains(entities, entity);
+		for (const Entity& ourEntity : entities)
+		{
+			if (ourEntity.getID() == entity.getID())
+				return true;
+		}
+
+		return false;
 	}
 
 	template<class Component>

@@ -50,10 +50,10 @@ namespace zt::core::ecs
 	{
 		++lastID;
 
-		Entity entity{ lastID };
+		Entity entity{ lastID, 0 };
 		
 		auto componentsIndex = addComponents(entity, std::forward<Components>(components)...);
-		entity.componentsIndex = componentsIndex;
+		entity = Entity{ lastID, componentsIndex };
 
 		return entity;
 	}
@@ -69,7 +69,7 @@ namespace zt::core::ecs
 			if (!archetype.hasEntity(entity))
 				continue;
 
-			return archetype.getComponentOfType<Component>(entity.componentsIndex);
+			return archetype.getComponentOfType<Component>(entity.getComponentsIndex());
 		}
 
 		return {};

@@ -23,7 +23,7 @@ namespace zt::core::ecs::tests
 	{
 		Archetype archetype = Archetype::Create<Position, Sprite>();
 
-		const Entity firstEntity{ 0 };
+		const Entity firstEntity{ 0, 0 };
 		const Position expectedPosition{ 1, 2 };
 		const Sprite expectedSprite{ 10 };
 		const auto index = archetype.add(firstEntity, expectedPosition, expectedSprite);
@@ -45,7 +45,7 @@ namespace zt::core::ecs::tests
 		ASSERT_TRUE(actualSprite);
 		ASSERT_EQ(*actualSprite, expectedSprite);
 
-		const Entity secondEntity{ 1 };
+		const Entity secondEntity{ 1, 0 };
 		ASSERT_EQ(archetype.add(secondEntity, Position{}, Sprite{}), 1);
 
 		ASSERT_TRUE(archetype.hasEntity(secondEntity));
@@ -55,7 +55,7 @@ namespace zt::core::ecs::tests
 	{
 		Archetype archetype = Archetype::Create<Position, Sprite>();
 
-		const auto index = archetype.add(Entity{0}, Position{});
+		const auto index = archetype.add(Entity{0, 0}, Position{});
 		ASSERT_EQ(index, InvalidIndex);
 	}
 
@@ -64,8 +64,8 @@ namespace zt::core::ecs::tests
 		Archetype archetype = Archetype::Create<Position, Sprite>();
 		Position expectedPosition{ 34, 2 };
 		Sprite expectedSprite{ 40 };
-		archetype.add(Entity{0}, expectedPosition, expectedSprite);
-		archetype.add(Entity{0}, Position{ 1, 1 }, Sprite{ 10 });
+		archetype.add(Entity{ 0, 0 }, expectedPosition, expectedSprite);
+		archetype.add(Entity{ 0, 0 }, Position{ 1, 1 }, Sprite{ 10 });
 
 		auto actualPosition = archetype.getComponentOfType<Position>(0);
 		ASSERT_TRUE(actualPosition);
