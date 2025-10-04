@@ -13,6 +13,34 @@ namespace zt::core::ecs
 {
 	class ZINET_CORE_API Archetype
 	{
+	public:
+
+		Archetype(Archetype&& other) noexcept = default;
+		Archetype& operator = (Archetype&& other) noexcept = default;
+
+		~Archetype() noexcept = default;
+
+		template<class... Components>
+		static Archetype Create();
+
+		template<class... Components>
+		size_t add(const Entity& entity, const Components&... components);
+
+		bool remove(const Entity& entity);
+
+		bool hasEntity(const Entity& entity) const;
+
+		template<class Component>
+		Component* getComponentOfType(size_t index) noexcept;
+
+		template<class Component>
+		TypeLessVector* getComponentsOfType() noexcept;
+
+		template<class... Components>
+		constexpr bool hasTypes() const noexcept;
+
+	private:
+
 		Archetype() noexcept = default;
 		Archetype(const Archetype& other) noexcept = default;
 
@@ -30,31 +58,6 @@ namespace zt::core::ecs
 			auto components = getComponentsOfType<Component>();
 			return components->add(component);
 		}
-
-	public:
-
-		Archetype(Archetype&& other) noexcept = default;
-		Archetype& operator = (Archetype&& other) noexcept = default;
-
-		~Archetype() noexcept = default;
-
-		template<class... Components>
-		static Archetype Create();
-
-		template<class... Components>
-		size_t add(const Entity& entity, const Components&... components);
-
-		bool hasEntity(const Entity& entity) const;
-
-		template<class Component>
-		Component* getComponentOfType(size_t index) noexcept;
-
-		template<class Component>
-		TypeLessVector* getComponentsOfType() noexcept;
-
-		template<class... Components>
-		constexpr bool hasTypes() const noexcept;
-
 	};
 
 	template<class... Components>

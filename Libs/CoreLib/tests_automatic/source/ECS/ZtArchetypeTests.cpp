@@ -59,6 +59,29 @@ namespace zt::core::ecs::tests
 		ASSERT_EQ(index, InvalidIndex);
 	}
 
+	TEST_F(ECSArchetypeTests, RemoveComponentsTest)
+	{
+		Archetype archetype = Archetype::Create<Position, Sprite>();
+		Entity entity{ 0 /*ID*/, InvalidIndex /*ComponentsIndex*/ };
+		auto componentsIndex = archetype.add(entity, Position{ 1, 2 }, Sprite{ 50 });
+		entity = Entity{ 0 /*ID*/, componentsIndex /*ComponentsIndex*/ };
+
+		ASSERT_TRUE(archetype.hasEntity(entity));
+
+		ASSERT_TRUE(archetype.remove(entity));
+		ASSERT_FALSE(archetype.hasEntity(entity));
+
+		auto positions = archetype.getComponentsOfType<Position>();
+		ASSERT_TRUE(positions);
+		auto componentPosition = positions->get<Position>(entity.getComponentsIndex());
+		ASSERT_FALSE(componentPosition);
+
+		auto sprites = archetype.getComponentsOfType<Sprite>();
+		ASSERT_TRUE(sprites);
+		auto componentSprite = sprites->get<Sprite>(entity.getComponentsIndex());
+		ASSERT_FALSE(componentSprite);
+	}
+
 	TEST_F(ECSArchetypeTests, GetComponentOfTypeTest)
 	{
 		Archetype archetype = Archetype::Create<Position, Sprite>();
