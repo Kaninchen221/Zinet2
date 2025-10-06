@@ -148,7 +148,7 @@ namespace zt::core::ecs::tests
 		}
 	}
 
-	TEST_F(ECSArchetypeTests, typesEqualTest)
+	TEST_F(ECSArchetypeTests, TypesEqualTest)
 	{
 		const Archetype archetype = Archetype::Create<Position, Sprite>();
 
@@ -170,5 +170,31 @@ namespace zt::core::ecs::tests
 			const bool result = archetype.typesEqual<Position, Sprite, Velocity>();
 			ASSERT_FALSE(result);
 		}
+	}
+
+	TEST_F(ECSArchetypeTests, GetEntitiesCountTest)
+	{
+		Archetype archetype = Archetype::Create<Position, Sprite>();
+
+		const Entity entity{ 0, 0 };
+		archetype.add(entity, Position{}, Sprite{});
+		ASSERT_EQ(archetype.getEntitiesCount(), 1);
+
+		const Entity entity2{ 1, 0 };
+		archetype.add(entity2, Position{}, Sprite{});
+		ASSERT_EQ(archetype.getEntitiesCount(), 2);
+	}
+
+	TEST_F(ECSArchetypeTests, GetComponentsCountTest)
+	{
+		Archetype archetype = Archetype::Create<Position, Sprite>();
+
+		const Entity entity{ 0, 0 };
+		archetype.add(entity, Position{}, Sprite{});
+		ASSERT_EQ(archetype.getComponentsCount(), 2);
+
+		archetype.add(entity, Position{}, Sprite{});
+		archetype.add(entity, Position{}, Sprite{});
+		ASSERT_EQ(archetype.getComponentsCount(), 6);
 	}
 }

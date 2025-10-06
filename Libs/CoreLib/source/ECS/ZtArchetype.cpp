@@ -33,4 +33,13 @@ namespace zt::core::ecs
 
 		return false;
 	}
+
+	size_t Archetype::getComponentsCount() const noexcept
+	{
+		if (componentsPack.empty())
+			return 0;
+
+		return componentsPack.size() * componentsPack.front().getSize();
+	}
+
 }

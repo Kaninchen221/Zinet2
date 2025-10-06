@@ -42,6 +42,10 @@ namespace zt::core::ecs
 		template<class... Components>
 		constexpr bool typesEqual() const noexcept;
 
+		size_t getEntitiesCount() const noexcept { return entities.size(); }
+
+		size_t getComponentsCount() const noexcept;
+
 	private:
 
 		Archetype() noexcept = default;
