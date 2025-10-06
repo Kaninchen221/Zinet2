@@ -147,4 +147,28 @@ namespace zt::core::ecs::tests
 			ASSERT_FALSE(result);
 		}
 	}
+
+	TEST_F(ECSArchetypeTests, typesEqualTest)
+	{
+		const Archetype archetype = Archetype::Create<Position, Sprite>();
+
+		{ // Types order like in the Create function
+			const bool result = archetype.typesEqual<Position, Sprite>();
+			ASSERT_TRUE(result);
+		}
+
+		{ // Types in reverse order
+			const bool result = archetype.typesEqual<Sprite, Position>();
+			ASSERT_TRUE(result);
+		}
+
+		// Invalid because types count is different
+		ASSERT_FALSE(archetype.typesEqual<Position>());
+
+		// Invalid because archetype doesn't have the Velocity type
+		{
+			const bool result = archetype.typesEqual<Position, Sprite, Velocity>();
+			ASSERT_FALSE(result);
+		}
+	}
 }

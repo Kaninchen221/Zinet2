@@ -98,6 +98,8 @@ namespace zt::core::ecs::tests
 		const auto entityStaticSprite = world.spawn(Position{}, Sprite{});
 		const auto entitySprite = world.spawn(Position{}, Velocity{}, Sprite{});
 
+		ASSERT_EQ(world.getArchetypesCount(), 2);
+
 		ASSERT_TRUE(world.getComponent<Position>(entityStaticSprite));
 		ASSERT_TRUE(world.getComponent<Sprite>(entityStaticSprite));
 		ASSERT_FALSE(world.getComponent<Velocity>(entityStaticSprite));

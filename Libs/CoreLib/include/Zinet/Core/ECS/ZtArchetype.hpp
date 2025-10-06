@@ -39,6 +39,9 @@ namespace zt::core::ecs
 		template<class... Components>
 		constexpr bool hasTypes() const noexcept;
 
+		template<class... Components>
+		constexpr bool typesEqual() const noexcept;
+
 	private:
 
 		Archetype() noexcept = default;
@@ -127,5 +130,26 @@ namespace zt::core::ecs
 		}
 
 		return true;
+	}
+
+	template<class... Components>
+	constexpr bool Archetype::typesEqual() const noexcept
+	{
+		//constexpr size_t ComponentsCount = sizeof...(Components);
+		std::vector<const std::type_info*> wantedTypes
+		{
+			&typeid(Components)...
+		};
+
+		for (const auto& type : types)
+		{
+			auto it = std::ranges::find(wantedTypes, type);
+			if (it == wantedTypes.end())
+				return false;
+
+			wantedTypes.erase(it);
+		}
+
+		return wantedTypes.empty();
 	}
 }

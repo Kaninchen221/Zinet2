@@ -82,7 +82,7 @@ namespace zt::core::ecs
 	{
 		for (auto& archetype : archetypes)
 		{
-			if (archetype.hasTypes<Components...>())
+			if (archetype.typesEqual<Components...>())
 				return archetype.add(entity, components...);
 		}
 
