@@ -10,24 +10,6 @@ namespace zt::core::ecs
 {
 	class TypeLessVector
 	{
-		using Components = std::vector<std::byte>;
-
-		TypeLessVector(const std::type_info& typeInfo)
-			: typeInfo(typeInfo)
-		{}
-
-		TypeLessVector() noexcept = default;
-		TypeLessVector(const TypeLessVector& other) noexcept = default;
-
-		TypeLessVector& operator = (const TypeLessVector& other) noexcept = default;
-
-		const std::type_info& typeInfo;
-		Components components; // Of the same type
-
-		std::vector<bool> markers; // Mark if the component under index N is valid
-
-		size_t size = 0;
-
 	public:
 
 		TypeLessVector(TypeLessVector&& other) noexcept = default;
@@ -52,6 +34,27 @@ namespace zt::core::ecs
 		size_t getSize() const noexcept { return size; }
 
 		auto& getTypeInfo() const noexcept { return typeInfo; }
+
+	private:
+
+		using Components = std::vector<std::byte>;
+
+		TypeLessVector(const std::type_info& typeInfo)
+			: typeInfo(typeInfo)
+		{
+		}
+
+		TypeLessVector() noexcept = default;
+		TypeLessVector(const TypeLessVector& other) noexcept = default;
+
+		TypeLessVector& operator = (const TypeLessVector& other) noexcept = default;
+
+		const std::type_info& typeInfo;
+		Components components; // Of the same type
+
+		std::vector<bool> markers; // Mark if the component under index N is valid
+
+		size_t size = 0;
 	};
 
 	template<class Component>
