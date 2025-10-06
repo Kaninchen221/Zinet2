@@ -36,6 +36,10 @@ namespace zt::core::ecs
 
 		size_t getArchetypesCount() const noexcept { return archetypes.size(); }
 
+		size_t getEntitiesCount() const noexcept;
+
+		size_t getComponentsCount() const noexcept;
+
 	private:
 
 		template<class... Components>
@@ -47,9 +51,13 @@ namespace zt::core::ecs
 
 	};
 
+#pragma warning(push)
+#pragma warning(disable: 4702) // unreachable code when we try to spawn an entity without components
 	template<class... Components>
 	Entity World::spawn(Components&&... components)
 	{
+		if constexpr (sizeof...(Components) == 0)
+			return Entity{ InvalidID, InvalidIndex };
 		++lastID;
 
 		Entity entity{ lastID, 0 };
@@ -59,6 +67,7 @@ namespace zt::core::ecs
 
 		return entity;
 	}
+#pragma warning(pop)
 
 	template<class Component>
 	Component* World::getComponent(const Entity& entity)

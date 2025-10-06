@@ -17,10 +17,11 @@ namespace zt::core::ecs::tests
 
 	TEST_F(ECSWorldTests, SpawnEntityIDTest)
 	{
-		Entity entity_0 = world.spawn();
+		// Entity must have at least one component
+		Entity entity_0 = world.spawn(Sprite{});
 		ASSERT_EQ(entity_0.getID(), 0);
 
-		Entity entity_1 = world.spawn();
+		Entity entity_1 = world.spawn(Sprite{});
 		ASSERT_EQ(entity_1.getID(), 1);
 	}
 
@@ -115,7 +116,51 @@ namespace zt::core::ecs::tests
 		ASSERT_TRUE(world.getComponent<Position>(entity));
 
 		ASSERT_TRUE(world.remove(entity));
-		ASSERT_FALSE(world.remove(entity));
 		ASSERT_FALSE(world.getComponent<Position>(entity));
+
+		ASSERT_FALSE(world.remove(entity));
+	}
+
+	TEST_F(ECSWorldTests, TrySpawnEntityWithoutComponentsTest)
+	{
+		const auto entity = world.spawn();
+
+		ASSERT_EQ(world.getEntitiesCount(), 0);
+		ASSERT_EQ(entity.getID(), InvalidID);
+		ASSERT_EQ(entity.getComponentsIndex(), InvalidIndex);
+		ASSERT_EQ(world.getArchetypesCount(), 0);
+	}
+
+	TEST_F(ECSWorldTests, GetEntitiesCountTest)
+	{
+		world.spawn(Sprite{});
+		ASSERT_EQ(world.getEntitiesCount(), 1);
+
+		world.spawn(Sprite{});
+		world.spawn(Sprite{});
+		ASSERT_EQ(world.getEntitiesCount(), 3);
+	}
+
+	TEST_F(ECSWorldTests, GetComponentsCountTest)
+	{
+		world.spawn(Sprite{});
+		world.spawn(Sprite{});
+		ASSERT_EQ(world.getComponentsCount(), 2);
+
+		world.spawn(Sprite{}, Position{});
+		ASSERT_EQ(world.getComponentsCount(), 4);
+	}
+
+	TEST_F(ECSWorldTests, ComplexTest)
+	{
+		const size_t count = 100;
+		for (size_t i = 0; i < count; i++)
+		{
+			world.spawn(Position{}, Velocity{}, Sprite{});
+			world.spawn(Position{}, Sprite{}, Velocity{});
+			world.spawn(Position{});
+		}
+
+		ASSERT_EQ(world.getArchetypesCount(), 2);
 	}
 }
