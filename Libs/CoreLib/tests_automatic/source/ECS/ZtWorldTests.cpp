@@ -131,6 +131,23 @@ namespace zt::core::ecs::tests
 		ASSERT_EQ(world.getArchetypesCount(), 0);
 	}
 
+	TEST_F(ECSWorldTests, GetComponentsTest)
+	{
+		world.spawn(Sprite{0});
+		world.spawn(Sprite{1}, Position{});
+		world.spawn(Sprite{2}, Position{}, Velocity{});
+
+		Query<Sprite> query = world.getComponentsOfType<Sprite>();
+		ASSERT_EQ(query.getComponentsCount(), 3);
+
+		size_t count = 0;
+		for (const auto& component : query)
+		{
+			EXPECT_EQ(component.id, count);
+			++count;
+		}
+	}
+
 	TEST_F(ECSWorldTests, GetEntitiesCountTest)
 	{
 		world.spawn(Sprite{});
