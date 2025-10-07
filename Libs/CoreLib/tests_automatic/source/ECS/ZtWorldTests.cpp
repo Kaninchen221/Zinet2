@@ -137,6 +137,7 @@ namespace zt::core::ecs::tests
 		world.spawn(Sprite{1}, Position{});
 		world.spawn(Sprite{2}, Position{}, Velocity{});
 
+		// TODO Query for more than one type or allow to zip to queries
 		Query<Sprite> query = world.getComponentsOfType<Sprite>();
 		ASSERT_EQ(query.getComponentsCount(), 3);
 
