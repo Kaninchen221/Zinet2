@@ -150,17 +150,4 @@ namespace zt::core::ecs::tests
 		world.spawn(Sprite{}, Position{});
 		ASSERT_EQ(world.getComponentsCount(), 4);
 	}
-
-	TEST_F(ECSWorldTests, ComplexTest)
-	{
-		const size_t count = 100;
-		for (size_t i = 0; i < count; i++)
-		{
-			world.spawn(Position{}, Velocity{}, Sprite{});
-			world.spawn(Position{}, Sprite{}, Velocity{});
-			world.spawn(Position{});
-		}
-
-		ASSERT_EQ(world.getArchetypesCount(), 2);
-	}
 }

@@ -6,6 +6,8 @@
 #include "Zinet/Core/ECS/ZtTypes.hpp"
 #include "Zinet/Core/ZtDebug.hpp"
 
+#include <algorithm>
+
 namespace zt::core::ecs
 {
 	class TypeLessVector
@@ -52,7 +54,7 @@ namespace zt::core::ecs
 		const std::type_info& typeInfo;
 		Components components; // Of the same type
 
-		std::vector<bool> markers; // Mark if the component under index N is valid
+		std::vector<size_t> removedComponents;
 
 		size_t size = 0;
 	};
@@ -78,33 +80,25 @@ namespace zt::core::ecs
 #	endif
 
 		// Try to place a new component at a released index
-		for (size_t markerIndex = 0; markerIndex < markers.size(); ++markerIndex)
+		if (!removedComponents.empty())
 		{
-			auto marker = markers[markerIndex];
-			if (!marker)
-			{
-				size_t index = markerIndex * sizeof(Component);
-				std::memcpy(&components[index], &component, sizeof(Component));
-				++size;
-				markers[markerIndex] = true;
-				return markerIndex;
-			}
-
-			++markerIndex;
+			const size_t lastRemovedComponentIndex = removedComponents.back();
+			removedComponents.pop_back();
+			const size_t index = lastRemovedComponentIndex * sizeof(Component);
+			std::memcpy(&components[index], &component, sizeof(Component));
+			++size;
+			return lastRemovedComponentIndex;
 		}
 
-		// Place a new component at the end of the storage
-		markers.push_back(true);
-
-		size_t newSize = components.size() + sizeof(Component);
+		const size_t newSize = components.size() + sizeof(Component);
 		components.resize(newSize);
 
-		size_t index = components.size() - sizeof(Component);
+		const size_t index = components.size() - sizeof(Component);
 		std::memcpy(&components[index], &component, sizeof(Component));
 
 		++size;
 
-		return markers.size() - 1;
+		return index / sizeof(Component);
 	}
 
 	inline void TypeLessVector::remove(size_t index)
@@ -112,10 +106,10 @@ namespace zt::core::ecs
 		if (index >= size)
 			return;
 
-		if (!markers[index])
+		if (std::ranges::contains(removedComponents, index))
 			return;
 
-		markers[index] = false;
+		removedComponents.push_back(index);
 
 		--size;
 	}
@@ -129,7 +123,7 @@ namespace zt::core::ecs
 		if (typeid(Component) != typeInfo)
 			return {};
 
-		if (!markers[index])
+		if (std::ranges::contains(removedComponents, index))
 			return {};
 
 		const size_t classSize = sizeof(Component);
