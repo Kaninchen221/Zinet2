@@ -5,6 +5,7 @@
 #include "Zinet/Core/ECS/ZtWorld.hpp"
 
 #include "Zinet/Core/Tests/ZtTestTypes.hpp"
+#include "Zinet/Core/ZtClock.hpp"
 
 namespace zt::core::ecs::tests
 {
@@ -137,15 +138,19 @@ namespace zt::core::ecs::tests
 		world.spawn(Sprite{1}, Position{});
 		world.spawn(Sprite{2}, Position{}, Velocity{});
 
-		// TODO Query for more than one type or allow to zip to queries
-		Query<Sprite> query = world.getComponentsOfType<Sprite>();
-		ASSERT_EQ(query.getComponentsCount(), 3);
+		std::vector<TypeLessVector*> componentsPack = world.getComponentsOfType<Sprite>();
+		ASSERT_EQ(componentsPack.size(), 3);
 
 		size_t count = 0;
-		for (const auto& component : query)
+		for (const auto& segment : componentsPack)
 		{
-			EXPECT_EQ(component.id, count);
-			++count;
+			for (size_t componentIndex = 0; componentIndex < segment->getSize(); ++componentIndex)
+			{
+				const auto component = segment->get<Sprite>(componentIndex);
+				ASSERT_TRUE(component);
+				EXPECT_EQ(component->id, count);
+				++count;
+			}
 		}
 	}
 

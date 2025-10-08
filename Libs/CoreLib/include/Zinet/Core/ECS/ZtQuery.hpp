@@ -4,19 +4,12 @@
 #include "Zinet/Core/ZtLogger.hpp"
 
 #include "Zinet/Core/ECS/ZtTypes.hpp"
+#include "Zinet/Core/ECS/ZtWorld.hpp"
 
 #include <vector>
 
 namespace zt::core::ecs
 {
-	class TypeLessVector;
-
-	namespace QueryTypes
-	{
-		using Segment = TypeLessVector;
-		using ComponentsPack = std::vector<Segment*>;
-	}
-
 	template<class Component>
 	class QueryIterator
 	{
@@ -74,22 +67,24 @@ namespace zt::core::ecs
 		return *this;
 	}
 
+	// TODO Query for more than one type or allow to zip to queries
+	// TODO Handle situation when we spawn/remove entities during iteration 
+	// - handle situation when we spawn new archetypes
 	template<class Component>
 	class Query
 	{
 	public:
 
-		Query(const QueryTypes::ComponentsPack& newComponentsPack)
-			: componentsPack(newComponentsPack)
-		{
-		}
+		Query(World& world)
+			: componentsPack(world.getComponentsOfType<Component>())
+		{}
 
 		Query() noexcept = default;
-		Query(const Query & other) noexcept = delete;
+		Query(const Query & other) noexcept = default;
 		Query(Query && other) noexcept = default;
 		~Query() noexcept = default;
 
-		Query& operator = (const Query & other) noexcept = delete;
+		Query& operator = (const Query & other) noexcept = default;
 		Query& operator = (Query && other) noexcept = default;
 
 		size_t getComponentsCount() const noexcept;

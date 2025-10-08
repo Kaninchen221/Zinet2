@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <limits>
+#include <vector>
 
 namespace zt::core::ecs
 {
@@ -11,4 +12,12 @@ namespace zt::core::ecs
 
 	using ID = size_t;
 	constexpr inline static ID InvalidID = InvalidIndex;
+
+	class TypeLessVector;
+
+	namespace QueryTypes
+	{
+		using Segment = TypeLessVector;
+		using ComponentsPack = std::vector<Segment*>;
+	}
 }

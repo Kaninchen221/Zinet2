@@ -13,24 +13,23 @@ namespace zt::core::ecs::tests
 	{
 	protected:
 
-		std::vector<QueryTypes::Segment> segments;
-		QueryTypes::ComponentsPack componentsPack;
-		Query<Sprite> query{ {} };
+		World world;
 
 		void SetUp() override;
 	};
 
 	TEST_F(ECSQueryTests, Test)
 	{
+		const Query<Sprite> query{ world };
 		ASSERT_EQ(query.getComponentsCount(), 6);
 	}
 
 	TEST_F(ECSQueryTests, ForRangeBasedLoopTest)
 	{
 		size_t count = 0;
-		for (const auto& component : query)
+		for (const auto& component : Query<Sprite>{ world })
 		{
-			ASSERT_EQ(component.id, count);
+			EXPECT_EQ(component.id, count);
 			++count;
 		}
 
@@ -39,25 +38,11 @@ namespace zt::core::ecs::tests
 
 	void ECSQueryTests::SetUp()
 	{
-		segments.reserve(3);
-		componentsPack.reserve(3);
-
-		TypeLessVector& vector1 = segments.emplace_back(TypeLessVector::Create<Sprite>());
-		vector1.add(Sprite{ 0 });
-		vector1.add(Sprite{ 1 });
-		vector1.add(Sprite{ 2 });
-
-		TypeLessVector& vector2 = segments.emplace_back(TypeLessVector::Create<Sprite>());
-		vector2.add(Sprite{ 3 });
-		vector2.add(Sprite{ 4 });
-
-		TypeLessVector& vector3 = segments.emplace_back(TypeLessVector::Create<Sprite>());
-		vector3.add(Sprite{ 5 });
-
-		componentsPack.push_back(&vector1);
-		componentsPack.push_back(&vector2);
-		componentsPack.push_back(&vector3);
-
-		query = Query<Sprite>(componentsPack);
+		world.spawn(Sprite{ 0 });
+		world.spawn(Sprite{ 1 });
+		world.spawn(Sprite{ 2 });
+		world.spawn(Sprite{ 3 });
+		world.spawn(Sprite{ 4 }, Velocity{});
+		world.spawn(Sprite{ 5 }, Position{});
 	}
 }

@@ -6,7 +6,6 @@
 #include "Zinet/Core/ECS/ZtEntity.hpp"
 #include "Zinet/Core/ECS/ZtTypes.hpp"
 #include "Zinet/Core/ECS/ZtArchetype.hpp"
-#include "Zinet/Core/ECS/ZtQuery.hpp"
 #include "Zinet/Core/ZtDebug.hpp"
 
 #include <utility>
@@ -36,7 +35,7 @@ namespace zt::core::ecs
 		Component* getComponent(const Entity& entity);
 
 		template<class Component>
-		Query<Component> getComponentsOfType() noexcept;
+		QueryTypes::ComponentsPack getComponentsOfType() noexcept;
 
 		size_t getArchetypesCount() const noexcept { return archetypes.size(); }
 
@@ -91,7 +90,7 @@ namespace zt::core::ecs
 	}
 
 	template<class Component>
-	Query<Component> World::getComponentsOfType() noexcept
+	QueryTypes::ComponentsPack World::getComponentsOfType() noexcept
 	{
 		typename QueryTypes::ComponentsPack componentsPack;
 
@@ -102,7 +101,7 @@ namespace zt::core::ecs
 				componentsPack.emplace_back(components);
 		}
 
-		return Query<Component>{ std::move(componentsPack) };
+		return componentsPack;
 	}
 
 	template<class... Components>
