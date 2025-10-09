@@ -16,6 +16,7 @@ namespace zt::core
 		using InternalFunctionT = ReturnType(*)(Args...);
 
 		Function() noexcept = default;
+		Function(auto callable) : internalFunction{ +callable } {}
 		Function(InternalFunctionT newInternalFunction) : internalFunction{ newInternalFunction } {}
 		Function(const Function& other) noexcept = default;
 		Function(Function&& other) noexcept = default;
@@ -23,8 +24,6 @@ namespace zt::core
 
 		Function& operator = (const Function& other) noexcept = default;
 		Function& operator = (Function&& other) noexcept = default;
-
-		ThisType& operator = (InternalFunctionT newInternalFunction) { internalFunction = newInternalFunction; return *this; }
 
 		auto getInternalFunction() const noexcept { return internalFunction; }
 
