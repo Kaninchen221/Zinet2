@@ -19,11 +19,10 @@ namespace zt::core::ecs
 					}
 
 					if (self.requestedStopValue)
-					{
-						self.running = false;
 						break;
-					}
 				}
+
+				self.running = false;
 			}
 		};
 	}
@@ -55,6 +54,7 @@ namespace zt::core::ecs
 		{
 			while (thread.isRunning())
 			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			}
 		}
 	}

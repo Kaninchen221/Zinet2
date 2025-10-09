@@ -46,6 +46,7 @@ namespace zt::core::ecs
 		ThreadID id;
 		std::vector<SystemPack> systems;
 		std::jthread thread;
+		// TODO: Make this two bools atomic (multithreads safe)
 		bool running = false;
 		bool requestedStopValue = false;
 	};
