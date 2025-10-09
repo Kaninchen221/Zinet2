@@ -2,7 +2,6 @@
 
 namespace zt::core::ecs::tests
 {
-
 	struct Sprite
 	{
 		int id;
@@ -29,6 +28,11 @@ namespace zt::core::ecs::tests
 		{
 			return x == other.x && y == other.y;
 		}
+	};
+
+	struct Counter
+	{
+		size_t value = 0;
 	};
 
 }

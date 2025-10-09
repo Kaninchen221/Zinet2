@@ -31,6 +31,7 @@ namespace zt::core::ecs
 		QueryIterator& operator++ () noexcept;
 
 		const Component& operator* () const noexcept { return *(*currentSegmentIterator)->get<Component>(currentComponentIndex); }
+		Component& operator* () noexcept { return *(*currentSegmentIterator)->get<Component>(currentComponentIndex); }
 
 	private:
 
@@ -73,13 +74,14 @@ namespace zt::core::ecs
 	template<class Component>
 	class Query
 	{
+		Query() noexcept = default;
+
 	public:
 
 		Query(World& world)
 			: componentsPack(world.getComponentsOfType<Component>())
 		{}
 
-		Query() noexcept = default;
 		Query(const Query & other) noexcept = default;
 		Query(Query && other) noexcept = default;
 		~Query() noexcept = default;

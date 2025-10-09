@@ -6,7 +6,7 @@
 
 namespace zt::core
 {
-	template<class ReturnType, class ...Args>
+	template<class ReturnType, class... Args>
 	class Function
 	{
 	public:
@@ -16,7 +16,7 @@ namespace zt::core
 		using InternalFunctionT = ReturnType(*)(Args...);
 
 		Function() noexcept = default;
-		Function(auto callable) : internalFunction{ +callable } {}
+		Function(auto callable) : internalFunction{ callable } {}
 		Function(InternalFunctionT newInternalFunction) : internalFunction{ newInternalFunction } {}
 		Function(const Function& other) noexcept = default;
 		Function(Function&& other) noexcept = default;

@@ -41,6 +41,7 @@ namespace zt::core::ecs
 
 		using Components = std::vector<std::byte>;
 
+		// TODO: Use some more safe way to compare types
 		TypeLessVector(const std::type_info& typeInfo)
 			: typeInfo(typeInfo)
 		{
@@ -51,6 +52,7 @@ namespace zt::core::ecs
 
 		TypeLessVector& operator = (const TypeLessVector& other) noexcept = default;
 
+		// TODO: Use some more safe way to compare types
 		const std::type_info& typeInfo;
 		Components components; // Of the same type
 

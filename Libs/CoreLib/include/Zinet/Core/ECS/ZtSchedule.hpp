@@ -5,16 +5,21 @@
 #include "Zinet/Core/ZtLogger.hpp"
 
 #include "Zinet/Core/ECS/ZtTypes.hpp"
+#include "Zinet/Core/ECS/ZtWorld.hpp"
 
 #include <vector>
 #include <typeinfo>
+#include <thread>
 
 namespace zt::core::ecs
 {
+	class Schedule;
+
 	struct ZINET_CORE_API SystemPack
 	{
+		// TODO: Use some more safe way to compare types
 		const std::type_info* labelTypeInfo;
-		Function<void> system;
+		System system;
 
 		template<typename T>
 		bool isEqual([[maybe_unused]] T&& t) const noexcept { return labelTypeInfo == &typeid(T); }
@@ -22,10 +27,27 @@ namespace zt::core::ecs
 
 	struct ZINET_CORE_API Thread
 	{
+		friend Schedule;
+
 		Thread(ThreadID threadID) noexcept : id{ threadID } {}
+
+		void run(World& world) noexcept;
+
+		void requestStop() noexcept;
+
+		bool isRunning() const noexcept { return running; }
+
+		ThreadID getID() const noexcept { return id; }
+
+		auto& getSystems() const noexcept { return systems; }
+
+	private:
 
 		ThreadID id;
 		std::vector<SystemPack> systems;
+		std::jthread thread;
+		bool running = false;
+		bool requestedStopValue = false;
 	};
 
 	class ZINET_CORE_API Schedule
@@ -36,10 +58,10 @@ namespace zt::core::ecs
 
 	public:
 
-		using System = Function<void>;
+		using Threads = std::vector<Thread>;
 
-		template<class... Threads>
-		static Schedule Create(Threads... threadsIDs) noexcept;
+		template<class... ThreadsIDs>
+		static Schedule Create(ThreadsIDs... threadsIDs) noexcept;
 
 		Schedule(const Schedule& other) noexcept = default;
 		Schedule(Schedule&& other) noexcept = default;
@@ -53,9 +75,15 @@ namespace zt::core::ecs
 
 		const auto& getThreads() const noexcept { return threads; }
 
+		void run(World& world);
+
+		void requestStop();
+
+		void waitForStop() noexcept;
+
 	private:
 
-		std::vector<Thread> threads;
+		Threads threads;
 
 	};
 
@@ -63,12 +91,12 @@ namespace zt::core::ecs
 
 namespace zt::core::ecs
 {
-	template<class... Threads>
-	Schedule Schedule::Create(Threads... threadsIDs) noexcept
+	template<class... ThreadsIDs>
+	Schedule Schedule::Create(ThreadsIDs... threadsIDs) noexcept
 	{
 		Schedule schedule;
 
-		schedule.threads = { Thread{ threadsIDs }... };
+		(schedule.threads.push_back(Thread{ threadsIDs }), ...);
 
 		return schedule;
 	}

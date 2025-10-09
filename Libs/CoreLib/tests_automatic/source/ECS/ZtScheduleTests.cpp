@@ -4,8 +4,11 @@
 
 #include "Zinet/Core/ECS/ZtSchedule.hpp"
 #include "Zinet/Core/ECS/ZtTypes.hpp"
+#include "Zinet/Core/ECS/ZtQuery.hpp"
 
-namespace zt::core::ecs
+#include "Zinet/Core/Tests/ZtTestTypes.hpp"
+
+namespace zt::core::ecs::tests
 {
 	// System must be a simple function
 	// System can't contain any state, data and etc.
@@ -16,7 +19,20 @@ namespace zt::core::ecs
 
 		inline void doSomething() {}
 
-		inline void entryPoint() { doSomething(); }
+		inline void entryPoint([[maybe_unused]] World& world) { doSomething(); }
+	}
+
+	namespace TestSystemIncrementar
+	{
+		struct Label {};
+
+		inline void entryPoint(World& world)
+		{
+			for (Counter& counter : Query<Counter>(world))
+			{
+				counter.value++;
+			}
+		}
 	}
 
 	class ECSScheduleTests : public ::testing::Test
@@ -37,8 +53,8 @@ namespace zt::core::ecs
 		const auto& threads = schedule.getThreads();
 		ASSERT_EQ(threads.size(), 2);
 
-		ASSERT_EQ(threads[0].id, Threads::MainThread);
-		ASSERT_EQ(threads[1].id, Threads::RenderThread);
+		ASSERT_EQ(threads[0].getID(), Threads::MainThread);
+		ASSERT_EQ(threads[1].getID(), Threads::RenderThread);
 	}
 
 	TEST_F(ECSScheduleTests, AddSystemTest)
@@ -48,13 +64,38 @@ namespace zt::core::ecs
 		schedule.addSystem(TestSystem::Label{}, TestSystem::entryPoint, Threads::MainThread);
 
 		struct LambdaLabel {};
-		auto lambda = []() { TestSystem::doSomething(); };
+		auto lambda = []([[maybe_unused]] World& world) { TestSystem::doSomething(); };
 
-		schedule.addSystem(LambdaLabel{}, lambda, Threads::RenderThread);
+		schedule.addSystem(LambdaLabel{}, +lambda, Threads::RenderThread);
 
 		const auto& threads = schedule.getThreads();
 
-		ASSERT_TRUE(threads[Threads::MainThread].systems[0].isEqual(TestSystem::Label{}));
-		ASSERT_TRUE(threads[Threads::RenderThread].systems[0].isEqual(LambdaLabel{}));
+		ASSERT_TRUE(threads[Threads::MainThread].getSystems()[0].isEqual(TestSystem::Label{}));
+		ASSERT_TRUE(threads[Threads::RenderThread].getSystems()[0].isEqual(LambdaLabel{}));
+	}
+
+	TEST_F(ECSScheduleTests, RunTest)
+	{
+		Schedule schedule = Schedule::Create(Threads::MainThread, Threads::RenderThread);
+
+		schedule.addSystem(TestSystemIncrementar::Label{}, TestSystemIncrementar::entryPoint, Threads::MainThread);
+
+		World world;
+		for (size_t i = 0; i < 100; i++)
+		{
+			world.spawn(Sprite{}, Position{}, Velocity{}, Counter{});
+			world.spawn(Sprite{}, Position{}, Counter{});
+			world.spawn(Counter{});
+		}
+
+		schedule.run(world);
+		schedule.requestStop();
+
+		schedule.waitForStop();
+
+		for (const auto& counter : Query<Counter>(world))
+		{
+			ASSERT_NE(counter.value, 0);
+		}
 	}
 }

@@ -55,6 +55,7 @@ namespace zt::core::ecs
 
 		std::vector<TypeLessVector> componentsPack;
 
+		// TODO: Use some more safe way to compare types
 		std::vector<const std::type_info*> types;
 
 		std::vector<Entity> entities;
@@ -121,6 +122,7 @@ namespace zt::core::ecs
 	template<class... Components>
 	constexpr bool Archetype::hasTypes() const noexcept
 	{
+		// TODO: Use some more safe way to compare types
 		constexpr size_t ComponentsCount = sizeof...(Components);
 		std::array<const std::type_info*, ComponentsCount> wantedTypes
 		{
@@ -139,7 +141,7 @@ namespace zt::core::ecs
 	template<class... Components>
 	constexpr bool Archetype::typesEqual() const noexcept
 	{
-		//constexpr size_t ComponentsCount = sizeof...(Components);
+		// TODO: Use some more safe way to compare types
 		std::vector<const std::type_info*> wantedTypes
 		{
 			&typeid(Components)...

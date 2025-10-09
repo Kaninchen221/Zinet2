@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
+#include "Zinet/Core/ZtFunction.hpp"
 
 #include <cstdint>
 #include <limits>
@@ -22,4 +23,7 @@ namespace zt::core::ecs
 	}
 
 	using ThreadID = uint8_t;
+
+	class World;
+	using System = Function<void, World&>;
 }
