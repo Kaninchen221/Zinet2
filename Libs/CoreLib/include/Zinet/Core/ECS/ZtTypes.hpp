@@ -20,4 +20,6 @@ namespace zt::core::ecs
 		using Segment = TypeLessVector;
 		using ComponentsPack = std::vector<Segment*>;
 	}
+
+	using ThreadID = uint8_t;
 }

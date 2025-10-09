@@ -18,7 +18,7 @@ namespace zt::core::ecs::tests
 		void SetUp() override;
 	};
 
-	TEST_F(ECSQueryTests, Test)
+	TEST_F(ECSQueryTests, GetComponentsCountTest)
 	{
 		const Query<Sprite> query{ world };
 		ASSERT_EQ(query.getComponentsCount(), 6);
