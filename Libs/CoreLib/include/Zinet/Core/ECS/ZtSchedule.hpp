@@ -29,12 +29,13 @@ namespace zt::core::ecs
 		friend Schedule;
 
 		Thread(ThreadID threadID) noexcept : id{ threadID } {}
+		Thread(const Thread& other) noexcept { id = other.getID(); }
 
 		void run(World& world) noexcept;
 
 		void requestStop() noexcept;
 
-		bool isRunning() const noexcept { return running; }
+		bool isRunning() const noexcept { return running.load(); }
 
 		ThreadID getID() const noexcept { return id; }
 
@@ -45,9 +46,8 @@ namespace zt::core::ecs
 		ThreadID id;
 		std::vector<SystemPack> systems;
 		std::jthread thread;
-		// TODO: Make this two bools atomic (multithreads safe)
-		bool running = false;
-		bool requestedStopValue = false;
+		std::atomic_bool running = false;
+		std::atomic_bool requestedStop = false;
 	};
 
 	class ZINET_CORE_API Schedule
@@ -96,7 +96,7 @@ namespace zt::core::ecs
 	{
 		Schedule schedule;
 
-		(schedule.threads.push_back(Thread{ threadsIDs }), ...);
+		(schedule.threads.emplace_back(Thread{ threadsIDs }), ...);
 
 		return schedule;
 	}

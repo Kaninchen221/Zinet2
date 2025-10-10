@@ -4,8 +4,8 @@ namespace zt::core::ecs
 {
 	void Thread::run(World& world) noexcept
 	{
-		requestedStopValue = false;
-		running = true;
+		requestedStop.store(false);
+		running.store(true);
 
 		thread = std::jthread
 		{
@@ -18,18 +18,18 @@ namespace zt::core::ecs
 						systemPack.system.invoke(world);
 					}
 
-					if (self.requestedStopValue)
+					if (self.requestedStop.load())
 						break;
 				}
 
-				self.running = false;
+				self.running.store(false);
 			}
 		};
 	}
 
 	void Thread::requestStop() noexcept
 	{
-		requestedStopValue = true;
+		requestedStop.store(true);
 	}
 
 	void Schedule::run(World& world)
