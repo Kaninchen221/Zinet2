@@ -19,7 +19,7 @@ namespace zt::core::ecs
 		const Position expectedPosition{ 1.0f, 2.0f };
 		TypeLessVector components = TypeLessVector::Create<Position>();
 		
-		ASSERT_EQ(components.getTypeInfo(), typeid(Position));
+		ASSERT_EQ(components.getTypeID(), GetTypeID<Position>());
 		ASSERT_EQ(components.getSize(), 0);
 	}
 

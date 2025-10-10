@@ -55,8 +55,7 @@ namespace zt::core::ecs
 
 		std::vector<TypeLessVector> componentsPack;
 
-		// TODO: Use some more safe way to compare types
-		std::vector<const std::type_info*> types;
+		std::vector<ID> types;
 
 		std::vector<Entity> entities;
 
@@ -74,7 +73,7 @@ namespace zt::core::ecs
 		Archetype archetype;
 		(archetype.componentsPack.push_back(TypeLessVector::Create<Components>()), ...);
 
-		(archetype.types.push_back(&typeid(Components)), ...);
+		(archetype.types.push_back(GetTypeID<Components>()), ...);
 
 		return archetype;
 	}
@@ -122,11 +121,9 @@ namespace zt::core::ecs
 	template<class... Components>
 	constexpr bool Archetype::hasTypes() const noexcept
 	{
-		// TODO: Use some more safe way to compare types
-		constexpr size_t ComponentsCount = sizeof...(Components);
-		std::array<const std::type_info*, ComponentsCount> wantedTypes
+		const std::vector<ID> wantedTypes
 		{
-			&typeid(Components)...
+			GetTypeID<Components>()...
 		};
 
 		for (auto wantedType : wantedTypes)
@@ -141,10 +138,9 @@ namespace zt::core::ecs
 	template<class... Components>
 	constexpr bool Archetype::typesEqual() const noexcept
 	{
-		// TODO: Use some more safe way to compare types
-		std::vector<const std::type_info*> wantedTypes
+		std::vector<ID> wantedTypes
 		{
-			&typeid(Components)...
+			GetTypeID<Components>()...
 		};
 
 		for (const auto& type : types)

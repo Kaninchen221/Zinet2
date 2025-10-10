@@ -31,19 +31,18 @@ namespace zt::core::ecs
 		Component* get(size_t index);
 
 		template<class Component>
-		bool hasType() const noexcept { return typeid(Component) == typeInfo; }
+		bool hasType() const noexcept { return GetTypeID<Component>() == typeID; }
 
 		size_t getSize() const noexcept { return size; }
 
-		auto& getTypeInfo() const noexcept { return typeInfo; }
+		auto getTypeID() const noexcept { return typeID; }
 
 	private:
 
 		using Components = std::vector<std::byte>;
 
-		// TODO: Use some more safe way to compare types
-		TypeLessVector(const std::type_info& typeInfo)
-			: typeInfo(typeInfo)
+		TypeLessVector(const ID& newTypeID)
+			: typeID(newTypeID)
 		{
 		}
 
@@ -52,8 +51,7 @@ namespace zt::core::ecs
 
 		TypeLessVector& operator = (const TypeLessVector& other) noexcept = default;
 
-		// TODO: Use some more safe way to compare types
-		const std::type_info& typeInfo;
+		const ID typeID;
 		Components components; // Of the same type
 
 		std::vector<size_t> removedComponents;
@@ -66,7 +64,7 @@ namespace zt::core::ecs
 	{
 		return TypeLessVector
 		(
-			typeid(Component)
+			GetTypeID<Component>()
 		);
 	}
 
@@ -74,7 +72,7 @@ namespace zt::core::ecs
 	size_t TypeLessVector::add(const Component& component)
 	{
 #	if ZINET_SANITY_CHECK
-		if (typeInfo != typeid(Component))
+		if (typeID != GetTypeID<Component>())
 		{
 			Ensure(false); // Tried to add component of different type
 			return std::numeric_limits<size_t>::max();
@@ -122,7 +120,7 @@ namespace zt::core::ecs
 		if (index >= size)
 			return {};
 
-		if (typeid(Component) != typeInfo)
+		if (GetTypeID<Component>() != typeID)
 			return {};
 
 		if (std::ranges::contains(removedComponents, index))

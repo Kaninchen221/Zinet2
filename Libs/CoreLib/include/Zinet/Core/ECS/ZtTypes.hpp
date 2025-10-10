@@ -2,6 +2,7 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtFunction.hpp"
+#include "Zinet/Core/ZtUtils.hpp"
 
 #include <cstdint>
 #include <limits>

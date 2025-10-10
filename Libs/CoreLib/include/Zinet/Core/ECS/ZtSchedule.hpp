@@ -17,12 +17,11 @@ namespace zt::core::ecs
 
 	struct ZINET_CORE_API SystemPack
 	{
-		// TODO: Use some more safe way to compare types
-		const std::type_info* labelTypeInfo;
+		ID systemTypeID;
 		System system;
 
 		template<typename T>
-		bool isEqual([[maybe_unused]] T&& t) const noexcept { return labelTypeInfo == &typeid(T); }
+		bool isEqual([[maybe_unused]] T&& t) const noexcept { return systemTypeID == GetTypeID<T>(); }
 	};
 
 	struct ZINET_CORE_API Thread
@@ -115,6 +114,6 @@ namespace zt::core::ecs
 
 		auto& thread = threads[threadID];
 
-		thread.systems.push_back(SystemPack{ &typeid(Label), system });
+		thread.systems.push_back(SystemPack{ GetTypeID<Label>(), system});
 	}
 }

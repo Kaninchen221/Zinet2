@@ -36,4 +36,14 @@ namespace zt::core
 
 		return true;
 	}
+
+	// Shouldn't be used outside the program like for saving
+	template<class T>
+	inline size_t GetTypeID() noexcept
+	{
+		// As for now typeid is good enough
+		// For MSVC the hashes will be different because we are using namespaces
+		auto& type = typeid(T);
+		return type.hash_code();
+	}
 }
