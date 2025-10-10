@@ -10,31 +10,6 @@
 
 namespace zt::core::ecs::tests
 {
-	// System must be a simple function
-	// System can't contain any state, data and etc.
-	// System can invoke other functions
-	namespace TestSystem
-	{
-		struct Label {}; // Empty struct works as an unique ID for the system
-
-		inline void doSomething() {}
-
-		inline void entryPoint([[maybe_unused]] World& world) { doSomething(); }
-	}
-
-	namespace TestSystemIncrementar
-	{
-		struct Label {};
-
-		inline void entryPoint(World& world)
-		{
-			for (Counter& counter : Query<Counter>(world))
-			{
-				counter.value++;
-			}
-		}
-	}
-
 	class ECSScheduleTests : public ::testing::Test
 	{
 	protected:

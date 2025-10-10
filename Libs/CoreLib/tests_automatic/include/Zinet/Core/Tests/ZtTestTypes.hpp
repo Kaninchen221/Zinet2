@@ -1,5 +1,10 @@
 #pragma once
 
+namespace zt::core::ecs
+{
+	class World;
+}
+
 namespace zt::core::ecs::tests
 {
 	struct Sprite
@@ -35,4 +40,22 @@ namespace zt::core::ecs::tests
 		size_t value = 0;
 	};
 
+	// System must be a simple function
+	// System can't contain any state, data and etc.
+	// System can invoke other functions
+	namespace TestSystem
+	{
+		struct Label {}; // Empty struct works as an unique ID for the system
+
+		inline void doSomething() {}
+
+		inline void entryPoint([[maybe_unused]] World& world) { doSomething(); }
+	}
+
+	namespace TestSystemIncrementar
+	{
+		struct Label {};
+
+		void entryPoint(World& world);
+	}
 }
