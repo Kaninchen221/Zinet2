@@ -173,4 +173,11 @@ namespace zt::core::ecs::tests
 		world.spawn(Sprite{}, Position{});
 		ASSERT_EQ(world.getComponentsCount(), 4);
 	}
+
+	TEST_F(ECSWorldTests, AddResourceTest)
+	{
+		// TODO: Now this
+		bool added = world.addResource(ResourceTime{});
+		ASSERT_TRUE(added);
+	}
 }

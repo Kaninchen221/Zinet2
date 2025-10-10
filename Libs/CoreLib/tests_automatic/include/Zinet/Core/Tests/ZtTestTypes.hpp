@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/Core/ZtTime.hpp"
+
 namespace zt::core::ecs
 {
 	class World;
@@ -58,4 +60,10 @@ namespace zt::core::ecs::tests
 
 		void entryPoint(World& world);
 	}
+
+	// Example of a resource class
+	struct ResourceTime
+	{
+		Time time;
+	};
 }

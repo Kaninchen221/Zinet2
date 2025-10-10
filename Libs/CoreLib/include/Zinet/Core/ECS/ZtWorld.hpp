@@ -26,6 +26,7 @@ namespace zt::core::ecs
 		World& operator = (const World& other) noexcept = default;
 		World& operator = (World&& other) noexcept = default;
 
+		/// Entities & Components
 		template<class... Components>
 		Entity spawn(Components&&... components);
 
@@ -37,11 +38,16 @@ namespace zt::core::ecs
 		template<class Component>
 		QueryTypes::ComponentsPack getComponentsOfType() noexcept;
 
+		size_t getComponentsCount() const noexcept;
+
 		size_t getArchetypesCount() const noexcept { return archetypes.size(); }
 
 		size_t getEntitiesCount() const noexcept;
 
-		size_t getComponentsCount() const noexcept;
+		/// Resources
+
+		template<class Resource>
+		bool addResource(Resource&& resource);
 
 	private:
 
@@ -115,5 +121,11 @@ namespace zt::core::ecs
 
 		auto& archetype = archetypes.emplace_back(Archetype::Create<Components...>());
 		return archetype.add(entity, components...);
+	}
+
+	template<class Resource>
+	bool World::addResource([[maybe_unused]] Resource&& resource)
+	{
+		return true;
 	}
 }
