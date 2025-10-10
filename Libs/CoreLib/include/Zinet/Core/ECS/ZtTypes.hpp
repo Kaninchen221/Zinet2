@@ -26,5 +26,7 @@ namespace zt::core::ecs
 	using ThreadID = uint8_t;
 
 	class World;
+	// System can't access other systems because it will broke decoupling
+	// But can access components and resources from the world
 	using System = Function<void, World&>;
 }
