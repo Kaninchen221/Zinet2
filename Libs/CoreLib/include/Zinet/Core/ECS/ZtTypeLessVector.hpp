@@ -23,7 +23,7 @@ namespace zt::core::ecs
 		static TypeLessVector Create();
 
 		template<class Component>
-		size_t add(const Component& component);
+		size_t add(Component&& component);
 
 		void remove(size_t index);
 
@@ -69,7 +69,7 @@ namespace zt::core::ecs
 	}
 
 	template<class Component>
-	size_t TypeLessVector::add(const Component& component)
+	size_t TypeLessVector::add(Component&& component)
 	{
 #	if ZINET_SANITY_CHECK
 		if (typeID != GetTypeID<Component>())

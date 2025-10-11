@@ -18,6 +18,7 @@ namespace zt::core::ecs::tests
 
 	TEST_F(ECSWorldTests, SpawnEntityIDTest)
 	{
+		// TODO: Handle situation when component has complex data
 		// Entity must have at least one component
 		Entity entity_0 = world.spawn(Sprite{});
 		ASSERT_EQ(entity_0.getID(), 0);
@@ -176,8 +177,41 @@ namespace zt::core::ecs::tests
 
 	TEST_F(ECSWorldTests, AddResourceTest)
 	{
-		// TODO: Now this
 		bool added = world.addResource(ResourceTime{});
 		ASSERT_TRUE(added);
+
+		added = world.addResource(ResourceTime{});
+		ASSERT_FALSE(added);
+	}
+
+	TEST_F(ECSWorldTests, GetResourceTest)
+	{
+		auto resource = world.getResource<ResourceTime>();
+		ASSERT_FALSE(resource);
+
+		const float expectedTime = 42.f;
+		ResourceTime resourceSource = { expectedTime };
+		bool added = world.addResource(resourceSource);
+		ASSERT_TRUE(added);
+
+		resource = world.getResource<ResourceTime>();
+		ASSERT_TRUE(resource);
+
+		ASSERT_EQ(*resource, ResourceTime{ expectedTime });
+	}
+
+	TEST_F(ECSWorldTests, AddResourceComplexTest)
+	{
+		{ // TODO: Handle situation when resource has complex data
+			ResourceComplex complex;
+			complex.name = "TestName";
+			complex.data = { { 0 }, { 1 }, { 2 }, { 3 } };
+
+			bool added = world.addResource(complex);
+			ASSERT_TRUE(added);
+		}
+
+		auto resource = world.getResource<ResourceComplex>();
+		ASSERT_TRUE(resource);
 	}
 }

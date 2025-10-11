@@ -2,6 +2,9 @@
 
 #include "Zinet/Core/ZtTime.hpp"
 
+#include <string>
+#include <vector>
+
 namespace zt::core::ecs
 {
 	class World;
@@ -65,5 +68,16 @@ namespace zt::core::ecs::tests
 	struct ResourceTime
 	{
 		Time time;
+
+		bool operator == (const ResourceTime& other) const noexcept
+		{
+			return time == other.time;
+		}
+	};
+
+	struct ResourceComplex
+	{
+		std::string name;
+		std::vector<int32_t> data;
 	};
 }

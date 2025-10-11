@@ -31,6 +31,9 @@ namespace zt::core::ecs
 		ASSERT_FALSE(sprite);
 	}
 
+	// TODO: The component that we pass to the type less vector must be moved to the internal storage so it will loose "ownership to the data"
+	// We must manualy invoke destructor for the components in the internal storage when we remove a component and when we destroy the entire vector
+	// Reason: Components and resources could have a vector or other storage that can point to some space in the memory
 	TEST_F(ECSTypeLessVectorTests, AddTest)
 	{
 		TypeLessVector components = TypeLessVector::Create<Sprite>();

@@ -45,18 +45,24 @@ namespace zt::core::ecs
 		size_t getEntitiesCount() const noexcept;
 
 		/// Resources
+		template<class Resource>
+		bool addResource(Resource&& newResource);
 
 		template<class Resource>
-		bool addResource(Resource&& resource);
+		Resource* getResource();
 
 	private:
 
+		/// Entities & Components
 		template<class... Components>
 		size_t addComponents(const Entity& entity, Components&&... components);
 
 		ID lastID = InvalidID;
 
 		std::vector<Archetype> archetypes;
+
+		// Resources
+		std::vector<TypeLessVector> resources;
 
 	};
 
@@ -124,8 +130,29 @@ namespace zt::core::ecs
 	}
 
 	template<class Resource>
-	bool World::addResource([[maybe_unused]] Resource&& resource)
+	bool World::addResource(Resource&& newResource)
 	{
+		for (auto& resource : resources)
+		{
+			if (resource.hasType<Resource>())
+				return false;
+		}
+
+		auto& typeLessVector = resources.emplace_back(TypeLessVector::Create<Resource>());
+		typeLessVector.add(newResource);
+
 		return true;
+	}
+
+	template<class Resource>
+	Resource* World::getResource()
+	{
+		for (auto& resource : resources)
+		{
+			if (resource.hasType<Resource>())
+				return resource.get<Resource>(0);
+		}
+
+		return {};
 	}
 }
