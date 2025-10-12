@@ -17,6 +17,8 @@ namespace zt::core::ecs
 		TypeLessVector(TypeLessVector&& other) noexcept = default;
 		TypeLessVector& operator = (TypeLessVector&& other) noexcept = default;
 
+		// TODO: Invoke destructor of the removed components 
+		// Reason: To handle situations when they have complex types like vector
 		~TypeLessVector() noexcept = default;
 
 		template<class Component>
@@ -62,6 +64,13 @@ namespace zt::core::ecs
 	template<class Component>
 	TypeLessVector TypeLessVector::Create()
 	{
+		// There is a prototype of lambda that will invoke destructor of our type less types
+		[[maybe_unused]] auto destructor = [](void* component) 
+		{
+			typedef std::decay_t<Component> T;
+			((Component&)component).~T(); 
+		};
+
 		return TypeLessVector
 		(
 			GetTypeID<Component>()
@@ -69,13 +78,13 @@ namespace zt::core::ecs
 	}
 
 	template<class Component>
-	size_t TypeLessVector::add(Component&& component)
+	size_t TypeLessVector::add([[maybe_unused]] Component&& component)
 	{
 #	if ZINET_SANITY_CHECK
 		if (typeID != GetTypeID<Component>())
 		{
 			Ensure(false); // Tried to add component of different type
-			return std::numeric_limits<size_t>::max();
+			return InvalidID;
 		}
 #	endif
 
@@ -85,7 +94,10 @@ namespace zt::core::ecs
 			const size_t lastRemovedComponentIndex = removedComponents.back();
 			removedComponents.pop_back();
 			const size_t index = lastRemovedComponentIndex * sizeof(Component);
-			std::memcpy(&components[index], &component, sizeof(Component));
+
+			Component& storedComponent = reinterpret_cast<Component&>(components[index]);
+			storedComponent = std::move(component);
+
 			++size;
 			return lastRemovedComponentIndex;
 		}
@@ -94,7 +106,8 @@ namespace zt::core::ecs
 		components.resize(newSize);
 
 		const size_t index = components.size() - sizeof(Component);
-		std::memcpy(&components[index], &component, sizeof(Component));
+		Component& storedComponent = reinterpret_cast<Component&>(components[index]);
+		storedComponent = std::move(component);
 
 		++size;
 
@@ -110,6 +123,8 @@ namespace zt::core::ecs
 			return;
 
 		removedComponents.push_back(index);
+
+		// TODO: Invoke destructor of the removed component
 
 		--size;
 	}

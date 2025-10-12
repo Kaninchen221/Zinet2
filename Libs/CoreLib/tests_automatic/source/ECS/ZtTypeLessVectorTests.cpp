@@ -1,17 +1,33 @@
 #pragma once
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include "Zinet/Core/ECS/ZtTypeLessVector.hpp"
+#include "Zinet/Core/ECS/ZtTypes.hpp"
 
-namespace zt::core::ecs
+#include "Zinet/Core/Tests/ZtTestTypes.hpp"
+
+#include <ranges>
+
+namespace zt::core::ecs::tests
 {
 	class ECSTypeLessVectorTests : public ::testing::Test
 	{
 	protected:
 
-		struct Position { float x; float y; };
-		struct Sprite { int textureID; };
+		struct MockResourceComplex : public ResourceComplex
+		{
+			//MOCK_METHOD(void, onCreated, (), (override));
+			MOCK_METHOD(void, onDestroyed, (), (override));
+
+			MockResourceComplex& operator = (const MockResourceComplex& other)
+			{
+				name = other.name;
+				data = other.data;
+				return *this;
+			}
+		};
 	};
 
 	TEST_F(ECSTypeLessVectorTests, CreateTest)
@@ -39,18 +55,18 @@ namespace zt::core::ecs
 		TypeLessVector components = TypeLessVector::Create<Sprite>();
 
 		const Sprite expectedFirstSprite{ 2 };
-		ASSERT_EQ(0, components.add(expectedFirstSprite));
+		ASSERT_EQ(0, components.add(Sprite(expectedFirstSprite)));
 
 		const Sprite expectedSecondSprite{ 1 };
-		ASSERT_EQ(1, components.add(expectedSecondSprite));
+		ASSERT_EQ(1, components.add(Sprite(expectedSecondSprite)));
 
 		auto actualFirstSprite = components.get<Sprite>(0);
 		ASSERT_TRUE(actualFirstSprite);
-		ASSERT_EQ(actualFirstSprite->textureID, expectedFirstSprite.textureID);
+		ASSERT_EQ(actualFirstSprite->id, expectedFirstSprite.id);
 
 		auto actualSecondSprite = components.get<Sprite>(1);
 		ASSERT_TRUE(actualSecondSprite);
-		ASSERT_EQ(actualSecondSprite->textureID, expectedSecondSprite.textureID);
+		ASSERT_EQ(actualSecondSprite->id, expectedSecondSprite.id);
 	}
 
 	TEST_F(ECSTypeLessVectorTests, SizeTest)
@@ -94,5 +110,36 @@ namespace zt::core::ecs
 		ASSERT_TRUE(components.hasType<Sprite>());
 		ASSERT_FALSE(components.hasType<Position>());
 
+	}
+
+	TEST_F(ECSTypeLessVectorTests, AddResourceComplexTest)
+	{
+		using Type = ResourceComplex;
+		TypeLessVector components = TypeLessVector::Create<Type>();
+
+		std::string expectedName = "TestName";
+		std::initializer_list<int32_t> expectedData =
+		{ { 0 }, { 1 }, { 2 }, { 3 } };
+
+		size_t componentIndex = InvalidIndex;
+		{ // TODO: Handle situation when resource has complex data
+			Type complex;
+			complex.name = expectedName;
+			complex.data = expectedData;
+
+			componentIndex = components.add(complex);
+			ASSERT_NE(componentIndex, InvalidIndex);
+		}
+
+		auto resource = components.get<Type>(componentIndex);
+		ASSERT_TRUE(resource);
+
+		EXPECT_EQ(expectedName, resource->name);
+
+		ASSERT_EQ(expectedData.size(), resource->data.size());
+		for (const auto& [expected, actual] : std::views::zip(expectedData, resource->data))
+		{
+			EXPECT_EQ(expected, actual);
+		}
 	}
 }

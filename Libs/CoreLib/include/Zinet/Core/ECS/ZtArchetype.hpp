@@ -24,7 +24,7 @@ namespace zt::core::ecs
 		static Archetype Create();
 
 		template<class... Components>
-		size_t add(const Entity& entity, const Components&... components);
+		size_t add(const Entity& entity, Components&&... components);
 
 		bool remove(const Entity& entity);
 
@@ -60,7 +60,7 @@ namespace zt::core::ecs
 		std::vector<Entity> entities;
 
 		template<class Component>
-		size_t addSingleComponent(const Component& component)
+		size_t addSingleComponent(Component&& component)
 		{
 			auto components = getComponentsOfType<Component>();
 			return components->add(component);
@@ -79,7 +79,7 @@ namespace zt::core::ecs
 	}
 
 	template<class... Components>
-	size_t Archetype::add(const Entity& entity, const Components&... components)
+	size_t Archetype::add(const Entity& entity, Components&&... components)
 	{
 		if (sizeof...(Components) != componentsPack.size())
 			return InvalidIndex;

@@ -26,7 +26,7 @@ namespace zt::core::ecs::tests
 		const Entity firstEntity{ 0, 0 };
 		const Position expectedPosition{ 1, 2 };
 		const Sprite expectedSprite{ 10 };
-		const auto index = archetype.add(firstEntity, expectedPosition, expectedSprite);
+		const auto index = archetype.add(firstEntity, Position(expectedPosition), Sprite(expectedSprite));
 		ASSERT_EQ(index, 0);
 
 		ASSERT_TRUE(archetype.hasEntity(firstEntity));
@@ -85,9 +85,9 @@ namespace zt::core::ecs::tests
 	TEST_F(ECSArchetypeTests, GetComponentOfTypeTest)
 	{
 		Archetype archetype = Archetype::Create<Position, Sprite>();
-		Position expectedPosition{ 34, 2 };
-		Sprite expectedSprite{ 40 };
-		archetype.add(Entity{ 0, 0 }, expectedPosition, expectedSprite);
+		const Position expectedPosition{ 34, 2 };
+		const Sprite expectedSprite{ 40 };
+		archetype.add(Entity{ 0, 0 }, Position(expectedPosition), Sprite(expectedSprite));
 		archetype.add(Entity{ 0, 0 }, Position{ 1, 1 }, Sprite{ 10 });
 
 		auto actualPosition = archetype.getComponentOfType<Position>(0);

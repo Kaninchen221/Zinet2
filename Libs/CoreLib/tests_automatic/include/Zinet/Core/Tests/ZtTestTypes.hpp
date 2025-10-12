@@ -77,6 +77,12 @@ namespace zt::core::ecs::tests
 
 	struct ResourceComplex
 	{
+		//ResourceComplex() noexcept { onCreated(); }
+		virtual ~ResourceComplex() noexcept { onDestroyed(); }
+
+		//virtual void onCreated() {}
+		virtual void onDestroyed() {}
+
 		std::string name;
 		std::vector<int32_t> data;
 	};

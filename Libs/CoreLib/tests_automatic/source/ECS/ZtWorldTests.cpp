@@ -30,7 +30,7 @@ namespace zt::core::ecs::tests
 	TEST_F(ECSWorldTests, SpawnOneEntityWithOneComponentTest)
 	{
 		const Sprite expected{ 56 };
-		Entity entity = world.spawn(expected);
+		Entity entity = world.spawn(Sprite(expected));
 
 		ASSERT_EQ(world.getArchetypesCount(), 1);
 
@@ -44,7 +44,7 @@ namespace zt::core::ecs::tests
 		const Sprite expectedSprite{ 56 };
 		const Position expectedPosition{ 2, 4 };
 		const Velocity expectedVelocity{ 10, 20 };
-		Entity entity = world.spawn(expectedSprite, expectedPosition, expectedVelocity);
+		Entity entity = world.spawn(Sprite(expectedSprite), Position(expectedPosition), Velocity(expectedVelocity));
 
 		ASSERT_EQ(world.getArchetypesCount(), 1);
 
@@ -198,20 +198,5 @@ namespace zt::core::ecs::tests
 		ASSERT_TRUE(resource);
 
 		ASSERT_EQ(*resource, ResourceTime{ expectedTime });
-	}
-
-	TEST_F(ECSWorldTests, AddResourceComplexTest)
-	{
-		{ // TODO: Handle situation when resource has complex data
-			ResourceComplex complex;
-			complex.name = "TestName";
-			complex.data = { { 0 }, { 1 }, { 2 }, { 3 } };
-
-			bool added = world.addResource(complex);
-			ASSERT_TRUE(added);
-		}
-
-		auto resource = world.getResource<ResourceComplex>();
-		ASSERT_TRUE(resource);
 	}
 }
