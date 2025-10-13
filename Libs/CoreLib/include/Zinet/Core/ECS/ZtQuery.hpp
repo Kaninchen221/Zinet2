@@ -10,7 +10,6 @@
 
 namespace zt::core::ecs
 {
-	// TODO: Handle situations when we remove component from the middle of the segment
 	template<class Component>
 	class QueryIterator
 	{
@@ -53,19 +52,32 @@ namespace zt::core::ecs
 	template<class Component>
 	QueryIterator<Component>& QueryIterator<Component>::operator++() noexcept
 	{
-		currentComponentIndex++;
-		if (currentComponentIndex >= (*currentSegmentIterator)->getComponentsCount())
-		{
-			currentSegmentIterator++;
-			if (currentSegmentIterator == componentsPack->end())
-			{
-				currentComponentIndex = InvalidIndex;
-				return *this;
-			}
+		//static auto Logger = ConsoleLogger::Create("zt::core::ecs::QueryIterator<Component>::operator++()", spdlog::level::debug);
 
-			currentComponentIndex = 0;
+		currentComponentIndex++;
+
+		while (!(*currentSegmentIterator)->isValidIndex(currentComponentIndex))
+		{
+			if (currentComponentIndex >= (*currentSegmentIterator)->getComponentsCapacity())
+			{
+				//Logger->debug("component index out of segment capacity component index {}", currentComponentIndex);
+				currentSegmentIterator++;
+				currentComponentIndex = 0;
+
+				if (currentSegmentIterator == componentsPack->end())
+				{
+					currentComponentIndex = InvalidIndex;
+					//Logger->debug("end of components pack component index {}", currentComponentIndex);
+					return *this;
+				}
+			}
+			else
+			{
+				currentComponentIndex++;
+			}
 		}
 
+		//Logger->debug("component index {}", currentComponentIndex);
 		return *this;
 	}
 
@@ -105,7 +117,19 @@ namespace zt::core::ecs
 	template<class Component>
 	QueryIterator<Component> Query<Component>::begin() noexcept
 	{
-		return QueryIterator<Component>{ &componentsPack, componentsPack.begin(), 0 };
+		for (auto segmentIt = componentsPack.begin(); segmentIt != componentsPack.end(); ++segmentIt)
+		{
+			auto firstValidIndex = (*segmentIt)->getFirstValidIndex();
+			if (firstValidIndex != InvalidIndex)
+			{
+				//static auto Logger = ConsoleLogger::Create("zt::core::ecs::Query<Component>::begin", spdlog::level::debug);
+				//Logger->debug("first valid index {}", firstValidIndex);
+
+				return QueryIterator<Component>{ &componentsPack, segmentIt, firstValidIndex };
+			}
+		}
+
+		return end();
 	}
 
 	template<class Component>

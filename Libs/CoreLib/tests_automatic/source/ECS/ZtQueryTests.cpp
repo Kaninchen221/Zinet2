@@ -14,6 +14,7 @@ namespace zt::core::ecs::tests
 	protected:
 
 		World world;
+		std::vector<Entity> entities;
 
 		void SetUp() override;
 	};
@@ -36,13 +37,31 @@ namespace zt::core::ecs::tests
 		ASSERT_EQ(count, 6);
 	}
 
+	TEST_F(ECSQueryTests, ForRangeBasedLoopWithRemovedEntitiesTest)
+	{
+		world.remove(entities[0]); // First component
+		world.remove(entities[3]); // Last component of the first segment
+		world.remove(entities[5]); // Last component of the last segment
+
+		const std::vector<size_t> expectedIndices = { 1, 2, 4 };
+
+		size_t count = 0;
+		for (const auto& component : Query<Sprite>{ world })
+		{
+			EXPECT_EQ(component.id, expectedIndices.at(count));
+			++count;
+		}
+
+		ASSERT_EQ(count, 3);
+	}
+
 	void ECSQueryTests::SetUp()
 	{
-		world.spawn(Sprite{ 0 });
-		world.spawn(Sprite{ 1 });
-		world.spawn(Sprite{ 2 });
-		world.spawn(Sprite{ 3 });
-		world.spawn(Sprite{ 4 }, Velocity{});
-		world.spawn(Sprite{ 5 }, Position{});
+		entities.push_back(world.spawn(Sprite{ 0 }));
+		entities.push_back(world.spawn(Sprite{ 1 }));
+		entities.push_back(world.spawn(Sprite{ 2 }));
+		entities.push_back(world.spawn(Sprite{ 3 }));
+		entities.push_back(world.spawn(Sprite{ 4 }, Velocity{}));
+		entities.push_back(world.spawn(Sprite{ 5 }, Position{}));
 	}
 }

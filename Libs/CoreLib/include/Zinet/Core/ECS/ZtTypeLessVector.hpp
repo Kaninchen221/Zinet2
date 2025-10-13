@@ -10,6 +10,7 @@
 
 namespace zt::core::ecs
 {
+	// TODO: Separate part of it to cpp file
 	class TypeLessVector
 	{
 	public:
@@ -31,10 +32,16 @@ namespace zt::core::ecs
 		template<class Component>
 		Component* get(size_t index);
 
+		bool isValidIndex(size_t index) const noexcept;
+
+		size_t getFirstValidIndex() const noexcept;
+
 		template<class Component>
 		bool hasType() const noexcept { return GetTypeID<Component>() == typeID; }
 
-		size_t getComponentsCount() const noexcept { return componentsCount - removedComponents.size(); }
+		size_t getComponentsCount() const noexcept { return componentsCapacity - removedComponents.size(); }
+
+		size_t getComponentsCapacity() const noexcept { return componentsCapacity; }
 
 		auto getTypeID() const noexcept { return typeID; }
 
@@ -57,7 +64,7 @@ namespace zt::core::ecs
 
 		std::vector<size_t> removedComponents;
 
-		size_t componentsCount = 0;
+		size_t componentsCapacity = 0;
 
 		size_t componentTypeSize = 0;
 		Function<void, void*> destructor;
@@ -65,7 +72,7 @@ namespace zt::core::ecs
 
 	inline TypeLessVector::~TypeLessVector() noexcept
 	{
-		for (size_t i = 0; i < componentsCount; ++i)
+		for (size_t i = 0; i < componentsCapacity; ++i)
 		{
 			if (std::ranges::contains(removedComponents, i))
 				continue;
@@ -104,7 +111,9 @@ namespace zt::core::ecs
 		}
 #	endif
 
-		components.reserve(1'000'000); // TODO: Remove that and fix the problem while zi_view
+		// TODO: Remove that and fix the problem while using the zip_view
+		// Something bad happens when std::vector do reallocation
+		components.reserve(1'000'000);
 
 		constexpr size_t typeSize = sizeof(Component);
 
@@ -126,7 +135,7 @@ namespace zt::core::ecs
 			byteIndex = components.size() - typeSize;
 			componentIndex = byteIndex / typeSize;
 
-			++componentsCount;
+			++componentsCapacity;
 		}
 
 		Component& storedComponent = reinterpret_cast<Component&>(components[byteIndex]);
@@ -137,7 +146,7 @@ namespace zt::core::ecs
 
 	inline bool TypeLessVector::remove(size_t index)
 	{
-		if (index >= componentsCount)
+		if (index >= componentsCapacity)
 			return false;
 
 		if (std::ranges::contains(removedComponents, index))
@@ -158,7 +167,7 @@ namespace zt::core::ecs
 	template<class Component>
 	Component* TypeLessVector::get(size_t index)
 	{
-		if (index >= componentsCount)
+		if (index >= componentsCapacity)
 			return {};
 
 		if (GetTypeID<Component>() != typeID)
@@ -174,5 +183,30 @@ namespace zt::core::ecs
 			return {};
 
 		return reinterpret_cast<Component*>(components.data() + offset);
+	}
+
+	inline bool TypeLessVector::isValidIndex(size_t index) const noexcept
+	{
+		if (index >= componentsCapacity)
+			return false;
+
+		if (std::ranges::contains(removedComponents, index))
+			return false;
+
+		return true;
+	}
+
+	inline size_t TypeLessVector::getFirstValidIndex() const noexcept
+	{
+		if (componentsCapacity == 0 || componentsCapacity == removedComponents.size())
+			return InvalidIndex;
+
+		for (size_t i = 0; i < componentsCapacity; ++i)
+		{
+			if (!std::ranges::contains(removedComponents, i))
+				return i;
+		}
+
+		return InvalidIndex;
 	}
 }

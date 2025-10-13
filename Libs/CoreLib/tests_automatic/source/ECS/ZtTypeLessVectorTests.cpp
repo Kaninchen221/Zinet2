@@ -36,6 +36,45 @@ namespace zt::core::ecs::tests
 		ASSERT_FALSE(sprite);
 	}
 
+	TEST_F(ECSTypeLessVectorTests, IsValidIndexTest)
+	{
+		TypeLessVector components = TypeLessVector::Create<Position>();
+		components.add(Position{});
+		components.add(Position{});
+		components.add(Position{});
+
+		const size_t removedComponentIndex = 1;
+		ASSERT_TRUE(components.remove(removedComponentIndex));
+
+		ASSERT_TRUE(components.isValidIndex(0));
+		ASSERT_TRUE(components.isValidIndex(2));
+		ASSERT_FALSE(components.isValidIndex(removedComponentIndex));
+		ASSERT_FALSE(components.isValidIndex(3)); // Out of bounds index
+	}
+
+	TEST_F(ECSTypeLessVectorTests, GetFirstValidIndexTest)
+	{
+		TypeLessVector components = TypeLessVector::Create<Position>();
+
+		ASSERT_EQ(components.getFirstValidIndex(), InvalidIndex);
+
+		components.add(Position{}); // 0
+		components.add(Position{});	// 1
+		components.add(Position{});	// 2
+		components.add(Position{});	// 3
+
+		components.remove(0);
+		components.remove(1);
+
+		const size_t expectedFirstValidIndex = 2;
+		const size_t actualFirstValidIndex = components.getFirstValidIndex();
+		ASSERT_EQ(actualFirstValidIndex, expectedFirstValidIndex);
+
+		components.remove(2);
+		components.remove(3);
+		ASSERT_EQ(components.getFirstValidIndex(), InvalidIndex);
+	}
+
 	TEST_F(ECSTypeLessVectorTests, AddTest)
 	{
 		TypeLessVector components = TypeLessVector::Create<Sprite>();
@@ -55,14 +94,28 @@ namespace zt::core::ecs::tests
 		ASSERT_EQ(actualSecondSprite->id, expectedSecondSprite.id);
 	}
 
-	TEST_F(ECSTypeLessVectorTests, SizeTest)
+	TEST_F(ECSTypeLessVectorTests, GetComponentsCountTest)
 	{
 		TypeLessVector components = TypeLessVector::Create<Position>();
 		components.add(Position{});
 		components.add(Position{});
 		components.add(Position{});
 
-		ASSERT_EQ(components.getComponentsCount(), 3);
+		EXPECT_TRUE(components.remove(1));
+
+		ASSERT_EQ(components.getComponentsCount(), 2);
+	}
+
+	TEST_F(ECSTypeLessVectorTests, GetComponentsCapacityTest)
+	{
+		TypeLessVector components = TypeLessVector::Create<Position>();
+		components.add(Position{});
+		components.add(Position{});
+		components.add(Position{});
+
+		EXPECT_TRUE(components.remove(1));
+
+		ASSERT_EQ(components.getComponentsCapacity(), 3);
 	}
 
 	TEST_F(ECSTypeLessVectorTests, RemoveTest)
