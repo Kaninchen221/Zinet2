@@ -32,14 +32,14 @@ namespace zt::core::ecs::tests
 		ASSERT_TRUE(archetype.hasEntity(firstEntity));
 
 		auto* positionComponents = archetype.getComponentsOfType<Position>();
-		ASSERT_EQ(positionComponents->getSize(), 1);
+		ASSERT_EQ(positionComponents->getComponentsCount(), 1);
 		
 		const auto actualPosition = positionComponents->get<Position>(index);
 		ASSERT_TRUE(actualPosition);
 		ASSERT_EQ(*actualPosition, expectedPosition);
 
 		auto* spriteComponents = archetype.getComponentsOfType<Sprite>();
-		ASSERT_EQ(spriteComponents->getSize(), 1);
+		ASSERT_EQ(spriteComponents->getComponentsCount(), 1);
 
 		const auto actualSprite = spriteComponents->get<Sprite>(index);
 		ASSERT_TRUE(actualSprite);

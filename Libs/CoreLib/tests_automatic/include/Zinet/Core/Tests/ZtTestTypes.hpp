@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/Core/ZtTime.hpp"
+#include "Zinet/Core/ZtLogger.hpp"
 
 #include <string>
 #include <vector>
@@ -75,15 +76,43 @@ namespace zt::core::ecs::tests
 		}
 	};
 
-	struct ResourceComplex
+	// Components and resources can't have any logic and virtual methods
+	// But they can have complex data like std::vector, std::string and etc.
+	struct NotTrivialType
 	{
-		//ResourceComplex() noexcept { onCreated(); }
-		virtual ~ResourceComplex() noexcept { onDestroyed(); }
+		// So this is kinda illegal
+		
+		/*
+		inline static auto Logger = ConsoleLogger::Create("zt::core::ecs::tests::NotTrivialType");
+		
+		NotTrivialType() noexcept { Logger->info("Constructor"); }
+		
+		NotTrivialType(const NotTrivialType& other) noexcept { Logger->info("Copy Constructor"); *this = other; }
+		NotTrivialType(NotTrivialType&& other) noexcept { Logger->info("Move Constructor"); *this = other; }
+		
+		NotTrivialType& operator = (const NotTrivialType& other) noexcept 
+		{ 
+			Logger->info("Copy assign"); 
+			name = other.name;
+			data = other.data;
+			description = other.description;
+			return *this; 
+		}
 
-		//virtual void onCreated() {}
-		virtual void onDestroyed() {}
+		NotTrivialType& operator = (NotTrivialType&& other) noexcept
+		{
+			Logger->info("Move assign");
+			name = std::move(other.name);
+			data = std::move(other.data);
+			description = std::move(other.description);
+			return *this;
+		}
+		
+		virtual ~NotTrivialType() noexcept { Logger->info("Virtual Destructor"); }
+		*/
 
 		std::string name;
 		std::vector<int32_t> data;
+		std::string description;
 	};
 }

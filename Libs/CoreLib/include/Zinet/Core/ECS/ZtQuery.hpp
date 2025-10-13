@@ -10,6 +10,7 @@
 
 namespace zt::core::ecs
 {
+	// TODO: Handle situations when we remove component from the middle of the segment
 	template<class Component>
 	class QueryIterator
 	{
@@ -53,7 +54,7 @@ namespace zt::core::ecs
 	QueryIterator<Component>& QueryIterator<Component>::operator++() noexcept
 	{
 		currentComponentIndex++;
-		if (currentComponentIndex >= (*currentSegmentIterator)->getSize())
+		if (currentComponentIndex >= (*currentSegmentIterator)->getComponentsCount())
 		{
 			currentSegmentIterator++;
 			if (currentSegmentIterator == componentsPack->end())
@@ -119,7 +120,7 @@ namespace zt::core::ecs
 		size_t count = 0;
 		for (const auto& components : componentsPack)
 		{
-			count += components->getSize();
+			count += components->getComponentsCount();
 		}
 		return count;
 	}

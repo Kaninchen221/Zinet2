@@ -18,7 +18,6 @@ namespace zt::core::ecs::tests
 
 	TEST_F(ECSWorldTests, SpawnEntityIDTest)
 	{
-		// TODO: Handle situation when component has complex data
 		// Entity must have at least one component
 		Entity entity_0 = world.spawn(Sprite{});
 		ASSERT_EQ(entity_0.getID(), 0);
@@ -145,7 +144,7 @@ namespace zt::core::ecs::tests
 		size_t count = 0;
 		for (const auto& segment : componentsPack)
 		{
-			for (size_t componentIndex = 0; componentIndex < segment->getSize(); ++componentIndex)
+			for (size_t componentIndex = 0; componentIndex < segment->getComponentsCount(); ++componentIndex)
 			{
 				const auto component = segment->get<Sprite>(componentIndex);
 				ASSERT_TRUE(component);
