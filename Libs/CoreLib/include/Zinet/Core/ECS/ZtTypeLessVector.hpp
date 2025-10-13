@@ -70,18 +70,6 @@ namespace zt::core::ecs
 		Function<void, void*> destructor;
 	};
 
-	inline TypeLessVector::~TypeLessVector() noexcept
-	{
-		for (size_t i = 0; i < componentsCapacity; ++i)
-		{
-			if (std::ranges::contains(removedComponents, i))
-				continue;
-
-			const size_t index = i * componentTypeSize;
-			destructor.invoke(&components[index]);
-		}
-	}
-
 	template<class Component>
 	TypeLessVector TypeLessVector::Create()
 	{
@@ -144,26 +132,6 @@ namespace zt::core::ecs
 		return componentIndex;
 	}
 
-	inline bool TypeLessVector::remove(size_t index)
-	{
-		if (index >= componentsCapacity)
-			return false;
-
-		if (std::ranges::contains(removedComponents, index))
-			return false;
-
-		removedComponents.push_back(index);
-
-		auto* address = &components[index * componentTypeSize];
-		destructor.invoke(address);
-
-		// Fill the range of buffer with zeros to avoid dangling data
-		const std::vector<std::byte> zeroBuffer{ componentTypeSize, std::byte{} };
-		std::memcpy(std::launder(address), zeroBuffer.data(), componentTypeSize);
-
-		return true;
-	}
-
 	template<class Component>
 	Component* TypeLessVector::get(size_t index)
 	{
@@ -183,30 +151,5 @@ namespace zt::core::ecs
 			return {};
 
 		return reinterpret_cast<Component*>(components.data() + offset);
-	}
-
-	inline bool TypeLessVector::isValidIndex(size_t index) const noexcept
-	{
-		if (index >= componentsCapacity)
-			return false;
-
-		if (std::ranges::contains(removedComponents, index))
-			return false;
-
-		return true;
-	}
-
-	inline size_t TypeLessVector::getFirstValidIndex() const noexcept
-	{
-		if (componentsCapacity == 0 || componentsCapacity == removedComponents.size())
-			return InvalidIndex;
-
-		for (size_t i = 0; i < componentsCapacity; ++i)
-		{
-			if (!std::ranges::contains(removedComponents, i))
-				return i;
-		}
-
-		return InvalidIndex;
 	}
 }
