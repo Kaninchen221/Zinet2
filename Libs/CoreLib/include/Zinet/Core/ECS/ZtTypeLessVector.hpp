@@ -49,10 +49,13 @@ namespace zt::core::ecs
 
 		using Components = std::vector<std::byte>;
 
-		TypeLessVector(const ID& newTypeID, Function<void, void*> newDestructor, size_t newComponentTypeSize)
-			: typeID(newTypeID), destructor(newDestructor), componentTypeSize(newComponentTypeSize)
+		TypeLessVector(const ID& newTypeID, Function<void, void*> newDestructor, size_t newTypeSize, bool newIsTriviallyDestructible)
+			: typeID(newTypeID), destructor(newDestructor), typeSize(newTypeSize), isTriviallyDestructible(newIsTriviallyDestructible)
 		{
 		}
+
+		template<class Component>
+		void reallocateElements();
 
 		TypeLessVector() noexcept = default;
 		TypeLessVector(const TypeLessVector& other) noexcept = default;
@@ -66,10 +69,15 @@ namespace zt::core::ecs
 
 		size_t componentsCapacity = 0;
 
-		size_t componentTypeSize = 0;
+		// Type info
+		size_t typeSize = 0;
+		const bool isTriviallyDestructible = false;
 		Function<void, void*> destructor;
 	};
+}
 
+namespace zt::core::ecs
+{
 	template<class Component>
 	TypeLessVector TypeLessVector::Create()
 	{
@@ -84,26 +92,22 @@ namespace zt::core::ecs
 
 		return TypeLessVector
 		(
-			GetTypeID<Component>(), destructor, sizeof(T)
+			GetTypeID<Component>(), destructor, sizeof(T), std::is_trivially_constructible_v<Component>
 		);
 	}
 
 	template<class Component>
 	size_t TypeLessVector::add(Component&& component)
 	{
+		using ComponentT = std::decay_t<Component>;
+
 #	if ZINET_SANITY_CHECK
-		if (typeID != GetTypeID<Component>())
+		if (typeID != GetTypeID<ComponentT>())
 		{
 			Ensure(false); // Tried to add component of different type
-			return InvalidID;
+			return InvalidIndex;
 		}
 #	endif
-
-		// TODO: Remove that and fix the problem while using the zip_view
-		// Something bad happens when std::vector do reallocation
-		components.reserve(1'000'000);
-
-		constexpr size_t typeSize = sizeof(Component);
 
 		size_t byteIndex = InvalidIndex;
 		size_t componentIndex = InvalidIndex;
@@ -117,17 +121,19 @@ namespace zt::core::ecs
 		}
 		else // Place new component at the end
 		{
-			const size_t newSize = components.size() + typeSize;
-			components.resize(newSize);
+			reallocateElements<ComponentT>();
 
 			byteIndex = components.size() - typeSize;
 			componentIndex = byteIndex / typeSize;
-
-			++componentsCapacity;
 		}
+
+		componentsCapacity = components.size() / typeSize;
 
 		Component& storedComponent = reinterpret_cast<Component&>(components[byteIndex]);
 		std::construct_at(&storedComponent, std::move(component));
+
+		if (!std::is_trivially_destructible_v<ComponentT>)
+			destructor.invoke(&component);
 
 		return componentIndex;
 	}
@@ -151,5 +157,40 @@ namespace zt::core::ecs
 			return {};
 
 		return reinterpret_cast<Component*>(components.data() + offset);
+	}
+
+	template<class Component>
+	void TypeLessVector::reallocateElements()
+	{
+		using ComponentT = std::decay_t<Component>;
+
+		const size_t desiredSize = components.size() + typeSize;
+
+		if (desiredSize > components.capacity())
+		{
+			const auto newSize = desiredSize;
+			Components newVector{ newSize, std::byte{} };
+
+			// Move the existing components to the newVector, destroy old components and move the newVector to the components
+			for (size_t elementIndex = 0; elementIndex < componentsCapacity; ++elementIndex)
+			{
+				auto* element = get<ComponentT>(elementIndex);
+				// Element index can point at removed element
+				if (!element)
+					continue;
+
+				const size_t byteIndex = elementIndex * typeSize;
+
+				auto newElement = reinterpret_cast<ComponentT*>(&newVector[byteIndex]);
+				auto oldElement = reinterpret_cast<ComponentT*>(&components[byteIndex]);
+				std::construct_at(newElement, std::move(*oldElement));
+
+				if (!std::is_trivially_destructible_v<ComponentT>)
+					destructor.invoke(oldElement);
+			}
+
+			// Move the new vector to the old vector
+			components = std::move(newVector);
+		}
 	}
 }

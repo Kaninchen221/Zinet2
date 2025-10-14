@@ -82,22 +82,25 @@ namespace zt::core::ecs::tests
 	{
 		// So this is kinda illegal
 		
-		/*
+		
 		inline static auto Logger = ConsoleLogger::Create("zt::core::ecs::tests::NotTrivialType");
 		
 		NotTrivialType() noexcept { Logger->info("Constructor"); }
-		
-		NotTrivialType(const NotTrivialType& other) noexcept { Logger->info("Copy Constructor"); *this = other; }
-		NotTrivialType(NotTrivialType&& other) noexcept { Logger->info("Move Constructor"); *this = other; }
-		
-		NotTrivialType& operator = (const NotTrivialType& other) noexcept 
-		{ 
-			Logger->info("Copy assign"); 
-			name = other.name;
-			data = other.data;
-			description = other.description;
-			return *this; 
-		}
+
+		NotTrivialType(const NotTrivialType& other) noexcept = delete;
+		//NotTrivialType(const NotTrivialType& other) noexcept { Logger->info("Copy Constructor"); *this = other; }
+
+		NotTrivialType(NotTrivialType&& other) noexcept { Logger->info("Move Constructor"); *this = std::forward<NotTrivialType>(other); }
+
+		NotTrivialType& operator = (const NotTrivialType& other) = delete;
+		//NotTrivialType& operator = (const NotTrivialType& other) noexcept 
+		//{ 
+		//	Logger->info("Copy assign"); 
+		//	name = other.name;
+		//	data = other.data;
+		//	description = other.description;
+		//	return *this; 
+		//}
 
 		NotTrivialType& operator = (NotTrivialType&& other) noexcept
 		{
@@ -109,7 +112,7 @@ namespace zt::core::ecs::tests
 		}
 		
 		virtual ~NotTrivialType() noexcept { Logger->info("Virtual Destructor"); }
-		*/
+		
 
 		std::string name;
 		std::vector<int32_t> data;

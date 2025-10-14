@@ -4,12 +4,15 @@ namespace zt::core::ecs
 {
 	TypeLessVector::~TypeLessVector() noexcept
 	{
+		if (isTriviallyDestructible)
+			return;
+
 		for (size_t i = 0; i < componentsCapacity; ++i)
 		{
 			if (std::ranges::contains(removedComponents, i))
 				continue;
 
-			const size_t index = i * componentTypeSize;
+			const size_t index = i * typeSize;
 			destructor.invoke(&components[index]);
 		}
 	}
@@ -24,12 +27,14 @@ namespace zt::core::ecs
 
 		removedComponents.push_back(index);
 
-		auto* address = &components[index * componentTypeSize];
-		destructor.invoke(address);
+		auto* address = &components[index * typeSize];
+
+		if (!isTriviallyDestructible)
+			destructor.invoke(address);
 
 		// Fill the range of buffer with zeros to avoid dangling data
-		const std::vector<std::byte> zeroBuffer{ componentTypeSize, std::byte{} };
-		std::memcpy(std::launder(address), zeroBuffer.data(), componentTypeSize);
+		const std::vector<std::byte> zeroBuffer{ typeSize, std::byte{} };
+		std::memcpy(address, zeroBuffer.data(), typeSize);
 
 		return true;
 	}
