@@ -132,9 +132,6 @@ namespace zt::core::ecs
 		Component& storedComponent = reinterpret_cast<Component&>(components[byteIndex]);
 		std::construct_at(&storedComponent, std::move(component));
 
-		if (!std::is_trivially_destructible_v<ComponentT>)
-			destructor.invoke(&component);
-
 		return componentIndex;
 	}
 

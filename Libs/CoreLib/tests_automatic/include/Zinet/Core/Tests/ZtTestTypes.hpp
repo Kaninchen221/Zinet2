@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <cstdint>
 
 namespace zt::core::ecs
 {
@@ -76,43 +77,48 @@ namespace zt::core::ecs::tests
 		}
 	};
 
-	// Components and resources can't have any logic and virtual methods
-	// But they can have complex data like std::vector, std::string and etc.
-	struct NotTrivialType
+	// Component/Resource with not trivial data
+	class NotTrivialType
 	{
-		// So this is kinda illegal
+		inline static auto Logger = ConsoleLogger::Create("zt::core::ecs::tests::NotTrivialType", spdlog::level::info);
 		
+		inline static int32_t ObjectsCounter = 0;
+
+	public:
+
+		static int32_t GetObjectsCounter() noexcept { return ObjectsCounter; }
 		
-		inline static auto Logger = ConsoleLogger::Create("zt::core::ecs::tests::NotTrivialType");
-		
-		NotTrivialType() noexcept { Logger->info("Constructor"); }
+		NotTrivialType() noexcept 
+		{ 
+			Logger->trace("Constructor");
+			++ObjectsCounter;
+		}
 
 		NotTrivialType(const NotTrivialType& other) noexcept = delete;
-		//NotTrivialType(const NotTrivialType& other) noexcept { Logger->info("Copy Constructor"); *this = other; }
 
-		NotTrivialType(NotTrivialType&& other) noexcept { Logger->info("Move Constructor"); *this = std::forward<NotTrivialType>(other); }
+		NotTrivialType(NotTrivialType&& other) noexcept 
+		{ 
+			Logger->trace("Move Constructor");
+			*this = std::forward<NotTrivialType>(other); 
+			++ObjectsCounter;
+		}
 
 		NotTrivialType& operator = (const NotTrivialType& other) = delete;
-		//NotTrivialType& operator = (const NotTrivialType& other) noexcept 
-		//{ 
-		//	Logger->info("Copy assign"); 
-		//	name = other.name;
-		//	data = other.data;
-		//	description = other.description;
-		//	return *this; 
-		//}
 
 		NotTrivialType& operator = (NotTrivialType&& other) noexcept
 		{
-			Logger->info("Move assign");
+			Logger->trace("Move assign");
 			name = std::move(other.name);
 			data = std::move(other.data);
 			description = std::move(other.description);
 			return *this;
 		}
 		
-		virtual ~NotTrivialType() noexcept { Logger->info("Virtual Destructor"); }
-		
+		virtual ~NotTrivialType() noexcept 
+		{ 
+			Logger->trace("Virtual Destructor");
+			--ObjectsCounter;
+		}
 
 		std::string name;
 		std::vector<int32_t> data;

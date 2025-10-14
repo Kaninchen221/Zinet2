@@ -152,47 +152,53 @@ namespace zt::core::ecs::tests
 
 	TEST_F(ECSTypeLessVectorTests, AddTypeWithComplexDataLikeSTDVectorTest)
 	{
-		using Type = NotTrivialType;
-		TypeLessVector components = TypeLessVector::Create<Type>();
+		ASSERT_EQ(NotTrivialType::GetObjectsCounter(), 0);
 
-		std::string expectedName = "TestName";
-		std::vector<int> expectedData(100);
-		std::iota(expectedData.begin(), expectedData.end(), 0);
-		std::string expectedDescription = "TestDescription";
-
-		size_t componentIndex = InvalidIndex;
-		constexpr size_t count = 10;
-		for (size_t i = 0; i < count; ++i)
 		{
-			Type complex;
-			complex.name = expectedName;
-			complex.data = expectedData;
-			complex.description = expectedDescription;
+			using Type = NotTrivialType;
+			TypeLessVector components = TypeLessVector::Create<Type>();
 
-			componentIndex = components.add(complex);
-			ASSERT_NE(componentIndex, InvalidIndex);
-		}
+			std::string expectedName = "TestName";
+			std::vector<int> expectedData(100);
+			std::iota(expectedData.begin(), expectedData.end(), 0);
+			std::string expectedDescription = "TestDescription";
 
-		const size_t removedComponentIndex = 4;
-		components.remove(removedComponentIndex);
-
-		for (size_t i = 0; i < count; ++i)
-		{
-			if (i == removedComponentIndex)
-				continue;
-
-			auto resource = components.get<Type>(i);
-			ASSERT_TRUE(resource);
-
-			ASSERT_EQ(expectedName, resource->name);
-
-			ASSERT_EQ(expectedData.size(), resource->data.size());
-			for (const auto& [expected, actual] : std::views::zip(expectedData, resource->data))
+			size_t componentIndex = InvalidIndex;
+			constexpr size_t count = 10;
+			for (size_t i = 0; i < count; ++i)
 			{
-				EXPECT_EQ(expected, actual);
+				Type complex;
+				complex.name = expectedName;
+				complex.data = expectedData;
+				complex.description = expectedDescription;
+
+				componentIndex = components.add(complex);
+				ASSERT_NE(componentIndex, InvalidIndex);
 			}
 
-			ASSERT_EQ(expectedDescription, resource->description);
+			const size_t removedComponentIndex = 4;
+			components.remove(removedComponentIndex);
+
+			for (size_t i = 0; i < count; ++i)
+			{
+				if (i == removedComponentIndex)
+					continue;
+
+				auto resource = components.get<Type>(i);
+				ASSERT_TRUE(resource);
+
+				ASSERT_EQ(expectedName, resource->name);
+
+				ASSERT_EQ(expectedData.size(), resource->data.size());
+				for (const auto& [expected, actual] : std::views::zip(expectedData, resource->data))
+				{
+					EXPECT_EQ(expected, actual);
+				}
+
+				ASSERT_EQ(expectedDescription, resource->description);
+			}
 		}
+
+		ASSERT_EQ(NotTrivialType::GetObjectsCounter(), 0);
 	}
 }
