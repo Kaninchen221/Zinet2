@@ -39,7 +39,7 @@ namespace zt::core::ecs
 		template<class Component>
 		bool hasType() const noexcept { return GetTypeID<Component>() == typeID; }
 
-		size_t getComponentsCount() const noexcept { return componentsCapacity - removedComponents.size(); }
+		size_t getComponentsCount() const noexcept { return componentsCount; }
 
 		size_t getComponentsCapacity() const noexcept { return componentsCapacity; }
 
@@ -68,6 +68,8 @@ namespace zt::core::ecs
 		std::vector<size_t> removedComponents;
 
 		size_t componentsCapacity = 0;
+
+		size_t componentsCount = 0;
 
 		// Type info
 		size_t typeSize = 0;
@@ -123,11 +125,12 @@ namespace zt::core::ecs
 		{
 			reallocateElements<ComponentT>();
 
-			byteIndex = components.size() - typeSize;
+			byteIndex = typeSize * componentsCount;
 			componentIndex = byteIndex / typeSize;
 		}
 
 		componentsCapacity = components.size() / typeSize;
+		++componentsCount;
 
 		Component& storedComponent = reinterpret_cast<Component&>(components[byteIndex]);
 		std::construct_at(&storedComponent, std::move(component));
@@ -138,7 +141,7 @@ namespace zt::core::ecs
 	template<class Component>
 	Component* TypeLessVector::get(size_t index)
 	{
-		if (index >= componentsCapacity)
+		if (index >= componentsCount + removedComponents.size())
 			return {};
 
 		if (GetTypeID<Component>() != typeID)
@@ -161,15 +164,15 @@ namespace zt::core::ecs
 	{
 		using ComponentT = std::decay_t<Component>;
 
-		const size_t desiredSize = components.size() + typeSize;
+		const size_t desiredSize = (componentsCount * typeSize) + typeSize;
 
 		if (desiredSize > components.capacity())
 		{
-			const auto newSize = desiredSize;
+			const auto newSize = static_cast<size_t>(desiredSize * 1.5);
 			Components newVector{ newSize, std::byte{} };
 
 			// Move the existing components to the newVector, destroy old components and move the newVector to the components
-			for (size_t elementIndex = 0; elementIndex < componentsCapacity; ++elementIndex)
+			for (size_t elementIndex = 0; elementIndex < componentsCount + removedComponents.size(); ++elementIndex)
 			{
 				auto* element = get<ComponentT>(elementIndex);
 				// Element index can point at removed element

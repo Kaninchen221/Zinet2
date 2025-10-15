@@ -7,7 +7,7 @@ namespace zt::core::ecs
 		if (isTriviallyDestructible)
 			return;
 
-		for (size_t i = 0; i < componentsCapacity; ++i)
+		for (size_t i = 0; i < componentsCount + removedComponents.size(); ++i)
 		{
 			if (std::ranges::contains(removedComponents, i))
 				continue;
@@ -19,7 +19,7 @@ namespace zt::core::ecs
 
 	bool TypeLessVector::remove(size_t index)
 	{
-		if (index >= componentsCapacity)
+		if (index >= componentsCount + removedComponents.size())
 			return false;
 
 		if (std::ranges::contains(removedComponents, index))
@@ -32,6 +32,8 @@ namespace zt::core::ecs
 		if (!isTriviallyDestructible)
 			destructor.invoke(address);
 
+		--componentsCount;
+
 		// Fill the range of buffer with zeros to avoid dangling data
 		const std::vector<std::byte> zeroBuffer{ typeSize, std::byte{} };
 		std::memcpy(address, zeroBuffer.data(), typeSize);
@@ -41,7 +43,7 @@ namespace zt::core::ecs
 
 	bool TypeLessVector::isValidIndex(size_t index) const noexcept
 	{
-		if (index >= componentsCapacity)
+		if (index >= componentsCount + removedComponents.size())
 			return false;
 
 		if (std::ranges::contains(removedComponents, index))
@@ -52,10 +54,10 @@ namespace zt::core::ecs
 
 	size_t TypeLessVector::getFirstValidIndex() const noexcept
 	{
-		if (componentsCapacity == 0 || componentsCapacity == removedComponents.size())
+		if (componentsCount == 0)
 			return InvalidIndex;
 
-		for (size_t i = 0; i < componentsCapacity; ++i)
+		for (size_t i = 0; i < componentsCount + removedComponents.size(); ++i)
 		{
 			if (!std::ranges::contains(removedComponents, i))
 				return i;
