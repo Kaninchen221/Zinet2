@@ -7,32 +7,32 @@ namespace zt::core::ecs
 		if (isTriviallyDestructible)
 			return;
 
-		for (size_t i = 0; i < componentsCount + removedComponents.size(); ++i)
+		for (size_t i = 0; i < objectsCount + removedObjects.size(); ++i)
 		{
-			if (std::ranges::contains(removedComponents, i))
+			if (std::ranges::contains(removedObjects, i))
 				continue;
 
 			const size_t index = i * typeSize;
-			destructor.invoke(&components[index]);
+			destructor.invoke(&buffer[index]);
 		}
 	}
 
 	bool TypeLessVector::remove(size_t index)
 	{
-		if (index >= componentsCount + removedComponents.size())
+		if (index >= objectsCount + removedObjects.size())
 			return false;
 
-		if (std::ranges::contains(removedComponents, index))
+		if (std::ranges::contains(removedObjects, index))
 			return false;
 
-		removedComponents.push_back(index);
+		removedObjects.push_back(index);
 
-		auto* address = &components[index * typeSize];
+		auto* address = &buffer[index * typeSize];
 
 		if (!isTriviallyDestructible)
 			destructor.invoke(address);
 
-		--componentsCount;
+		--objectsCount;
 
 		// Fill the range of buffer with zeros to avoid dangling data
 		const std::vector<std::byte> zeroBuffer{ typeSize, std::byte{} };
@@ -43,10 +43,10 @@ namespace zt::core::ecs
 
 	bool TypeLessVector::isValidIndex(size_t index) const noexcept
 	{
-		if (index >= componentsCount + removedComponents.size())
+		if (index >= objectsCount + removedObjects.size())
 			return false;
 
-		if (std::ranges::contains(removedComponents, index))
+		if (std::ranges::contains(removedObjects, index))
 			return false;
 
 		return true;
@@ -54,12 +54,12 @@ namespace zt::core::ecs
 
 	size_t TypeLessVector::getFirstValidIndex() const noexcept
 	{
-		if (componentsCount == 0)
+		if (objectsCount == 0)
 			return InvalidIndex;
 
-		for (size_t i = 0; i < componentsCount + removedComponents.size(); ++i)
+		for (size_t i = 0; i < objectsCount + removedObjects.size(); ++i)
 		{
-			if (!std::ranges::contains(removedComponents, i))
+			if (!std::ranges::contains(removedObjects, i))
 				return i;
 		}
 

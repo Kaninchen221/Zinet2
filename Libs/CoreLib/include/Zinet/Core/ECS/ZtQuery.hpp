@@ -58,7 +58,7 @@ namespace zt::core::ecs
 
 		while (!(*currentSegmentIterator)->isValidIndex(currentComponentIndex))
 		{
-			if (currentComponentIndex >= (*currentSegmentIterator)->getComponentsCapacity())
+			if (currentComponentIndex >= (*currentSegmentIterator)->getObjectsCapacity())
 			{
 				//Logger->debug("component index out of segment capacity component index {}", currentComponentIndex);
 				currentSegmentIterator++;
@@ -144,7 +144,7 @@ namespace zt::core::ecs
 		size_t count = 0;
 		for (const auto& components : componentsPack)
 		{
-			count += components->getComponentsCount();
+			count += components->getObjectsCount();
 		}
 		return count;
 	}

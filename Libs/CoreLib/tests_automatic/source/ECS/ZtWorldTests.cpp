@@ -144,7 +144,7 @@ namespace zt::core::ecs::tests
 		size_t count = 0;
 		for (const auto& segment : componentsPack)
 		{
-			for (size_t componentIndex = 0; componentIndex < segment->getComponentsCount(); ++componentIndex)
+			for (size_t componentIndex = 0; componentIndex < segment->getObjectsCount(); ++componentIndex)
 			{
 				const auto component = segment->get<Sprite>(componentIndex);
 				ASSERT_TRUE(component);

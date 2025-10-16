@@ -39,7 +39,7 @@ namespace zt::core::ecs
 		if (componentsPack.empty())
 			return 0;
 
-		return componentsPack.size() * componentsPack.front().getComponentsCount();
+		return componentsPack.size() * componentsPack.front().getObjectsCount();
 	}
 
 }

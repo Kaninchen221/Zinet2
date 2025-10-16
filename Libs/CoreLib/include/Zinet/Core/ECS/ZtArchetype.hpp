@@ -100,7 +100,7 @@ namespace zt::core::ecs
 		if (!components)
 			return nullptr;
 
-		if (index >= components->getComponentsCount())
+		if (index >= components->getObjectsCount())
 			return nullptr;
 
 		return components->get<Component>(index);

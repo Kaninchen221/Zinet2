@@ -10,7 +10,6 @@
 
 namespace zt::core::ecs
 {
-	// TODO: Separate part of it to cpp file
 	class TypeLessVector
 	{
 	public:
@@ -20,41 +19,41 @@ namespace zt::core::ecs
 
 		~TypeLessVector() noexcept;
 
-		template<class Component>
+		template<class T>
 		static TypeLessVector Create();
 
 		// Return the index of added component
-		template<class Component>
-		size_t add(Component&& component);
+		template<class T>
+		size_t add(T&& object);
 
 		bool remove(size_t index);
 
-		template<class Component>
-		Component* get(size_t index);
+		template<class T>
+		T* get(size_t index);
 
 		bool isValidIndex(size_t index) const noexcept;
 
 		size_t getFirstValidIndex() const noexcept;
 
-		template<class Component>
-		bool hasType() const noexcept { return GetTypeID<Component>() == typeID; }
+		template<class T>
+		bool hasType() const noexcept { return GetTypeID<std::decay_t<T>>() == typeID; }
 
-		size_t getComponentsCount() const noexcept { return componentsCount; }
+		size_t getObjectsCount() const noexcept { return objectsCount; }
 
-		size_t getComponentsCapacity() const noexcept { return componentsCapacity; }
+		size_t getObjectsCapacity() const noexcept { return objectsCapacity; }
 
 		auto getTypeID() const noexcept { return typeID; }
 
 	private:
 
-		using Components = std::vector<std::byte>;
+		using Buffer = std::vector<std::byte>;
 
-		TypeLessVector(const ID& newTypeID, Function<void, void*> newDestructor, size_t newTypeSize, bool newIsTriviallyDestructible)
-			: typeID(newTypeID), destructor(newDestructor), typeSize(newTypeSize), isTriviallyDestructible(newIsTriviallyDestructible)
+		TypeLessVector(const ID& typeID, Function<void, void*> destructor, size_t typeSize, bool isTriviallyDestructible)
+			: typeID(typeID), destructor(destructor), typeSize(typeSize), isTriviallyDestructible(isTriviallyDestructible)
 		{
 		}
 
-		template<class Component>
+		template<class T>
 		void reallocateElements();
 
 		TypeLessVector() noexcept = default;
@@ -62,49 +61,48 @@ namespace zt::core::ecs
 
 		TypeLessVector& operator = (const TypeLessVector& other) noexcept = default;
 
-		const ID typeID;
-		Components components; // Of the same type
+		Buffer buffer;
 
-		std::vector<size_t> removedComponents;
+		std::vector<size_t> removedObjects;
 
-		size_t componentsCapacity = 0;
-
-		size_t componentsCount = 0;
+		size_t objectsCapacity = 0;
+		size_t objectsCount = 0;
 
 		// Type info
-		size_t typeSize = 0;
+		const ID typeID;
+		const size_t typeSize = 0;
 		const bool isTriviallyDestructible = false;
-		Function<void, void*> destructor;
+		const Function<void, void*> destructor;
 	};
 }
 
 namespace zt::core::ecs
 {
-	template<class Component>
+	template<class T>
 	TypeLessVector TypeLessVector::Create()
 	{
-		using T = std::decay_t<Component>;
+		using Object = std::decay_t<T>;
 
 		// Lambda that invokes destructor
 		auto destructor = [](void* rawComponent) 
 		{
-			T* component = reinterpret_cast<T*>(rawComponent);
+			Object* component = reinterpret_cast<Object*>(rawComponent);
 			std::destroy_at(component);
 		};
 
 		return TypeLessVector
 		(
-			GetTypeID<Component>(), destructor, sizeof(T), std::is_trivially_constructible_v<Component>
+			GetTypeID<Object>(), destructor, sizeof(Object), std::is_trivially_constructible_v<Object>
 		);
 	}
 
-	template<class Component>
-	size_t TypeLessVector::add(Component&& component)
+	template<class T>
+	size_t TypeLessVector::add(T&& object)
 	{
-		using ComponentT = std::decay_t<Component>;
+		using Object = std::decay_t<T>;
 
 #	if ZINET_SANITY_CHECK
-		if (typeID != GetTypeID<ComponentT>())
+		if (typeID != GetTypeID<Object>())
 		{
 			Ensure(false); // Tried to add component of different type
 			return InvalidIndex;
@@ -112,85 +110,95 @@ namespace zt::core::ecs
 #	endif
 
 		size_t byteIndex = InvalidIndex;
-		size_t componentIndex = InvalidIndex;
+		size_t objectIndex = InvalidIndex;
 
 		// Try to place a new component at a released index
-		if (!removedComponents.empty())
+		if (!removedObjects.empty())
 		{
-			componentIndex = removedComponents.back();
-			removedComponents.pop_back();
-			byteIndex = componentIndex * typeSize;
+			objectIndex = removedObjects.back();
+			removedObjects.pop_back();
+			byteIndex = objectIndex * typeSize;
 		}
 		else // Place new component at the end
 		{
-			reallocateElements<ComponentT>();
+			reallocateElements<Object>();
 
-			byteIndex = typeSize * componentsCount;
-			componentIndex = byteIndex / typeSize;
+			byteIndex = typeSize * objectsCount;
+			objectIndex = byteIndex / typeSize;
 		}
 
-		componentsCapacity = components.size() / typeSize;
-		++componentsCount;
+		objectsCapacity = buffer.size() / typeSize;
+		++objectsCount;
 
-		Component& storedComponent = reinterpret_cast<Component&>(components[byteIndex]);
-		std::construct_at(&storedComponent, std::move(component));
+		Object& storedObject = reinterpret_cast<Object&>(buffer[byteIndex]);
+		std::construct_at(&storedObject, std::move(object));
 
-		return componentIndex;
+		return objectIndex;
 	}
 
-	template<class Component>
-	Component* TypeLessVector::get(size_t index)
+	template<class T>
+	T* TypeLessVector::get(size_t index)
 	{
-		if (index >= componentsCount + removedComponents.size())
+		using Object = std::decay_t<T>;
+
+		constexpr size_t objectSize = sizeof(Object);
+		if (objectSize != typeSize)
 			return {};
 
-		if (GetTypeID<Component>() != typeID)
+		if (index >= objectsCount + removedObjects.size())
 			return {};
 
-		if (std::ranges::contains(removedComponents, index))
+		if (GetTypeID<Object>() != typeID)
 			return {};
 
-		const size_t classSize = sizeof(Component);
-		const size_t offset = index * classSize;
-
-		if (offset + classSize > components.size())
+		if (std::ranges::contains(removedObjects, index))
 			return {};
 
-		return reinterpret_cast<Component*>(components.data() + offset);
+		const size_t offset = index * typeSize;
+
+#	if ZINET_SANITY_CHECK
+		if (offset + typeSize > buffer.size())
+		{
+			Ensure(false); // Invalid offset
+			return {};
+		}
+#	endif
+
+		return reinterpret_cast<T*>(buffer.data() + offset);
 	}
 
-	template<class Component>
+	template<class T>
 	void TypeLessVector::reallocateElements()
 	{
-		using ComponentT = std::decay_t<Component>;
+		using Object = std::decay_t<T>;
 
-		const size_t desiredSize = (componentsCount * typeSize) + typeSize;
+		const size_t desiredSize = (objectsCount * typeSize) + typeSize;
 
-		if (desiredSize > components.capacity())
+		if (desiredSize > buffer.capacity())
 		{
 			const auto newSize = static_cast<size_t>(desiredSize * 1.5);
-			Components newVector{ newSize, std::byte{} };
+			Buffer newBuffer{ newSize, std::byte{} };
 
-			// Move the existing components to the newVector, destroy old components and move the newVector to the components
-			for (size_t elementIndex = 0; elementIndex < componentsCount + removedComponents.size(); ++elementIndex)
+			// Destroy old objects and move the newBuffer to the buffer
+			for (size_t objectIndex = 0; objectIndex < objectsCount + removedObjects.size(); ++objectIndex)
 			{
-				auto* element = get<ComponentT>(elementIndex);
+				auto* element = get<T>(objectIndex);
 				// Element index can point at removed element
 				if (!element)
 					continue;
 
-				const size_t byteIndex = elementIndex * typeSize;
+				const size_t byteIndex = objectIndex * typeSize;
 
-				auto newElement = reinterpret_cast<ComponentT*>(&newVector[byteIndex]);
-				auto oldElement = reinterpret_cast<ComponentT*>(&components[byteIndex]);
-				std::construct_at(newElement, std::move(*oldElement));
+				auto newObject = reinterpret_cast<Object*>(&newBuffer[byteIndex]);
+				auto oldObject = reinterpret_cast<Object*>(&buffer[byteIndex]);
+				std::construct_at(newObject, std::move(*oldObject));
 
-				if (!std::is_trivially_destructible_v<ComponentT>)
-					destructor.invoke(oldElement);
+				if (!std::is_trivially_destructible_v<T>)
+					destructor.invoke(oldObject);
 			}
 
 			// Move the new vector to the old vector
-			components = std::move(newVector);
+			buffer = std::move(newBuffer);
 		}
 	}
 }
