@@ -14,8 +14,24 @@ namespace zt::core::ecs
 	{
 	public:
 
-		TypeLessVector(TypeLessVector&& other) noexcept = default;
-		TypeLessVector& operator = (TypeLessVector&& other) noexcept = default;
+		TypeLessVector(TypeLessVector&& other) noexcept
+			: typeID(other.typeID), destructor(other.destructor), typeSize(other.typeSize), isTriviallyDestructible(other.isTriviallyDestructible)
+		{ 
+			*this = std::move(other); 
+		};
+
+		TypeLessVector& operator = (TypeLessVector&& other) noexcept
+		{
+			buffer = std::move(other.buffer);
+			removedObjects = std::move(other.removedObjects);
+			objectsCapacity = other.objectsCapacity;
+			objectsCount = other.objectsCount;
+			
+			other.objectsCapacity = 0;
+			other.objectsCount = 0;
+
+			return *this;
+		}
 
 		~TypeLessVector() noexcept;
 
@@ -56,10 +72,10 @@ namespace zt::core::ecs
 		template<class T>
 		void reallocateElements();
 
-		TypeLessVector() noexcept = default;
-		TypeLessVector(const TypeLessVector& other) noexcept = default;
+		TypeLessVector() noexcept = delete;
+		TypeLessVector(const TypeLessVector& other) noexcept = delete;
 
-		TypeLessVector& operator = (const TypeLessVector& other) noexcept = default;
+		TypeLessVector& operator = (const TypeLessVector& other) noexcept = delete;
 
 		Buffer buffer;
 

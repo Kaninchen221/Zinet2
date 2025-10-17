@@ -46,7 +46,7 @@ namespace zt::core::ecs
 
 		/// Resources
 		template<class Resource>
-		bool addResource(Resource&& newResource);
+		Resource* addResource(Resource&& newResource);
 
 		template<class Resource>
 		Resource* getResource();
@@ -130,18 +130,18 @@ namespace zt::core::ecs
 	}
 
 	template<class Resource>
-	bool World::addResource(Resource&& newResource)
+	Resource* World::addResource(Resource&& newResource)
 	{
 		for (auto& resource : resources)
 		{
 			if (resource.hasType<Resource>())
-				return false;
+				return {};
 		}
 
 		auto& typeLessVector = resources.emplace_back(TypeLessVector::Create<Resource>());
 		typeLessVector.add(newResource);
 
-		return true;
+		return typeLessVector.get<Resource>(0);
 	}
 
 	template<class Resource>

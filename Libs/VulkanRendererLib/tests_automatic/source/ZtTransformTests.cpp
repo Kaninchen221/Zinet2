@@ -26,6 +26,19 @@ namespace zt::vulkan_renderer::tests
 		static_assert(std::is_destructible_v<Transform>);
 	};
 
+	TEST_F(TransformTests, ConstructWithParamsTest)
+	{
+		const Vector3f expectedPosition{ 1.f, 2.f, 3.f };
+		const float expectedRotation = 45.f;
+		const Vector3f expectedScale{ 2.f, 4.f, 3.f };
+
+		transform = Transform{ expectedPosition, expectedRotation, expectedScale };
+
+		ASSERT_EQ(transform.getPosition(), expectedPosition);
+		ASSERT_EQ(transform.getRotation(), expectedRotation);
+		ASSERT_EQ(transform.getScale(), expectedScale);
+	}
+
 	TEST_F(TransformTests, GetMatrixTest)
 	{
 		const glm::mat4 matrix = transform.getMatrix();

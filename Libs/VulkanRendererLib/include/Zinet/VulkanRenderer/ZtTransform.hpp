@@ -22,6 +22,13 @@ namespace zt::vulkan_renderer
 	public:
 		using MatrixT = Matrix;
 
+		Transform(const Vector3f& position, float rotation, const Vector3f& scale) noexcept :
+			position{ position },
+			rotation{ rotation },
+			scale{ scale }
+		{
+		}
+
 		Transform() noexcept = default;
 		Transform(const Transform& other) noexcept = default;
 		Transform(Transform&& other) noexcept = default;
