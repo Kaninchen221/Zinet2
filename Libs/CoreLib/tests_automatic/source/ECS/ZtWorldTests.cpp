@@ -176,7 +176,7 @@ namespace zt::core::ecs::tests
 
 	TEST_F(ECSWorldTests, AddResourceTest)
 	{
-		bool added = world.addResource(ResourceTime{});
+		auto added = world.addResource(ResourceTime{});
 		ASSERT_TRUE(added);
 
 		added = world.addResource(ResourceTime{});
@@ -190,7 +190,7 @@ namespace zt::core::ecs::tests
 
 		const float expectedTime = 42.f;
 		ResourceTime resourceSource = { expectedTime };
-		bool added = world.addResource(resourceSource);
+		auto added = world.addResource(resourceSource);
 		ASSERT_TRUE(added);
 
 		resource = world.getResource<ResourceTime>();
