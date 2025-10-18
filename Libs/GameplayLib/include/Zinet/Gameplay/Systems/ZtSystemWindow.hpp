@@ -8,8 +8,27 @@
 #include "Zinet/Window/ZtWindow.hpp"
 #include "Zinet/Window/ZtWindowEvents.hpp"
 
+#include "Zinet/Core/ECS/ZtWorld.hpp"
+
 namespace zt::gameplay
 {
+	namespace system
+	{
+		class ZINET_GAMEPLAY_API Window
+		{
+			inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::systems::Window");
+
+		public:
+
+			static void Init(core::ecs::World& world);
+
+			static void Update(core::ecs::World& world);
+
+			static void Deinit(core::ecs::World& world);
+
+		};
+	}
+
 	class SystemWindow : public System
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::SystemWindow");

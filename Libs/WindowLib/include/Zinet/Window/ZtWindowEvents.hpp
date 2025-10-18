@@ -16,13 +16,13 @@ namespace zt::wd
 
 		WindowEvents() = delete;
 		WindowEvents(Window& newWindow) : window{&newWindow}, keyboard{newWindow}, mouse{newWindow} {}
-		 WindowEvents(const WindowEvents& other) = default;
-		 WindowEvents(WindowEvents&& other) noexcept = default;
+		WindowEvents(const WindowEvents& other) = default;
+		WindowEvents(WindowEvents&& other) noexcept = default;
 
 		WindowEvents& operator = (const WindowEvents& other) = default;
 		WindowEvents& operator = (WindowEvents&& other) noexcept = default;
 
-		 ~WindowEvents() noexcept = default;
+		~WindowEvents() noexcept = default;
 
 		const Window* getWindow() const noexcept { return window; }
 		Window* getWindow() noexcept { return window; }

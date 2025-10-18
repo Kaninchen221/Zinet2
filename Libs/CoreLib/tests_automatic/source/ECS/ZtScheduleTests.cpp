@@ -63,9 +63,8 @@ namespace zt::core::ecs::tests
 			world.spawn(Counter{});
 		}
 
-		schedule.run(world);
+		schedule.run(world, Threads::MainThread);
 		schedule.requestStop();
-
 		schedule.waitForStop();
 
 		for (const auto& counter : Query<Counter>(world))

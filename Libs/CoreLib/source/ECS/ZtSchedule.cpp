@@ -2,9 +2,16 @@
 
 namespace zt::core::ecs
 {
-	void Thread::run(World& world) noexcept
+	void Thread::runSync(World& world) noexcept
 	{
-		requestedStop.store(false);
+		for (const auto& systemPack : systems)
+		{
+			systemPack.system.invoke(world);
+		}
+	}
+
+	void Thread::runAsync(World& world) noexcept
+	{
 		running.store(true);
 
 		thread = std::jthread
@@ -23,6 +30,7 @@ namespace zt::core::ecs
 				}
 
 				self.running.store(false);
+				self.requestedStop.store(false);
 			}
 		};
 	}
@@ -32,11 +40,14 @@ namespace zt::core::ecs
 		requestedStop.store(true);
 	}
 
-	void Schedule::run(World& world)
+	void Schedule::run(World& world, ThreadID mainThreadID)
 	{
 		for (auto& thread : threads)
 		{
-			thread.run(world);
+			if (thread.getID() == mainThreadID)
+				thread.runSync(world);
+			else if (!thread.isRunning())
+				thread.runAsync(world);
 		}
 	}
 
