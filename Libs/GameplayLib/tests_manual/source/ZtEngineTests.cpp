@@ -1,33 +1,38 @@
 #pragma once
 
-#include "Zinet/Core/ZtRandom.hpp"
-#include "Zinet/Core/ZtTimeLog.hpp"
+#include <gtest/gtest.h>
 
+#include "Zinet/Core/ZtTimeLog.hpp"
+#include "Zinet/Core/ZtUtils.hpp"
+
+#include "Zinet/Core/ECS/ZtWorld.hpp"
+#include "Zinet/Core/ECS/ZtSchedule.hpp"
+
+#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
 
-#include "Zinet/Gameplay/ZtEngine.hpp"
-
-#include "Zinet/Gameplay/Nodes/ZtNodeEditor.hpp"
-#include "Zinet/Gameplay/Nodes/ZtNodeSprite.hpp"
+#include "Zinet/Core/Components/ZtExitReason.hpp"
 
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
+#include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
 
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystemSave.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystemTickable.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystemThreadQueue.hpp"
-
-#include <gtest/gtest.h>
 
 namespace zt::gameplay::tests
 {
+	using namespace zt::core;
+
 	class EngineTests : public ::testing::Test
 	{
 	protected:
 
-		EngineTests()
+		inline static auto Logger = ConsoleLogger::Create("zt::gameplay::tests::EngineTests");
+
+		EngineTests() 
+			: scheduleInit{ ecs::Schedule::Create(MainThread, RenderThread) },
+			scheduleUpdate{ ecs::Schedule::Create(MainThread, RenderThread) },
+			scheduleDeinit{ ecs::Schedule::Create(MainThread, RenderThread) }
 		{
 		}
 
@@ -37,115 +42,86 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
+			ZT_TIME_LOG(addResources());
+
 			ZT_TIME_LOG(init());
+		}
+
+		void addResources()
+		{
+			AssetsStorage assetsStorage;
+			assetsStorage.registerAssetClass<AssetText>();
+			// TODO: Uncomment after adding system renderer
+			//assetsStorage.registerAssetClass<AssetTexture>();
+			//assetsStorage.registerAssetClass<AssetShader>();
+			//assetsStorage.registerAssetClass<AssetSampler>();
+
+			world.addResource(assetsStorage);
+
+			auto window = world.addResource(wd::Window{});
+			world.addResource(wd::WindowEvents{ *window });
+
+			world.addResource(components::ExitReason{});
 		}
 
 		void init()
 		{
-			auto& engineContext = EngineContext::Get();
-			auto& assetsStorage = engineContext.getAssetsStorage();
-			assetsStorage.registerAssetClass<core::AssetText>();
-			assetsStorage.registerAssetClass<gameplay::AssetTexture>();
-			assetsStorage.registerAssetClass<gameplay::AssetShader>();
-			assetsStorage.registerAssetClass<gameplay::AssetSampler>();
+			scheduleInit.addSystem(system::Window{}, system::Window::Init, MainThread);
 
-			const bool useMultiThreading = false;
-			const ThreadID renderingThread = useMultiThreading ? ThreadID::RenderingThread : ThreadID::Main;
+			scheduleInit.requestStop();
+			scheduleInit.run(world, MainThread);
+			scheduleInit.waitForStop();
 
-			auto systemWindow = engineContext.addSystem<SystemWindow>("SystemWindow");
-			auto systemImGui = engineContext.addSystem<SystemImGui>("SystemImGui", UpdatePhase::Main, renderingThread);
-			auto systemRenderer = engineContext.addSystem<SystemRenderer>("SystemRenderer", UpdatePhase::Main, renderingThread);
-			auto systemSave = engineContext.addSystem<SystemSave>("SystemSave");
-			auto systemTickable = engineContext.addSystem<SystemTickable>("SystemTickable");
-			auto systemThreadQueue = engineContext.addSystem<SystemThreadQueue>("SystemThreadQueue", UpdatePhase::Post);
-
-			ASSERT_TRUE(engine.init());
-			vulkan_renderer::ImGuiIntegration::SetStyle_Dark();
-
-			auto& rootNode = engineContext.getRootNode();
-
-			Node2D::DefaultTexture = assetsStorage.getAs<AssetTexture>("Content/Textures/default_texture.png");
-			Node2D::DefaultTexture->load(core::Paths::RootPath());
-
-			auto nodeCamera = CreateObject<NodeCamera>("Camera");
-			rootNode->addChild(nodeCamera);
-			auto& camera = nodeCamera->getCamera();
-			camera.setPosition(Vector3f(0.00001, 0, 150));
-			camera.setLookingAt(Vector3f(0.0f, 0.0f, 0.0f));
-			camera.setUpVector(Vector3f(0, 1, 0));
-
-			auto& window = systemWindow->getWindow();
-			auto windowSize = window.getSize();
-			camera.setFieldOfView(45.f);
-			camera.setAspectRatio(windowSize.x / static_cast<float>(windowSize.y));
-			camera.setClipping(Vector2f{ 0.0000001f, 10000000.0f });
-
-			systemRenderer->setCameraNode(nodeCamera);
-			systemTickable->addNode(nodeCamera);
-
-			auto editorNode = CreateObject<NodeEditor>("Editor");
-			rootNode->addChild(editorNode);
-			systemImGui->addNode(editorNode);
-
-			auto child = CreateObject<Node>("Child");
-			rootNode->addChild(child);
-
-			auto childOfChild = CreateObject<Node>("Child of child");
-			child->addChild(childOfChild);
-
-			core::Random random;
-
-			auto textureForSprites = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
-
-			ZT_TIME_LOG(
-				ASSERT_TRUE(textureForSprites->load(core::Paths::RootPath()))
-			);
-
-			assert(false); // Disabled test
-
-			ZT_TIME_LOG_NAME(CreateSprites,
-				//for (size_t i = 0; i < 5; ++i)
-				//{
-				//	auto sprite = CreateObject<NodeSprite>(fmt::format("Sprite_{}", i));
-				//	sprite->transform.getPosition().x = random.real<float>(-10, 10);
-				//	sprite->transform.getPosition().y = random.real<float>(-10, 10);
-				//	sprite->transform.getPosition().z = 50;
-				//	sprite->transform.getScale().x = 8;
-				//	sprite->transform.getScale().y = 8;
-				//	sprite->transform.getRotation() = random.real<float>(0, 360);
-				//	sprite->texture = textureForSprites;
-				//	rootNode->addChild(sprite);
-				//	//sprite->update(1.f);
-				//	systemTickable->addNode(sprite);
-				//	systemRenderer->addNode(sprite);
-				//}
-			);
-
-			auto shaderVert = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.vert");
-			ZT_TIME_LOG(
-				ASSERT_TRUE(shaderVert->load(core::Paths::RootPath()));
-			);
-			systemRenderer->vertexShader = shaderVert;
-
-			auto shaderFrag = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.frag");
-			ZT_TIME_LOG( // TODO: Optimize shader loading
-				ASSERT_TRUE(shaderFrag->load(core::Paths::RootPath()));
-			);
-			systemRenderer->fragmentShader = shaderFrag;
+			auto assetsStorage = world.getResource<AssetsStorage>();
+			assetsStorage->storeAssets();
 		}
 
 		void TearDown() override
 		{
-			ZT_TIME_LOG(
-				engine.deinit();
-			);
+			ZT_TIME_LOG(deinit());
 		}
 
-		Engine engine;
+		void deinit()
+		{
+			scheduleDeinit.addSystem(system::Window{}, system::Window::Deinit, MainThread);
+
+			scheduleDeinit.requestStop();
+			scheduleDeinit.run(world, MainThread);
+			scheduleDeinit.waitForStop();
+		}
+
+		enum Threads : ecs::ThreadID
+		{
+			MainThread,
+			RenderThread,
+		};;
+
+		ecs::World world;
+
+		ecs::Schedule scheduleInit;
+		ecs::Schedule scheduleUpdate;
+		ecs::Schedule scheduleDeinit; 
 	};
 
-	TEST_F(EngineTests, PassTest)
+	TEST_F(EngineTests, Test)
 	{
-		engine.loop();
+		scheduleUpdate.addSystem(system::Window{}, system::Window::Update, MainThread);
+
+		auto exitReason = world.getResource<components::ExitReason>();
+		if (!exitReason)
+		{
+			Logger->error("Couldn't find an exit reason resource");
+			return;
+		}
+
+		while (!exitReason->exit)
+		{
+			if (!IsDebuggerAttached())
+				break;
+
+			scheduleUpdate.run(world, MainThread);
+		}
+		scheduleUpdate.requestStop();
+		scheduleUpdate.waitForStop();
 	}
 }

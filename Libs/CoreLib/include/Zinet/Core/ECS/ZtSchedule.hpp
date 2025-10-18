@@ -31,7 +31,9 @@ namespace zt::core::ecs
 		Thread(ThreadID threadID) noexcept : id{ threadID } {}
 		Thread(const Thread& other) noexcept { id = other.getID(); }
 
-		void run(World& world) noexcept;
+		void runSync(World& world) noexcept;
+
+		void runAsync(World& world) noexcept;
 
 		void requestStop() noexcept;
 
@@ -75,7 +77,7 @@ namespace zt::core::ecs
 
 		const auto& getThreads() const noexcept { return threads; }
 
-		void run(World& world);
+		void run(World& world, ThreadID mainThreadID);
 
 		void requestStop();
 
