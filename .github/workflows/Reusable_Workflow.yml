@@ -1,6 +1,8 @@
 name: Reusable Workflow
 
 on:
+  push:
+    branches: [ '**' ]
   workflow_call:
     inputs:
       os:
