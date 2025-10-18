@@ -123,5 +123,6 @@ namespace zt::gameplay::tests
 		}
 		scheduleUpdate.requestStop();
 		scheduleUpdate.waitForStop();
+
 	}
 }
