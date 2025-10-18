@@ -29,6 +29,7 @@ namespace zt::gameplay
 		};
 	}
 
+	// TODO: Remove after migrating to ECS
 	class SystemWindow : public System
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::SystemWindow");
