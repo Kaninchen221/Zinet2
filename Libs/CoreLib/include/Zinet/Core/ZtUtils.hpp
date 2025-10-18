@@ -5,6 +5,10 @@
 #include <algorithm>
 #include <iterator>
 
+#if ZINET_WINDOWS
+#	include <windows.h>
+#endif
+
 namespace zt::core
 {
 	inline bool Contains(auto&& container, auto&& value)
@@ -45,5 +49,14 @@ namespace zt::core
 		// For MSVC the hashes will be different because we are using namespaces
 		auto& type = typeid(T);
 		return type.hash_code();
+	}
+
+	inline bool IsDebuggerAttached()
+	{
+#	if ZINET_WINDOWS
+		return IsDebuggerPresent();
+#	elif ZINET_LINUX
+		assert(false); // Not implemented
+#	endif
 	}
 }
