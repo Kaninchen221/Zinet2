@@ -23,6 +23,15 @@ namespace zt::gameplay::tests
 {
 	using namespace zt::core;
 
+	// TODO:
+	// - Draw ImGui
+	//	- Write Editor System
+	// - Draw Sprites
+	// - Draw Flipbooks
+	// 
+	// - Remove nodes
+	// - Remove old systems
+	// - Refactor
 	class EngineTests : public ::testing::Test
 	{
 	protected:
