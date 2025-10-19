@@ -67,9 +67,9 @@ namespace zt::core::ecs::tests
 		schedule.requestStop();
 		schedule.waitForStop();
 
-		for (const auto& counter : Query<Counter>(world))
+		for (const auto [counter] : Query<Counter>(world))
 		{
-			ASSERT_NE(counter.value, 0);
+			ASSERT_NE(counter->value, 0);
 		}
 	}
 }

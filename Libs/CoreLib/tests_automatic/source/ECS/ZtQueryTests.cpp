@@ -16,52 +16,124 @@ namespace zt::core::ecs::tests
 		World world;
 		std::vector<Entity> entities;
 
-		void SetUp() override;
+		size_t expectedSpritesCount = 0;
+		size_t expectedVelocitiesCount = 0;
+		size_t expectedPositionsCount = 0;
+
+		size_t expectedSpritesVelocitiesPairsCount = 0;
+
+		void SetUp() override
+		{
+			fillWorldWithEntites();
+		}
+
+		void fillWorldWithEntites();
 	};
 
 	TEST_F(ECSQueryTests, GetComponentsCountTest)
 	{
+		const Query<Sprite> querySprites{ world };
+		EXPECT_EQ(querySprites.getComponentsCount(), expectedSpritesCount);
+
+		const Query<Velocity> queryVelocities{ world };
+		EXPECT_EQ(queryVelocities.getComponentsCount(), expectedVelocitiesCount);
+
+		const Query<Position> queryPositions{ world };
+		EXPECT_EQ(queryPositions.getComponentsCount(), expectedPositionsCount);
+	}
+
+	TEST_F(ECSQueryTests, IteratorsSingleComponentTypeTest)
+	{
 		const Query<Sprite> query{ world };
-		ASSERT_EQ(query.getComponentsCount(), 6);
-	}
 
-	TEST_F(ECSQueryTests, ForRangeBasedLoopTest)
-	{
-		size_t count = 0;
-		for (const auto& component : Query<Sprite>{ world })
+		const QueryIterator<Sprite> begin = query.begin();
+		const QueryIterator<Sprite> end = query.end();
+
+		ASSERT_NE(begin, end);
+
+		auto it = begin;
+		size_t index = 0;
+		for (index; index < expectedSpritesCount; ++index)
 		{
-			EXPECT_EQ(component.id, count);
-			++count;
+			ASSERT_NE(it, end);
+
+			auto [sprite] = *it;
+			ASSERT_TRUE(sprite);
+			EXPECT_EQ(sprite->id, index);
+			++it;
 		}
 
-		ASSERT_EQ(count, 6);
+		++it;
+		ASSERT_EQ(it, end);
 	}
 
-	TEST_F(ECSQueryTests, ForRangeBasedLoopWithRemovedEntitiesTest)
+	TEST_F(ECSQueryTests, IteratorsMultipleComponentsTypesTest)
 	{
-		world.remove(entities[0]); // First component
-		world.remove(entities[3]); // Last component of the first segment
-		world.remove(entities[5]); // Last component of the last segment
+		const Query<Sprite, Velocity> query{ world };
 
-		const std::vector<size_t> expectedIndices = { 1, 2, 4 };
+		const QueryIterator<Sprite, Velocity> begin = query.begin();
+		const QueryIterator<Sprite, Velocity> end = query.end();
 
-		size_t count = 0;
-		for (const auto& component : Query<Sprite>{ world })
+		ASSERT_NE(begin, end);
+
+		for (auto it = begin; it != end; ++it)
 		{
-			EXPECT_EQ(component.id, expectedIndices.at(count));
-			++count;
+			auto [sprite, velocity] = *it;
+			ASSERT_TRUE(sprite);
+			ASSERT_TRUE(velocity);
+		}
+	}
+
+	TEST_F(ECSQueryTests, ForRangeLoopTest)
+	{
+		const Query<Sprite> query{ world };
+		size_t counter = 0;
+
+		for (auto [sprite] : query)
+		{
+			++counter;
 		}
 
-		ASSERT_EQ(count, 3);
+		ASSERT_EQ(counter, expectedSpritesCount);
 	}
+}
 
-	void ECSQueryTests::SetUp()
+namespace zt::core::ecs::tests
+{
+	void ECSQueryTests::fillWorldWithEntites()
 	{
 		entities.push_back(world.spawn(Sprite{ 0 }));
 		entities.push_back(world.spawn(Sprite{ 1 }));
 		entities.push_back(world.spawn(Sprite{ 2 }));
+		entities.push_back(world.spawn(Sprite{ -1 }));
+		world.remove(entities.back());
+		entities.pop_back();
+
 		entities.push_back(world.spawn(Sprite{ 3 }));
-		entities.push_back(world.spawn(Sprite{ 4 }, Velocity{}));
-		entities.push_back(world.spawn(Sprite{ 5 }, Position{}));
+		entities.push_back(world.spawn(Sprite{ 4 }));
+		entities.push_back(world.spawn(Sprite{ -1 }, Velocity{ -1, -1 }));
+		world.remove(entities.back());
+		entities.pop_back();
+
+		entities.push_back(world.spawn(Sprite{ 5 }, Velocity{ 5, 5 }));
+		entities.push_back(world.spawn(Sprite{ 6 }, Velocity{ 6, 6 }));
+		entities.push_back(world.spawn(Sprite{ 7 }, Velocity{ 7, 7 }));
+		entities.push_back(world.spawn(Velocity{ -1, -1 })); // Impostor
+		entities.push_back(world.spawn(Sprite{ 8 }, Velocity{ 8, 8 }));
+		entities.push_back(world.spawn(Sprite{ -1 }, Position{ -1, -1 }));
+		world.remove(entities.back());
+		entities.pop_back();
+
+		entities.push_back(world.spawn(Sprite{ 9 }, Position{ 9, 9 }));
+		entities.push_back(world.spawn(Sprite{ 10 }, Position{ 10, 10 }));
+		entities.push_back(world.spawn(Sprite{ -1 }, Position{ -1, -1 }));
+		world.remove(entities.back());
+		entities.pop_back();
+
+		expectedSpritesCount = 11;
+		expectedVelocitiesCount = 5;
+		expectedPositionsCount = 2;
+
+		expectedSpritesVelocitiesPairsCount = 4;
 	}
 }

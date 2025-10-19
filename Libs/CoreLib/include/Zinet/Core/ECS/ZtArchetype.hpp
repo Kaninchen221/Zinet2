@@ -46,6 +46,8 @@ namespace zt::core::ecs
 
 		size_t getComponentsCount() const noexcept;
 
+		auto& getEntities() const noexcept { return entities; }
+
 	private:
 
 		Archetype() noexcept = default;
@@ -88,7 +90,7 @@ namespace zt::core::ecs
 		((index = addSingleComponent(components)), ...);
 
 		if (index != InvalidIndex)
-			entities.emplace_back(entity);
+			entities.emplace_back(entity.getID(), index);
 
 		return index;
 	}

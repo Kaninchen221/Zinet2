@@ -36,7 +36,7 @@ namespace zt::core::ecs
 		Component* getComponent(const Entity& entity);
 
 		template<class Component>
-		QueryTypes::ComponentsPack getComponentsOfType() noexcept;
+		std::vector<TypeLessVector*> getComponentsOfType() noexcept;
 
 		size_t getComponentsCount() const noexcept;
 
@@ -105,9 +105,9 @@ namespace zt::core::ecs
 	}
 
 	template<class Component>
-	QueryTypes::ComponentsPack World::getComponentsOfType() noexcept
+	std::vector<TypeLessVector*> World::getComponentsOfType() noexcept
 	{
-		typename QueryTypes::ComponentsPack componentsPack;
+		std::vector<TypeLessVector*> componentsPack;
 
 		for (auto& archetype : archetypes)
 		{

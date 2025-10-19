@@ -9,9 +9,9 @@ namespace zt::core::ecs::tests
 	{
 		void entryPoint(World& world)
 		{
-			for (Counter& counter : Query<Counter>(world))
+			for (auto [counter] : Query<Counter>(world))
 			{
-				counter.value++;
+				counter->value++;
 			}
 		}
 	}

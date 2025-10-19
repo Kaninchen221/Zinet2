@@ -11,8 +11,8 @@ namespace zt::core::ecs
 	public:
 
 		Entity() noexcept = delete;
-		Entity(ID newID, size_t newComponentsIndex) 
-			: id{ newID }, componentsIndex{ newComponentsIndex } 
+		Entity(ID id, size_t componentsIndex)
+			: id{ id }, componentsIndex{ componentsIndex }
 		{}
 		Entity(const Entity& other) noexcept = default;
 		Entity(Entity&& other) noexcept = default;

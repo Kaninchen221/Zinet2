@@ -15,14 +15,6 @@ namespace zt::core::ecs
 	using ID = size_t;
 	constexpr inline static ID InvalidID = InvalidIndex;
 
-	class TypeLessVector;
-
-	namespace QueryTypes
-	{
-		using Segment = TypeLessVector;
-		using ComponentsPack = std::vector<Segment*>;
-	}
-
 	using ThreadID = uint8_t;
 
 	class World;
