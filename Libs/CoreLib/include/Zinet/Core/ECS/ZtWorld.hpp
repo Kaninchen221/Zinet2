@@ -44,6 +44,9 @@ namespace zt::core::ecs
 
 		size_t getEntitiesCount() const noexcept;
 
+		template<class... Components>
+		std::vector<Archetype*> getArchetypesWith();
+
 		/// Resources
 		template<class ResourceT>
 		std::decay_t<ResourceT>* addResource(ResourceT&& newResource);
@@ -156,5 +159,18 @@ namespace zt::core::ecs
 		}
 
 		return {};
+	}
+
+	template<class... Components>
+	std::vector<Archetype*> World::getArchetypesWith()
+	{
+		std::vector<Archetype*> result;
+		for (auto& archetype : archetypes)
+		{
+			if (archetype.hasTypes<Components...>())
+				result.push_back(&archetype);
+		}
+
+		return result;
 	}
 }

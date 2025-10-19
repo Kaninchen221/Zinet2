@@ -198,4 +198,27 @@ namespace zt::core::ecs::tests
 
 		ASSERT_EQ(*resource, ResourceTime{ expectedTime });
 	}
+
+	TEST_F(ECSWorldTests, GetArchetypesWithTest)
+	{
+		world.spawn(Sprite{});
+		world.spawn(Sprite{});
+		world.spawn(Sprite{}, Position{});
+		world.spawn(Sprite{}, Position{});
+		world.spawn(Sprite{}, Position{}, Velocity{});
+		world.spawn(Sprite{}, Position{}, Velocity{});
+		world.spawn(Sprite{}, Position{}, Velocity{});
+
+		std::vector<Archetype*> archetypes = world.getArchetypesWith<Position, Sprite>();
+		ASSERT_EQ(archetypes.size(), 2);
+
+		archetypes = world.getArchetypesWith<Sprite>();
+		ASSERT_EQ(archetypes.size(), 3);
+
+		archetypes = world.getArchetypesWith<Velocity>();
+		ASSERT_EQ(archetypes.size(), 1);
+
+		archetypes = world.getArchetypesWith<Velocity, Sprite, Position>();
+		ASSERT_EQ(archetypes.size(), 1);
+	}
 }

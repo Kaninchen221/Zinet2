@@ -129,6 +129,11 @@ namespace zt::core::ecs::tests
 			ASSERT_TRUE(result);
 		}
 
+		{ // One component type test
+			const bool result = archetype.hasTypes<Position>();
+			ASSERT_TRUE(result);
+		}
+
 		{ // Reverse order
 			const bool result = archetype.hasTypes<Sprite, Position>();
 			ASSERT_TRUE(result);
