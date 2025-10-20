@@ -85,6 +85,8 @@ namespace zt::gameplay::tests
 			assetsStorage->storeAssets();
 		}
 
+		void update();
+
 		void TearDown() override
 		{
 			ZT_TIME_LOG(deinit());
@@ -114,6 +116,11 @@ namespace zt::gameplay::tests
 
 	TEST_F(EngineTests, Test)
 	{
+		ZT_TIME_LOG(update());
+	}
+
+	void EngineTests::update()
+	{
 		scheduleUpdate.addSystem(system::Window{}, system::Window::Update, MainThread);
 
 		auto exitReason = world.getResource<components::ExitReason>();
@@ -132,6 +139,5 @@ namespace zt::gameplay::tests
 		}
 		scheduleUpdate.requestStop();
 		scheduleUpdate.waitForStop();
-
 	}
 }
