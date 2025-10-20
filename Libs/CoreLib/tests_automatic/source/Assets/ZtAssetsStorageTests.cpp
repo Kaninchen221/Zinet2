@@ -33,7 +33,7 @@ namespace zt::core::tests
 
 	TEST_F(AssetsStorageTests, StoreAssetsTest)
 	{
-		assetsStorage.registerAssetClass<AssetText>();
+		assetsStorage.registerAssetClass<asset::Text>();
 
 		bool result = assetsStorage.storeAssets();
 		ASSERT_TRUE(result);

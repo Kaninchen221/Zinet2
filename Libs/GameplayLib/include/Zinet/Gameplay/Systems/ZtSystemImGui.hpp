@@ -1,34 +1,17 @@
 #pragma once
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
-#include "Zinet/Gameplay/Nodes/ZtNode.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystem.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
-namespace zt::gameplay
+namespace zt::gameplay::system
 {
-	class  SystemImGui : public System
+	class ZINET_GAMEPLAY_API ImGui
 	{
-	protected:
-
-		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::SystemImGui");
+		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::system::ImGui");
 
 	public:
 
-		SystemImGui() = default;
-		SystemImGui(const SystemImGui& other) = default;
-		SystemImGui(SystemImGui&& other) noexcept = default;
-		~SystemImGui() noexcept = default;
-
-		SystemImGui& operator = (const SystemImGui& other) = default;
-		SystemImGui& operator = (SystemImGui&& other) noexcept = default;
-
-		bool init() override;
-
-		bool deinit() override;
-
-		void update() override;
 
 	};
 

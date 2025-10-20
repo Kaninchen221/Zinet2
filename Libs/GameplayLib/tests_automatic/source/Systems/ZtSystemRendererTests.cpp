@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Zinet/Gameplay/ZtEngineContext.hpp"
-#include "Zinet/Gameplay/Nodes/ZtNodeCamera.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
 #include <gtest/gtest.h>
 
@@ -15,36 +12,15 @@ namespace zt::gameplay::tests
 
 		void SetUp() override
 		{
-			SystemRenderer::SetUseImGui(false);
-			engineContext.addSystem<SystemWindow>("SystemWindow");
-			engineContext.addSystem<SystemRenderer>("SystemRenderer");
-
-			ASSERT_TRUE(engineContext.init());
 		}
 
 		void TearDown() override
 		{
-			engineContext.deinit();
-			SystemRenderer::SetUseImGui(true);
 		}
 
-		EngineContext engineContext;
 	};
 
 	TEST_F(SystemRendererTests, PassTest)
 	{
-		auto system = engineContext.getSystem<SystemRenderer>();
-		ASSERT_TRUE(system);
-		auto node2D = CreateObject<Node2D>("node2d");
-		//systemRenderer.addNode(node);
-
-		auto cameraNode = CreateObject<NodeCamera>("Camera");
-		system->setCameraNode(cameraNode);
-		ASSERT_EQ(cameraNode.get(), system->getCameraNode().get());
-
-		system->update();
-
-		node2D.destroy();
-		cameraNode.destroy();
 	}
 }

@@ -3,16 +3,15 @@
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
 
 #include <Zinet/Gameplay/Assets/ZtAssetTexture.hpp>
-#include <Zinet/Gameplay/ZtEngineContext.hpp>
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
 #include <gtest/gtest.h>
 
-namespace zt::gameplay::tests
+namespace zt::gameplay::asset::tests
 {
 
-	class AssetTextureTests : public ::testing::Test
+	class TextureTests : public ::testing::Test
 	{
 	protected:
 
@@ -26,28 +25,23 @@ namespace zt::gameplay::tests
 
 	};
 
-	TEST_F(AssetTextureTests, Test)
+	TEST_F(TextureTests, Test)
 	{
-		EngineContext engineContext;
-		auto& assetsStorage = engineContext.getAssetsStorage();
-		assetsStorage.registerAssetClass<AssetTexture>();
+		core::AssetsStorage assetsStorage;
+		assetsStorage.registerAssetClass<Texture>();
 
-		engineContext.addSystem<SystemWindow>("SystemWindow");
-		engineContext.addSystem<SystemRenderer>("SystemRenderer");
+		assetsStorage.storeAssets();
 
-		SystemRenderer::SetUseImGui(false);
-		ASSERT_TRUE(engineContext.init());
-
-		auto asset = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
+		auto asset = assetsStorage.getAs<Texture>("Content/Textures/image.png");
 		ASSERT_TRUE(asset);
 
 		ASSERT_TRUE(asset->load(assetsStorage.getAssetsFinder().getRootPath()));
 		ASSERT_TRUE(asset->isLoaded());
 
+		ASSERT_TRUE(asset->getImage().getData());
+
 		asset->unload();
 		ASSERT_FALSE(asset->isLoaded());
 
-		engineContext.deinit();
-		SystemRenderer::SetUseImGui(true);
 	}
 }

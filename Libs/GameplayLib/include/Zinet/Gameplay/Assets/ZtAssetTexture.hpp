@@ -5,51 +5,35 @@
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
 #include "Zinet/Core/ZtFile.hpp"
 #include "Zinet/Core/ZtPaths.hpp"
+#include "Zinet/Core/ZtImage.hpp"
 
-#include "Zinet/VulkanRenderer/ZtTexture.hpp"
-#include "Zinet/VulkanRenderer/ZtSampler.hpp"
-#include "Zinet/VulkanRenderer/ZtDescriptorSets.hpp"
-
-#include "Zinet/Gameplay/Assets/ZtAssetProperty.hpp"
-#include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
-
-namespace
+namespace zt::gameplay::asset
 {
-	using Asset = zt::core::Asset;
-}
-
-namespace zt::gameplay
-{
-	class  AssetTexture : public core::Asset
+	class ZINET_GAMEPLAY_API Texture : public core::Asset
 	{
 	public:
-		AssetTexture(const Extensions& extensions = { "png" }) : core::Asset{ extensions } {}
-		AssetTexture(const AssetTexture& other) : core::Asset(other) {}
-		AssetTexture(AssetTexture&& other) noexcept = default;
-		~AssetTexture() noexcept = default;
+		Texture(const Extensions& extensions = { "png" }) : core::Asset{ extensions } {}
+		Texture(const Texture& other) : core::Asset(other) {}
+		Texture(Texture&& other) noexcept = default;
+		~Texture() noexcept = default;
 
-		AssetTexture& operator = (const AssetTexture& other) noexcept { Asset::operator =(other); return *this; }
-		AssetTexture& operator = (AssetTexture&& other) noexcept = default;
+		Texture& operator = (const Texture& other) noexcept { Asset::operator =(other); return *this; }
+		Texture& operator = (Texture&& other) noexcept = default;
 
-		const std::string_view getClassName() const override { return "zt::gameplay::AssetTexture"; }
+		const std::string_view getClassName() const override { return "zt::gameplay::assets::Texture"; }
 
-		ObjectPtr createCopy() const override { return std::make_unique<AssetTexture>(*this); }
+		ObjectPtr createCopy() const override { return std::make_unique<Texture>(*this); }
 
 		bool load(const core::Path& rootPath) override;
 
 		void unload() override;
 
-		void show() override;
+		auto& getImage() const noexcept { return image; }
 
-		bool serialize(core::JsonArchive& archive) override;
+	protected:
 
-		bool deserialize(core::JsonArchive& archive) override;
+		core::Image image;
 
-		// TODO: Recreate the descriptor set when the sampler change
-		AssetProperty<AssetSampler> sampler{ "Sampler" };
-
-		vulkan_renderer::Texture texture;
-		vulkan_renderer::DescriptorSets descriptorSets;
 	};
 
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
-#include "Zinet/Gameplay/ZtEngineContext.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
@@ -9,10 +8,10 @@
 
 #include <gtest/gtest.h>
 
-namespace zt::gameplay::tests
+namespace zt::gameplay::asset::tests
 {
 
-	class AssetShaderTests : public ::testing::Test
+	class ShaderTests : public ::testing::Test
 	{
 	protected:
 
@@ -26,23 +25,15 @@ namespace zt::gameplay::tests
 
 	};
 
-	TEST_F(AssetShaderTests, Test)
+	TEST_F(ShaderTests, Test)
 	{
-		SystemRenderer::SetUseImGui(false);
-
 		core::AssetsStorage assetsStorage;
-		assetsStorage.registerAssetClass<AssetShader>();
-
-		EngineContext engineContext;
-		engineContext.addSystem<SystemWindow>("SystemWindow");
-		engineContext.addSystem<SystemRenderer>("SystemRenderer");
-
-		engineContext.init();
+		assetsStorage.registerAssetClass<Shader>();
 
 		bool result = assetsStorage.storeAssets();
 		ASSERT_TRUE(result);
 
-		auto asset = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.vert");
+		auto asset = assetsStorage.getAs<Shader>("Content/Shaders/shader.vert");
 		ASSERT_TRUE(asset);
 
 		ASSERT_TRUE(asset->load(assetsStorage.getAssetsFinder().getRootPath()));
@@ -53,7 +44,5 @@ namespace zt::gameplay::tests
 		ASSERT_FALSE(asset->isLoaded());
 		ASSERT_TRUE(asset->getText().empty());
 
-		engineContext.deinit();
-		SystemRenderer::SetUseImGui(true);
 	}
 }

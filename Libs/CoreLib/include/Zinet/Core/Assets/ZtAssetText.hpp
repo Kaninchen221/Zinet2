@@ -1,25 +1,27 @@
 #pragma once
 
-#include "Zinet/Core/Assets/ZtAsset.hpp"
+#include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtFile.hpp"
 
-namespace zt::core
+#include "Zinet/Core/Assets/ZtAsset.hpp"
+
+namespace zt::core::asset
 {
-	class AssetText : public Asset
+	class ZINET_CORE_API Text : public Asset
 	{
 	public:
 
-		AssetText(const Extensions& extensions = { "txt" }) : Asset{ extensions } {}
-		AssetText(const AssetText& other) = default;
-		AssetText(AssetText&& other) noexcept = default;
-		~AssetText() noexcept = default;
+		Text(const Extensions& extensions = { "txt" }) : Asset{ extensions } {}
+		Text(const Text& other) = default;
+		Text(Text&& other) noexcept = default;
+		~Text() noexcept = default;
 
-		AssetText& operator = (const AssetText& other) = default;
-		AssetText& operator = (AssetText&& other) noexcept = default;
+		Text& operator = (const Text& other) = default;
+		Text& operator = (Text&& other) noexcept = default;
 
-		const std::string_view getClassName() const override { return "zt::core::AssetText"; }
+		const std::string_view getClassName() const override { return "zt::core::assets::Text"; }
 
-		ObjectPtr createCopy() const override { return std::make_unique<AssetText>(*this); }
+		ObjectPtr createCopy() const override { return std::make_unique<Text>(*this); }
 
 		bool load(const Path& rootPath) override;
 
@@ -31,7 +33,6 @@ namespace zt::core
 
 	protected:
 
-		// Content
 		std::string text;
 
 	};

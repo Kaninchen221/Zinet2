@@ -59,8 +59,8 @@ namespace zt::gameplay::tests
 		void addResources()
 		{
 			AssetsStorage assetsStorage;
-			assetsStorage.registerAssetClass<AssetText>();
-			// TODO: Uncomment after adding system renderer
+			assetsStorage.registerAssetClass<core::asset::Text>();
+			// TODO: Work on assets
 			//assetsStorage.registerAssetClass<AssetTexture>();
 			//assetsStorage.registerAssetClass<AssetShader>();
 			//assetsStorage.registerAssetClass<AssetSampler>();

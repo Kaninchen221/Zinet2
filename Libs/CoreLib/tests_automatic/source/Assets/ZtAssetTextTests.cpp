@@ -5,41 +5,24 @@
 
 #include <gtest/gtest.h>
 
-namespace zt::core::tests
+namespace zt::core::asset::tests
 {
-
-	class AssetTextTests : public ::testing::Test
+	class TextTests : public ::testing::Test
 	{
 	protected:
 
-		AssetTextTests()
-		{
-		}
-
-		~AssetTextTests() override
-		{
-		}
-
-		void SetUp() override
-		{
-		}
-
-		void TearDown() override
-		{
-		}
-
-		AssetText assetText;
+		Text assetText;
 	};
 
-	TEST_F(AssetTextTests, Test)
+	TEST_F(TextTests, Test)
 	{
 		AssetsStorage assetsStorage;
-		assetsStorage.registerAssetClass<AssetText>();
+		assetsStorage.registerAssetClass<Text>();
 
 		bool result = assetsStorage.storeAssets();
 		ASSERT_TRUE(result);
 
-		auto textAsset = assetsStorage.getAs<AssetText>("Content/placeholder.txt");
+		auto textAsset = assetsStorage.getAs<Text>("Content/placeholder.txt");
 		ASSERT_TRUE(textAsset);
 
 		ASSERT_TRUE(textAsset->load(Paths::RootPath()));

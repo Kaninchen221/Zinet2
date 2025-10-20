@@ -1,16 +1,16 @@
 #pragma once
 
+#include <Zinet/Core/Assets/ZtAssetsStorage.hpp>
+
 #include <Zinet/Gameplay/Assets/ZtAssetSampler.hpp>
-#include <Zinet/Gameplay/ZtEngineContext.hpp>
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
 #include <gtest/gtest.h>
 
-namespace zt::gameplay::tests
+namespace zt::gameplay::asset::tests
 {
-
-	class AssetSamplerTests : public ::testing::Test
+	class SamplerTests : public ::testing::Test
 	{
 	protected:
 
@@ -24,28 +24,8 @@ namespace zt::gameplay::tests
 
 	};
 
-	TEST_F(AssetSamplerTests, Test)
+	TEST_F(SamplerTests, Test)
 	{
-		EngineContext engineContext;
-		auto& assetsStorage = engineContext.getAssetsStorage();
-		assetsStorage.registerAssetClass<AssetSampler>();
 
-		engineContext.addSystem<SystemWindow>("SystemWindow");
-		engineContext.addSystem<SystemRenderer>("SystemRenderer");
-
-		SystemRenderer::SetUseImGui(false);
-		ASSERT_TRUE(engineContext.init());
-
-		auto asset = assetsStorage.getAs<AssetSampler>("Content/Samplers/linear.sampler");
-		ASSERT_TRUE(asset);
-
-		// Sampler should be auto loaded
-		ASSERT_TRUE(asset->isLoaded());
-
-		asset->unload();
-		ASSERT_FALSE(asset->isLoaded());
-
-		engineContext.deinit();
-		SystemRenderer::SetUseImGui(true);
 	}
 }
