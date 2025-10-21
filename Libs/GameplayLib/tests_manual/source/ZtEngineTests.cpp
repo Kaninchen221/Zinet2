@@ -18,6 +18,9 @@
 #include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
 
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
+
+#include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
 
 namespace zt::gameplay::tests
 {
@@ -76,6 +79,7 @@ namespace zt::gameplay::tests
 		void init()
 		{
 			scheduleInit.addSystem(system::Window{}, system::Window::Init, MainThread);
+			scheduleInit.addSystem(system::ImGui{}, system::ImGui::Init, MainThread);
 
 			scheduleInit.requestStop();
 			scheduleInit.run(world, MainThread);

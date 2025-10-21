@@ -12,24 +12,26 @@ namespace zt::gameplay
 		{
 			wd::GLFW::Init(false);
 
-			auto window = world.getResource<wd::Window>();
-			if (!window)
+			auto windowRes = world.addResource(wd::Window{});
+			if (!windowRes)
 			{
 				Logger->error("Couldn't find a window resource");
 				return;
 			}
 
-			if (!window->create(800, 800))
+			if (!windowRes->create(800, 800))
 			{
 				Logger->error("Couldn't create window");
 				return;
 			}
+
+			world.addResource(wd::WindowEvents{ *windowRes });
 		}
 
 		void Window::Update(ecs::World& world)
 		{
-			auto window = world.getResource<wd::Window>();
-			if (!window)
+			auto windowRes = world.getResource<wd::Window>();
+			if (!windowRes)
 			{
 				Logger->error("Couldn't find a window resource");
 				return;
@@ -42,13 +44,13 @@ namespace zt::gameplay
 				return;
 			}
 
-			if (window->isOpen())
+			if (windowRes->isOpen())
 			{
 				windowEvents->pollEvents();
 			}
 			else
 			{
-				window->destroyWindow();
+				windowRes->destroyWindow();
 
 				auto exitReason = world.getResource<components::ExitReason>();
 				if (exitReason)
@@ -65,15 +67,15 @@ namespace zt::gameplay
 
 		void Window::Deinit(ecs::World& world)
 		{
-			auto window = world.getResource<wd::Window>();
-			if (!window)
+			auto windowRes = world.getResource<wd::Window>();
+			if (!windowRes)
 			{
 				Logger->error("Couldn't find a window resource");
 				return;
 			}
 
-			if (window->isOpen())
-				window->destroyWindow();
+			if (windowRes->isOpen())
+				windowRes->destroyWindow();
 
 			wd::GLFW::Deinit();
 		}
