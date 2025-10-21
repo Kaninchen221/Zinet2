@@ -21,12 +21,18 @@ namespace zt::gameplay::asset
 
 		const std::string_view getClassName() const override { return "zt::gameplay::Sampler"; }
 
+		bool load(const core::Path& rootPath);
+
+		void unload();
+
 		ObjectPtr createCopy() const override 
 		{ 
 			auto copy = std::make_unique<Sampler>(*this);
 			copy->autoLoad = true;
 			return copy;
 		}
+
+		auto& getTypeString() const { return typeStr; }
 
 	protected:
 

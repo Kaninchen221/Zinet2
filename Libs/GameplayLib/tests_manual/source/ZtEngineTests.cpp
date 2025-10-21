@@ -60,10 +60,10 @@ namespace zt::gameplay::tests
 		{
 			AssetsStorage assetsStorage;
 			assetsStorage.registerAssetClass<core::asset::Text>();
-			// TODO: Work on assets
-			//assetsStorage.registerAssetClass<AssetTexture>();
-			//assetsStorage.registerAssetClass<AssetShader>();
-			//assetsStorage.registerAssetClass<AssetSampler>();
+			assetsStorage.registerAssetClass<asset::Texture>();
+			assetsStorage.registerAssetClass<asset::Shader>();
+			assetsStorage.registerAssetClass<asset::Sampler>();
+			assetsStorage.storeAssets();
 
 			world.addResource(assetsStorage);
 
@@ -80,9 +80,6 @@ namespace zt::gameplay::tests
 			scheduleInit.requestStop();
 			scheduleInit.run(world, MainThread);
 			scheduleInit.waitForStop();
-
-			auto assetsStorage = world.getResource<AssetsStorage>();
-			assetsStorage->storeAssets();
 		}
 
 		void update();
