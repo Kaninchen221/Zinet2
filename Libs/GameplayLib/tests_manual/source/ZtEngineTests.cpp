@@ -70,9 +70,6 @@ namespace zt::gameplay::tests
 
 			world.addResource(assetsStorage);
 
-			auto window = world.addResource(wd::Window{});
-			world.addResource(wd::WindowEvents{ *window });
-
 			world.addResource(components::ExitReason{});
 		}
 
@@ -138,6 +135,9 @@ namespace zt::gameplay::tests
 
 			scheduleUpdate.run(world, MainThread);
 		}
+
+		Logger->info("ExitReason: {}", exitReason->reason);
+
 		scheduleUpdate.requestStop();
 		scheduleUpdate.waitForStop();
 	}

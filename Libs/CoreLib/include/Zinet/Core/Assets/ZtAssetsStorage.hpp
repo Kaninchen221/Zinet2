@@ -21,7 +21,7 @@ namespace zt::core
 	{
 	protected:
 
-		inline static auto Logger = ConsoleLogger::Create("AssetsStorage");
+		inline static auto Logger = ConsoleLogger::Create("zt::core::AssetsStorage");
 
 	public:
 

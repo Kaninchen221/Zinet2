@@ -15,7 +15,7 @@ namespace zt::gameplay
 			auto windowRes = world.addResource(wd::Window{});
 			if (!windowRes)
 			{
-				Logger->error("Couldn't find a window resource");
+				Logger->error("Couldn't add a window resource");
 				return;
 			}
 
@@ -25,7 +25,12 @@ namespace zt::gameplay
 				return;
 			}
 
-			world.addResource(wd::WindowEvents{ *windowRes });
+			auto windowEventsRes = world.addResource(wd::WindowEvents{ *windowRes });
+			if (!windowEventsRes)
+			{
+				Logger->error("Couldn't add a window events resource");
+				return;
+			}
 		}
 
 		void Window::Update(ecs::World& world)
