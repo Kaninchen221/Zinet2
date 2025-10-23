@@ -49,9 +49,13 @@ namespace zt::vulkan_renderer
 
 		bool shouldBePaused() const noexcept { return rendererContext.invalidWindowSizeForPresent; }
 
+		bool isInitialized() const noexcept { return initialized; }
+
 	protected:
 
 		RendererContext rendererContext;
+
+		bool initialized = false;
 
 		static void WindowResizedCallback(void* userPointer, const Vector2i& size);
 

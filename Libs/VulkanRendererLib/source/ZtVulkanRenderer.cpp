@@ -13,6 +13,7 @@ namespace zt::vulkan_renderer
 		if (!rendererContext.create(window))
 			return false;
 
+		initialized = true;
 		return true;
 	}
 
@@ -21,6 +22,7 @@ namespace zt::vulkan_renderer
 		rendererContext.device.waitIdle();
 
 		rendererContext.destroy();
+		initialized = false;
 	}
 
 	bool VulkanRenderer::nextImage()
