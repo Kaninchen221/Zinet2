@@ -36,6 +36,8 @@ namespace zt::vulkan_renderer
 
 		void deinit(const RendererContext& rendererContext);
 
+		bool isInitialized() const noexcept { return initialized; }
+
 		static void ImplSpecificNewFrame();
 
 		void prepareRenderData() const;
@@ -47,6 +49,8 @@ namespace zt::vulkan_renderer
 	protected:
 
 		DescriptorPool descriptorPool{ nullptr };
+
+		bool initialized = false;
 
 	};
 }

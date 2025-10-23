@@ -19,6 +19,7 @@ namespace zt::gameplay::system
 
 		static void Init(core::ecs::World& world);
 
+		static void Deinit(core::ecs::World& world);
 	};
 
 }

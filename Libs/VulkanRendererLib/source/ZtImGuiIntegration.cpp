@@ -74,6 +74,7 @@ namespace zt::vulkan_renderer
 
 		ImPlot::CreateContext();
 
+		initialized = true;
 		return true;
 	}
 
@@ -87,6 +88,8 @@ namespace zt::vulkan_renderer
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 		descriptorPool.destroy(rendererContext.getDevice());
+
+		initialized = false;
 	}
 
 	void ImGuiIntegration::prepareRenderData() const

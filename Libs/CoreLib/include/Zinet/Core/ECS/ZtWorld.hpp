@@ -140,7 +140,7 @@ namespace zt::core::ecs
 		for (auto& resource : resources)
 		{
 			if (resource.hasType<Resource>())
-				return {};
+				return {}; // TODO: Return valid result when the resource already exists?
 		}
 
 		auto& typeLessVector = resources.emplace_back(TypeLessVector::Create<Resource>());
