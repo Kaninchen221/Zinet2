@@ -17,6 +17,7 @@
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
 #include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
 
+#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
 
@@ -76,6 +77,7 @@ namespace zt::gameplay::tests
 		void init()
 		{
 			scheduleInit.addSystem(system::Window{}, system::Window::Init, MainThread);
+			scheduleInit.addSystem(system::Renderer{}, system::Renderer::Init, MainThread);
 			scheduleInit.addSystem(system::ImGui{}, system::ImGui::Init, MainThread);
 
 			scheduleInit.requestStop();
@@ -92,6 +94,8 @@ namespace zt::gameplay::tests
 
 		void deinit()
 		{
+			scheduleDeinit.addSystem(system::ImGui{}, system::ImGui::Deinit, MainThread);
+			scheduleDeinit.addSystem(system::Renderer{}, system::Renderer::Deinit, MainThread);
 			scheduleDeinit.addSystem(system::Window{}, system::Window::Deinit, MainThread);
 
 			scheduleDeinit.requestStop();
