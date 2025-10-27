@@ -92,7 +92,7 @@ namespace zt::vulkan_renderer
 		auto& getRenderPass() const noexcept { return renderPass; }
 		auto& getDescriptorPool() noexcept { return descriptorPool; }
 		auto& getDescriptorPool() const noexcept { return descriptorPool; }
-
+		
 	protected:
 
 		Instance instance{ nullptr };
@@ -105,6 +105,7 @@ namespace zt::vulkan_renderer
 		Queue queue{ nullptr };
 		CommandPool commandPool{ nullptr };
 
+		// TODO: RenderPass should be passed by the user
 		RenderPass renderPass{ nullptr };
 
 		using DisplayImages = std::vector<DisplayImage>;

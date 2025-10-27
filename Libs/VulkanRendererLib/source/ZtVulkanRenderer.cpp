@@ -52,25 +52,18 @@ namespace zt::vulkan_renderer
 		Logger->debug("Current display image index: {}", currentDisplayImageIndex);
 		Logger->debug("Next display image index: {}", nextDisplayImageIndex);
 
-
 		return true;
 	}
 
-	void VulkanRenderer::draw(GraphicsPipeline& graphicsPipeline, const DrawInfo& drawInfo)
+	void VulkanRenderer::startRecordingDrawCommands()
 	{
 		auto& swapChain = rendererContext.swapChain;
-		auto& renderPass = rendererContext.renderPass;
 		auto& displayImage = rendererContext.getCurrentDisplayImage();
 		auto& commandBuffer = displayImage.commandBuffer;
 
-		//Logger->debug("Drawing on image with index: {}", rendererContext.currentDisplayImageIndex);
-
-		// Begin draw start
 		commandBuffer.reset();
 
 		commandBuffer.begin();
-		const auto extent = swapChain.getExtent();
-		commandBuffer.beginRenderPass(renderPass, displayImage.framebuffer, extent);
 
 		// Viewport settings
 		const VkViewport viewport
@@ -90,20 +83,47 @@ namespace zt::vulkan_renderer
 			.extent = swapChain.getExtent()
 		};
 		commandBuffer.setScissor(scissor);
+	}
 
-		commandBuffer.bindPipeline(graphicsPipeline.getPipeline());
+	void VulkanRenderer::beginRenderPass(RenderPass& renderPass)
+	{
+		auto& swapChain = rendererContext.swapChain;
+		auto& displayImage = rendererContext.getCurrentDisplayImage();
+		auto& commandBuffer = displayImage.commandBuffer;
 
-		// TODO: Support more than one pipeline
-		graphicsPipeline.draw(rendererContext, drawInfo, commandBuffer);
+		const auto extent = swapChain.getExtent();
+		commandBuffer.beginRenderPass(renderPass, displayImage.framebuffer, extent);
+	}
 
-		// TODO: After adding support of multiple pipelines, additional commands should describe which pipeline to use
-		for (const auto& additionalCommand : drawInfo.additionalCommands)
+	void VulkanRenderer::draw(const Command& command)
+	{
+		auto& displayImage = rendererContext.getCurrentDisplayImage();
+		auto& commandBuffer = displayImage.commandBuffer;
+
+#	if ZINET_SANITY_CHECK
+		if (!command)
 		{
-			if (additionalCommand)
-				additionalCommand.invoke(commandBuffer);
+			Logger->error("Command is invalid");
+			return;
 		}
+#	endif
+
+		command(commandBuffer);
+	}
+
+	void VulkanRenderer::endRenderPass()
+	{
+		auto& displayImage = rendererContext.getCurrentDisplayImage();
+		auto& commandBuffer = displayImage.commandBuffer;
 
 		commandBuffer.endRenderPass();
+	}
+
+	void VulkanRenderer::endRecordingDrawCommands()
+	{
+		auto& displayImage = rendererContext.getCurrentDisplayImage();
+		auto& commandBuffer = displayImage.commandBuffer;
+
 		commandBuffer.end();
 	}
 

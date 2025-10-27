@@ -217,8 +217,7 @@ namespace zt::vulkan_renderer::tests
 			.vertexBuffer = &vertexBuffer,
 			.indexBuffer = &indexBuffer,
 			.indexCount = static_cast<std::uint32_t>(indices.size()),
-			.instances = 2u,
-			.additionalCommands = { ImGuiIntegration::DrawCommand }
+			.instances = 2u
 		};
 
 		{ // Create Graphics Pipeline
@@ -327,7 +326,25 @@ namespace zt::vulkan_renderer::tests
 			{
 				ASSERT_TRUE(renderer.nextImage());
 
-				renderer.draw(graphicsPipeline, drawInfo);
+				renderer.startRecordingDrawCommands();
+
+				renderer.beginRenderPass(renderer.getRendererContext().getRenderPass());
+
+				auto drawCommand =
+				[&graphicsPipeline = graphicsPipeline, &rendererContext = renderer.getRendererContext(), &drawInfo = drawInfo]
+				(CommandBuffer& commandBuffer)
+				{
+					commandBuffer.bindPipeline(graphicsPipeline.getPipeline());
+
+					graphicsPipeline.draw(rendererContext, drawInfo, commandBuffer);
+				};
+
+				renderer.draw(drawCommand);
+				renderer.draw(ImGuiIntegration::DrawCommand);
+
+				renderer.endRenderPass();
+
+				renderer.endRecordingDrawCommands();
 
 				ASSERT_TRUE(renderer.submitCurrentDisplayImage());
 

@@ -24,6 +24,8 @@ namespace zt::vulkan_renderer
 
 	public:
 
+		using Command = std::function<void(CommandBuffer&)>;
+
 		VulkanRenderer() = default;
 		VulkanRenderer(const VulkanRenderer& other) = default;
 		VulkanRenderer(VulkanRenderer&& other) = default;
@@ -37,8 +39,16 @@ namespace zt::vulkan_renderer
 		void deinit();
 
 		bool nextImage();
-		
-		void draw(GraphicsPipeline& graphicsPipeline, const DrawInfo& drawInfo);
+
+		void startRecordingDrawCommands();
+
+		void beginRenderPass(RenderPass& renderPass);
+
+		void draw(const Command& command);
+
+		void endRenderPass();
+
+		void endRecordingDrawCommands();
 
 		bool submitCurrentDisplayImage();
 

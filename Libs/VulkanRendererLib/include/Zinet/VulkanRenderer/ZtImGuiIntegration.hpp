@@ -42,7 +42,7 @@ namespace zt::vulkan_renderer
 
 		void prepareRenderData() const;
 
-		static void DrawCommand(const CommandBuffer& commandBuffer);
+		static void DrawCommand(CommandBuffer& commandBuffer);
 
 		static void SetStyle_Dark();
 
