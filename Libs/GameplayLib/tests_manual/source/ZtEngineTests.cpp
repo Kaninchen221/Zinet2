@@ -67,7 +67,7 @@ namespace zt::gameplay::tests
 			assetsStorage.registerAssetClass<asset::Texture>();
 			assetsStorage.registerAssetClass<asset::Shader>();
 			assetsStorage.registerAssetClass<asset::Sampler>();
-			assetsStorage.storeAssets();
+			ZT_TIME_LOG(assetsStorage.storeAssets());
 
 			world.addResource(assetsStorage);
 

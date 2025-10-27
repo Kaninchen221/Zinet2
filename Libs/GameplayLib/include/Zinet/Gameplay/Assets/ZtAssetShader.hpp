@@ -12,7 +12,7 @@ namespace zt::gameplay::asset
 	{
 	public:
 
-		Shader() : Text{ { "frag", "vert" }} {}
+		Shader() : Text{ { "frag", "vert" } } { autoLoad = true; }
 		Shader(const Shader& other) : Text{other} {}
 		Shader(Shader&& other) noexcept = default;
 		~Shader() noexcept = default;
