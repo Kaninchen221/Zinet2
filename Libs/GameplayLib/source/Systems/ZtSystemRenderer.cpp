@@ -1,6 +1,9 @@
 ﻿#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 
+#include "Zinet/Gameplay/Components/ZtRenderDrawData.hpp"
+
 #include "Zinet/Core/ECS/ZtWorld.hpp"
+#include "Zinet/Core/ECS/ZtQuery.hpp"
 #include "Zinet/Core/Components/ZtExitReason.hpp"
 
 #include "Zinet/Window/ZtWindow.hpp"
@@ -41,9 +44,45 @@ namespace zt::gameplay::system
 		}
 	}
 
-	void Renderer::Update([[maybe_unused]] ecs::World& world)
+	void Renderer::Update(ecs::World& world)
 	{
+		auto rendererRes = world.getResource<vulkan_renderer::VulkanRenderer>();
+		if (!rendererRes)
+		{
+			Logger->error("Renderer resource is invalid");
+			return;
+		}
 
+		if (!rendererRes->nextImage())
+		{
+			Logger->error("Renderer couldn't switch to next image");
+			return;
+		}
+
+		rendererRes->startRecordingDrawCommands();
+
+		rendererRes->beginRenderPass(rendererRes->getRendererContext().getRenderPass());
+
+		for (auto [renderDrawData] : ecs::Query<component::RenderDrawData>(world))
+		{
+			rendererRes->draw(renderDrawData->command);
+		}
+
+		rendererRes->endRenderPass();
+
+		rendererRes->endRecordingDrawCommands();
+
+		if (!rendererRes->submitCurrentDisplayImage())
+		{
+			Logger->error("Renderer couldn't submit draw commands");
+			return;
+		}
+
+		if (!rendererRes->displayCurrentImage())
+		{
+			Logger->error("Renderer couldn't display current image");
+			return;
+		}
 	}
 
 	void Renderer::Deinit(ecs::World& world)

@@ -3,6 +3,8 @@
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
+#include "Zinet/Gameplay/Components/ZtRenderDrawData.hpp"
+
 #include <gtest/gtest.h>
 
 #include "Zinet/Core/ECS/ZtWorld.hpp"
@@ -26,19 +28,28 @@ namespace zt::gameplay::system::tests
 		}
 	};
 
-	TEST_F(RendererTests, PassTest)
+	TEST_F(RendererTests, Test)
 	{
 		ecs::World world;
 
 		Window::Init(world);
 		Renderer::Init(world);
 
+		bool commandInvoked = false;
+		auto command = [&commandInvoked = commandInvoked]([[maybe_unused]] vulkan_renderer::CommandBuffer& commandBuffer)
+		{
+			commandInvoked = true;
+		};
+		component::RenderDrawData renderDrawData{ command };
+		world.spawn(renderDrawData);
+
 		auto rendererRes = world.getResource<vulkan_renderer::VulkanRenderer>();
 		ASSERT_TRUE(rendererRes);
 		ASSERT_TRUE(rendererRes->isInitialized());
 
 		Renderer::Update(world);
-		// TODO: Test Update
+
+		EXPECT_TRUE(commandInvoked);
 
 		Renderer::Deinit(world);
 		Window::Deinit(world);

@@ -44,10 +44,7 @@ namespace zt::gameplay::system::tests
 		ASSERT_TRUE(imGuiIntegrationRes);
 		ASSERT_TRUE(imGuiIntegrationRes->isInitialized());
 
-		// TODO: ImGuiSystem shouldn't have it's own graphics pipeline because ImGui back end is for that
-		// Now the SystemRenderer should just iterate over the RendererDrawData components
-		// The component should now just contains a Command of type: " std::function<void(CommandBuffer& commandBuffer)> "
-		// Because for now our target is to render only the ImGui on the screen and then we are can start thinking about other like sprites
+		// TODO: ImGuiSystem should iterate over components of type ImGuiCommand
 
 		ImGui::Deinit(world);
 		Renderer::Deinit(world);
