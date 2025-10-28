@@ -40,18 +40,6 @@ namespace zt::gameplay::system
 			return;
 		}
 
-		{
-			GraphicsPipelineCreateInfo createInfo
-			{
-				rendererRes->getRendererContext()
-			};
-
-			// TODO: To create minimal graphics pipeline we need at least some really simple vertex and fragment shaders
-			GraphicsPipeline graphicsPipeline;
-			graphicsPipeline.create(createInfo);
-
-			world.spawn(graphicsPipeline);
-		}
 	}
 
 	void ImGui::Deinit(core::ecs::World& world)
