@@ -124,8 +124,8 @@ namespace zt::gameplay::tests
 	void EngineTests::update()
 	{
 		scheduleUpdate.addSystem(system::ImGui{}, system::ImGui::Update, MainThread);
+		scheduleUpdate.addSystem(system::Renderer{}, system::Renderer::Update, MainThread); // System Renderer must be before System Window
 		scheduleUpdate.addSystem(system::Window{}, system::Window::Update, MainThread);
-		scheduleUpdate.addSystem(system::Renderer{}, system::Renderer::Update, MainThread);
 
 		auto exitReason = world.getResource<components::ExitReason>();
 		if (!exitReason)

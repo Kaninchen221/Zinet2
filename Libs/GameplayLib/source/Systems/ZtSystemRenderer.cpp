@@ -45,8 +45,6 @@ namespace zt::gameplay::system
 	}
 
 	// TODO: Handle errors when:
-	// When we close manually the window
-	// When the window is resized
 	// When the window is minimized
 	void Renderer::Update(ecs::World& world)
 	{
