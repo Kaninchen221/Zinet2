@@ -44,7 +44,8 @@ namespace zt::gameplay::system::tests
 		ASSERT_TRUE(imGuiIntegrationRes);
 		ASSERT_TRUE(imGuiIntegrationRes->isInitialized());
 
-		// TODO: ImGuiSystem should iterate over components of type ImGuiCommand
+		// TODO
+		//ImGui::Update(world);
 
 		ImGui::Deinit(world);
 		Renderer::Deinit(world);

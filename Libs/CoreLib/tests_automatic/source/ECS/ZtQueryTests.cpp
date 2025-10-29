@@ -136,4 +136,7 @@ namespace zt::core::ecs::tests
 
 		expectedSpritesVelocitiesPairsCount = 4;
 	}
+
+	// TODO: Query with type that doesn't exist in the world now crash because of dereferencing null pointer
+	// Write test
 }

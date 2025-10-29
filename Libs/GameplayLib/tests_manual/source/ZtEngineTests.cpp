@@ -43,9 +43,9 @@ namespace zt::gameplay::tests
 		inline static auto Logger = ConsoleLogger::Create("zt::gameplay::tests::EngineTests");
 
 		EngineTests() 
-			: scheduleInit{ ecs::Schedule::Create(MainThread, RenderThread) },
-			scheduleUpdate{ ecs::Schedule::Create(MainThread, RenderThread) },
-			scheduleDeinit{ ecs::Schedule::Create(MainThread, RenderThread) }
+			: scheduleInit{ ecs::Schedule::Create(MainThread, GameplayThread) },
+			scheduleUpdate{ ecs::Schedule::Create(MainThread, GameplayThread) },
+			scheduleDeinit{ ecs::Schedule::Create(MainThread, GameplayThread) }
 		{
 		}
 
@@ -105,8 +105,8 @@ namespace zt::gameplay::tests
 
 		enum Threads : ecs::ThreadID
 		{
-			MainThread,
-			RenderThread,
+			MainThread, // Window, Renderer, ImGui
+			GameplayThread, // Game Logic
 		};;
 
 		ecs::World world;
@@ -123,7 +123,9 @@ namespace zt::gameplay::tests
 
 	void EngineTests::update()
 	{
+		scheduleUpdate.addSystem(system::ImGui{}, system::ImGui::Update, MainThread);
 		scheduleUpdate.addSystem(system::Window{}, system::Window::Update, MainThread);
+		scheduleUpdate.addSystem(system::Renderer{}, system::Renderer::Update, MainThread);
 
 		auto exitReason = world.getResource<components::ExitReason>();
 		if (!exitReason)

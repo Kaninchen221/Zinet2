@@ -1,11 +1,17 @@
 ﻿#include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
 
+#include "Zinet/Gameplay/Components/ZtRenderDrawData.hpp"
+
 #include "Zinet/Core/ECS/ZtWorld.hpp"
 
 #include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
 
 #include "Zinet/Window/ZtWindow.hpp"
+
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_vulkan.h>
 
 using namespace zt::vulkan_renderer;
 
@@ -40,6 +46,36 @@ namespace zt::gameplay::system
 			return;
 		}
 
+		component::RenderDrawData imGuiRenderDrawData
+		{
+			.command = vulkan_renderer::ImGuiIntegration::DrawCommand
+		};
+
+		world.spawn(imGuiRenderDrawData);
+	}
+
+	void ImGui::Update(core::ecs::World& world)
+	{
+		ImGuiIntegration::ImplSpecificNewFrame();
+
+		::ImGui::NewFrame();
+
+#	if ZINET_DEBUG
+		::ImGui::ShowDemoWindow();
+#	endif
+
+		// TODO: Handle imgui calls here in some way like components with commands or use another systems
+
+		::ImGui::EndFrame();
+
+		auto imGuiIntegrationRes = world.getResource<ImGuiIntegration>();
+		if (!imGuiIntegrationRes)
+		{
+			Logger->error("Couldn't get the imGuiIntegration from the world");
+			return;
+		}
+
+		imGuiIntegrationRes->prepareRenderData();
 	}
 
 	void ImGui::Deinit(core::ecs::World& world)
@@ -60,4 +96,5 @@ namespace zt::gameplay::system
 
 		imGuiIntegrationRes->deinit(rendererRes->getRendererContext());
 	}
+
 }

@@ -8,11 +8,14 @@
 
 namespace zt::gameplay::asset
 {
+	// TODO: Cache the shader compilation result on disk in some temp folder, temp file or in the meta file to avoid recompilation
+	// Be sure that the cached is invalidated when the source code changes
+	// Be sure to ignore them in the gitignore
 	class ZINET_GAMEPLAY_API Shader : public core::asset::Text
 	{
 	public:
 
-		Shader() : Text{ { "frag", "vert" } } { autoLoad = true; }
+		Shader() : Text{ { "frag", "vert" } } { autoLoad = false; }
 		Shader(const Shader& other) : Text{other} {}
 		Shader(Shader&& other) noexcept = default;
 		~Shader() noexcept = default;

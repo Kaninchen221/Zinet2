@@ -13,13 +13,14 @@ namespace zt::gameplay::system
 {
 	class ZINET_GAMEPLAY_API ImGui
 	{
-		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::system::ImGui");
+		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::system::ZImGui");
 
 	public:
 
 		static void Init(core::ecs::World& world);
 
+		static void Update(core::ecs::World& world);
+
 		static void Deinit(core::ecs::World& world);
 	};
-
 }
