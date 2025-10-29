@@ -95,9 +95,6 @@ namespace zt::core::ecs
 		return *this;
 	}
 
-	// TODO Handle situation when we spawn/remove entities during iteration 
-	// Create some commands in schedule that will be executed at the end of update all systems or something similiar
-	// - handle situation when we spawn new archetypes
 	template<class... Components>
 	class Query
 	{

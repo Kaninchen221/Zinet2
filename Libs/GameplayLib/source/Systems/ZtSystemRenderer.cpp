@@ -56,6 +56,7 @@ namespace zt::gameplay::system
 		if (windowRes->isMinimized())
 		{
 			// Skip rendering when the window is minimized
+			// Because the swapchain can't be of size 0x0
 			return;
 		}
 

@@ -48,6 +48,9 @@ namespace zt::core::ecs
 		std::vector<Archetype*> getArchetypesWith();
 
 		/// Resources
+		// Resources are unique by type
+		// User can't remove resources
+
 		template<class ResourceT>
 		std::decay_t<ResourceT>* addResource(ResourceT&& newResource);
 
@@ -64,7 +67,7 @@ namespace zt::core::ecs
 
 		std::vector<Archetype> archetypes;
 
-		// Resources
+		/// Resources
 		std::vector<TypeLessVector> resources;
 
 	};
