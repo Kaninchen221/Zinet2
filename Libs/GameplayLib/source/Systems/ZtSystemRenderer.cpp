@@ -44,10 +44,21 @@ namespace zt::gameplay::system
 		}
 	}
 
-	// TODO: Handle errors when:
-	// When the window is minimized
 	void Renderer::Update(ecs::World& world)
 	{
+		auto windowRes = world.getResource<wd::Window>();
+		if (!windowRes)
+		{
+			Logger->error("Couldn't find a window resource");
+			return;
+		}
+
+		if (windowRes->isMinimized())
+		{
+			// Skip rendering when the window is minimized
+			return;
+		}
+
 		auto rendererRes = world.getResource<vulkan_renderer::VulkanRenderer>();
 		if (!rendererRes)
 		{
