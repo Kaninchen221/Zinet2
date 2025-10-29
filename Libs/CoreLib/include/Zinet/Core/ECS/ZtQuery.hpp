@@ -121,41 +121,20 @@ namespace zt::core::ecs
 
 		size_t getComponentsCount() const noexcept;
 
-		QueryIterator<Components...> begin() noexcept { return { archetypes, 0, 0 }; }
-		QueryIterator<Components...> begin() const noexcept { return { archetypes, 0, 0 }; }
+		QueryIterator<Components...> begin() noexcept { return beginImpl(); }
+		QueryIterator<Components...> begin() const noexcept { return beginImpl(); }
 
-		QueryIterator<Components...> end() noexcept { return { archetypes, InvalidIndex, InvalidIndex }; }
-		QueryIterator<Components...> end() const noexcept { return { archetypes, InvalidIndex, InvalidIndex }; }
+		QueryIterator<Components...> end() noexcept { return endImpl(); }
+		QueryIterator<Components...> end() const noexcept { return endImpl(); }
 
 	private:
+
+		auto beginImpl() const noexcept { return archetypes.empty() ? end() : QueryIterator<Components...>{ archetypes, 0, 0 }; }
+		auto endImpl() const noexcept { return QueryIterator<Components...>{ archetypes, InvalidIndex, InvalidIndex }; }
 
 		std::vector<Archetype*> archetypes;
 
 	};
-
-	//template<class... Components>
-	//QueryIterator<Components...> Query<Components...>::begin() noexcept
-	//{
-	//	for (auto segmentIt = componentsPack.begin(); segmentIt != componentsPack.end(); ++segmentIt)
-	//	{
-	//		auto firstValidIndex = (*segmentIt)->getFirstValidIndex();
-	//		if (firstValidIndex != InvalidIndex)
-	//		{
-	//			//static auto Logger = ConsoleLogger::Create("zt::core::ecs::Query<Component>::begin", spdlog::level::debug);
-	//			//Logger->debug("first valid index {}", firstValidIndex);
-	//
-	//			return QueryIterator<Component>{ &componentsPack, segmentIt, firstValidIndex };
-	//		}
-	//	}
-	//
-	//	return end();
-	//}
-	//
-	//template<class... Components>
-	//QueryIterator<Components...> Query<Components...>::end() noexcept
-	//{
-	//	return QueryIterator<Component>{ &componentsPack, componentsPack.end(), InvalidIndex };
-	//}
 
 	template<class... Components>
 	size_t Query<Components...>::getComponentsCount() const noexcept

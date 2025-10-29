@@ -139,8 +139,10 @@ namespace zt::core::ecs
 
 		for (auto& resource : resources)
 		{
+			// Don't return a valid pointer if the resource already exists
+			// Because functions should be explicit about what they are doing
 			if (resource.hasType<Resource>())
-				return {}; // TODO: Return valid result when the resource already exists?
+				return {}; 
 		}
 
 		auto& typeLessVector = resources.emplace_back(TypeLessVector::Create<Resource>());

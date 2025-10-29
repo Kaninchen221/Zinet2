@@ -137,6 +137,19 @@ namespace zt::core::ecs::tests
 		expectedSpritesVelocitiesPairsCount = 4;
 	}
 
-	// TODO: Query with type that doesn't exist in the world now crash because of dereferencing null pointer
-	// Write test
+	TEST(ECSQueryTest, QueryComponentsThatDontExistTest)
+	{
+		World world;
+		Query<Sprite> query{ world };
+		for (auto [sprite] : query)
+		{
+			ASSERT_TRUE(false);
+		}
+
+		const auto& constQuery = query;
+		for (auto [sprite] : constQuery)
+		{
+			ASSERT_TRUE(false);
+		}
+	}
 }
