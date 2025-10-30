@@ -4,6 +4,8 @@
 #include "Zinet/Core/ZtFunction.hpp"
 #include "Zinet/Core/ZtUtils.hpp"
 
+#include "Zinet/Core/ECS/ZtSystemReturnState.hpp"
+
 #include <cstdint>
 #include <limits>
 #include <vector>
@@ -20,5 +22,5 @@ namespace zt::core::ecs
 	class World;
 	// System can't access other systems because it will broke decoupling
 	// But can access components and resources from the world
-	using System = Function<void, World&>;
+	using System = Function<SystemReturnState, World&>;
 }

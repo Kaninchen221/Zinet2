@@ -17,33 +17,31 @@ using namespace zt::vulkan_renderer;
 
 namespace zt::gameplay::system
 {
-	void ImGui::Init(core::ecs::World& world)
+	core::ecs::SystemReturnState ImGui::Init(core::ecs::World& world)
 	{
+		using Level = core::ecs::SystemReturnState::Level;
+
 		auto windowRes = world.getResource<wd::Window>();
 		if (!windowRes)
 		{
-			Logger->error("Couldn't get a window res in the world");
-			return;
+			return { Level::Error, "Couldn't get a window res in the world" };
 		}
 
 		auto rendererRes = world.getResource<VulkanRenderer>();
 		if (!rendererRes)
 		{
-			Logger->error("Couldn't get a renderer res from the world");
-			return;
+			return { Level::Error, "Couldn't get a renderer res from the world" };
 		}
 
 		auto imGuiIntegrationRes = world.addResource(ImGuiIntegration{});
 		if (!imGuiIntegrationRes)
 		{
-			Logger->error("Couldn't add an imGuiIntegration to the world");
-			return;
+			return { Level::Error, "Couldn't add an imGuiIntegration to the world" };
 		}
 
 		if (!imGuiIntegrationRes->init(rendererRes->getRendererContext(), *windowRes))
 		{
-			Logger->error("Couldn't init imgui integration");
-			return;
+			return { Level::Error, "Couldn't init imgui integration" };
 		}
 
 		component::RenderDrawData imGuiRenderDrawData
@@ -52,10 +50,14 @@ namespace zt::gameplay::system
 		};
 
 		world.spawn(imGuiRenderDrawData);
+
+		return {};
 	}
 
-	void ImGui::Update(core::ecs::World& world)
+	core::ecs::SystemReturnState ImGui::Update(core::ecs::World& world)
 	{
+		using Level = core::ecs::SystemReturnState::Level;
+
 		ImGuiIntegration::ImplSpecificNewFrame();
 
 		::ImGui::NewFrame();
@@ -71,30 +73,33 @@ namespace zt::gameplay::system
 		auto imGuiIntegrationRes = world.getResource<ImGuiIntegration>();
 		if (!imGuiIntegrationRes)
 		{
-			Logger->error("Couldn't get the imGuiIntegration from the world");
-			return;
+			return { Level::Error, "Couldn't get the imGuiIntegration from the world" };
 		}
 
 		imGuiIntegrationRes->prepareRenderData();
+
+		return {};
 	}
 
-	void ImGui::Deinit(core::ecs::World& world)
+	core::ecs::SystemReturnState ImGui::Deinit(core::ecs::World& world)
 	{
+		using Level = core::ecs::SystemReturnState::Level;
+
 		auto rendererRes = world.getResource<VulkanRenderer>();
 		if (!rendererRes)
 		{
-			Logger->error("Couldn't get a renderer res from the world");
-			return;
+			return { Level::Error, "Couldn't get a renderer res from the world" };
 		}
 
 		auto imGuiIntegrationRes = world.getResource<ImGuiIntegration>();
 		if (!imGuiIntegrationRes)
 		{
-			Logger->error("Couldn't get an imGuiIntegration to the world");
-			return;
+			return { Level::Error, "Couldn't get an imGuiIntegration to the world" };
 		}
 
 		imGuiIntegrationRes->deinit(rendererRes->getRendererContext());
+
+		return {};
 	}
 
 }

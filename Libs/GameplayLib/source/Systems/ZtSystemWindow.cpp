@@ -8,45 +8,46 @@ namespace zt::gameplay
 	{
 		using namespace core;
 
-		void Window::Init(ecs::World& world)
+		core::ecs::SystemReturnState Window::Init(ecs::World& world)
 		{
+			using Level = ecs::SystemReturnState::Level;
+
 			wd::GLFW::Init(false);
 
 			auto windowRes = world.addResource(wd::Window{});
 			if (!windowRes)
 			{
-				Logger->error("Couldn't add a window resource");
-				return;
+				return { Level::Error, "Couldn't add a window resource" };
 			}
 
 			if (!windowRes->create(800, 800))
 			{
-				Logger->error("Couldn't create window");
-				return;
+				return { Level::Error, "Couldn't create window" };
 			}
 
 			auto windowEventsRes = world.addResource(wd::WindowEvents{ *windowRes });
 			if (!windowEventsRes)
 			{
-				Logger->error("Couldn't add a window events resource");
-				return;
+				return { Level::Error, "Couldn't add a window events resource" };
 			}
+
+			return {};
 		}
 
-		void Window::Update(ecs::World& world)
+		core::ecs::SystemReturnState Window::Update(ecs::World& world)
 		{
+			using Level = ecs::SystemReturnState::Level;
+
 			auto windowRes = world.getResource<wd::Window>();
 			if (!windowRes)
 			{
-				Logger->error("Couldn't find a window resource");
-				return;
+				return { Level::Error, "Couldn't find a window resource" };
 			}
 
 			auto windowEvents = world.getResource<wd::WindowEvents>();
 			if (!windowEvents)
 			{
-				Logger->error("Couldn't find a window events resource");
-				return;
+				return { Level::Error, "Couldn't find a window events resource" };
 			}
 
 			if (windowRes->isOpen())
@@ -65,24 +66,29 @@ namespace zt::gameplay
 				}
 				else
 				{
-					Logger->error("Couldn't find an exit reason resource");
+					return { Level::Error, "Couldn't find an exit reason resource" };
 				}
 			}
+
+			return {};
 		}
 
-		void Window::Deinit(ecs::World& world)
+		core::ecs::SystemReturnState Window::Deinit(ecs::World& world)
 		{
+			using Level = ecs::SystemReturnState::Level;
+
 			auto windowRes = world.getResource<wd::Window>();
 			if (!windowRes)
 			{
-				Logger->error("Couldn't find a window resource");
-				return;
+				return { Level::Error, "Couldn't find a window resource" };
 			}
 
 			if (windowRes->isOpen())
 				windowRes->destroyWindow();
 
 			wd::GLFW::Deinit();
+
+			return {};
 		}
 	}
 }

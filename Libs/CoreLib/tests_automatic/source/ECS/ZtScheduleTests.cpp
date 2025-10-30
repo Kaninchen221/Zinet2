@@ -39,7 +39,7 @@ namespace zt::core::ecs::tests
 		schedule.addSystem(TestSystem::Label{}, TestSystem::entryPoint, Threads::MainThread);
 
 		struct LambdaLabel {};
-		auto lambda = []([[maybe_unused]] World& world) { TestSystem::doSomething(); };
+		auto lambda = []([[maybe_unused]] World& world) -> SystemReturnState { TestSystem::doSomething(); return {}; };
 
 		schedule.addSystem(LambdaLabel{}, lambda, Threads::RenderThread);
 

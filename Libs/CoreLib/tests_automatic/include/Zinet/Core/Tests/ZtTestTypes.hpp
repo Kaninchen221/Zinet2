@@ -3,6 +3,8 @@
 #include "Zinet/Core/ZtTime.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
 
+#include "Zinet/Core/ECS/ZtSystemReturnState.hpp"
+
 #include <string>
 #include <vector>
 #include <cstdint>
@@ -54,16 +56,16 @@ namespace zt::core::ecs::tests
 	{
 		struct Label {}; // Empty struct works as an unique ID for the system
 
-		inline void doSomething() {}
+		inline SystemReturnState doSomething() { return {}; }
 
-		inline void entryPoint([[maybe_unused]] World& world) { doSomething(); }
+		inline SystemReturnState entryPoint([[maybe_unused]] World& world) { doSomething(); return {}; }
 	}
 
 	namespace TestSystemIncrementar
 	{
 		struct Label {};
 
-		void entryPoint(World& world);
+		SystemReturnState entryPoint(World& world);
 	}
 
 	// Example of a resource class

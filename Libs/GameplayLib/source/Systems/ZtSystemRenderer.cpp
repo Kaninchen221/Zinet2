@@ -14,63 +14,54 @@ using namespace zt::core;
 
 namespace zt::gameplay::system
 {
-	void Renderer::Init(ecs::World& world)
+	core::ecs::SystemReturnState Renderer::Init(ecs::World& world)
 	{
+		using Level = core::ecs::SystemReturnState::Level;
+
 		auto rendererRes = world.addResource(vulkan_renderer::VulkanRenderer{});
 		if (!rendererRes)
 		{
-			Logger->error("Couldn't add a renderer res to the world");
-			
-			auto exitReasonRes = world.getResource<components::ExitReason>();
-			if (exitReasonRes)
-			{
-				exitReasonRes->reason = "Couldn't add a renderer to the world";
-				exitReasonRes->exit = true;
-				return;
-			}
+			return { Level::Error, "Couldn't add a renderer res to the world" };
 		}
 
 		auto windowRes = world.getResource<wd::Window>();
 		if (!windowRes)
 		{
-			Logger->error("Couldn't get a window res from the world");
-			return;
+			return { Level::Error, "Couldn't get a window res from the world" };
 		}
 
 		if (!rendererRes->init(*windowRes))
 		{
-			Logger->error("Renderer init failed");
-			return;
+			return { Level::Error, "Renderer init failed" };
 		}
+
+		return {};
 	}
 
-	void Renderer::Update(ecs::World& world)
+	core::ecs::SystemReturnState Renderer::Update(ecs::World& world)
 	{
+		using Level = core::ecs::SystemReturnState::Level;
+
 		auto windowRes = world.getResource<wd::Window>();
 		if (!windowRes)
 		{
-			Logger->error("Couldn't find a window resource");
-			return;
+			return { Level::Error, "Couldn't find a window resource" };
 		}
 
 		if (windowRes->isMinimized())
 		{
-			// Skip rendering when the window is minimized
-			// Because the swapchain can't be of size 0x0
-			return;
+			return { Level::Info, "Skip rendering because window is minimized" };
 		}
 
 		auto rendererRes = world.getResource<vulkan_renderer::VulkanRenderer>();
 		if (!rendererRes)
 		{
-			Logger->error("Renderer resource is invalid");
-			return;
+			return { Level::Error, "Renderer resource is invalid" };
 		}
 
 		if (!rendererRes->nextImage())
 		{
-			Logger->error("Renderer couldn't switch to next image");
-			return;
+			return { Level::Error, "Renderer couldn't switch to next image" };
 		}
 
 		rendererRes->startRecordingDrawCommands();
@@ -88,26 +79,29 @@ namespace zt::gameplay::system
 
 		if (!rendererRes->submitCurrentDisplayImage())
 		{
-			Logger->error("Renderer couldn't submit draw commands");
-			return;
+			return { Level::Error, "Renderer couldn't submit draw commands" };
 		}
 
 		if (!rendererRes->displayCurrentImage())
 		{
-			Logger->error("Renderer couldn't display current image");
-			return;
+			return { Level::Error, "Renderer couldn't display current image" };
 		}
+
+		return {};
 	}
 
-	void Renderer::Deinit(ecs::World& world)
+	core::ecs::SystemReturnState Renderer::Deinit(ecs::World& world)
 	{
+		using Level = core::ecs::SystemReturnState::Level;
+
 		auto rendererRes = world.getResource<vulkan_renderer::VulkanRenderer>();
 		if (!rendererRes)
 		{
-			Logger->info("Couldn't get a renderer from the world");
-			return;
+			return { Level::Warn, "Couldn't get a renderer from the world" };
 		}
 
 		rendererRes->deinit();
+
+		return {};
 	}
 }
