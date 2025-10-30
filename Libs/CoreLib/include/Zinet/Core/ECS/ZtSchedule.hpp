@@ -26,6 +26,10 @@ namespace zt::core::ecs
 
 	struct ZINET_CORE_API Thread
 	{
+		inline static auto Logger = core::ConsoleLogger::Create("zt::core::ecs::Thread");
+
+	public:
+
 		friend Schedule;
 
 		Thread(ThreadID threadID) noexcept : id{ threadID } {}
@@ -74,10 +78,6 @@ namespace zt::core::ecs
 	// TODO 3: 
 	// User should be able to define dependencies between systems while adding them to the schedule
 	// Schedule should generate a graph of systems dependencies and execute them in correct order and fail if it can't be created 
-	//
-	// TODO 4:
-	// Every system should return something like ReturnState to inform Schedule if the system was executed, skipped or encountered some problem etc.
-	// 
 	class ZINET_CORE_API Schedule
 	{
 		inline static auto Logger = ConsoleLogger::Create("zt::core::ecs::Schedule");

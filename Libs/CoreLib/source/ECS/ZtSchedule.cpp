@@ -4,9 +4,34 @@ namespace zt::core::ecs
 {
 	void Thread::runSync(World& world) noexcept
 	{
+		using Level = SystemReturnState::Level;
+
 		for (const auto& systemPack : systems)
 		{
-			systemPack.system.invoke(world);
+			auto returnState = systemPack.system.invoke(world);
+
+			switch (returnState.getLevel())
+			{
+				case Level::Info:
+				break;
+
+				case Level::Warn:
+					Logger->warn(returnState.getMessage());
+					break;
+
+				case Level::Error:
+					Logger->error(returnState.getMessage());
+					break;
+
+				case Level::Critical:
+					Logger->critical(returnState.getMessage());
+					break;
+
+				case Level::Fatal:
+					Logger->critical(returnState.getMessage());
+					Terminate();
+					break;
+			}
 		}
 	}
 
