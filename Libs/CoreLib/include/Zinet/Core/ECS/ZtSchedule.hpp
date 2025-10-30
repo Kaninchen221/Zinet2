@@ -52,16 +52,32 @@ namespace zt::core::ecs
 		std::atomic_bool requestedStop = false;
 	};
 
-	// TODO:
-	// Create some commands in schedule that will be executed at the end of update all systems or something similar
+	// TODO 1:
+	// Problems to solve:
 	// - handle situation when we spawn/remove entities during system execution
-	// - handle situation when we add resources during system execution (we assume that resources are not removed during execution)
-	// Problem example:
+	// - handle situation when we add resources during system execution (we assume that resources can't be removed)
+	// Solution ideas:
+	// - Create some commands in schedule that will be executed at the end of update all systems or something similar
+	// 
+	// TODO 2:
+	// Problem to solve:
 	// ImGui system reads/writes to components of class Transform on the Main Thread
 	// Gameplay system writes/reads components of class Transform on the Gameplay Thread
 	// It will cause race condition and undefined behaviors
-	// TODO: User should be able to define dependencies between systems while adding them to the schedule
+	// Solution ideas:
+	// - Decorated world?
+	// - Create a pool of available components and remove them if they are used by some other system (on different thread)
+	// - Priority levels for systems or threads
+	// - Choose on the thread what to do when components are locked (skip system, wait for unlock, etc.)
+	// - Mutexes around components access (bad for performance)
+	// 
+	// TODO 3: 
+	// User should be able to define dependencies between systems while adding them to the schedule
 	// Schedule should generate a graph of systems dependencies and execute them in correct order and fail if it can't be created 
+	//
+	// TODO 4:
+	// Every system should return something like ReturnState to inform Schedule if the system was executed, skipped or encountered some problem etc.
+	// 
 	class ZINET_CORE_API Schedule
 	{
 		inline static auto Logger = ConsoleLogger::Create("zt::core::ecs::Schedule");
