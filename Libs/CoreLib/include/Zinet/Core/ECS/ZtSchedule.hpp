@@ -74,6 +74,7 @@ namespace zt::core::ecs
 	// - Priority levels for systems or threads
 	// - Choose on the thread what to do when components are locked (skip system, wait for unlock, etc.)
 	// - Mutexes around components access (bad for performance)
+	// - Systems shouldn't consume a World& but Queue<const ComponentT_1, ComponentT_2> so the scheduler can gather info which data the system will use (How to store them in the scheduler?)
 	// 
 	// TODO 3: 
 	// User should be able to define dependencies between systems while adding them to the schedule
