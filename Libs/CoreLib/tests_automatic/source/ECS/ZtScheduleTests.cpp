@@ -72,4 +72,36 @@ namespace zt::core::ecs::tests
 			ASSERT_NE(counter->value, 0);
 		}
 	}
+
+	TEST_F(ECSScheduleTests, GraphTest)
+	{
+		v2::Schedule schedule;
+
+		schedule.addSystem(SystemTest_1{}, SystemTest_1::EntryPoint);
+		schedule.addSystem(SystemTest_2{}, SystemTest_2::EntryPoint, v2::Before{ SystemTest_1{} }, v2::After{ SystemTest_3{} });
+		schedule.addSystem(SystemTest_3{}, SystemTest_3::EntryPoint);
+
+		auto& systems = schedule.getSystems();
+		ASSERT_EQ(systems.size(), 3);
+
+		{ // Test how SystemInfo is filled with data
+			auto& systemInfo = systems[1];
+			EXPECT_EQ(systemInfo.label, GetTypeID<SystemTest_2>());
+			EXPECT_TRUE(systemInfo.system);
+			ASSERT_EQ(systemInfo.before.size(), 1);
+			EXPECT_EQ(systemInfo.before.front(), GetTypeID<SystemTest_1>());
+			ASSERT_EQ(systemInfo.after.size(), 1);
+			EXPECT_EQ(systemInfo.after.front(), GetTypeID<SystemTest_3>());
+		}
+
+		auto buildResult = schedule.buildGraph();
+		ASSERT_TRUE(buildResult.getLevel() == SystemReturnState::Level::Info);
+
+		const v2::Graph& graph = schedule.getGraph();
+
+		[[maybe_unused]]
+		const std::vector<v2::Thread> threads = graph.getThreads();
+		//ASSERT_EQ(threads.size(), 1);
+
+	}
 }

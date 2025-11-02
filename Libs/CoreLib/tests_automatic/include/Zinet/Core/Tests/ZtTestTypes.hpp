@@ -4,6 +4,7 @@
 #include "Zinet/Core/ZtLogger.hpp"
 
 #include "Zinet/Core/ECS/ZtSystemReturnState.hpp"
+#include "Zinet/Core/ECS/ZtQuery.hpp"
 
 #include <string>
 #include <vector>
@@ -125,5 +126,41 @@ namespace zt::core::ecs::tests
 		std::string name;
 		std::vector<int32_t> data;
 		std::string description;
+	};
+
+	class SystemTest_1
+	{
+	public:
+		static SystemReturnState EntryPoint([[maybe_unused]] Query<Position> query) { return {}; }
+	};
+
+	class SystemTest_2
+	{
+	public:
+		static SystemReturnState EntryPoint([[maybe_unused]] Query<Position, Sprite> query) { return {}; }
+	};
+
+	class SystemTest_3
+	{
+	public:
+		static SystemReturnState EntryPoint() { return {}; }
+	};
+
+	class SystemTest_4
+	{
+	public:
+		static SystemReturnState EntryPoint() { return {}; }
+	};
+
+	class SystemTest_5
+	{
+	public:
+		static SystemReturnState EntryPoint() { return {}; }
+	};
+
+	class SystemTest_6
+	{
+	public:
+		static SystemReturnState EntryPoint() { return {}; }
 	};
 }

@@ -102,6 +102,13 @@ namespace zt::core::ecs
 		template<class Label>
 		void addSystem(Label label, System system, ThreadID threadID) noexcept;
 
+		template<class Label, class System2, class... Deps>
+		void addSystem2(
+			[[maybe_unused]] Label label, 
+			[[maybe_unused]] System2 system, 
+			[[maybe_unused]] ThreadID threadID, 
+			[[maybe_unused]] Deps... deps) noexcept {}
+
 		const auto& getThreads() const noexcept { return threads; }
 
 		void run(World& world, ThreadID mainThreadID);
@@ -116,6 +123,124 @@ namespace zt::core::ecs
 
 	};
 
+	namespace v2
+	{
+
+		struct ZINET_CORE_API SystemInfo
+		{
+			ID label = InvalidID;
+			Function<void, World&> system;
+			std::vector<ID> before;
+			std::vector<ID> after;
+		};
+
+		class ZINET_CORE_API Thread
+		{
+			std::vector<SystemInfo> systems;
+		};
+
+		class ZINET_CORE_API Graph
+		{
+		public:
+
+			auto& getThreads() const noexcept { return threads; }
+
+		private:
+
+			std::vector<Thread> threads;
+
+		};
+
+		struct Before
+		{
+			template<class... Systems>
+			Before([[maybe_unused]] Systems... systems)
+			{
+				(values.push_back(GetTypeID<Systems>()), ...);
+			}
+
+			std::vector<ID> values;
+		};
+
+		struct After
+		{
+			template<class... Systems>
+			After([[maybe_unused]] Systems... systems)
+			{
+				(values.push_back(GetTypeID<Systems>()), ...);
+			}
+
+			std::vector<ID> values;
+		};
+
+		class ZINET_CORE_API Schedule
+		{
+			inline static auto Logger = ConsoleLogger::Create("zt::core::ecs::Schedule");
+
+		public:
+
+			using Systems = std::vector<SystemInfo>;
+
+			Schedule() noexcept = default;
+			Schedule(const Schedule& other) noexcept = default;
+			Schedule(Schedule&& other) noexcept = default;
+			~Schedule() noexcept = default;
+
+			Schedule& operator = (const Schedule& other) noexcept = default;
+			Schedule& operator = (Schedule&& other) noexcept = default;
+
+			template<class Label, class System, class... Deps>
+			void addSystem(
+				[[maybe_unused]] Label label,
+				[[maybe_unused]] System system,
+				[[maybe_unused]] Deps... deps) noexcept 
+			{
+				SystemInfo systemInfo
+				{
+					.label = GetTypeID<Label>(),
+					.system = []([[maybe_unused]] World& world) {  },
+				};
+
+				(ResolveDeps(systemInfo, deps), ...);
+
+				systems.push_back(systemInfo);
+			}
+
+			auto& getSystems() const noexcept { return systems; }
+
+			SystemReturnState buildGraph() 
+			{ 
+
+				return {}; 
+			}
+
+			auto& getGraph() const noexcept { return graph; }
+
+		private:
+
+			template<class Dependency>
+			static void ResolveDeps([[maybe_unused]] SystemInfo& systemInfo, [[maybe_unused]] const Dependency& dependency)
+			{
+				if constexpr (std::is_same_v<Dependency, Before>)
+				{
+					systemInfo.before = dependency.values;
+				}
+				else if constexpr (std::is_same_v<Dependency, After>)
+				{
+					systemInfo.after = dependency.values;
+				}
+				else
+				{
+					static_assert(false, "Found a dependency that can't be resolved by this function");
+				}
+			}
+
+			Systems systems;
+			Graph graph;
+
+		};
+
+	}
 }
 
 namespace zt::core::ecs
