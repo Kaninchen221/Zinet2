@@ -24,4 +24,18 @@ namespace zt::core::tests
 		[[maybe_unused]]
 		Traits::ReturnT value = ExampleFunction(Traits::ArgsTs<0>{}, Traits::ArgsTs<1>{});
 	}
+
+	TEST_F(FunctionTraitsTests, TestFuncAsParam)
+	{
+		auto testFunc = [](auto func)
+		{
+			using Traits = FunctionTraits<decltype(func)>;
+
+			// That was enough to invoke the error: 
+			// " error C2079: 'traits' uses undefined struct 'zt::core::FunctionTraits<_T1>' " (MSVC)
+			[[maybe_unused]] Traits traits;
+		};
+
+		testFunc(ExampleFunction);
+	}
 }

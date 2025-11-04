@@ -7,14 +7,17 @@ namespace zt::core
 	template<typename T>
 	struct FunctionTraits;
 
-	template<typename Return, typename... Args>
-	struct FunctionTraits<Return(Args...)>
+	template<typename ReturnType, typename... Args>
+	struct FunctionTraits<ReturnType(Args...)>
 	{
-		using ReturnT = Return;
+		using ReturnT = ReturnType;
 
-		template <std::size_t N>
+		template <size_t N>
 		using ArgsTs = typename std::tuple_element<N, std::tuple<Args...>>::type;
 
 		static constexpr size_t ArgsCount = sizeof...(Args);
 	};
+
+	template <typename ReturnType, typename... Args>
+	struct FunctionTraits<ReturnType(*)(Args...)> : FunctionTraits<ReturnType(Args...)> {};
 }
