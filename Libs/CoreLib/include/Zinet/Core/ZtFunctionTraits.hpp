@@ -16,7 +16,7 @@ namespace zt::core
 
 		using TupleT = std::tuple<Args...>;
 
-		template <size_t N>
+		template<size_t N>
 		using ArgsTs = typename std::tuple_element<N, std::tuple<Args...>>::type;
 
 		static constexpr size_t ArgsCount = sizeof...(Args);

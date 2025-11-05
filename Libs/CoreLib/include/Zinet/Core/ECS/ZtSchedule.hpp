@@ -237,7 +237,7 @@ namespace zt::core::ecs
 			}
 
 			template<class SystemT>
-			static void ResolveSystemTraits([[maybe_unused]] SystemInfo& systemInfo, [[maybe_unused]] SystemT system)
+			constexpr static void ResolveSystemTraits([[maybe_unused]] SystemInfo& systemInfo, [[maybe_unused]] SystemT system)
 			{
 				using SystemTraits = FunctionTraits<SystemT>;
 
@@ -251,23 +251,50 @@ namespace zt::core::ecs
 			}
 
 			template<class SystemTraitsT, size_t... N>
-			static void ResolveSystemArgs(SystemInfo& systemInfo, std::index_sequence<N...>)
+			constexpr static void ResolveSystemArgs(SystemInfo& systemInfo, std::index_sequence<N...>)
 			{
-				// if QueryType
-				
-				(AddQuery(systemInfo, N), ...);
-
-				// If ResType
+				(ResolveSystemArgsImpl<typename SystemTraitsT::template ArgsTs<N>>(systemInfo), ...);
 			}
 
-			static void AddQuery(SystemInfo& systemInfo, size_t )
+			template<class T>
+			constexpr static void ResolveSystemArgsImpl(SystemInfo& systemInfo)
 			{
+				constexpr bool IsQueryType = requires { typename T::IsQueryType; };
+				constexpr bool IsResourceType = requires { typename T::IsResourceType; };
+
+				if constexpr (IsQueryType)
+				{
+					AddQuery<T>(systemInfo);
+				}
+				else if (IsResourceType) // Placeholder for Resource
+				{
+
+				}
+				else
+				{
+					static_assert(false, "System has a param that is not a type that can be handled by the Schedule");
+				}
+			}
+
+			template<class QueryT>
+			constexpr static void AddQuery(SystemInfo& systemInfo)
+			{
+				constexpr size_t size = std::tuple_size<typename QueryT::ComponentsT>{};
+
 				QueryInfo queryInfo
 				{
-					// Dodaj typy argumentów przekazanych do Query jeœli 
-					//.types = std::vector<TypeID>({}, )
+					.types = GetTypesIDs<typename QueryT::ComponentsT>(std::make_index_sequence<size>())
 				};
 				systemInfo.queries.push_back(queryInfo);
+			}
+
+			template<class ComponentsT, size_t... N>
+			constexpr static std::vector<TypeID> GetTypesIDs(std::index_sequence<N...>)
+			{
+				std::vector<TypeID> result;
+				(result.push_back(GetTypeID<typename std::tuple_element_t<N, ComponentsT>>()), ...);
+
+				return result;
 			}
 
 			Systems systems;

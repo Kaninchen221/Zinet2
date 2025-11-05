@@ -105,6 +105,7 @@ namespace zt::core::ecs
 	public:
 
 		using IsQueryType = std::true_type;
+		using ComponentsT = std::tuple<Components...>;
 
 		Query(World& world)
 			: archetypes(world.getArchetypesWith<Components...>())
