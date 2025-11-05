@@ -137,7 +137,12 @@ namespace zt::core::ecs::tests
 	class SystemTest_2
 	{
 	public:
-		static SystemReturnState EntryPoint([[maybe_unused]] Query<Position, Sprite> query) { return {}; }
+		static SystemReturnState EntryPoint(
+			[[maybe_unused]] Query<Position, Sprite> query0, 
+			[[maybe_unused]] Query<Position, Sprite, Velocity> query1) 
+		{ 
+			return {}; 
+		}
 	};
 
 	class SystemTest_3

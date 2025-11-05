@@ -15,6 +15,7 @@ namespace zt::core::ecs
 	constexpr inline static size_t InvalidIndex = std::numeric_limits<size_t>::max();
 
 	using ID = size_t;
+	using TypeID = size_t;
 	constexpr inline static ID InvalidID = InvalidIndex;
 
 	using ThreadID = uint8_t;

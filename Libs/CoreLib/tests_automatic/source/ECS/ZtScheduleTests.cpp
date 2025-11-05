@@ -92,6 +92,9 @@ namespace zt::core::ecs::tests
 			EXPECT_EQ(systemInfo.before.front(), GetTypeID<SystemTest_1>());
 			ASSERT_EQ(systemInfo.after.size(), 1);
 			EXPECT_EQ(systemInfo.after.front(), GetTypeID<SystemTest_3>());
+
+			//ASSERT_EQ(systemInfo.queries.size(), 2);
+			//EXPECT_EQ(systemInfo.queries[0].types.size(), 2);
 		}
 
 		auto buildResult = schedule.buildGraph();

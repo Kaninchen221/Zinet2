@@ -3,6 +3,7 @@
 #include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtFunction.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtFunctionTraits.hpp"
 
 #include "Zinet/Core/ECS/ZtTypes.hpp"
 #include "Zinet/Core/ECS/ZtWorld.hpp"
@@ -102,13 +103,6 @@ namespace zt::core::ecs
 		template<class Label>
 		void addSystem(Label label, System system, ThreadID threadID) noexcept;
 
-		template<class Label, class System2, class... Deps>
-		void addSystem2(
-			[[maybe_unused]] Label label, 
-			[[maybe_unused]] System2 system, 
-			[[maybe_unused]] ThreadID threadID, 
-			[[maybe_unused]] Deps... deps) noexcept {}
-
 		const auto& getThreads() const noexcept { return threads; }
 
 		void run(World& world, ThreadID mainThreadID);
@@ -125,13 +119,18 @@ namespace zt::core::ecs
 
 	namespace v2
 	{
+		struct ZINET_CORE_API QueryInfo
+		{
+			std::vector<TypeID> types;
+		};
 
 		struct ZINET_CORE_API SystemInfo
 		{
-			ID label = InvalidID;
+			TypeID label = InvalidID;
 			Function<void, World&> system;
-			std::vector<ID> before;
-			std::vector<ID> after;
+			std::vector<TypeID> before;
+			std::vector<TypeID> after;
+			std::vector<QueryInfo> queries;
 		};
 
 		class ZINET_CORE_API Thread
@@ -151,7 +150,7 @@ namespace zt::core::ecs
 
 		};
 
-		struct Before
+		struct ZINET_CORE_API Before
 		{
 			template<class... Systems>
 			Before([[maybe_unused]] Systems... systems)
@@ -162,7 +161,7 @@ namespace zt::core::ecs
 			std::vector<ID> values;
 		};
 
-		struct After
+		struct ZINET_CORE_API After
 		{
 			template<class... Systems>
 			After([[maybe_unused]] Systems... systems)
@@ -189,19 +188,21 @@ namespace zt::core::ecs
 			Schedule& operator = (const Schedule& other) noexcept = default;
 			Schedule& operator = (Schedule&& other) noexcept = default;
 
-			template<class Label, class System, class... Deps>
+			template<class LabelT, class SystemT, class... Deps>
 			void addSystem(
-				[[maybe_unused]] Label label,
-				[[maybe_unused]] System system,
+				[[maybe_unused]] LabelT label,
+				[[maybe_unused]] SystemT system,
 				[[maybe_unused]] Deps... deps) noexcept 
 			{
 				SystemInfo systemInfo
 				{
-					.label = GetTypeID<Label>(),
+					.label = GetTypeID<LabelT>(),
 					.system = []([[maybe_unused]] World& world) {  },
 				};
 
 				(ResolveDeps(systemInfo, deps), ...);
+
+				ResolveSystemTraits(systemInfo, system);
 
 				systems.push_back(systemInfo);
 			}
@@ -219,7 +220,7 @@ namespace zt::core::ecs
 		private:
 
 			template<class Dependency>
-			static void ResolveDeps([[maybe_unused]] SystemInfo& systemInfo, [[maybe_unused]] const Dependency& dependency)
+			static void ResolveDeps(SystemInfo& systemInfo, const Dependency& dependency)
 			{
 				if constexpr (std::is_same_v<Dependency, Before>)
 				{
@@ -233,6 +234,40 @@ namespace zt::core::ecs
 				{
 					static_assert(false, "Found a dependency that can't be resolved by this function");
 				}
+			}
+
+			template<class SystemT>
+			static void ResolveSystemTraits([[maybe_unused]] SystemInfo& systemInfo, [[maybe_unused]] SystemT system)
+			{
+				using SystemTraits = FunctionTraits<SystemT>;
+
+				static_assert(std::is_same_v<typename SystemTraits::ReturnT, SystemReturnState>, 
+					"Every system should return this type");
+
+				if constexpr (SystemTraits::ArgsCount > 0)
+				{
+					ResolveSystemArgs<SystemTraits>(systemInfo, std::make_index_sequence<SystemTraits::ArgsCount>());
+				}
+			}
+
+			template<class SystemTraitsT, size_t... N>
+			static void ResolveSystemArgs(SystemInfo& systemInfo, std::index_sequence<N...>)
+			{
+				// if QueryType
+				
+				(AddQuery(systemInfo, N), ...);
+
+				// If ResType
+			}
+
+			static void AddQuery(SystemInfo& systemInfo, size_t )
+			{
+				QueryInfo queryInfo
+				{
+					// Dodaj typy argumentów przekazanych do Query jeœli 
+					//.types = std::vector<TypeID>({}, )
+				};
+				systemInfo.queries.push_back(queryInfo);
 			}
 
 			Systems systems;
