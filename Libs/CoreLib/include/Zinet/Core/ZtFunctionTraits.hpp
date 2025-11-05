@@ -2,6 +2,8 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 
+#include <tuple>
+
 namespace zt::core
 {
 	template<typename T>
@@ -11,6 +13,8 @@ namespace zt::core
 	struct FunctionTraits<ReturnType(Args...)>
 	{
 		using ReturnT = ReturnType;
+
+		using TupleT = std::tuple<Args...>;
 
 		template <size_t N>
 		using ArgsTs = typename std::tuple_element<N, std::tuple<Args...>>::type;

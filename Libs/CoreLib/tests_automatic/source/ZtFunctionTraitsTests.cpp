@@ -20,6 +20,7 @@ namespace zt::core::tests
 		static_assert(std::is_same_v<Traits::ReturnT, int32_t>);
 		static_assert(std::is_same_v<Traits::ArgsTs<0>, float>);
 		static_assert(std::is_same_v<Traits::ArgsTs<1>, int64_t>);
+		static_assert(std::is_same_v<Traits::TupleT, std::tuple<float, int64_t>>);
 
 		[[maybe_unused]]
 		Traits::ReturnT value = ExampleFunction(Traits::ArgsTs<0>{}, Traits::ArgsTs<1>{});
