@@ -119,6 +119,11 @@ namespace zt::core::ecs
 
 	namespace v2
 	{
+		struct ZINET_CORE_API ResourceInfo
+		{
+			TypeID type;
+		};
+
 		struct ZINET_CORE_API QueryInfo
 		{
 			std::vector<TypeID> types;
@@ -131,6 +136,7 @@ namespace zt::core::ecs
 			std::vector<TypeID> before;
 			std::vector<TypeID> after;
 			std::vector<QueryInfo> queries;
+			std::vector<ResourceInfo> resources;
 		};
 
 		class ZINET_CORE_API Thread
@@ -266,9 +272,9 @@ namespace zt::core::ecs
 				{
 					AddQuery<T>(systemInfo);
 				}
-				else if (IsResourceType) // Placeholder for Resource
+				else if constexpr (IsResourceType)
 				{
-
+					AddResource<T>(systemInfo);
 				}
 				else
 				{
@@ -286,6 +292,16 @@ namespace zt::core::ecs
 					.types = GetTypesIDs<typename QueryT::ComponentsT>(std::make_index_sequence<size>())
 				};
 				systemInfo.queries.push_back(queryInfo);
+			}
+
+			template<class ResourceT>
+			constexpr static void AddResource(SystemInfo& systemInfo)
+			{
+				ResourceInfo resourceInfo
+				{
+					.type = GetTypeID<ResourceT>()
+				};
+				systemInfo.resources.push_back(resourceInfo);
 			}
 
 			template<class ComponentsT, size_t... N>

@@ -5,6 +5,7 @@
 
 #include "Zinet/Core/ECS/ZtSystemReturnState.hpp"
 #include "Zinet/Core/ECS/ZtQuery.hpp"
+#include "Zinet/Core/ECS/ZtResource.hpp"
 
 #include <string>
 #include <vector>
@@ -138,8 +139,11 @@ namespace zt::core::ecs::tests
 	{
 	public:
 		static SystemReturnState EntryPoint(
-			[[maybe_unused]] Query<Position, Sprite> query0, 
-			[[maybe_unused]] Query<Position, Sprite, Velocity> query1) 
+			[[maybe_unused]] Query<Position, Sprite> query0,
+			[[maybe_unused]] Query<Position, Sprite, Velocity> query1,
+			[[maybe_unused]] Resource<int> resInt,
+			[[maybe_unused]] Resource<float> resFloat,
+			[[maybe_unused]] Resource<double> resDouble)
 		{ 
 			return {}; 
 		}

@@ -13,6 +13,7 @@ namespace zt::core::ecs
 	public:
 
 		using T = std::decay_t<Type>;
+		using IsResourceType = std::true_type;
 
 		Resource(World& world)
 			: resource{ world.getResource<T>() }

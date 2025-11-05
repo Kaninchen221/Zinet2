@@ -93,14 +93,24 @@ namespace zt::core::ecs::tests
 			ASSERT_EQ(systemInfo.after.size(), 1);
 			EXPECT_EQ(systemInfo.after.front(), GetTypeID<SystemTest_3>());
 
-			// Test if queries have correct cunt of types
-			ASSERT_EQ(systemInfo.queries.size(), 2);
-			ASSERT_EQ(systemInfo.queries[0].types.size(), 2);
-			ASSERT_EQ(systemInfo.queries[1].types.size(), 3);
+			{ // Queries
+				// Test if queries have correct cunt of types
+				ASSERT_EQ(systemInfo.queries.size(), 2);
+				EXPECT_EQ(systemInfo.queries[0].types.size(), 2);
+				EXPECT_EQ(systemInfo.queries[1].types.size(), 3);
 
-			// Test the obtained types IDs (One query is enough)
- 			EXPECT_EQ(systemInfo.queries[0].types[0], GetTypeID<Position>());
- 			EXPECT_EQ(systemInfo.queries[0].types[1], GetTypeID<Sprite>());
+				// Test the obtained types IDs (One query is enough)
+				EXPECT_EQ(systemInfo.queries[0].types[0], GetTypeID<Position>());
+				EXPECT_EQ(systemInfo.queries[0].types[1], GetTypeID<Sprite>());
+			}
+
+			{ // Resources
+				// Test if resources have correct cunt of types
+				ASSERT_EQ(systemInfo.resources.size(), 3);
+				EXPECT_EQ(systemInfo.resources[0].type, GetTypeID<Resource<int>>());
+				EXPECT_EQ(systemInfo.resources[1].type, GetTypeID<Resource<float>>());
+				EXPECT_EQ(systemInfo.resources[2].type, GetTypeID<Resource<double>>());
+			}
 		}
 
 		auto buildResult = schedule.buildGraph();
