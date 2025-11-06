@@ -31,10 +31,10 @@ namespace zt::core::ecs
 		operator bool() const noexcept { return resource; }
 
 		T* operator -> () noexcept { return get(); }
-		T* operator -> () const noexcept { return get(); }
+		T const* operator -> () const noexcept { return get(); }
 
 		T* get() noexcept { return resource; }
-		T* get() const noexcept { return resource; }
+		T const* get() const noexcept { return resource; }
 
 	private:
 

@@ -30,4 +30,15 @@ namespace zt::core::ecs::tests
 		const int actual = *resource.get();
 		ASSERT_EQ(expected, actual);
 	}
+
+	TEST_F(ECSResourceTests, ConstTest)
+	{
+		//world.addResource(int(50));
+
+		const Resource<int> resource{ world };
+		//ASSERT_TRUE(resource);
+
+		static_assert(std::is_same_v<decltype(resource.get()), int const*>, "const Resource<T>::get must return a pointer to const variable");
+		static_assert(std::is_same_v<decltype(resource.operator ->()), int const*>, "const Resource<T>::operator -> must return a pointer to const variable");
+	}
 }
