@@ -7,7 +7,7 @@
 namespace zt::core
 {
 	template<typename T>
-	struct FunctionTraits;
+	struct FunctionTraits : FunctionTraits<std::remove_pointer_t<T>> {};
 
 	template<typename ReturnType, typename... Args>
 	struct FunctionTraits<ReturnType(Args...)>
@@ -17,11 +17,8 @@ namespace zt::core
 		using TupleT = std::tuple<Args...>;
 
 		template<size_t N>
-		using ArgsTs = typename std::tuple_element<N, std::tuple<Args...>>::type;
+		using ArgsTs = typename std::tuple_element_t<N, std::tuple<Args...>>;
 
 		static constexpr size_t ArgsCount = sizeof...(Args);
 	};
-
-	template <typename ReturnType, typename... Args>
-	struct FunctionTraits<ReturnType(*)(Args...)> : FunctionTraits<ReturnType(Args...)> {};
 }

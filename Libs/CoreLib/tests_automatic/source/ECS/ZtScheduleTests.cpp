@@ -93,10 +93,13 @@ namespace zt::core::ecs::tests
 			ASSERT_EQ(systemInfo.after.size(), 1);
 			EXPECT_EQ(systemInfo.after.front(), GetTypeID<SystemTest_3>());
 
+			// TODO: We need to know if the system want to edit or just read the components and reosurces
+
 			{ // Queries
 				// Test if queries have correct cunt of types
 				ASSERT_EQ(systemInfo.queries.size(), 2);
 				EXPECT_EQ(systemInfo.queries[0].types.size(), 2);
+
 				EXPECT_EQ(systemInfo.queries[1].types.size(), 3);
 
 				// Test the obtained types IDs (One query is enough)
@@ -121,6 +124,5 @@ namespace zt::core::ecs::tests
 		[[maybe_unused]]
 		const std::vector<v2::Thread> threads = graph.getThreads();
 		//ASSERT_EQ(threads.size(), 1);
-
 	}
 }
