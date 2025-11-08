@@ -12,20 +12,20 @@
 namespace zt::core::ecs
 {
 	template<class... Components>
-	class QueryIterator
+	class QueryIteratorImpl
 	{
 	public:
 
-		QueryIterator(std::vector<Archetype*> archetypes, size_t currentArchetypeIndex, size_t currentEntityIndex)
+		QueryIteratorImpl(std::vector<Archetype*> archetypes, size_t currentArchetypeIndex, size_t currentEntityIndex)
 			: archetypes{ archetypes },
 			currentArchetypeIndex{ currentArchetypeIndex }, 
 			currentEntityIndex{ currentEntityIndex }
 		{}
 
-		bool operator == (const QueryIterator& other) const noexcept;
-		bool operator != (const QueryIterator& other) const noexcept { return !operator==(other); }
+		bool operator == (const QueryIteratorImpl& other) const noexcept;
+		bool operator != (const QueryIteratorImpl& other) const noexcept { return !operator==(other); }
 
-		QueryIterator& operator++ () noexcept;
+		QueryIteratorImpl& operator++ () noexcept;
 
 		const std::tuple<Components*...> operator* () const noexcept { return {}; }
 		std::tuple<Components*...> operator* () noexcept 
@@ -47,7 +47,7 @@ namespace zt::core::ecs
 	};
 
 	template<class... Components>
-	bool QueryIterator<Components...>::operator==(const QueryIterator& other) const noexcept
+	bool QueryIteratorImpl<Components...>::operator==(const QueryIteratorImpl& other) const noexcept
 	{
 		return archetypes == other.archetypes &&
 			currentArchetypeIndex == other.currentArchetypeIndex &&
@@ -55,7 +55,7 @@ namespace zt::core::ecs
 	}
 
 	template<class... Components>
-	QueryIterator<Components...>& QueryIterator<Components...>::operator++() noexcept
+	QueryIteratorImpl<Components...>& QueryIteratorImpl<Components...>::operator++() noexcept
 	{
 		do
 		{
@@ -96,48 +96,48 @@ namespace zt::core::ecs
 	}
 
 	template<class... Components>
-	class Query
+	class QueryImpl
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::core::ecs::Query");
 
-		Query() noexcept = default;
+		QueryImpl() noexcept = default;
 
 	public:
 
 		using IsQueryType = std::true_type;
 		using ComponentsT = std::tuple<Components...>;
 
-		Query(World& world)
+		QueryImpl(World& world)
 			: archetypes(world.getArchetypesWith<Components...>())
 		{
 		}
 
-		Query(const Query & other) noexcept = default;
-		Query(Query&& other) noexcept = default;
-		~Query() noexcept = default;
+		QueryImpl(const QueryImpl & other) noexcept = default;
+		QueryImpl(QueryImpl&& other) noexcept = default;
+		~QueryImpl() noexcept = default;
 
-		Query& operator = (const Query& other) noexcept = default;
-		Query& operator = (Query&& other) noexcept = default;
+		QueryImpl& operator = (const QueryImpl& other) noexcept = default;
+		QueryImpl& operator = (QueryImpl&& other) noexcept = default;
 
 		size_t getComponentsCount() const noexcept;
 
-		QueryIterator<Components...> begin() noexcept { return beginImpl(); }
-		QueryIterator<Components...> begin() const noexcept { return beginImpl(); }
+		QueryIteratorImpl<Components...> begin() noexcept { return beginImpl(); }
+		QueryIteratorImpl<Components...> begin() const noexcept { return beginImpl(); }
 
-		QueryIterator<Components...> end() noexcept { return endImpl(); }
-		QueryIterator<Components...> end() const noexcept { return endImpl(); }
+		QueryIteratorImpl<Components...> end() noexcept { return endImpl(); }
+		QueryIteratorImpl<Components...> end() const noexcept { return endImpl(); }
 
 	private:
 
-		auto beginImpl() const noexcept { return archetypes.empty() ? end() : QueryIterator<Components...>{ archetypes, 0, 0 }; }
-		auto endImpl() const noexcept { return QueryIterator<Components...>{ archetypes, InvalidIndex, InvalidIndex }; }
+		auto beginImpl() const noexcept { return archetypes.empty() ? end() : QueryIteratorImpl<Components...>{ archetypes, 0, 0 }; }
+		auto endImpl() const noexcept { return QueryIteratorImpl<Components...>{ archetypes, InvalidIndex, InvalidIndex }; }
 
 		std::vector<Archetype*> archetypes;
 
 	};
 
 	template<class... Components>
-	size_t Query<Components...>::getComponentsCount() const noexcept
+	size_t QueryImpl<Components...>::getComponentsCount() const noexcept
 	{
 		size_t count = 0;
 		for (const auto& archetype : archetypes)
@@ -154,4 +154,7 @@ namespace zt::core::ecs
 		}
 		return count;
 	}
+
+	template<class... Components>
+	using Query = QueryImpl<Components...>;
 }

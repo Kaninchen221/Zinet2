@@ -46,8 +46,8 @@ namespace zt::core::ecs::tests
 	{
 		const Query<Sprite> query{ world };
 
-		const QueryIterator<Sprite> begin = query.begin();
-		const QueryIterator<Sprite> end = query.end();
+		const QueryIteratorImpl<Sprite> begin = query.begin();
+		const QueryIteratorImpl<Sprite> end = query.end();
 
 		ASSERT_NE(begin, end);
 
@@ -71,8 +71,8 @@ namespace zt::core::ecs::tests
 	{
 		const Query<Sprite, Velocity> query{ world };
 
-		const QueryIterator<Sprite, Velocity> begin = query.begin();
-		const QueryIterator<Sprite, Velocity> end = query.end();
+		const QueryIteratorImpl<Sprite, Velocity> begin = query.begin();
+		const QueryIteratorImpl<Sprite, Velocity> end = query.end();
 
 		ASSERT_NE(begin, end);
 
@@ -145,11 +145,10 @@ namespace zt::core::ecs::tests
 		{
 			ASSERT_TRUE(false);
 		}
+	}
 
-		const auto& constQuery = query;
-		for (auto [sprite] : constQuery)
-		{
-			ASSERT_TRUE(false);
-		}
+	TEST(ECSQueryTest, QueryFromConstWorld)
+	{
+		static_assert(std::is_same_v<Query<Position>, QueryImpl<Position>>);
 	}
 }
