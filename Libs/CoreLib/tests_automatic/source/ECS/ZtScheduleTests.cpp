@@ -84,6 +84,19 @@ namespace zt::core::ecs::tests
 		auto& systems = schedule.getSystems();
 		ASSERT_EQ(systems.size(), 3);
 
+		{ // Test system with const query
+			auto& systemInfo = systems[0];
+			EXPECT_EQ(systemInfo.label, GetTypeID<SystemTest_1>());
+			EXPECT_TRUE(systemInfo.system);
+			ASSERT_EQ(systemInfo.before.size(), 0);
+			ASSERT_EQ(systemInfo.after.size(), 0);
+
+			{ // Queries
+				ASSERT_EQ(systemInfo.queries.size(), 1);
+				EXPECT_TRUE(systemInfo.queries[0].isConst);
+			}
+		}
+
 		{ // Test how SystemInfo is filled with data
 			auto& systemInfo = systems[1];
 			EXPECT_EQ(systemInfo.label, GetTypeID<SystemTest_2>());
@@ -99,8 +112,10 @@ namespace zt::core::ecs::tests
 				// Test if queries have correct cunt of types
 				ASSERT_EQ(systemInfo.queries.size(), 2);
 				EXPECT_EQ(systemInfo.queries[0].types.size(), 2);
+				EXPECT_FALSE(systemInfo.queries[0].isConst);
 
 				EXPECT_EQ(systemInfo.queries[1].types.size(), 3);
+				EXPECT_FALSE(systemInfo.queries[1].isConst);
 
 				// Test the obtained types IDs (One query is enough)
 				EXPECT_EQ(systemInfo.queries[0].types[0], GetTypeID<Position>());

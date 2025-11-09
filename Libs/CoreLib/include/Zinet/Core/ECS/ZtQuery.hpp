@@ -11,12 +11,13 @@
 
 namespace zt::core::ecs
 {
-	template<bool IsConst, class... Components>
+	template<class IsConstType, class... Components>
 	class QueryIteratorImpl
 	{
 	public:
 
-		using Archetypes = std::conditional_t<IsConst, std::vector<const Archetype*>, std::vector<Archetype*>>;
+		using IsConstT = IsConstType;
+		using Archetypes = std::conditional_t<IsConstT{}, std::vector<const Archetype*>, std::vector<Archetype*>>;
 
 		QueryIteratorImpl(std::vector<Archetype*> archetypes, size_t currentArchetypeIndex, size_t currentEntityIndex)
 			: archetypes{ archetypes },
@@ -43,7 +44,7 @@ namespace zt::core::ecs
 
 			auto entity = entities[currentEntityIndex];
 
-			using ReturnT = std::conditional_t<IsConst, std::tuple<const Components*...>, std::tuple<Components*...>>;
+			using ReturnT = std::conditional_t < IsConstT{}, std::tuple<const Components*...>, std::tuple<Components*... >> ;
 			return ReturnT{ archetype->getComponentOfType<Components>(entity.getComponentsIndex())... };
 		}
 
@@ -55,16 +56,16 @@ namespace zt::core::ecs
 
 	};
 
-	template<bool IsConst, class... Components>
-	bool QueryIteratorImpl<IsConst, Components...>::operator==(const QueryIteratorImpl& other) const noexcept
+	template<class IsConstType, class... Components>
+	bool QueryIteratorImpl<IsConstType, Components...>::operator==(const QueryIteratorImpl& other) const noexcept
 	{
 		return archetypes == other.archetypes &&
 			currentArchetypeIndex == other.currentArchetypeIndex &&
 			currentEntityIndex == other.currentEntityIndex;
 	}
 
-	template<bool IsConst, class... Components>
-	QueryIteratorImpl<IsConst, Components...>& QueryIteratorImpl<IsConst, Components...>::operator++() noexcept
+	template<class IsConstType, class... Components>
+	QueryIteratorImpl<IsConstType, Components...>& QueryIteratorImpl<IsConstType, Components...>::operator++() noexcept
 	{
 		do
 		{
@@ -105,12 +106,12 @@ namespace zt::core::ecs
 	}
 
 	template<class... Components>
-	using QueryIterator = QueryIteratorImpl<false, Components...>;
+	using QueryIterator = QueryIteratorImpl<std::false_type, Components...>;
 
 	template<class... Components>
-	using ConstQueryIterator = QueryIteratorImpl<true, Components...>;
+	using ConstQueryIterator = QueryIteratorImpl<std::true_type, Components...>;
 
-	template<bool IsConst, class... Components>
+	template<class IsConstType, class... Components>
 	class QueryImpl
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::core::ecs::Query");
@@ -120,9 +121,10 @@ namespace zt::core::ecs
 	public:
 
 		using IsQueryType = std::true_type;
+		using IsConstT = IsConstType;
 		using ComponentsT = std::tuple<Components...>;
 
-		using Archetypes = std::conditional_t<IsConst, std::vector<const Archetype*>, std::vector<Archetype*>>;
+		using Archetypes = std::conditional_t<IsConstT{}, std::vector<const Archetype*>, std::vector<Archetype*>>;
 
 		QueryImpl(World& world)
 			: archetypes(world.getArchetypesWith<Components...>())
@@ -134,7 +136,7 @@ namespace zt::core::ecs
 		{
 		}
 
-		QueryImpl(const QueryImpl & other) noexcept = default;
+		QueryImpl(const QueryImpl& other) noexcept = default;
 		QueryImpl(QueryImpl&& other) noexcept = default;
 		~QueryImpl() noexcept = default;
 
@@ -143,23 +145,23 @@ namespace zt::core::ecs
 
 		size_t getComponentsCount() const noexcept;
 
-		QueryIteratorImpl<IsConst, Components...> begin() noexcept { return beginImpl(); }
-		QueryIteratorImpl<IsConst, Components...> begin() const noexcept { return beginImpl(); }
+		QueryIteratorImpl<IsConstT, Components...> begin() noexcept { return beginImpl(); }
+		QueryIteratorImpl<IsConstT, Components...> begin() const noexcept { return beginImpl(); }
 
-		QueryIteratorImpl<IsConst, Components...> end() noexcept { return endImpl(); }
-		QueryIteratorImpl<IsConst, Components...> end() const noexcept { return endImpl(); }
+		QueryIteratorImpl<IsConstT, Components...> end() noexcept { return endImpl(); }
+		QueryIteratorImpl<IsConstT, Components...> end() const noexcept { return endImpl(); }
 
 	private:
 
-		auto beginImpl() const noexcept { return archetypes.empty() ? end() : QueryIteratorImpl<IsConst, Components...>{ archetypes, 0, 0 }; }
-		auto endImpl() const noexcept { return QueryIteratorImpl<IsConst, Components...>{ archetypes, InvalidIndex, InvalidIndex }; }
+		auto beginImpl() const noexcept { return archetypes.empty() ? end() : QueryIteratorImpl<IsConstT, Components...>{ archetypes, 0, 0 }; }
+		auto endImpl() const noexcept { return QueryIteratorImpl<IsConstT, Components...>{ archetypes, InvalidIndex, InvalidIndex }; }
 
 		Archetypes archetypes;
 
 	};
 
-	template<bool IsConst, class... Components>
-	size_t QueryImpl<IsConst, Components...>::getComponentsCount() const noexcept
+	template<class IsConstType, class... Components>
+	size_t QueryImpl<IsConstType, Components...>::getComponentsCount() const noexcept
 	{
 		size_t count = 0;
 		for (const auto& archetype : archetypes)
@@ -178,8 +180,8 @@ namespace zt::core::ecs
 	}
 
 	template<class... Components>
-	using Query = QueryImpl<false, Components...>;
+	using Query = QueryImpl<std::false_type, Components...>;
 
 	template<class... Components>
-	using ConstQuery = QueryImpl<true, Components...>;
+	using ConstQuery = QueryImpl<std::true_type, Components...>;
 }

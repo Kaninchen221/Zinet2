@@ -127,6 +127,7 @@ namespace zt::core::ecs
 		struct ZINET_CORE_API QueryInfo
 		{
 			std::vector<TypeID> types;
+			bool isConst = false;
 		};
 
 		struct ZINET_CORE_API SystemInfo
@@ -289,7 +290,8 @@ namespace zt::core::ecs
 
 				QueryInfo queryInfo
 				{
-					.types = GetTypesIDs<typename QueryT::ComponentsT>(std::make_index_sequence<size>())
+					.types = GetTypesIDs<typename QueryT::ComponentsT>(std::make_index_sequence<size>()),
+					.isConst = QueryT::IsConstT()
 				};
 				systemInfo.queries.push_back(queryInfo);
 			}

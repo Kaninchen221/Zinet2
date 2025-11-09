@@ -150,11 +150,11 @@ namespace zt::core::ecs::tests
 
 	TEST(ECSQueryTest, QueryFromConstWorld)
 	{
-		constexpr bool IsConstFalse = false;
+		using IsConstFalse = std::false_type;
 		static_assert(std::is_same_v<QueryIterator<Position>, QueryIteratorImpl<IsConstFalse, Position>>);
 		static_assert(std::is_same_v<Query<Position>, QueryImpl<IsConstFalse, Position>>);
 
-		constexpr bool IsConstTrue = true;
+		using IsConstTrue = std::true_type;
 		static_assert(std::is_same_v<ConstQueryIterator<Position>, QueryIteratorImpl<IsConstTrue, Position>>);
 		static_assert(std::is_same_v<ConstQuery<Position>, QueryImpl<IsConstTrue, Position>>);
 
