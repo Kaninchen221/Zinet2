@@ -122,6 +122,7 @@ namespace zt::core::ecs
 		struct ZINET_CORE_API ResourceInfo
 		{
 			TypeID type;
+			bool isConst = false;
 		};
 
 		struct ZINET_CORE_API QueryInfo
@@ -301,7 +302,8 @@ namespace zt::core::ecs
 			{
 				ResourceInfo resourceInfo
 				{
-					.type = GetTypeID<ResourceT>()
+					.type = GetTypeID<ResourceT>(),
+					.isConst = ResourceT::IsConstT()
 				};
 				systemInfo.resources.push_back(resourceInfo);
 			}

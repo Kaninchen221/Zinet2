@@ -80,9 +80,10 @@ namespace zt::core::ecs::tests
 		schedule.addSystem(SystemTest_1{}, SystemTest_1::EntryPoint);
 		schedule.addSystem(SystemTest_2{}, SystemTest_2::EntryPoint, v2::Before{ SystemTest_1{} }, v2::After{ SystemTest_3{} });
 		schedule.addSystem(SystemTest_3{}, SystemTest_3::EntryPoint);
+		schedule.addSystem(SystemTest_4{}, SystemTest_4::EntryPoint);
 
 		auto& systems = schedule.getSystems();
-		ASSERT_EQ(systems.size(), 3);
+		ASSERT_EQ(systems.size(), 4);
 
 		{ // Test system with const query
 			auto& systemInfo = systems[0];
@@ -126,9 +127,26 @@ namespace zt::core::ecs::tests
 				// Test if resources have correct cunt of types
 				ASSERT_EQ(systemInfo.resources.size(), 3);
 				EXPECT_EQ(systemInfo.resources[0].type, GetTypeID<Resource<int>>());
+				EXPECT_EQ(systemInfo.resources[0].isConst, false);
 				EXPECT_EQ(systemInfo.resources[1].type, GetTypeID<Resource<float>>());
+				EXPECT_EQ(systemInfo.resources[1].isConst, false);
 				EXPECT_EQ(systemInfo.resources[2].type, GetTypeID<Resource<double>>());
+				EXPECT_EQ(systemInfo.resources[2].isConst, false);
 			}
+		}
+
+		{ // Test empty system
+			auto& systemInfo = systems[2];
+			EXPECT_TRUE(systemInfo.queries.empty());
+			EXPECT_TRUE(systemInfo.resources.empty());
+		}
+
+		{ // Test system with const resource
+			auto& systemInfo = systems[3];
+			ASSERT_EQ(systemInfo.resources.size(), 1);
+
+			EXPECT_EQ(systemInfo.resources[0].type, GetTypeID<ConstResource<int>>());
+			EXPECT_TRUE(systemInfo.resources[0].isConst);
 		}
 
 		auto buildResult = schedule.buildGraph();

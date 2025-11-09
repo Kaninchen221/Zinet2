@@ -158,7 +158,7 @@ namespace zt::core::ecs::tests
 	class SystemTest_4
 	{
 	public:
-		static SystemReturnState EntryPoint() { return {}; }
+		static SystemReturnState EntryPoint([[maybe_unused]] ConstResource<int> resInt) { return {}; }
 	};
 
 	class SystemTest_5

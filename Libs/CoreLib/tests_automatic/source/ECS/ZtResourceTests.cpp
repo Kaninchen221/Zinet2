@@ -13,13 +13,13 @@ namespace zt::core::ecs::tests
 	{
 	protected:
 
-		World world;
-
 		static_assert(!std::is_default_constructible_v<Resource<int>>);
 	};
 
 	TEST_F(ECSResourceTests, Test)
 	{
+		World world;
+
 		const int expected = 50;
 		world.addResource(int(expected));
 
@@ -33,9 +33,23 @@ namespace zt::core::ecs::tests
 
 	TEST_F(ECSResourceTests, ConstTest)
 	{
+		World world;
 		const Resource<int> resource{ world };
 
 		static_assert(std::is_same_v<decltype(resource.get()), int const*>, "const Resource<T>::get must return a pointer to const variable");
 		static_assert(std::is_same_v<decltype(resource.operator ->()), int const*>, "const Resource<T>::operator -> must return a pointer to const variable");
+	}
+
+	TEST_F(ECSResourceTests, ConstWorldTest)
+	{
+		World world;
+		const int expectedInt = 40;
+		ASSERT_TRUE(world.addResource(int(expectedInt)));
+
+		const World& constWorld = world;
+		ConstResource<int> resource{ constWorld };
+		ASSERT_TRUE(resource);
+
+		EXPECT_EQ(expectedInt, *resource.get());
 	}
 }

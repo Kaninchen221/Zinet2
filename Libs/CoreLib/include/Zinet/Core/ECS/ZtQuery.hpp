@@ -126,6 +126,7 @@ namespace zt::core::ecs
 
 		using Archetypes = std::conditional_t<IsConstT{}, std::vector<const Archetype*>, std::vector<Archetype*>>;
 
+		// TODO: Try to reduce this two constructors into one
 		QueryImpl(World& world)
 			: archetypes(world.getArchetypesWith<Components...>())
 		{

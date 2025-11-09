@@ -7,26 +7,32 @@
 
 namespace zt::core::ecs
 {
-	template<class Type>
-	class ZINET_CORE_API Resource
+	template<class IsConstType, class Type>
+	class ZINET_CORE_API ResourceImpl
 	{
 	public:
 
-		using T = std::decay_t<Type>;
 		using IsResourceType = std::true_type;
+		using IsConstT = IsConstType;
+		using T = std::conditional_t<IsConstT{}, const std::decay_t<Type>, std::decay_t<Type>>;
 
-		Resource(World& world)
+		ResourceImpl(World& world)
 			: resource{ world.getResource<T>() }
 		{
 		}
 
-		Resource() noexcept = delete;
-		Resource(const Resource& other) noexcept = default;
-		Resource(Resource&& other) noexcept = default;
-		~Resource() noexcept = default;
+		ResourceImpl(const World& world)
+			: resource{ world.getResource<T>() }
+		{
+		}
 
-		Resource& operator = (const Resource& other) noexcept = default;
-		Resource& operator = (Resource&& other) noexcept = default;
+		ResourceImpl() noexcept = delete;
+		ResourceImpl(const ResourceImpl& other) noexcept = default;
+		ResourceImpl(ResourceImpl&& other) noexcept = default;
+		~ResourceImpl() noexcept = default;
+
+		ResourceImpl& operator = (const ResourceImpl& other) noexcept = default;
+		ResourceImpl& operator = (ResourceImpl&& other) noexcept = default;
 
 		operator bool() const noexcept { return resource; }
 
@@ -41,4 +47,11 @@ namespace zt::core::ecs
 		T* resource{};
 
 	};
+
+	template<class Type>
+	using Resource = ResourceImpl<std::false_type, Type>;
+
+	template<class Type>
+	using ConstResource = ResourceImpl<std::true_type, Type>;
+
 }

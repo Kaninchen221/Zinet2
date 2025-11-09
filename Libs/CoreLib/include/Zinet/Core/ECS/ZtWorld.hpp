@@ -58,8 +58,12 @@ namespace zt::core::ecs
 		template<class ResourceT>
 		std::decay_t<ResourceT>* addResource(ResourceT&& newResource);
 
+		// TODO: Check if is it possible to refactor non const and const methods into one
 		template<class Resource>
 		Resource* getResource();
+
+		template<class Resource>
+		const Resource* getResource() const;
 
 	private:
 
@@ -160,6 +164,18 @@ namespace zt::core::ecs
 
 	template<class Resource>
 	Resource* World::getResource()
+	{
+		for (auto& resource : resources)
+		{
+			if (resource.hasType<Resource>())
+				return resource.get<Resource>(0); // There is always only one resource so the index is always 0
+		}
+
+		return {};
+	}
+
+	template<class Resource>
+	const Resource* World::getResource() const
 	{
 		for (auto& resource : resources)
 		{
