@@ -197,7 +197,7 @@ namespace zt::core::ecs
 			Schedule& operator = (Schedule&& other) noexcept = default;
 
 			template<class LabelT, class SystemT, class... Deps>
-			void addSystem(
+			constexpr void addSystem(
 				[[maybe_unused]] LabelT label,
 				[[maybe_unused]] SystemT system,
 				[[maybe_unused]] Deps... deps) noexcept 
@@ -228,7 +228,7 @@ namespace zt::core::ecs
 		private:
 
 			template<class Dependency>
-			static void ResolveDeps(SystemInfo& systemInfo, const Dependency& dependency)
+			constexpr static void ResolveDeps(SystemInfo& systemInfo, const Dependency& dependency)
 			{
 				if constexpr (std::is_same_v<Dependency, Before>)
 				{
