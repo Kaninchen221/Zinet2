@@ -47,6 +47,10 @@ namespace zt::core::ecs
 		template<class T>
 		T* get(size_t index);
 
+		// TODO: Reduce duplications of const methods
+		template<class T>
+		const T* get(size_t index) const;
+
 		bool isValidIndex(size_t index) const noexcept;
 
 		size_t getFirstValidIndex() const noexcept;
@@ -181,6 +185,37 @@ namespace zt::core::ecs
 #	endif
 
 		return reinterpret_cast<T*>(buffer.data() + offset);
+	}
+
+	template<class T>
+	const T* TypeLessVector::get(size_t index) const
+	{
+		using Object = std::decay_t<T>;
+
+		constexpr size_t objectSize = sizeof(Object);
+		if (objectSize != typeSize)
+			return {};
+
+		if (index >= objectsCount + removedObjects.size())
+			return {};
+
+		if (GetTypeID<Object>() != typeID)
+			return {};
+
+		if (std::ranges::contains(removedObjects, index))
+			return {};
+
+		const size_t offset = index * typeSize;
+
+#	if ZINET_SANITY_CHECK
+		if (offset + typeSize > buffer.size())
+		{
+			Ensure(false); // Invalid offset
+			return {};
+		}
+#	endif
+
+		return reinterpret_cast<const T*>(buffer.data() + offset);
 	}
 
 	template<class T>

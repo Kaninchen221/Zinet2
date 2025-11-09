@@ -46,8 +46,8 @@ namespace zt::core::ecs::tests
 	{
 		const Query<Sprite> query{ world };
 
-		const QueryIteratorImpl<Sprite> begin = query.begin();
-		const QueryIteratorImpl<Sprite> end = query.end();
+		const QueryIterator<Sprite> begin = query.begin();
+		const QueryIterator<Sprite> end = query.end();
 
 		ASSERT_NE(begin, end);
 
@@ -71,8 +71,8 @@ namespace zt::core::ecs::tests
 	{
 		const Query<Sprite, Velocity> query{ world };
 
-		const QueryIteratorImpl<Sprite, Velocity> begin = query.begin();
-		const QueryIteratorImpl<Sprite, Velocity> end = query.end();
+		const QueryIterator<Sprite, Velocity> begin = query.begin();
+		const QueryIterator<Sprite, Velocity> end = query.end();
 
 		ASSERT_NE(begin, end);
 
@@ -143,12 +143,33 @@ namespace zt::core::ecs::tests
 		Query<Sprite> query{ world };
 		for (auto [sprite] : query)
 		{
+			// Query returned non end iterator with empty world
 			ASSERT_TRUE(false);
 		}
 	}
 
 	TEST(ECSQueryTest, QueryFromConstWorld)
 	{
-		static_assert(std::is_same_v<Query<Position>, QueryImpl<Position>>);
+		constexpr bool IsConstFalse = false;
+		static_assert(std::is_same_v<QueryIterator<Position>, QueryIteratorImpl<IsConstFalse, Position>>);
+		static_assert(std::is_same_v<Query<Position>, QueryImpl<IsConstFalse, Position>>);
+
+		constexpr bool IsConstTrue = true;
+		static_assert(std::is_same_v<ConstQueryIterator<Position>, QueryIteratorImpl<IsConstTrue, Position>>);
+		static_assert(std::is_same_v<ConstQuery<Position>, QueryImpl<IsConstTrue, Position>>);
+
+		World world;
+		world.spawn(Position{});
+
+		const World& constWorld = world;
+
+		ConstQuery<Position> query{ constWorld };
+
+		ASSERT_TRUE(query.getComponentsCount() > 0);
+
+		for (const auto [position] : query)
+		{
+			ASSERT_TRUE(position);
+		}
 	}
 }

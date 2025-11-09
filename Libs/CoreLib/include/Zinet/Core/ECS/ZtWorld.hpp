@@ -47,6 +47,10 @@ namespace zt::core::ecs
 		template<class... Components>
 		std::vector<Archetype*> getArchetypesWith();
 
+		// TODO: Check if is it possible to refactor non const and const methods into one
+		template<class... Components>
+		std::vector<const Archetype*> getArchetypesWith() const;
+
 		/// Resources
 		// Resources are unique by type
 		// User can't remove resources
@@ -170,6 +174,19 @@ namespace zt::core::ecs
 	std::vector<Archetype*> World::getArchetypesWith()
 	{
 		std::vector<Archetype*> result;
+		for (auto& archetype : archetypes)
+		{
+			if (archetype.hasTypes<Components...>())
+				result.push_back(&archetype);
+		}
+
+		return result;
+	}
+
+	template<class... Components>
+	std::vector<const Archetype*> World::getArchetypesWith() const
+	{
+		std::vector<const Archetype*> result;
 		for (auto& archetype : archetypes)
 		{
 			if (archetype.hasTypes<Components...>())
