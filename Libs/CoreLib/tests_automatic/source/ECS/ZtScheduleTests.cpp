@@ -73,7 +73,7 @@ namespace zt::core::ecs::tests
 		}
 	}
 
-	TEST_F(ECSScheduleTests, GraphTest)
+	TEST_F(ECSScheduleTests, GraphOneThreadTest)
 	{
 		v2::Schedule schedule;
 
@@ -81,6 +81,12 @@ namespace zt::core::ecs::tests
 		schedule.addSystem(SystemTest_2{}, SystemTest_2::EntryPoint, v2::Before{ SystemTest_1{} }, v2::After{ SystemTest_3{} });
 		schedule.addSystem(SystemTest_3{}, SystemTest_3::EntryPoint);
 		schedule.addSystem(SystemTest_4{}, SystemTest_4::EntryPoint);
+
+		// The graph should looks like this (for 1 thread):
+		// SystemTest_4 - as it doesn't have any dependencies and not referenced by any other system
+		// SystemTest_3 - as it doesn't have any dependencies but the SystemTest_2 want to be executed after this system
+		// SystemTest_2 - as it want to be executed after SystemTest_3 and before SystemTest_1
+		// SystemTest_1 - as it doesn't have any dependencies but the SystemTest_2 want to be executed before this system
 
 		auto& systems = schedule.getSystems();
 		ASSERT_EQ(systems.size(), 4);
@@ -106,8 +112,6 @@ namespace zt::core::ecs::tests
 			EXPECT_EQ(systemInfo.before.front(), GetTypeID<SystemTest_1>());
 			ASSERT_EQ(systemInfo.after.size(), 1);
 			EXPECT_EQ(systemInfo.after.front(), GetTypeID<SystemTest_3>());
-
-			// TODO: We need to know if the system want to edit or just read the components and reosurces
 
 			{ // Queries
 				// Test if queries have correct cunt of types

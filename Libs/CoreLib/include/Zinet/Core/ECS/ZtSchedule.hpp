@@ -161,7 +161,7 @@ namespace zt::core::ecs
 		struct ZINET_CORE_API Before
 		{
 			template<class... Systems>
-			Before([[maybe_unused]] Systems... systems)
+			Before(Systems...)
 			{
 				(values.push_back(GetTypeID<Systems>()), ...);
 			}
@@ -172,7 +172,7 @@ namespace zt::core::ecs
 		struct ZINET_CORE_API After
 		{
 			template<class... Systems>
-			After([[maybe_unused]] Systems... systems)
+			After(Systems...)
 			{
 				(values.push_back(GetTypeID<Systems>()), ...);
 			}
@@ -197,10 +197,7 @@ namespace zt::core::ecs
 			Schedule& operator = (Schedule&& other) noexcept = default;
 
 			template<class LabelT, class SystemT, class... Deps>
-			constexpr void addSystem(
-				[[maybe_unused]] LabelT label,
-				[[maybe_unused]] SystemT system,
-				[[maybe_unused]] Deps... deps) noexcept 
+			constexpr void addSystem(LabelT, SystemT system, Deps... deps) noexcept 
 			{
 				SystemInfo systemInfo
 				{
@@ -245,7 +242,7 @@ namespace zt::core::ecs
 			}
 
 			template<class SystemT>
-			constexpr static void ResolveSystemTraits([[maybe_unused]] SystemInfo& systemInfo, [[maybe_unused]] SystemT system)
+			constexpr static void ResolveSystemTraits(SystemInfo& systemInfo, SystemT)
 			{
 				using SystemTraits = FunctionTraits<SystemT>;
 
