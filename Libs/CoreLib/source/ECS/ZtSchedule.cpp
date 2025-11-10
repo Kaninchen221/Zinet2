@@ -1,5 +1,7 @@
 #include "Zinet/Core/ECS/ZtSchedule.hpp"
 
+#include <ranges>
+
 namespace zt::core::ecs
 {
 	void Thread::runSync(World& world) noexcept
@@ -96,4 +98,38 @@ namespace zt::core::ecs
 		}
 	}
 
+	namespace v2
+	{
+		std::vector<GraphNode> Schedule::buildGraphNodes() const
+		{
+			std::vector<GraphNode> result;
+
+			// Create graph nodes from systems infos
+			for (auto& system : systems)
+			{
+				GraphNode graphNode
+				{
+					.typeID = system.label,
+					.after = system.after,
+					.before = system.before
+				};
+
+				for (auto& otherSystem : systems)
+				{
+					if (otherSystem.label == graphNode.typeID)
+						continue;
+
+					if (std::ranges::contains(otherSystem.after, graphNode.typeID))
+						graphNode.before.emplace_back(otherSystem.label);
+
+					if (std::ranges::contains(otherSystem.before, graphNode.typeID))
+						graphNode.after.emplace_back(otherSystem.label);
+				}
+
+				result.push_back(graphNode);
+			}
+
+			return result;
+		}
+	}
 }

@@ -141,23 +141,6 @@ namespace zt::core::ecs
 			std::vector<ResourceInfo> resources;
 		};
 
-		class ZINET_CORE_API Thread
-		{
-			std::vector<SystemInfo> systems;
-		};
-
-		class ZINET_CORE_API Graph
-		{
-		public:
-
-			auto& getThreads() const noexcept { return threads; }
-
-		private:
-
-			std::vector<Thread> threads;
-
-		};
-
 		struct ZINET_CORE_API Before
 		{
 			template<class... Systems>
@@ -178,6 +161,13 @@ namespace zt::core::ecs
 			}
 
 			std::vector<ID> values;
+		};
+
+		struct ZINET_CORE_API GraphNode
+		{
+			TypeID typeID{};
+			std::vector<TypeID> after;
+			std::vector<TypeID> before;
 		};
 
 		class ZINET_CORE_API Schedule
@@ -214,13 +204,7 @@ namespace zt::core::ecs
 
 			auto& getSystems() const noexcept { return systems; }
 
-			SystemReturnState buildGraph() 
-			{ 
-
-				return {}; 
-			}
-
-			auto& getGraph() const noexcept { return graph; }
+			std::vector<GraphNode> buildGraphNodes() const;
 
 		private:
 
@@ -315,7 +299,6 @@ namespace zt::core::ecs
 			}
 
 			Systems systems;
-			Graph graph;
 
 		};
 

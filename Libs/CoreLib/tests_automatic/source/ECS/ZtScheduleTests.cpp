@@ -153,13 +153,30 @@ namespace zt::core::ecs::tests
 			EXPECT_TRUE(systemInfo.resources[0].isConst);
 		}
 
-		auto buildResult = schedule.buildGraph();
-		ASSERT_TRUE(buildResult.getLevel() == SystemReturnState::Level::Info);
+		// Test build graph nodes that will be used to create the final graph
+		const std::vector<v2::GraphNode> nodes = schedule.buildGraphNodes();
+		ASSERT_EQ(nodes.size(), systems.size());
 
-		const v2::Graph& graph = schedule.getGraph();
+		EXPECT_EQ(nodes[0].typeID, GetTypeID<SystemTest_1>());
+		ASSERT_EQ(nodes[0].after.size(), 1);
+		EXPECT_EQ(nodes[0].after[0], GetTypeID<SystemTest_2>());
+		EXPECT_EQ(nodes[0].before.size(), 0);
 
-		[[maybe_unused]]
-		const std::vector<v2::Thread> threads = graph.getThreads();
-		//ASSERT_EQ(threads.size(), 1);
+		EXPECT_EQ(nodes[1].typeID, GetTypeID<SystemTest_2>());
+		ASSERT_EQ(nodes[1].after.size(), 1);
+		EXPECT_EQ(nodes[1].after[0], GetTypeID<SystemTest_3>());
+		EXPECT_EQ(nodes[1].before.size(), 1);
+		EXPECT_EQ(nodes[1].before[0], GetTypeID<SystemTest_1>());
+
+ 		EXPECT_EQ(nodes[2].typeID, GetTypeID<SystemTest_3>());
+		EXPECT_EQ(nodes[2].after.size(), 0);
+		EXPECT_EQ(nodes[2].before.size(), 1);
+		EXPECT_EQ(nodes[2].before[0], GetTypeID<SystemTest_2>());
+ 
+		EXPECT_EQ(nodes[3].typeID, GetTypeID<SystemTest_4>());
+		EXPECT_EQ(nodes[3].after.size(), 0);
+		EXPECT_EQ(nodes[3].before.size(), 0);
+
+		// TODO: Test resolve graph nodes
 	}
 }
