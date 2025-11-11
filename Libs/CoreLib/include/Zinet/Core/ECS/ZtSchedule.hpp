@@ -170,6 +170,20 @@ namespace zt::core::ecs
 			std::vector<TypeID> before;
 		};
 
+		struct ZINET_CORE_API GraphEdge
+		{
+			TypeID from = InvalidID;
+			TypeID to = InvalidID;
+
+			auto operator <=> (const GraphEdge& other) const noexcept = default;
+		};
+
+		struct ZINET_CORE_API Graph
+		{
+			std::vector<GraphNode> nodes;
+			std::vector<GraphEdge> edges;
+		};
+
 		class ZINET_CORE_API Schedule
 		{
 			inline static auto Logger = ConsoleLogger::Create("zt::core::ecs::Schedule");
@@ -204,7 +218,11 @@ namespace zt::core::ecs
 
 			auto& getSystems() const noexcept { return systems; }
 
-			std::vector<GraphNode> buildGraphNodes() const;
+			void buildGraph();
+
+			void resolveGraph();
+
+			auto& getGraph() const noexcept { return graph; }
 
 		private:
 
@@ -299,6 +317,7 @@ namespace zt::core::ecs
 			}
 
 			Systems systems;
+			Graph graph;
 
 		};
 

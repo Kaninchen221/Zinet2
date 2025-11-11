@@ -100,12 +100,11 @@ namespace zt::core::ecs
 
 	namespace v2
 	{
-		std::vector<GraphNode> Schedule::buildGraphNodes() const
+		void Schedule::buildGraph()
 		{
-			std::vector<GraphNode> result;
-
 			// Create graph nodes from systems infos
-			for (auto& system : systems)
+			auto& graphNodes = graph.nodes;
+			for (const auto& system : systems)
 			{
 				GraphNode graphNode
 				{
@@ -114,7 +113,7 @@ namespace zt::core::ecs
 					.before = system.before
 				};
 
-				for (auto& otherSystem : systems)
+				for (const auto& otherSystem : systems)
 				{
 					if (otherSystem.label == graphNode.typeID)
 						continue;
@@ -126,10 +125,101 @@ namespace zt::core::ecs
 						graphNode.after.emplace_back(otherSystem.label);
 				}
 
-				result.push_back(graphNode);
+				graphNodes.push_back(graphNode);
 			}
 
-			return result;
+			// Create edges
+ 			auto& edges = graph.edges;
+ 			for (const auto& system : systems)
+ 			{
+				for (auto& before : system.before)
+				{
+					GraphEdge graphEdge
+					{
+						.from = system.label,
+						.to = before
+					};
+
+					if (!std::ranges::contains(edges, graphEdge))
+						edges.push_back(graphEdge);
+				}
+
+				for (auto& after : system.after)
+				{
+					GraphEdge graphEdge
+					{
+						.from = after,
+						.to = system.label
+					};
+
+					if (!std::ranges::contains(edges, graphEdge))
+						edges.push_back(graphEdge);
+				}
+ 			}
 		}
+
+		void Schedule::resolveGraph()
+		{
+			auto& notSortedNodes = graph.nodes;
+			std::vector<GraphNode> sortedNodes;
+			std::vector<GraphNode> nodesWithoutIncomingEdge;
+			auto& edges = graph.edges;
+
+			auto hasIncomingEdge = [&edges = edges](const GraphNode& node) -> bool
+			{
+				for (const auto& edge : edges)
+				{
+					if (edge.to == node.typeID)
+						return true;
+				}
+
+				return false;
+			};
+
+			// First find all nodes that doesn't have an incoming edge
+			for (size_t i = 0; i < notSortedNodes.size(); ++i)
+			{
+				const auto& node = notSortedNodes[i];
+				if (!hasIncomingEdge(node))
+				{
+					nodesWithoutIncomingEdge.push_back(node);
+					notSortedNodes.erase(notSortedNodes.begin() + i);
+					--i;
+				}
+			}
+
+			// Kahn's algorithm
+			while (!nodesWithoutIncomingEdge.empty())
+			{
+				auto nodeWithoutIncomingEdge = nodesWithoutIncomingEdge.back();
+				nodesWithoutIncomingEdge.pop_back();
+
+				for (size_t notSortedNodeIndex = 0; notSortedNodeIndex < notSortedNodes.size(); ++notSortedNodeIndex)
+				{
+					auto& notSortedNode = notSortedNodes[notSortedNodeIndex];
+					for (size_t edgeIndex = 0; edgeIndex < edges.size(); ++edgeIndex)
+					{
+						const auto& edge = edges[edgeIndex];
+						if (edge.from == nodeWithoutIncomingEdge.typeID && edge.to == notSortedNode.typeID)
+						{
+							edges.erase(edges.begin() + edgeIndex);
+							--edgeIndex;
+						}
+					}
+
+					if (!hasIncomingEdge(notSortedNode))
+					{
+						nodesWithoutIncomingEdge.push_back(notSortedNode);
+						notSortedNodes.erase(notSortedNodes.begin() + notSortedNodeIndex);
+						--notSortedNodeIndex;
+					}
+				}
+
+				sortedNodes.push_back(nodeWithoutIncomingEdge);
+			}
+
+			graph.nodes = sortedNodes;
+		}
+
 	}
 }

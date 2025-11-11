@@ -153,30 +153,76 @@ namespace zt::core::ecs::tests
 			EXPECT_TRUE(systemInfo.resources[0].isConst);
 		}
 
-		// Test build graph nodes that will be used to create the final graph
-		const std::vector<v2::GraphNode> nodes = schedule.buildGraphNodes();
-		ASSERT_EQ(nodes.size(), systems.size());
+		{ // Test build graph nodes that will be used to create the final graph
+			schedule.buildGraph();
+			const v2::Graph& graph = schedule.getGraph();
 
-		EXPECT_EQ(nodes[0].typeID, GetTypeID<SystemTest_1>());
-		ASSERT_EQ(nodes[0].after.size(), 1);
-		EXPECT_EQ(nodes[0].after[0], GetTypeID<SystemTest_2>());
-		EXPECT_EQ(nodes[0].before.size(), 0);
+			{ // Nodes
+				auto& nodes = graph.nodes;
+				ASSERT_EQ(nodes.size(), systems.size());
 
-		EXPECT_EQ(nodes[1].typeID, GetTypeID<SystemTest_2>());
-		ASSERT_EQ(nodes[1].after.size(), 1);
-		EXPECT_EQ(nodes[1].after[0], GetTypeID<SystemTest_3>());
-		EXPECT_EQ(nodes[1].before.size(), 1);
-		EXPECT_EQ(nodes[1].before[0], GetTypeID<SystemTest_1>());
+				EXPECT_EQ(nodes[0].typeID, GetTypeID<SystemTest_1>());
+				ASSERT_EQ(nodes[0].after.size(), 1);
+				EXPECT_EQ(nodes[0].after[0], GetTypeID<SystemTest_2>());
+				EXPECT_EQ(nodes[0].before.size(), 0);
 
- 		EXPECT_EQ(nodes[2].typeID, GetTypeID<SystemTest_3>());
-		EXPECT_EQ(nodes[2].after.size(), 0);
-		EXPECT_EQ(nodes[2].before.size(), 1);
-		EXPECT_EQ(nodes[2].before[0], GetTypeID<SystemTest_2>());
- 
-		EXPECT_EQ(nodes[3].typeID, GetTypeID<SystemTest_4>());
-		EXPECT_EQ(nodes[3].after.size(), 0);
-		EXPECT_EQ(nodes[3].before.size(), 0);
+				EXPECT_EQ(nodes[1].typeID, GetTypeID<SystemTest_2>());
+				ASSERT_EQ(nodes[1].after.size(), 1);
+				EXPECT_EQ(nodes[1].after[0], GetTypeID<SystemTest_3>());
+				EXPECT_EQ(nodes[1].before.size(), 1);
+				EXPECT_EQ(nodes[1].before[0], GetTypeID<SystemTest_1>());
 
-		// TODO: Test resolve graph nodes
+				EXPECT_EQ(nodes[2].typeID, GetTypeID<SystemTest_3>());
+				EXPECT_EQ(nodes[2].after.size(), 0);
+				EXPECT_EQ(nodes[2].before.size(), 1);
+				EXPECT_EQ(nodes[2].before[0], GetTypeID<SystemTest_2>());
+
+				EXPECT_EQ(nodes[3].typeID, GetTypeID<SystemTest_4>());
+				EXPECT_EQ(nodes[3].after.size(), 0);
+				EXPECT_EQ(nodes[3].before.size(), 0);
+			}
+
+			{ // Edges (it's kinda wrong because test is testing the order while we don't need a specific order)
+				auto& edges = graph.edges;
+				ASSERT_EQ(edges.size(), 2);
+
+				EXPECT_EQ(edges[0].from, GetTypeID<SystemTest_2>());
+				EXPECT_EQ(edges[0].to, GetTypeID<SystemTest_1>());
+
+				EXPECT_EQ(edges[1].from, GetTypeID<SystemTest_3>());
+				EXPECT_EQ(edges[1].to, GetTypeID<SystemTest_2>());
+			}
+		}
+
+		// Test build a graph from the nodes
+		{
+			schedule.resolveGraph();
+
+			const v2::Graph& graph = schedule.getGraph();
+			auto& nodes = graph.nodes;
+			auto& edges = graph.edges;
+			ASSERT_EQ(nodes.size(), 4);
+			ASSERT_TRUE(edges.empty());
+
+			if (nodes.front().typeID == GetTypeID<SystemTest_4>())
+			{
+				EXPECT_EQ(nodes[1].typeID, GetTypeID<SystemTest_3>());
+				EXPECT_EQ(nodes[2].typeID, GetTypeID<SystemTest_2>());
+				EXPECT_EQ(nodes[3].typeID, GetTypeID<SystemTest_1>());
+			}
+			else if (nodes.back().typeID == GetTypeID<SystemTest_4>())
+			{
+				EXPECT_EQ(nodes[0].typeID, GetTypeID<SystemTest_3>());
+				EXPECT_EQ(nodes[1].typeID, GetTypeID<SystemTest_2>());
+				EXPECT_EQ(nodes[2].typeID, GetTypeID<SystemTest_1>());
+			}
+			else
+			{
+				FAIL() << "SystemTest_4 must be first or last";
+			}
+		}
+
+		// TODO: Write a shorthand for buildGraph and resolveGraph
+		// TODO: Run the systems and test them
 	}
 }
