@@ -182,15 +182,12 @@ namespace zt::core::ecs::tests
 				EXPECT_EQ(nodes[3].before.size(), 0);
 			}
 
-			{ // Edges (it's kinda wrong because test is testing the order while we don't need a specific order)
+			{ // Edges
 				auto& edges = graph.edges;
 				ASSERT_EQ(edges.size(), 2);
 
-				EXPECT_EQ(edges[0].from, GetTypeID<SystemTest_2>());
-				EXPECT_EQ(edges[0].to, GetTypeID<SystemTest_1>());
-
-				EXPECT_EQ(edges[1].from, GetTypeID<SystemTest_3>());
-				EXPECT_EQ(edges[1].to, GetTypeID<SystemTest_2>());
+				EXPECT_TRUE(std::ranges::contains(edges, v2::GraphEdge{ .from = GetTypeID<SystemTest_2>(), .to = GetTypeID<SystemTest_1>() }));
+				EXPECT_TRUE(std::ranges::contains(edges, v2::GraphEdge{ .from = GetTypeID<SystemTest_3>(), .to = GetTypeID<SystemTest_2>() }));
 			}
 		}
 
@@ -222,7 +219,7 @@ namespace zt::core::ecs::tests
 			}
 		}
 
-		// TODO: Write a shorthand for buildGraph and resolveGraph
+		// TODO: Write a shorthand for buildGraph and resolveGraph?
 		// TODO: Run the systems and test them
 	}
 }
