@@ -134,7 +134,7 @@ namespace zt::core::ecs
 		struct ZINET_CORE_API SystemInfo
 		{
 			TypeID label = InvalidID;
-			Function<void, World&> system;
+			std::function<void(World&)> systemAdapter;
 			std::vector<TypeID> before;
 			std::vector<TypeID> after;
 			std::vector<QueryInfo> queries;
@@ -166,6 +166,7 @@ namespace zt::core::ecs
 		struct ZINET_CORE_API GraphNode
 		{
 			TypeID typeID{};
+			std::function<void(World&)> systemAdapter;
 			std::vector<TypeID> after;
 			std::vector<TypeID> before;
 		};
@@ -206,12 +207,13 @@ namespace zt::core::ecs
 				SystemInfo systemInfo
 				{
 					.label = GetTypeID<LabelT>(),
-					.system = []([[maybe_unused]] World& world) {  },
 				};
 
 				(ResolveDeps(systemInfo, deps), ...);
 
 				ResolveSystemTraits(systemInfo, system);
+
+				ResolveSystemAdapter(systemInfo, system);
 
 				systems.push_back(systemInfo);
 			}
@@ -223,6 +225,8 @@ namespace zt::core::ecs
 			void resolveGraph();
 
 			auto& getGraph() const noexcept { return graph; }
+
+			void runOnce(World& world);
 
 		private:
 
@@ -314,6 +318,18 @@ namespace zt::core::ecs
 				(result.push_back(GetTypeID<typename std::tuple_element_t<N, ComponentsT>>()), ...);
 
 				return result;
+			}
+
+			template<class SystemT>
+			constexpr static void ResolveSystemAdapter(SystemInfo& systemInfo, SystemT system)
+			{
+				using SystemTraits = FunctionTraits<SystemT>;
+
+				systemInfo.systemAdapter = [system = system](World& world)
+				{
+					auto tuple = MakeTuple<World&, SystemTraits::ArgsCount>(world);
+					std::apply(system, tuple);
+				};
 			}
 
 			Systems systems;

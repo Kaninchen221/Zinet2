@@ -144,7 +144,32 @@ namespace zt::core::ecs::tests
 			[[maybe_unused]] Resource<int> resInt,
 			[[maybe_unused]] Resource<float> resFloat,
 			[[maybe_unused]] Resource<double> resDouble)
-		{ 
+		{
+			for (auto [position, sprite] : query0)
+			{
+				position->x++;
+				position->y++;
+				sprite->id++;
+			}
+
+			for (auto [position, sprite, velocity] : query1)
+			{
+				position->x++;
+				position->y++;
+				sprite->id++;
+				velocity->x++;
+				velocity->y++;
+			}
+
+			if (resInt)
+				*resInt.get() += 1;
+
+			if (resFloat)
+				*resFloat.get() += 1;
+
+			if (resDouble)
+				*resDouble.get() += 1;
+
 			return {}; 
 		}
 	};

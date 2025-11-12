@@ -29,7 +29,7 @@ namespace zt::core::tests
         ASSERT_NE(type1ID, type2ID);
 	}
 
-	TEST_F(UtilsTests, MakeTupleTest)
+	TEST_F(UtilsTests, MakeTupleFromValueTest)
 	{
 		constexpr int expectedValue = 32;
 		constexpr int expectedSize = 3;
@@ -41,4 +41,26 @@ namespace zt::core::tests
 		EXPECT_EQ(std::get<1>(tuple), expectedValue);
 		EXPECT_EQ(std::get<2>(tuple), expectedValue);
 	}
+
+	TEST_F(UtilsTests, MakeTupleWithRefsTest)
+	{
+		struct Test
+		{
+			Test() noexcept = default;
+			Test(const Test& other) noexcept = delete;
+			Test(Test&& other) noexcept = delete;
+			~Test() noexcept = default;
+
+			Test& operator = (const Test& other) noexcept = delete;
+			Test& operator = (Test&& other) noexcept = delete;
+		};
+
+		Test test;
+		Test& ref = test;
+		constexpr int expectedSize = 3;
+		auto tuple = MakeTuple<Test&, expectedSize>(ref);
+
+		static_assert(std::tuple_size_v<decltype(tuple)> == expectedSize, "Invalid tuple size");
+	}
+
 }

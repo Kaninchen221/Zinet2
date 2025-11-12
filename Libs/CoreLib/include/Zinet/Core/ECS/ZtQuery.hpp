@@ -128,8 +128,17 @@ namespace zt::core::ecs
 
 		// TODO: Try to reduce this two constructors into one
 		QueryImpl(World& world)
-			: archetypes(world.getArchetypesWith<Components...>())
+			//: archetypes(world.getArchetypesWith<Components...>())
 		{
+			if constexpr (IsConstType{})
+			{
+				const World& constWorld = world;
+				archetypes = constWorld.getArchetypesWith<Components...>();
+			}
+			else
+			{
+				archetypes = world.getArchetypesWith<Components...>();
+			}
 		}
 
 		QueryImpl(const World& world)

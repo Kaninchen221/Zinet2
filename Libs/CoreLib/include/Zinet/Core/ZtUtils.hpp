@@ -63,7 +63,7 @@ namespace zt::core
 	template<typename T, std::size_t N, std::size_t... Ints>
 	constexpr auto MakeTupleImpl(T&& value, std::index_sequence<Ints...>)
 	{
-		return std::make_tuple(((void)Ints, std::forward<T>(value))...);
+		return std::forward_as_tuple(((void)Ints, std::forward<T>(value))...);
 	}
 
 	template<typename T, std::size_t N>
@@ -72,5 +72,4 @@ namespace zt::core
 		return MakeTupleImpl<T, N>(std::forward<T>(value), std::make_index_sequence<N>{});
 	}
 
-	//std::forward<decltype(defaultValue)>(defaultValue)
 }

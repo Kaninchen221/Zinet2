@@ -109,6 +109,7 @@ namespace zt::core::ecs
 				GraphNode graphNode
 				{
 					.typeID = system.label,
+					.systemAdapter = system.systemAdapter,
 					.after = system.after,
 					.before = system.before
 				};
@@ -219,6 +220,17 @@ namespace zt::core::ecs
 			}
 
 			graph.nodes = sortedNodes;
+		}
+
+		void Schedule::runOnce(World& world)
+		{
+			auto& nodes = graph.nodes;
+			for (auto& node : nodes)
+			{
+				auto& systemAdapter = node.systemAdapter;
+				if (systemAdapter)
+					systemAdapter(world);
+			}
 		}
 
 	}
