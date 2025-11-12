@@ -7,13 +7,11 @@
 namespace zt::core::tests
 {
 
-    class UtilsTests : public ::testing::Test
-    {
-    protected:
+	class UtilsTests : public ::testing::Test
+	{
+	};
 
-    };
-
-    TEST_F(UtilsTests, ContainsTest)
+	TEST_F(UtilsTests, ContainsTest)
     {
         const std::vector<int> vector = { 1, 3, 4, 5, 6, 7, 8 };
 		ASSERT_TRUE(Contains(vector, 3));
@@ -29,5 +27,18 @@ namespace zt::core::tests
 		const size_t type2ID = GetTypeID<Type2>();
 
         ASSERT_NE(type1ID, type2ID);
-    }
+	}
+
+	TEST_F(UtilsTests, MakeTupleTest)
+	{
+		constexpr int expectedValue = 32;
+		constexpr int expectedSize = 3;
+		auto tuple = MakeTuple<int, expectedSize>(int(expectedValue));
+
+		static_assert(std::tuple_size_v<decltype(tuple)> == expectedSize, "Invalid tuple size");
+
+		EXPECT_EQ(std::get<0>(tuple), expectedValue);
+		EXPECT_EQ(std::get<1>(tuple), expectedValue);
+		EXPECT_EQ(std::get<2>(tuple), expectedValue);
+	}
 }
