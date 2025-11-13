@@ -45,11 +45,7 @@ namespace zt::core::ecs
 		size_t getEntitiesCount() const noexcept;
 
 		template<class... Components>
-		std::vector<Archetype*> getArchetypesWith();
-
-		// TODO: Check if is it possible to refactor non const and const methods into one
-		template<class... Components>
-		std::vector<const Archetype*> getArchetypesWith() const;
+		auto getArchetypesWith(this auto& self);
 
 		/// Resources
 		// Resources are unique by type
@@ -58,12 +54,8 @@ namespace zt::core::ecs
 		template<class ResourceT>
 		std::decay_t<ResourceT>* addResource(ResourceT&& newResource);
 
-		// TODO: Check if is it possible to refactor non const and const methods into one
 		template<class Resource>
-		Resource* getResource();
-
-		template<class Resource>
-		const Resource* getResource() const;
+		auto* getResource(this auto& self);
 
 	private:
 
@@ -163,47 +155,25 @@ namespace zt::core::ecs
 	}
 
 	template<class Resource>
-	Resource* World::getResource()
+	auto* World::getResource(this auto& self)
 	{
-		for (auto& resource : resources)
-		{
-			if (resource.hasType<Resource>())
-				return resource.get<Resource>(0); // There is always only one resource so the index is always 0
-		}
-
-		return {};
-	}
-
-	template<class Resource>
-	const Resource* World::getResource() const
-	{
-		for (auto& resource : resources)
+		for (auto& resource : self.resources)
 		{
 			if (resource.hasType<Resource>())
 				return resource.get<Resource>(0);
 		}
 
-		return {};
+		return static_cast<Resource*>(nullptr);
 	}
 
 	template<class... Components>
-	std::vector<Archetype*> World::getArchetypesWith()
+	auto World::getArchetypesWith(this auto& self)
 	{
-		std::vector<Archetype*> result;
-		for (auto& archetype : archetypes)
-		{
-			if (archetype.hasTypes<Components...>())
-				result.push_back(&archetype);
-		}
+		using ResultT = std::conditional_t<IsSelfConst<decltype(self)>(),
+			std::vector<const Archetype*>, std::vector<Archetype*>>;
 
-		return result;
-	}
-
-	template<class... Components>
-	std::vector<const Archetype*> World::getArchetypesWith() const
-	{
-		std::vector<const Archetype*> result;
-		for (auto& archetype : archetypes)
+		ResultT result;
+		for (auto& archetype : self.archetypes)
 		{
 			if (archetype.hasTypes<Components...>())
 				result.push_back(&archetype);

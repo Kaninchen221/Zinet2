@@ -29,19 +29,12 @@ namespace zt::core::ecs
 		bool remove(const Entity& entity);
 
 		bool hasEntity(const Entity& entity) const;
-
-		// TODO: Reduce the number of const duplicates
+		
 		template<class Component>
-		Component* getComponentOfType(size_t index) noexcept;
-
-		template<class Component>
-		const Component* getComponentOfType(size_t index) const noexcept;
+		auto* getComponentOfType(this auto& self, size_t index) noexcept;
 
 		template<class Component>
-		TypeLessVector* getComponentsOfType() noexcept;
-
-		template<class Component>
-		const TypeLessVector* getComponentsOfType() const noexcept;
+		auto* getComponentsOfType(this auto& self) noexcept;
 
 		template<class... Components>
 		constexpr bool hasTypes() const noexcept;
@@ -103,53 +96,32 @@ namespace zt::core::ecs
 	}
 
 	template<class Component>
-	Component* Archetype::getComponentOfType(size_t index) noexcept
+	auto* Archetype::getComponentOfType(this auto& self, size_t index) noexcept
 	{
-		auto components = getComponentsOfType<Component>();
+		using ReturnT = std::conditional_t<IsSelfConst<decltype(self)>(), const Component, Component>;
+
+		auto components = self.getComponentsOfType<Component>();
 		if (!components)
-			return nullptr;
+			return static_cast<ReturnT*>(nullptr);
 
 		if (index >= components->getObjectsCount())
-			return nullptr;
+			return static_cast<ReturnT*>(nullptr);
 
-		return components->get<Component>(index);
+		return components->get<ReturnT>(index);
 	}
 
 	template<class Component>
-	const Component* Archetype::getComponentOfType(size_t index) const noexcept
+	auto* Archetype::getComponentsOfType(this auto& self) noexcept
 	{
-		auto components = getComponentsOfType<Component>();
-		if (!components)
-			return nullptr;
+		using ReturnT = std::conditional_t<IsSelfConst<decltype(self)>(), const TypeLessVector, TypeLessVector>;
 
-		if (index >= components->getObjectsCount())
-			return nullptr;
-
-		return components->get<Component>(index);
-	}
-
-	template<class Component>
-	TypeLessVector* Archetype::getComponentsOfType() noexcept
-	{
-		for (auto& components : componentsPack)
+		for (auto& components : self.componentsPack)
 		{
 			if (components.hasType<Component>())
 				return &components;
 		}
 
-		return nullptr;
-	}
-
-	template<class Component>
-	const TypeLessVector* Archetype::getComponentsOfType() const noexcept
-	{
-		for (auto& components : componentsPack)
-		{
-			if (components.hasType<Component>())
-				return &components;
-		}
-
-		return nullptr;
+		return static_cast<ReturnT*>(nullptr);
 	}
 
 	template<class... Components>

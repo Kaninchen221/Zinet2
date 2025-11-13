@@ -126,10 +126,14 @@ namespace zt::core::ecs
 
 		using Archetypes = std::conditional_t<IsConstT{}, std::vector<const Archetype*>, std::vector<Archetype*>>;
 
-		// TODO: Try to reduce this two constructors into one
-		QueryImpl(World& world)
-			//: archetypes(world.getArchetypesWith<Components...>())
+		template<class WorldT>
+		QueryImpl(WorldT& world)
 		{
+			static_assert(
+				std::is_same_v<WorldT, World> ||
+				std::is_same_v<WorldT, const World>,
+				"You must pass the World class as a param");
+
 			if constexpr (IsConstType{})
 			{
 				const World& constWorld = world;
@@ -139,11 +143,6 @@ namespace zt::core::ecs
 			{
 				archetypes = world.getArchetypesWith<Components...>();
 			}
-		}
-
-		QueryImpl(const World& world)
-			: archetypes(world.getArchetypesWith<Components...>())
-		{
 		}
 
 		QueryImpl(const QueryImpl& other) noexcept = default;

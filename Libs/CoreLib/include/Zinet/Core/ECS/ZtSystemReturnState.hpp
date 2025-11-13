@@ -6,7 +6,6 @@
 
 namespace zt::core::ecs
 {
-	// TODO: Rename to ReturnState and move it to the core namespace
 	class ZINET_CORE_API SystemReturnState
 	{
 	public:

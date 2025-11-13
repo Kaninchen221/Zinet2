@@ -179,6 +179,7 @@ namespace zt::core::ecs
 			auto operator <=> (const GraphEdge& other) const noexcept = default;
 		};
 
+		// TODO: Use more than one thread
 		struct ZINET_CORE_API Graph
 		{
 			std::vector<GraphNode> nodes;

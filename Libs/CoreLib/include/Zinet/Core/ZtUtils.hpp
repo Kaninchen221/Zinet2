@@ -72,4 +72,9 @@ namespace zt::core
 		return MakeTupleImpl<T, N>(std::forward<T>(value), std::make_index_sequence<N>{});
 	}
 
+	template<class Self>
+	constexpr bool IsSelfConst()
+	{
+		return std::is_const_v<std::remove_reference_t<Self>>;
+	}
 }
