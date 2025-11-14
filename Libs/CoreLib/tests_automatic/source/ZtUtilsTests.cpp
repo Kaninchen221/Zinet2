@@ -33,6 +33,7 @@ namespace zt::core::tests
 	{
 		constexpr int expectedValue = 32;
 		constexpr int expectedSize = 3;
+
 		auto tuple = MakeTuple<int, expectedSize>(int(expectedValue));
 
 		static_assert(std::tuple_size_v<decltype(tuple)> == expectedSize, "Invalid tuple size");

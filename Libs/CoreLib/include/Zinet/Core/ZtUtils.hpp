@@ -63,7 +63,18 @@ namespace zt::core
 	template<typename T, std::size_t N, std::size_t... Ints>
 	constexpr auto MakeTupleImpl(T&& value, std::index_sequence<Ints...>)
 	{
-		return std::forward_as_tuple(((void)Ints, std::forward<T>(value))...);
+		if constexpr (std::is_reference_v<T>)
+		{
+			return std::forward_as_tuple(((void)Ints, std::forward<T>(value))...);
+		}
+		else if constexpr (std::is_object_v<T>)
+		{
+			return std::make_tuple(((void)Ints, std::forward<T>(value))...);
+		}
+		else
+		{
+			static_assert(false, "Well it shouldn't happen");
+		}
 	}
 
 	template<typename T, std::size_t N>
