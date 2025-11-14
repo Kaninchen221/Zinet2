@@ -111,7 +111,8 @@ namespace zt::core::ecs
 					.typeID = system.label,
 					.systemAdapter = system.systemAdapter,
 					.after = system.after,
-					.before = system.before
+					.before = system.before,
+					.mainThread = system.mainThread
 				};
 
 				for (const auto& otherSystem : systems)
@@ -162,8 +163,8 @@ namespace zt::core::ecs
 		void Schedule::resolveGraph()
 		{
 			auto& notSortedNodes = graph.nodes;
-			std::vector<GraphNode> sortedNodes;
 			std::vector<GraphNode> nodesWithoutIncomingEdge;
+			auto& layers = graph.layers;
 			auto& edges = graph.edges;
 
 			auto hasIncomingEdge = [&edges = edges](const GraphNode& node) -> bool
@@ -177,59 +178,88 @@ namespace zt::core::ecs
 				return false;
 			};
 
-			// First find all nodes that doesn't have an incoming edge
-			for (size_t i = 0; i < notSortedNodes.size(); ++i)
-			{
-				const auto& node = notSortedNodes[i];
-				if (!hasIncomingEdge(node))
-				{
-					nodesWithoutIncomingEdge.push_back(node);
-					notSortedNodes.erase(notSortedNodes.begin() + i);
-					--i;
-				}
-			}
-
 			// Kahn's algorithm
-			while (!nodesWithoutIncomingEdge.empty())
+			do
 			{
-				auto nodeWithoutIncomingEdge = nodesWithoutIncomingEdge.back();
-				nodesWithoutIncomingEdge.pop_back();
+				nodesWithoutIncomingEdge.clear();
 
-				for (size_t notSortedNodeIndex = 0; notSortedNodeIndex < notSortedNodes.size(); ++notSortedNodeIndex)
+				// First find all nodes that doesn't have an incoming edge
+				for (size_t i = 0; i < notSortedNodes.size(); ++i)
 				{
-					auto& notSortedNode = notSortedNodes[notSortedNodeIndex];
-					for (size_t edgeIndex = 0; edgeIndex < edges.size(); ++edgeIndex)
+					const auto& node = notSortedNodes[i];
+					if (!hasIncomingEdge(node))
 					{
-						const auto& edge = edges[edgeIndex];
-						if (edge.from == nodeWithoutIncomingEdge.typeID && edge.to == notSortedNode.typeID)
+						nodesWithoutIncomingEdge.push_back(node);
+						notSortedNodes.erase(notSortedNodes.begin() + i);
+						--i;
+					}
+				}
+
+				if (nodesWithoutIncomingEdge.empty())
+					break;
+
+				layers.push_back(
+					GraphLayer
+					{
+						.nodes = nodesWithoutIncomingEdge
+					}
+				);
+
+				// Remove edges
+				for (const auto& nodeWithoutIncomingEdge : nodesWithoutIncomingEdge)
+				{
+					for (size_t i = 0; i < edges.size(); ++i)
+					{
+						auto& edge = edges[i];
+						if (edge.from == nodeWithoutIncomingEdge.typeID)
 						{
-							edges.erase(edges.begin() + edgeIndex);
-							--edgeIndex;
+							edges.erase(edges.begin() + i);
+							--i;
 						}
 					}
-
-					if (!hasIncomingEdge(notSortedNode))
-					{
-						nodesWithoutIncomingEdge.push_back(notSortedNode);
-						notSortedNodes.erase(notSortedNodes.begin() + notSortedNodeIndex);
-						--notSortedNodeIndex;
-					}
 				}
+			} while (!nodesWithoutIncomingEdge.empty());
 
-				sortedNodes.push_back(nodeWithoutIncomingEdge);
+			// Sort the nodes in layers because of the MainThread dependency
+			for (auto& layer : layers)
+			{
+				auto& nodes = layer.nodes;
+				std::sort(nodes.begin(), nodes.end(),
+					[](const auto& first, const auto& second) -> bool
+					{
+						return first.mainThread < second.mainThread;
+					}
+				);
 			}
-
-			graph.nodes = sortedNodes;
 		}
 
 		void Schedule::runOnce(World& world)
 		{
-			auto& nodes = graph.nodes;
-			for (auto& node : nodes)
+			auto& layers = graph.layers;
+			for (auto& layer : layers)
 			{
-				auto& systemAdapter = node.systemAdapter;
-				if (systemAdapter)
-					systemAdapter(world);
+				std::vector<std::jthread> threads;
+				for (auto& node : layer.nodes)
+				{
+					auto& systemAdapter = node.systemAdapter;
+					if (!node.mainThread)
+					{
+						threads.push_back(
+							std::jthread(
+								[&systemAdapter = systemAdapter, &world = world]()
+								{
+									if (systemAdapter)
+										systemAdapter(world);
+								}
+							)
+						);
+					}
+					else
+					{
+						if (systemAdapter)
+							systemAdapter(world);
+					}
+				}
 			}
 		}
 

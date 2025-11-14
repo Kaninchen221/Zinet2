@@ -197,4 +197,10 @@ namespace zt::core::ecs::tests
 	public:
 		static SystemReturnState EntryPoint() { return {}; }
 	};
+
+	class EmptySystemTest
+	{
+	public:
+		static SystemReturnState EntryPoint() { return {}; }
+	};
 }

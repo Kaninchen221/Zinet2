@@ -137,6 +137,7 @@ namespace zt::core::ecs
 			std::function<void(World&)> systemAdapter;
 			std::vector<TypeID> before;
 			std::vector<TypeID> after;
+			bool mainThread = false;
 			std::vector<QueryInfo> queries;
 			std::vector<ResourceInfo> resources;
 		};
@@ -163,12 +164,16 @@ namespace zt::core::ecs
 			std::vector<ID> values;
 		};
 
+		struct ZINET_CORE_API MainThread
+		{};
+
 		struct ZINET_CORE_API GraphNode
 		{
 			TypeID typeID{};
 			std::function<void(World&)> systemAdapter;
 			std::vector<TypeID> after;
 			std::vector<TypeID> before;
+			bool mainThread = false;
 		};
 
 		struct ZINET_CORE_API GraphEdge
@@ -179,11 +184,17 @@ namespace zt::core::ecs
 			auto operator <=> (const GraphEdge& other) const noexcept = default;
 		};
 
+		struct ZINET_CORE_API GraphLayer
+		{
+			std::vector<GraphNode> nodes;
+		};
+
 		// TODO: Use more than one thread
 		struct ZINET_CORE_API Graph
 		{
 			std::vector<GraphNode> nodes;
 			std::vector<GraphEdge> edges;
+			std::vector<GraphLayer> layers;
 		};
 
 		class ZINET_CORE_API Schedule
@@ -241,6 +252,10 @@ namespace zt::core::ecs
 				else if constexpr (std::is_same_v<Dependency, After>)
 				{
 					systemInfo.after = dependency.values;
+				}
+				else if constexpr (std::is_same_v<Dependency, MainThread>)
+				{
+					systemInfo.mainThread = true;
 				}
 				else
 				{
