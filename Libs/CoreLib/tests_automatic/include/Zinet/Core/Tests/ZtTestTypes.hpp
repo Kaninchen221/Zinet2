@@ -215,4 +215,16 @@ namespace zt::core::ecs::tests
 	public:
 		static SystemReturnState EntryPoint(ConstResource<Position>) { return {}; }
 	};
+
+	class ReadWritePositionVelocitySpriteComponentsSystemTest
+	{
+	public:
+		static SystemReturnState EntryPoint(Query<Position, Velocity, Sprite>) { return {}; }
+	};
+
+	class ReadOnlyPositionVelocitySpriteComponentsSystemTest
+	{
+	public:
+		static SystemReturnState EntryPoint(ConstQuery<Position, Velocity, Sprite>) { return {}; }
+	};
 }

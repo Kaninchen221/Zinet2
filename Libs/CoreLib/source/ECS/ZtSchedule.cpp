@@ -165,7 +165,7 @@ namespace zt::core::ecs
 			{
 				for (const auto& resource : system.resources)
 				{
-					// Don't create edges that has from const resource usage
+					// Don't create edges that has 'from' const resource usage
 					if (resource.isConst)
 						continue;
 
@@ -186,6 +186,59 @@ namespace zt::core::ecs
 
 							// Skip edge if it's already in the opposite direction
 							auto graphEdgePrediction = [&graphEdge](const auto& otherEdge) 
+							{
+								return (otherEdge.from == graphEdge.from && otherEdge.to == graphEdge.to) ||
+									(otherEdge.from == graphEdge.to && otherEdge.to == graphEdge.from);
+							};
+
+							if (!std::ranges::any_of(edges, graphEdgePrediction))
+							{
+								edges.push_back(graphEdge);
+							}
+						}
+					}
+				}
+			}
+
+			// Create edges from queries: types and method of use (ReadWrite or ReadOnly)
+			for (const auto& system : systems)
+			{
+				for (const auto& query : system.queries)
+				{
+					// Don't create edges that has 'from' const query usage
+					if (query.isConst)
+						continue;
+
+					for (const auto& otherSystem : systems)
+					{
+						// Skip the same system
+						if (system.label == otherSystem.label)
+							continue;
+
+						// If other query contains the same collection of types as in query then add edge
+						// It means that the other query can have additional types
+						auto& otherQueries = otherSystem.queries;
+						auto queryHasTypesPrediction = [&query = query](const auto& otherQuery) 
+						{
+							for (auto type : query.types)
+							{
+								if (!std::ranges::contains(otherQuery.types, type))
+									return false;
+							}
+
+							return true; 
+						};
+
+						if (std::ranges::any_of(otherQueries, queryHasTypesPrediction))
+						{
+							GraphEdge graphEdge
+							{
+								.from = system.label,
+								.to = otherSystem.label
+							};
+
+							// Skip edge if it's already in the opposite direction
+							auto graphEdgePrediction = [&graphEdge = graphEdge](const auto& otherEdge)
 							{
 								return (otherEdge.from == graphEdge.from && otherEdge.to == graphEdge.to) ||
 									(otherEdge.from == graphEdge.to && otherEdge.to == graphEdge.from);
