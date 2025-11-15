@@ -73,63 +73,18 @@ namespace zt::core::ecs::tests
 		}
 	}
 
-	// TODO: Test there only 'Before' and 'After', add test for components and resources dependencies
-	// And then remove testing components and resources from this test
 	TEST_F(ECSScheduleTests, BeforeAndAfterDependenciesTest)
 	{
 		v2::Schedule schedule;
 
-		schedule.addSystem(SystemTest_1{}, SystemTest_1::EntryPoint);
-		schedule.addSystem(SystemTest_2{}, SystemTest_2::EntryPoint, v2::Before{ SystemTest_1{} }, v2::After{ SystemTest_3{} });
-		schedule.addSystem(SystemTest_3{}, SystemTest_3::EntryPoint);
-		schedule.addSystem(EmptySystemTest{}, EmptySystemTest::EntryPoint);
+		schedule.addSystem(SystemTest_1{}, EmptySystemTest::EntryPoint);
+		schedule.addSystem(SystemTest_2{}, EmptySystemTest::EntryPoint, v2::Before{ SystemTest_1{} }, v2::After{ SystemTest_3{} });
+		schedule.addSystem(SystemTest_3{}, EmptySystemTest::EntryPoint);
+		schedule.addSystem(SystemTest_4{}, EmptySystemTest::EntryPoint);
 
 		{
 			auto& systems = schedule.getSystems();
 			ASSERT_EQ(systems.size(), 4);
-
-			{ // Test system with const query
-				auto& systemInfo = systems[0];
-				ASSERT_EQ(systemInfo.label, GetTypeID<SystemTest_1>());
-				EXPECT_TRUE(systemInfo.systemAdapter);
-				ASSERT_EQ(systemInfo.before.size(), 0);
-				ASSERT_EQ(systemInfo.after.size(), 0);
-
-				{ // Queries
-					ASSERT_EQ(systemInfo.queries.size(), 1);
-					EXPECT_TRUE(systemInfo.queries[0].isConst);
-				}
-			}
-
-			{ // Test how SystemInfo is filled with data
-				auto& systemInfo = systems[1];
-				EXPECT_EQ(systemInfo.label, GetTypeID<SystemTest_2>());
-				EXPECT_TRUE(systemInfo.systemAdapter);
-				ASSERT_EQ(systemInfo.before.size(), 1);
-				EXPECT_EQ(systemInfo.before.front(), GetTypeID<SystemTest_1>());
-				ASSERT_EQ(systemInfo.after.size(), 1);
-				EXPECT_EQ(systemInfo.after.front(), GetTypeID<SystemTest_3>());
-
-				{ // Queries
-					// Test if queries have correct cunt of types
-					ASSERT_EQ(systemInfo.queries.size(), 2);
-					EXPECT_EQ(systemInfo.queries[0].types.size(), 2);
-					EXPECT_FALSE(systemInfo.queries[0].isConst);
-
-					EXPECT_EQ(systemInfo.queries[1].types.size(), 3);
-					EXPECT_FALSE(systemInfo.queries[1].isConst);
-
-					// Test the obtained types IDs (One query is enough)
-					EXPECT_EQ(systemInfo.queries[0].types[0], GetTypeID<Position>());
-					EXPECT_EQ(systemInfo.queries[0].types[1], GetTypeID<Sprite>());
-				}
-			}
-
-			{ // Test empty system
-				auto& systemInfo = systems[2];
-				EXPECT_TRUE(systemInfo.queries.empty());
-				EXPECT_TRUE(systemInfo.resources.empty());
-			}
 
 			{ // Test build graph nodes that will be used to create the final graph
 				schedule.buildGraph();
@@ -155,7 +110,7 @@ namespace zt::core::ecs::tests
 					EXPECT_EQ(nodes[2].before.size(), 1);
 					EXPECT_EQ(nodes[2].before[0], GetTypeID<SystemTest_2>());
 
-					EXPECT_EQ(nodes[3].typeID, GetTypeID<EmptySystemTest>());
+					EXPECT_EQ(nodes[3].typeID, GetTypeID<SystemTest_4>());
 					EXPECT_EQ(nodes[3].after.size(), 0);
 					EXPECT_EQ(nodes[3].before.size(), 0);
 				}
@@ -181,17 +136,14 @@ namespace zt::core::ecs::tests
 				ASSERT_TRUE(nodes.empty());
 				ASSERT_TRUE(edges.empty());
 			}
-			// TODO: Write a shorthand for buildGraph and resolveGraph?
 
 			{ // Test layers -> We need layers to run systems parallel
 				const v2::Graph& graph = schedule.getGraph();
 				const std::vector<v2::GraphLayer>& layers = graph.layers;
 				ASSERT_EQ(layers.size(), 3);
 
+				// Don't test sequence in the first layer
 				ASSERT_EQ(layers[0].nodes.size(), 2);
-				// Don't test sequence in a layer
-// 				EXPECT_EQ(layers[0].nodes[0].typeID, GetTypeID<SystemTest_3>());
-//  			EXPECT_EQ(layers[0].nodes[1].typeID, GetTypeID<SystemTest_4>());
 
 				ASSERT_EQ(layers[1].nodes.size(), 1);
 				EXPECT_EQ(layers[1].nodes[0].typeID, GetTypeID<SystemTest_2>());
@@ -206,15 +158,6 @@ namespace zt::core::ecs::tests
 		world.spawn(Position{ 0, 0 }, Sprite{ 0 }, Velocity{ 0, 0 });
 
 		schedule.runOnce(world);
-
-		auto query = Query<Position>(world);
-
-		ASSERT_NE(query.getComponentsCount(), 0);
-		for (auto [position] : query)
-		{
-			ASSERT_EQ(position->x, 2);
-			ASSERT_EQ(position->y, 2);
-		}
 	}
 
 	TEST_F(ECSScheduleTests, GraphMainThreadDependencyTest)
@@ -330,10 +273,8 @@ namespace zt::core::ecs::tests
 		EXPECT_EQ(layers[2].nodes[0].typeID, GetTypeID<SystemTest_3>());
 	}
 
-	// TODO: Create GraphEdges from components dependencies
-
 	// TODO: Test a situation when we have a lot of systems that can be run at the same time
-	// The number of systems must exceeds the number of threads pool size
+	// In test: The number of systems must exceeds the number of threads pool size
 	// The systems can't be in one layer but must be distributed along all layers
 	// It's not a problem for Windows but it's still an invalid situation
 

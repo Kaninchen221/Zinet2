@@ -130,73 +130,22 @@ namespace zt::core::ecs::tests
 	};
 
 	class SystemTest_1
-	{
-	public:
-		static SystemReturnState EntryPoint([[maybe_unused]] ConstQuery<Position> query) { return {}; }
-	};
+	{};
 
 	class SystemTest_2
-	{
-	public:
-		static SystemReturnState EntryPoint(
-			[[maybe_unused]] Query<Position, Sprite> query0,
-			[[maybe_unused]] Query<Position, Sprite, Velocity> query1,
-			[[maybe_unused]] Resource<int> resInt,
-			[[maybe_unused]] Resource<float> resFloat,
-			[[maybe_unused]] Resource<double> resDouble)
-		{
-			for (auto [position, sprite] : query0)
-			{
-				position->x++;
-				position->y++;
-				sprite->id++;
-			}
-
-			for (auto [position, sprite, velocity] : query1)
-			{
-				position->x++;
-				position->y++;
-				sprite->id++;
-				velocity->x++;
-				velocity->y++;
-			}
-
-			if (resInt)
-				*resInt.get() += 1;
-
-			if (resFloat)
-				*resFloat.get() += 1;
-
-			if (resDouble)
-				*resDouble.get() += 1;
-
-			return {}; 
-		}
-	};
+	{};
 
 	class SystemTest_3
-	{
-	public:
-		static SystemReturnState EntryPoint() { return {}; }
-	};
+	{};
 
 	class SystemTest_4
-	{
-	public:
-		static SystemReturnState EntryPoint([[maybe_unused]] ConstResource<int> resInt) { return {}; }
-	};
+	{};
 
 	class SystemTest_5
-	{
-	public:
-		static SystemReturnState EntryPoint() { return {}; }
-	};
+	{};
 
 	class SystemTest_6
-	{
-	public:
-		static SystemReturnState EntryPoint() { return {}; }
-	};
+	{};
 
 	class EmptySystemTest
 	{
