@@ -171,6 +171,7 @@ namespace zt::core::ecs
 		{
 			TypeID typeID{};
 			std::function<void(World&)> systemAdapter;
+			// TODO: Remove 'after', 'before' and 'mainThread' from this class?
 			std::vector<TypeID> after;
 			std::vector<TypeID> before;
 			bool mainThread = false;
@@ -321,7 +322,7 @@ namespace zt::core::ecs
 			{
 				ResourceInfo resourceInfo
 				{
-					.type = GetTypeID<ResourceT>(),
+					.type = GetTypeID<typename ResourceT::T>(),
 					.isConst = ResourceT::IsConstT()
 				};
 				systemInfo.resources.push_back(resourceInfo);

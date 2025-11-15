@@ -203,4 +203,16 @@ namespace zt::core::ecs::tests
 	public:
 		static SystemReturnState EntryPoint() { return {}; }
 	};
+
+	class ReadWritePositionResSystemTest
+	{
+	public:
+		static SystemReturnState EntryPoint(Resource<Position>) { return {}; }
+	};
+
+	class ReadOnlyPositionResSystemTest
+	{
+	public:
+		static SystemReturnState EntryPoint(ConstResource<Position>) { return {}; }
+	};
 }

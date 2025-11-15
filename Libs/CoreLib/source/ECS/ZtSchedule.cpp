@@ -130,8 +130,9 @@ namespace zt::core::ecs
 				graphNodes.push_back(graphNode);
 			}
 
-			// Create edges
- 			auto& edges = graph.edges;
+			auto& edges = graph.edges;
+
+			// Create edges from 'Before' and 'After'
  			for (const auto& system : systems)
  			{
 				for (auto& before : system.before)
@@ -158,6 +159,46 @@ namespace zt::core::ecs
 						edges.push_back(graphEdge);
 				}
  			}
+
+			// Create edges from resources: type and method of use (ReadWrite or ReadOnly)
+			for (const auto& system : systems)
+			{
+				for (const auto& resource : system.resources)
+				{
+					// Don't create edges that has from const resource usage
+					if (resource.isConst)
+						continue;
+
+					for (const auto& otherSystem : systems)
+					{
+						// Skip the same system
+						if (system.label == otherSystem.label)
+							continue;
+
+						auto& otherResources = otherSystem.resources;
+						if (std::ranges::any_of(otherResources, [&resource](const auto& otherResource) { return resource.type == otherResource.type; }))
+						{
+							GraphEdge graphEdge
+							{
+								.from = system.label,
+								.to = otherSystem.label
+							};
+
+							// Skip edge if it's already in the opposite direction
+							auto graphEdgePrediction = [&graphEdge](const auto& otherEdge) 
+							{
+								return (otherEdge.from == graphEdge.from && otherEdge.to == graphEdge.to) ||
+									(otherEdge.from == graphEdge.to && otherEdge.to == graphEdge.from);
+							};
+
+							if (!std::ranges::any_of(edges, graphEdgePrediction))
+							{
+								edges.push_back(graphEdge);
+							}
+						}
+					}
+				}
+			}
 		}
 
 		void Schedule::resolveGraph()

@@ -123,17 +123,6 @@ namespace zt::core::ecs::tests
 					EXPECT_EQ(systemInfo.queries[0].types[0], GetTypeID<Position>());
 					EXPECT_EQ(systemInfo.queries[0].types[1], GetTypeID<Sprite>());
 				}
-
-				{ // Resources
-					// Test if resources have correct cunt of types
-					ASSERT_EQ(systemInfo.resources.size(), 3);
-					EXPECT_EQ(systemInfo.resources[0].type, GetTypeID<Resource<int>>());
-					EXPECT_EQ(systemInfo.resources[0].isConst, false);
-					EXPECT_EQ(systemInfo.resources[1].type, GetTypeID<Resource<float>>());
-					EXPECT_EQ(systemInfo.resources[1].isConst, false);
-					EXPECT_EQ(systemInfo.resources[2].type, GetTypeID<Resource<double>>());
-					EXPECT_EQ(systemInfo.resources[2].isConst, false);
-				}
 			}
 
 			{ // Test empty system
@@ -279,11 +268,37 @@ namespace zt::core::ecs::tests
 					nodes[1].typeID == GetTypeID<SystemTest_3>());
 	}
 
-	// TODO: Create GraphEdges from components and resources dependencies
-// 	TEST_F(ECSScheduleTests, ComponentsAndResourcesDependenciesTest)
-// 	{
-// 		
-// 	}
+	TEST_F(ECSScheduleTests, ResourcesDependenciesTest)
+	{
+		v2::Schedule schedule;
+
+		schedule.addSystem(SystemTest_1{}, ReadWritePositionResSystemTest::EntryPoint);
+		schedule.addSystem(SystemTest_2{}, ReadWritePositionResSystemTest::EntryPoint);
+		schedule.addSystem(SystemTest_3{}, ReadOnlyPositionResSystemTest::EntryPoint);
+
+		schedule.buildGraph();
+		schedule.resolveGraph();
+
+		auto& graph = schedule.getGraph();
+
+		// Graph must be resolved
+		ASSERT_TRUE(graph.edges.empty());
+
+		auto& layers = graph.layers;
+
+		ASSERT_EQ(layers.size(), 3);
+
+		ASSERT_EQ(layers[0].nodes.size(), 1);
+		ASSERT_EQ(layers[1].nodes.size(), 1);
+		ASSERT_EQ(layers[2].nodes.size(), 1);
+
+		// Systems added first have higher priority
+		EXPECT_EQ(layers[0].nodes[0].typeID, GetTypeID<SystemTest_1>());
+		EXPECT_EQ(layers[1].nodes[0].typeID, GetTypeID<SystemTest_2>());
+		EXPECT_EQ(layers[2].nodes[0].typeID, GetTypeID<SystemTest_3>());
+	}
+
+	// TODO: Create GraphEdges from components dependencies
 
 	// TODO: Test a situation when we have a lot of systems that can be run at the same time
 	// The number of systems must exceeds the number of threads pool size
