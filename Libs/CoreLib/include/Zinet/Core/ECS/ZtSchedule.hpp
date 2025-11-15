@@ -14,85 +14,100 @@
 
 namespace zt::core::ecs
 {
-	class Schedule;
-
-	struct ZINET_CORE_API SystemPack
-	{
-		ID systemTypeID;
-		System system;
-
-		template<typename T>
-		bool isEqual([[maybe_unused]] T&& t) const noexcept { return systemTypeID == GetTypeID<T>(); }
-	};
-
-	struct ZINET_CORE_API Thread
-	{
-		inline static auto Logger = core::ConsoleLogger::Create("zt::core::ecs::Thread");
-
-	public:
-
-		friend Schedule;
-
-		Thread(ThreadID threadID) noexcept : id{ threadID } {}
-		Thread(const Thread& other) noexcept { id = other.getID(); }
-
-		void runSync(World& world) noexcept;
-
-		void runAsync(World& world) noexcept;
-
-		void requestStop() noexcept;
-
-		bool isRunning() const noexcept { return running.load(); }
-
-		ThreadID getID() const noexcept { return id; }
-
-		auto& getSystems() const noexcept { return systems; }
-
-	private:
-
-		ThreadID id;
-		std::vector<SystemPack> systems;
-		std::jthread thread;
-		std::atomic_bool running = false;
-		std::atomic_bool requestedStop = false;
-	};
-
 	// TODO 1:
 	// Problems to solve:
 	// - handle situation when we spawn/remove entities during system execution
 	// - handle situation when we add resources during system execution (we assume that resources can't be removed)
 	// Solution ideas:
 	// - Create some commands in schedule that will be executed at the end of update all systems or something similar
-	// 
-	// TODO 2:
-	// Problem to solve:
-	// ImGui system reads/writes to components of class Transform on the Main Thread
-	// Gameplay system writes/reads components of class Transform on the Gameplay Thread
-	// It will cause race condition and undefined behaviors
-	// Solution ideas:
-	// - Decorated world?
-	// - Create a pool of available components and remove them if they are used by some other system (on different thread)
-	// - Priority levels for systems or threads
-	// - Choose on the thread what to do when components are locked (skip system, wait for unlock, etc.)
-	// - Mutexes around components access (bad for performance)
-	// - Systems shouldn't consume a World& but Queue<const ComponentT_1, ComponentT_2> so the scheduler can gather info which data the system will use (How to store them in the scheduler?)
-	// 
-	// TODO 3: 
-	// User should be able to define dependencies between systems while adding them to the schedule
-	// Schedule should generate a graph of systems dependencies and execute them in correct order and fail if it can't be created 
+
+	struct ZINET_CORE_API ResourceInfo
+	{
+		TypeID type;
+		bool isConst = false;
+	};
+
+	struct ZINET_CORE_API QueryInfo
+	{
+		std::vector<TypeID> types;
+		bool isConst = false;
+	};
+
+	struct ZINET_CORE_API SystemInfo
+	{
+		TypeID label = InvalidID;
+		std::function<void(World&)> systemAdapter;
+		std::vector<TypeID> before;
+		std::vector<TypeID> after;
+		bool mainThread = false;
+		std::vector<QueryInfo> queries;
+		std::vector<ResourceInfo> resources;
+	};
+
+	struct ZINET_CORE_API Before
+	{
+		template<class... Systems>
+		Before(Systems...)
+		{
+			(values.push_back(GetTypeID<Systems>()), ...);
+		}
+
+		std::vector<ID> values;
+	};
+
+	struct ZINET_CORE_API After
+	{
+		template<class... Systems>
+		After(Systems...)
+		{
+			(values.push_back(GetTypeID<Systems>()), ...);
+		}
+
+		std::vector<ID> values;
+	};
+
+	struct ZINET_CORE_API MainThread
+	{};
+
+	struct ZINET_CORE_API GraphNode
+	{
+		TypeID typeID{};
+		std::function<void(World&)> systemAdapter;
+		// TODO: Remove 'after', 'before' and 'mainThread' from this class?
+		std::vector<TypeID> after;
+		std::vector<TypeID> before;
+		bool mainThread = false;
+	};
+
+	struct ZINET_CORE_API GraphEdge
+	{
+		TypeID from = InvalidID;
+		TypeID to = InvalidID;
+
+		auto operator <=> (const GraphEdge& other) const noexcept = default;
+	};
+
+	struct ZINET_CORE_API GraphLayer
+	{
+		std::vector<GraphNode> nodes;
+	};
+
+	struct ZINET_CORE_API Graph
+	{
+		std::vector<GraphNode> nodes;
+		std::vector<GraphEdge> edges;
+		std::vector<GraphLayer> layers;
+	};
+
 	class ZINET_CORE_API Schedule
 	{
 		inline static auto Logger = ConsoleLogger::Create("zt::core::ecs::Schedule");
 
-		Schedule() noexcept = default;
-
 	public:
 
-		using Threads = std::vector<Thread>;
+		using Systems = std::vector<SystemInfo>;
 
-		template<class... ThreadsIDs>
-		static Schedule Create(ThreadsIDs... threadsIDs) noexcept;
-
+		Schedule() noexcept = default;
 		Schedule(const Schedule& other) noexcept = default;
 		Schedule(Schedule&& other) noexcept = default;
 		~Schedule() noexcept = default;
@@ -100,288 +115,143 @@ namespace zt::core::ecs
 		Schedule& operator = (const Schedule& other) noexcept = default;
 		Schedule& operator = (Schedule&& other) noexcept = default;
 
-		template<class Label>
-		void addSystem(Label label, System system, ThreadID threadID) noexcept;
+		template<class LabelT, class SystemT, class... Deps>
+		constexpr void addSystem(LabelT, SystemT system, Deps... deps) noexcept
+		{
+			SystemInfo systemInfo
+			{
+				.label = GetTypeID<LabelT>(),
+			};
 
-		const auto& getThreads() const noexcept { return threads; }
+			(ResolveDeps(systemInfo, deps), ...);
 
-		void run(World& world, ThreadID mainThreadID);
+			ResolveSystemTraits(systemInfo, system);
 
-		void requestStop();
+			ResolveSystemAdapter(systemInfo, system);
 
-		void waitForStop() noexcept;
+			systems.push_back(systemInfo);
+		}
+
+		auto& getSystems() const noexcept { return systems; }
+
+		void buildGraph();
+
+		void resolveGraph();
+
+		auto& getGraph() const noexcept { return graph; }
+
+		void runOnce(World& world);
 
 	private:
 
-		Threads threads;
+		template<class Dependency>
+		constexpr static void ResolveDeps(SystemInfo& systemInfo, const Dependency& dependency)
+		{
+			if constexpr (std::is_same_v<Dependency, Before>)
+			{
+				systemInfo.before = dependency.values;
+			}
+			else if constexpr (std::is_same_v<Dependency, After>)
+			{
+				systemInfo.after = dependency.values;
+			}
+			else if constexpr (std::is_same_v<Dependency, MainThread>)
+			{
+				systemInfo.mainThread = true;
+			}
+			else
+			{
+				static_assert(false, "Found a dependency that can't be resolved by this function");
+			}
+		}
+
+		template<class SystemT>
+		constexpr static void ResolveSystemTraits(SystemInfo& systemInfo, SystemT)
+		{
+			using SystemTraits = FunctionTraits<SystemT>;
+
+			static_assert(std::is_same_v<typename SystemTraits::ReturnT, SystemReturnState>,
+				"Every system should return this type");
+
+			if constexpr (SystemTraits::ArgsCount > 0)
+			{
+				ResolveSystemArgs<SystemTraits>(systemInfo, std::make_index_sequence<SystemTraits::ArgsCount>());
+			}
+		}
+
+		template<class SystemTraitsT, size_t... N>
+		constexpr static void ResolveSystemArgs(SystemInfo& systemInfo, std::index_sequence<N...>)
+		{
+			(ResolveSystemArgsImpl<typename SystemTraitsT::template ArgsTs<N>>(systemInfo), ...);
+		}
+
+		template<class T>
+		constexpr static void ResolveSystemArgsImpl(SystemInfo& systemInfo)
+		{
+			constexpr bool IsQueryType = requires { typename T::IsQueryType; };
+			constexpr bool IsResourceType = requires { typename T::IsResourceType; };
+
+			if constexpr (IsQueryType)
+			{
+				AddQuery<T>(systemInfo);
+			}
+			else if constexpr (IsResourceType)
+			{
+				AddResource<T>(systemInfo);
+			}
+			else
+			{
+				static_assert(false, "System has a param that is not a type that can be handled by the Schedule");
+			}
+		}
+
+		template<class QueryT>
+		constexpr static void AddQuery(SystemInfo& systemInfo)
+		{
+			constexpr size_t size = std::tuple_size<typename QueryT::ComponentsT>{};
+
+			QueryInfo queryInfo
+			{
+				.types = GetTypesIDs<typename QueryT::ComponentsT>(std::make_index_sequence<size>()),
+				.isConst = QueryT::IsConstT()
+			};
+			systemInfo.queries.push_back(queryInfo);
+		}
+
+		template<class ResourceT>
+		constexpr static void AddResource(SystemInfo& systemInfo)
+		{
+			ResourceInfo resourceInfo
+			{
+				.type = GetTypeID<typename ResourceT::T>(),
+				.isConst = ResourceT::IsConstT()
+			};
+			systemInfo.resources.push_back(resourceInfo);
+		}
+
+		template<class ComponentsT, size_t... N>
+		constexpr static std::vector<TypeID> GetTypesIDs(std::index_sequence<N...>)
+		{
+			std::vector<TypeID> result;
+			(result.push_back(GetTypeID<typename std::tuple_element_t<N, ComponentsT>>()), ...);
+
+			return result;
+		}
+
+		template<class SystemT>
+		constexpr static void ResolveSystemAdapter(SystemInfo& systemInfo, SystemT system)
+		{
+			using SystemTraits = FunctionTraits<SystemT>;
+
+			systemInfo.systemAdapter = [system = system](World& world)
+			{
+				auto tuple = MakeTuple<World&, SystemTraits::ArgsCount>(world);
+				std::apply(system, tuple);
+			};
+		}
+
+		Systems systems;
+		Graph graph;
 
 	};
-
-	namespace v2
-	{
-		struct ZINET_CORE_API ResourceInfo
-		{
-			TypeID type;
-			bool isConst = false;
-		};
-
-		struct ZINET_CORE_API QueryInfo
-		{
-			std::vector<TypeID> types;
-			bool isConst = false;
-		};
-
-		struct ZINET_CORE_API SystemInfo
-		{
-			TypeID label = InvalidID;
-			std::function<void(World&)> systemAdapter;
-			std::vector<TypeID> before;
-			std::vector<TypeID> after;
-			bool mainThread = false;
-			std::vector<QueryInfo> queries;
-			std::vector<ResourceInfo> resources;
-		};
-
-		struct ZINET_CORE_API Before
-		{
-			template<class... Systems>
-			Before(Systems...)
-			{
-				(values.push_back(GetTypeID<Systems>()), ...);
-			}
-
-			std::vector<ID> values;
-		};
-
-		struct ZINET_CORE_API After
-		{
-			template<class... Systems>
-			After(Systems...)
-			{
-				(values.push_back(GetTypeID<Systems>()), ...);
-			}
-
-			std::vector<ID> values;
-		};
-
-		struct ZINET_CORE_API MainThread
-		{};
-
-		struct ZINET_CORE_API GraphNode
-		{
-			TypeID typeID{};
-			std::function<void(World&)> systemAdapter;
-			// TODO: Remove 'after', 'before' and 'mainThread' from this class?
-			std::vector<TypeID> after;
-			std::vector<TypeID> before;
-			bool mainThread = false;
-		};
-
-		struct ZINET_CORE_API GraphEdge
-		{
-			TypeID from = InvalidID;
-			TypeID to = InvalidID;
-
-			auto operator <=> (const GraphEdge& other) const noexcept = default;
-		};
-
-		struct ZINET_CORE_API GraphLayer
-		{
-			std::vector<GraphNode> nodes;
-		};
-
-		// TODO: Use more than one thread
-		struct ZINET_CORE_API Graph
-		{
-			std::vector<GraphNode> nodes;
-			std::vector<GraphEdge> edges;
-			std::vector<GraphLayer> layers;
-		};
-
-		class ZINET_CORE_API Schedule
-		{
-			inline static auto Logger = ConsoleLogger::Create("zt::core::ecs::Schedule");
-
-		public:
-
-			using Systems = std::vector<SystemInfo>;
-
-			Schedule() noexcept = default;
-			Schedule(const Schedule& other) noexcept = default;
-			Schedule(Schedule&& other) noexcept = default;
-			~Schedule() noexcept = default;
-
-			Schedule& operator = (const Schedule& other) noexcept = default;
-			Schedule& operator = (Schedule&& other) noexcept = default;
-
-			template<class LabelT, class SystemT, class... Deps>
-			constexpr void addSystem(LabelT, SystemT system, Deps... deps) noexcept 
-			{
-				SystemInfo systemInfo
-				{
-					.label = GetTypeID<LabelT>(),
-				};
-
-				(ResolveDeps(systemInfo, deps), ...);
-
-				ResolveSystemTraits(systemInfo, system);
-
-				ResolveSystemAdapter(systemInfo, system);
-
-				systems.push_back(systemInfo);
-			}
-
-			auto& getSystems() const noexcept { return systems; }
-
-			void buildGraph();
-
-			void resolveGraph();
-
-			auto& getGraph() const noexcept { return graph; }
-
-			void runOnce(World& world);
-
-		private:
-
-			template<class Dependency>
-			constexpr static void ResolveDeps(SystemInfo& systemInfo, const Dependency& dependency)
-			{
-				if constexpr (std::is_same_v<Dependency, Before>)
-				{
-					systemInfo.before = dependency.values;
-				}
-				else if constexpr (std::is_same_v<Dependency, After>)
-				{
-					systemInfo.after = dependency.values;
-				}
-				else if constexpr (std::is_same_v<Dependency, MainThread>)
-				{
-					systemInfo.mainThread = true;
-				}
-				else
-				{
-					static_assert(false, "Found a dependency that can't be resolved by this function");
-				}
-			}
-
-			template<class SystemT>
-			constexpr static void ResolveSystemTraits(SystemInfo& systemInfo, SystemT)
-			{
-				using SystemTraits = FunctionTraits<SystemT>;
-
-				static_assert(std::is_same_v<typename SystemTraits::ReturnT, SystemReturnState>, 
-					"Every system should return this type");
-
-				if constexpr (SystemTraits::ArgsCount > 0)
-				{
-					ResolveSystemArgs<SystemTraits>(systemInfo, std::make_index_sequence<SystemTraits::ArgsCount>());
-				}
-			}
-
-			template<class SystemTraitsT, size_t... N>
-			constexpr static void ResolveSystemArgs(SystemInfo& systemInfo, std::index_sequence<N...>)
-			{
-				(ResolveSystemArgsImpl<typename SystemTraitsT::template ArgsTs<N>>(systemInfo), ...);
-			}
-
-			template<class T>
-			constexpr static void ResolveSystemArgsImpl(SystemInfo& systemInfo)
-			{
-				constexpr bool IsQueryType = requires { typename T::IsQueryType; };
-				constexpr bool IsResourceType = requires { typename T::IsResourceType; };
-
-				if constexpr (IsQueryType)
-				{
-					AddQuery<T>(systemInfo);
-				}
-				else if constexpr (IsResourceType)
-				{
-					AddResource<T>(systemInfo);
-				}
-				else
-				{
-					static_assert(false, "System has a param that is not a type that can be handled by the Schedule");
-				}
-			}
-
-			template<class QueryT>
-			constexpr static void AddQuery(SystemInfo& systemInfo)
-			{
-				constexpr size_t size = std::tuple_size<typename QueryT::ComponentsT>{};
-
-				QueryInfo queryInfo
-				{
-					.types = GetTypesIDs<typename QueryT::ComponentsT>(std::make_index_sequence<size>()),
-					.isConst = QueryT::IsConstT()
-				};
-				systemInfo.queries.push_back(queryInfo);
-			}
-
-			template<class ResourceT>
-			constexpr static void AddResource(SystemInfo& systemInfo)
-			{
-				ResourceInfo resourceInfo
-				{
-					.type = GetTypeID<typename ResourceT::T>(),
-					.isConst = ResourceT::IsConstT()
-				};
-				systemInfo.resources.push_back(resourceInfo);
-			}
-
-			template<class ComponentsT, size_t... N>
-			constexpr static std::vector<TypeID> GetTypesIDs(std::index_sequence<N...>)
-			{
-				std::vector<TypeID> result;
-				(result.push_back(GetTypeID<typename std::tuple_element_t<N, ComponentsT>>()), ...);
-
-				return result;
-			}
-
-			template<class SystemT>
-			constexpr static void ResolveSystemAdapter(SystemInfo& systemInfo, SystemT system)
-			{
-				using SystemTraits = FunctionTraits<SystemT>;
-
-				systemInfo.systemAdapter = [system = system](World& world)
-				{
-					auto tuple = MakeTuple<World&, SystemTraits::ArgsCount>(world);
-					std::apply(system, tuple);
-				};
-			}
-
-			Systems systems;
-			Graph graph;
-
-		};
-
-	}
-}
-
-namespace zt::core::ecs
-{
-	template<class... ThreadsIDs>
-	Schedule Schedule::Create(ThreadsIDs... threadsIDs) noexcept
-	{
-		Schedule schedule;
-
-		(schedule.threads.emplace_back(Thread{ threadsIDs }), ...);
-
-		return schedule;
-	}
-
-	template<class Label>
-	void Schedule::addSystem([[maybe_unused]] Label label, System system, ThreadID threadID) noexcept
-	{
-#	if ZINET_SANITY_CHECK
-		if (threadID >= threads.size())
-		{
-			Logger->error("Schedule::addSystem(): Invalid thread ID {}", threadID);
-			return;
-		}
-#	endif
-
-		auto& thread = threads[threadID];
-
-		thread.systems.push_back(SystemPack{ GetTypeID<Label>(), system});
-	}
 }

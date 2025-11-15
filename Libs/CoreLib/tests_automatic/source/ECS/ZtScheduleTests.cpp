@@ -12,73 +12,15 @@ namespace zt::core::ecs::tests
 {
 	class ECSScheduleTests : public ::testing::Test
 	{
-	protected:
-
-		enum Threads : uint8_t
-		{
-			MainThread,
-			RenderThread
-		};
 
 	};
 
-	TEST_F(ECSScheduleTests, CreateScheduleTest)
-	{
-		Schedule schedule = Schedule::Create(Threads::MainThread, Threads::RenderThread);
-		const auto& threads = schedule.getThreads();
-		ASSERT_EQ(threads.size(), 2);
-
-		ASSERT_EQ(threads[0].getID(), Threads::MainThread);
-		ASSERT_EQ(threads[1].getID(), Threads::RenderThread);
-	}
-
-	TEST_F(ECSScheduleTests, AddSystemTest)
-	{
-		Schedule schedule = Schedule::Create(Threads::MainThread, Threads::RenderThread);
-
-		schedule.addSystem(TestSystem::Label{}, TestSystem::entryPoint, Threads::MainThread);
-
-		struct LambdaLabel {};
-		auto lambda = []([[maybe_unused]] World& world) -> SystemReturnState { TestSystem::doSomething(); return {}; };
-
-		schedule.addSystem(LambdaLabel{}, lambda, Threads::RenderThread);
-
-		const auto& threads = schedule.getThreads();
-
-		ASSERT_TRUE(threads[Threads::MainThread].getSystems()[0].isEqual(TestSystem::Label{}));
-		ASSERT_TRUE(threads[Threads::RenderThread].getSystems()[0].isEqual(LambdaLabel{}));
-	}
-
-	TEST_F(ECSScheduleTests, RunTest)
-	{
-		Schedule schedule = Schedule::Create(Threads::MainThread, Threads::RenderThread);
-
-		schedule.addSystem(TestSystemIncrementar::Label{}, TestSystemIncrementar::entryPoint, Threads::MainThread);
-
-		World world;
-		for (size_t i = 0; i < 100; i++)
-		{
-			world.spawn(Sprite{}, Position{}, Velocity{}, Counter{});
-			world.spawn(Sprite{}, Position{}, Counter{});
-			world.spawn(Counter{});
-		}
-
-		schedule.run(world, Threads::MainThread);
-		schedule.requestStop();
-		schedule.waitForStop();
-
-		for (const auto [counter] : Query<Counter>(world))
-		{
-			ASSERT_NE(counter->value, 0);
-		}
-	}
-
 	TEST_F(ECSScheduleTests, BeforeAndAfterDependenciesTest)
 	{
-		v2::Schedule schedule;
+		Schedule schedule;
 
 		schedule.addSystem(SystemTest_1{}, EmptySystemTest::EntryPoint);
-		schedule.addSystem(SystemTest_2{}, EmptySystemTest::EntryPoint, v2::Before{ SystemTest_1{} }, v2::After{ SystemTest_3{} });
+		schedule.addSystem(SystemTest_2{}, EmptySystemTest::EntryPoint, Before{ SystemTest_1{} }, After{ SystemTest_3{} });
 		schedule.addSystem(SystemTest_3{}, EmptySystemTest::EntryPoint);
 		schedule.addSystem(SystemTest_4{}, EmptySystemTest::EntryPoint);
 
@@ -88,7 +30,7 @@ namespace zt::core::ecs::tests
 
 			{ // Test build graph nodes that will be used to create the final graph
 				schedule.buildGraph();
-				const v2::Graph& graph = schedule.getGraph();
+				const Graph& graph = schedule.getGraph();
 
 				{ // Nodes
 					auto& nodes = graph.nodes;
@@ -119,8 +61,8 @@ namespace zt::core::ecs::tests
 					auto& edges = graph.edges;
 					ASSERT_EQ(edges.size(), 2);
 
-					EXPECT_TRUE(std::ranges::contains(edges, v2::GraphEdge{ .from = GetTypeID<SystemTest_2>(), .to = GetTypeID<SystemTest_1>() }));
-					EXPECT_TRUE(std::ranges::contains(edges, v2::GraphEdge{ .from = GetTypeID<SystemTest_3>(), .to = GetTypeID<SystemTest_2>() }));
+					EXPECT_TRUE(std::ranges::contains(edges, GraphEdge{ .from = GetTypeID<SystemTest_2>(), .to = GetTypeID<SystemTest_1>() }));
+					EXPECT_TRUE(std::ranges::contains(edges, GraphEdge{ .from = GetTypeID<SystemTest_3>(), .to = GetTypeID<SystemTest_2>() }));
 				}
 			}
 
@@ -128,7 +70,7 @@ namespace zt::core::ecs::tests
 			{
  				schedule.resolveGraph();
  
-				const v2::Graph& graph = schedule.getGraph();
+				const Graph& graph = schedule.getGraph();
 				auto& nodes = graph.nodes;
 				auto& edges = graph.edges;
 
@@ -138,8 +80,8 @@ namespace zt::core::ecs::tests
 			}
 
 			{ // Test layers -> We need layers to run systems parallel
-				const v2::Graph& graph = schedule.getGraph();
-				const std::vector<v2::GraphLayer>& layers = graph.layers;
+				const Graph& graph = schedule.getGraph();
+				const std::vector<GraphLayer>& layers = graph.layers;
 				ASSERT_EQ(layers.size(), 3);
 
 				// Don't test sequence in the first layer
@@ -162,10 +104,10 @@ namespace zt::core::ecs::tests
 
 	TEST_F(ECSScheduleTests, GraphMainThreadDependencyTest)
 	{
-		v2::Schedule schedule;
+		Schedule schedule;
 
-		schedule.addSystem(SystemTest_2{}, EmptySystemTest::EntryPoint, v2::MainThread{});
-		schedule.addSystem(SystemTest_3{}, EmptySystemTest::EntryPoint, v2::MainThread{});
+		schedule.addSystem(SystemTest_2{}, EmptySystemTest::EntryPoint, MainThread{});
+		schedule.addSystem(SystemTest_3{}, EmptySystemTest::EntryPoint, MainThread{});
 		schedule.addSystem(SystemTest_1{}, EmptySystemTest::EntryPoint);
 
 		// If you have more than one system in the same layer and both of them must be run on the main thread then just run them in sync and don't generate additional edges
@@ -213,7 +155,7 @@ namespace zt::core::ecs::tests
 
 	TEST_F(ECSScheduleTests, ResourcesDependenciesTest)
 	{
-		v2::Schedule schedule;
+		Schedule schedule;
 
 		schedule.addSystem(SystemTest_3{}, ReadOnlyPositionResSystemTest::EntryPoint);
 
@@ -244,7 +186,7 @@ namespace zt::core::ecs::tests
 
 	TEST_F(ECSScheduleTests, QueriesDependenciesTest)
 	{
-		v2::Schedule schedule;
+		Schedule schedule;
 
 		schedule.addSystem(SystemTest_3{}, ReadOnlyPositionVelocitySpriteComponentsSystemTest::EntryPoint);
 
