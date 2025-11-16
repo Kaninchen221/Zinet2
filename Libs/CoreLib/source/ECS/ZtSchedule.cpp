@@ -245,10 +245,10 @@ namespace zt::core::ecs
 					threads.push_back(
 						std::jthread(
 							[&systemAdapter = systemAdapter, &world = world]()
-					{
-						if (systemAdapter)
-							systemAdapter(world);
-					}
+							{
+								if (systemAdapter)
+									systemAdapter(world);
+							}
 						)
 					);
 				}

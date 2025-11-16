@@ -20,6 +20,8 @@ namespace zt::core::ecs
 	// - handle situation when we add resources during system execution (we assume that resources can't be removed)
 	// Solution ideas:
 	// - Create some commands in schedule that will be executed at the end of update all systems or something similar
+	// - Add the components and resources after ending the actual layer so in the next layer we can use them
+	// - Create an interface over the World class that will cover the add/remove methods
 
 	struct ZINET_CORE_API ResourceInfo
 	{
