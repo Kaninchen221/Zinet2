@@ -30,6 +30,9 @@ namespace zt::core::ecs
 		template<class... Components>
 		Entity spawn(Components&&... components);
 
+		// TODO: Write test
+		bool hasEntity(const Entity& entity) noexcept;
+
 		bool remove(const Entity& entity);
 
 		template<class Component>

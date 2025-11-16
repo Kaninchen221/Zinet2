@@ -3,6 +3,17 @@
 namespace zt::core::ecs
 {
 
+	bool World::hasEntity(const Entity& entity) noexcept
+	{
+		for (auto& archetype : archetypes)
+		{
+			if (archetype.hasEntity(entity))
+				return true;
+		}
+
+		return false;
+	}
+
 	bool World::remove(const Entity& entity)
 	{
 		for (auto& archetype : archetypes)

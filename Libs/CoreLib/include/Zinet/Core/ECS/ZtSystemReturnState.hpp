@@ -6,6 +6,8 @@
 
 namespace zt::core::ecs
 {
+	// TODO: Remove SystemReturnState?
+	// Systems shouldn't return anything and instead if they want to return some error info then they should modify ExitReason?
 	class ZINET_CORE_API SystemReturnState
 	{
 	public:
