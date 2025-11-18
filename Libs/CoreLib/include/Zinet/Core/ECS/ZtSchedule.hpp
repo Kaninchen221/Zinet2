@@ -66,7 +66,6 @@ namespace zt::core::ecs
 	{
 		TypeID typeID{};
 		std::function<void(World&)> systemAdapter;
-		// TODO: Remove 'after', 'before' and 'mainThread' from this class?
 		std::vector<TypeID> after;
 		std::vector<TypeID> before;
 		bool mainThread = false;
