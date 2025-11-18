@@ -111,7 +111,7 @@ namespace zt::core::ecs
 	template<class... Components>
 	using ConstQueryIterator = QueryIteratorImpl<std::true_type, Components...>;
 
-	// TODO: Allow to get buffer like access so the user could copy the data to buffers
+	// TODO: Allow to get access to each 'buffer' so the user could easily copy the data to other location
 	// Example: Copying data to uniform buffers
 	template<class IsConstType, class... Components>
 	class QueryImpl
