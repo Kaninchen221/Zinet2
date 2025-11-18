@@ -111,6 +111,18 @@ namespace zt::core::ecs::tests
 		ASSERT_TRUE(world.getComponent<Velocity>(entitySprite));
 	}
 
+	TEST_F(ECSWorldTests, HasEntityTest)
+	{
+		Entity entity{ {}, {} };
+		ASSERT_FALSE(world.hasEntity(entity));
+
+		entity = world.spawn(Position{});
+		ASSERT_TRUE(world.hasEntity(entity));
+
+		EXPECT_TRUE(world.remove(entity));
+		ASSERT_FALSE(world.hasEntity(entity));
+	}
+
 	TEST_F(ECSWorldTests, RemoveTest)
 	{
 		const auto entity = world.spawn(Position{}, Sprite{});
