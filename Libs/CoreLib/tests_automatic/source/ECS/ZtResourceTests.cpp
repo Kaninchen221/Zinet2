@@ -26,6 +26,7 @@ namespace zt::core::ecs::tests
 		Resource<int> resource{ world };
 		ASSERT_TRUE(resource);
 		ASSERT_TRUE(resource.operator->());
+		ASSERT_TRUE(resource.operator*());
 		
 		const int actual = *resource.get();
 		ASSERT_EQ(expected, actual);

@@ -42,7 +42,6 @@ namespace zt::core::ecs
 		T* get() noexcept { return resource; }
 		T const* get() const noexcept { return resource; }
 		
-		// TODO: Test it
 		T& operator * () noexcept { return *get(); }
 		const T& operator * () const noexcept { return *get(); }
 
