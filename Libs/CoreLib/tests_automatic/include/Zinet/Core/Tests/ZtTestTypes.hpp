@@ -3,7 +3,6 @@
 #include "Zinet/Core/ZtTime.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
 
-#include "Zinet/Core/ECS/ZtSystemReturnState.hpp"
 #include "Zinet/Core/ECS/ZtQuery.hpp"
 #include "Zinet/Core/ECS/ZtResource.hpp"
 #include "Zinet/Core/ECS/ZtWorldCommands.hpp"
@@ -61,16 +60,16 @@ namespace zt::core::ecs::tests
 	{
 		struct Label {}; // Empty struct works as an unique ID for the system
 
-		inline SystemReturnState doSomething() { return {}; }
+		inline void doSomething() {}
 
-		inline SystemReturnState entryPoint([[maybe_unused]] World& world) { doSomething(); return {}; }
+		inline void entryPoint([[maybe_unused]] World& world) { doSomething();}
 	}
 
 	namespace TestSystemIncrementar
 	{
 		struct Label {};
 
-		SystemReturnState entryPoint(World& world);
+		void entryPoint(World& world);
 	}
 
 	// Example of a resource class
@@ -153,48 +152,48 @@ namespace zt::core::ecs::tests
 	class EmptySystemTest
 	{
 	public:
-		static SystemReturnState EntryPoint() { return {}; }
+		static void EntryPoint() {}
 	};
 
 	class ReadWritePositionResSystemTest
 	{
 	public:
-		static SystemReturnState EntryPoint(Resource<Position>) { return {}; }
+		static void EntryPoint(Resource<Position>) {}
 	};
 
 	class ReadOnlyPositionResSystemTest
 	{
 	public:
-		static SystemReturnState EntryPoint(ConstResource<Position>) { return {}; }
+		static void EntryPoint(ConstResource<Position>) {}
 	};
 
 	class ReadWritePositionVelocitySpriteComponentsSystemTest
 	{
 	public:
-		static SystemReturnState EntryPoint(Query<Position, Velocity, Sprite>) { return {}; }
+		static void EntryPoint(Query<Position, Velocity, Sprite>) {}
 	};
 
 	class ReadOnlyPositionVelocitySpriteComponentsSystemTest
 	{
 	public:
-		static SystemReturnState EntryPoint(ConstQuery<Position, Velocity, Sprite>) { return {}; }
+		static void EntryPoint(ConstQuery<Position, Velocity, Sprite>) {}
 	};
 
 	class AddResourceSystemTest
 	{
 	public:
-		static SystemReturnState AddPosition(WorldCommands worldCommands) 
+		static void AddPosition(WorldCommands worldCommands) 
 		{
 			worldCommands.addResource(Position{});
 
-			return {}; 
+			 
 		}
 	};
 
 	class ExpectResourceSystemTest
 	{
 	public:
-		static SystemReturnState ExpectPosition(ConstResource<Position> positionRes, WorldCommands worldCommands)
+		static void ExpectPosition(ConstResource<Position> positionRes, WorldCommands worldCommands)
 		{ 
 			if (!positionRes)
 			{
@@ -211,7 +210,7 @@ namespace zt::core::ecs::tests
 				worldCommands.addResource(components::ExitReason{});
 			}
 
-			return {};
+			
 		}
 	};
 }

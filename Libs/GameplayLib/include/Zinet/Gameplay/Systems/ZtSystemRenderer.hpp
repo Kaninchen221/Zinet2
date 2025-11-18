@@ -4,8 +4,6 @@
 
 #include "Zinet/Core/ZtLogger.hpp"
 
-#include "Zinet/Core/ECS/ZtSystemReturnState.hpp"
-
 namespace zt::core::ecs
 {
 	class World;
@@ -13,17 +11,18 @@ namespace zt::core::ecs
 
 namespace zt::gameplay::system
 {
+	// TODO: Rewrite it to new schedule system
 	class ZINET_GAMEPLAY_API Renderer
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::system::Renderer");
 	
 	public:
 
-		static core::ecs::SystemReturnState Init(core::ecs::World& world);
+		static void Init(core::ecs::World& world);
 
-		static core::ecs::SystemReturnState Update(core::ecs::World& world);
+		static void Update(core::ecs::World& world);
 
-		static core::ecs::SystemReturnState Deinit(core::ecs::World& world);
+		static void Deinit(core::ecs::World& world);
 	};
 
 }

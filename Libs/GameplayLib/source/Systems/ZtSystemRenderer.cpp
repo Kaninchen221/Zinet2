@@ -14,54 +14,48 @@ using namespace zt::core;
 
 namespace zt::gameplay::system
 {
-	core::ecs::SystemReturnState Renderer::Init(ecs::World& world)
+	void Renderer::Init(ecs::World& world)
 	{
-		using Level = core::ecs::SystemReturnState::Level;
-
 		auto rendererRes = world.addResource(vulkan_renderer::VulkanRenderer{});
 		if (!rendererRes)
 		{
-			return { Level::Error, "Couldn't add a renderer res to the world" };
+//			return { Level::Error, "Couldn't add a renderer res to the world" };
 		}
 
 		auto windowRes = world.getResource<wd::Window>();
 		if (!windowRes)
 		{
-			return { Level::Error, "Couldn't get a window res from the world" };
+//			return { Level::Error, "Couldn't get a window res from the world" };
 		}
 
 		if (!rendererRes->init(*windowRes))
 		{
-			return { Level::Error, "Renderer init failed" };
+//			return { Level::Error, "Renderer init failed" };
 		}
-
-		return {};
 	}
 
-	core::ecs::SystemReturnState Renderer::Update(ecs::World& world)
+	void Renderer::Update(ecs::World& world)
 	{
-		using Level = core::ecs::SystemReturnState::Level;
-
 		auto windowRes = world.getResource<wd::Window>();
 		if (!windowRes)
 		{
-			return { Level::Error, "Couldn't find a window resource" };
+//			return { Level::Error, "Couldn't find a window resource" };
 		}
 
 		if (windowRes->isMinimized())
 		{
-			return { Level::Info, "Skip rendering because window is minimized" };
+//			return { Level::Info, "Skip rendering because window is minimized" };
 		}
 
 		auto rendererRes = world.getResource<vulkan_renderer::VulkanRenderer>();
 		if (!rendererRes)
 		{
-			return { Level::Error, "Renderer resource is invalid" };
+//			return { Level::Error, "Renderer resource is invalid" };
 		}
 
 		if (!rendererRes->nextImage())
 		{
-			return { Level::Error, "Renderer couldn't switch to next image" };
+//			return { Level::Error, "Renderer couldn't switch to next image" };
 		}
 
 		rendererRes->startRecordingDrawCommands();
@@ -79,29 +73,23 @@ namespace zt::gameplay::system
 
 		if (!rendererRes->submitCurrentDisplayImage())
 		{
-			return { Level::Error, "Renderer couldn't submit draw commands" };
+//			return { Level::Error, "Renderer couldn't submit draw commands" };
 		}
 
 		if (!rendererRes->displayCurrentImage())
 		{
-			return { Level::Error, "Renderer couldn't display current image" };
+//			return { Level::Error, "Renderer couldn't display current image" };
 		}
-
-		return {};
 	}
 
-	core::ecs::SystemReturnState Renderer::Deinit(ecs::World& world)
+	void Renderer::Deinit(ecs::World& world)
 	{
-		using Level = core::ecs::SystemReturnState::Level;
-
 		auto rendererRes = world.getResource<vulkan_renderer::VulkanRenderer>();
 		if (!rendererRes)
 		{
-			return { Level::Warn, "Couldn't get a renderer from the world" };
+//			return { Level::Warn, "Couldn't get a renderer from the world" };
 		}
 
 		rendererRes->deinit();
-
-		return {};
 	}
 }

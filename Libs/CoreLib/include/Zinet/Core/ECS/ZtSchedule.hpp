@@ -162,8 +162,8 @@ namespace zt::core::ecs
 		{
 			using SystemTraits = FunctionTraits<SystemT>;
 
-			static_assert(std::is_same_v<typename SystemTraits::ReturnT, SystemReturnState>,
-				"Every system should return this type");
+			static_assert(std::is_same_v<typename SystemTraits::ReturnT, void>,
+				"Every system should have a return type 'void'");
 
 			if constexpr (SystemTraits::ArgsCount > 0)
 			{

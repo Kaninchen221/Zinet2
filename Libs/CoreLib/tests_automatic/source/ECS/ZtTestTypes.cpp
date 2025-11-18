@@ -7,14 +7,12 @@ namespace zt::core::ecs::tests
 {
 	namespace TestSystemIncrementar
 	{
-		SystemReturnState entryPoint(World& world)
+		void entryPoint(World& world)
 		{
 			for (auto [counter] : Query<Counter>(world))
 			{
 				counter->value++;
 			}
-
-			return {};
 		}
 	}
 }
