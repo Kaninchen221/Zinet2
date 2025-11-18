@@ -12,35 +12,47 @@ namespace zt::core::ecs::tests
 	{
 	protected:
 		World world;
-		WorldCommands worldCommands{ world };
 	};
 
 	TEST_F(ECSWorldCommandsTests, SpawnEntityTest)
 	{
-		worldCommands.spawn(Position{}, Velocity{});
+		{
+			WorldCommands worldCommands{ world };
+			worldCommands.spawn(Position{}, Velocity{});
+		}
 
-		worldCommands.executeCommands(world);
+		world.executeCommands();
 
 		ASSERT_EQ(world.getComponentsCount(), 2);
 	}
 
 	TEST_F(ECSWorldCommandsTests, RemoveEntityTest)
 	{
-		auto entity = world.spawn(Position{}, Velocity{});
+		Entity entity{ {}, {} };
+		{
+			WorldCommands worldCommands{ world };
+			entity = world.spawn(Position{}, Velocity{});
+		}
 		ASSERT_EQ(world.getComponentsCount(), 2);
 
-		worldCommands.remove(entity);
+		{
+			WorldCommands worldCommands{ world };
+			worldCommands.remove(entity);
+		}
 
-		worldCommands.executeCommands(world);
+		world.executeCommands();
 
 		ASSERT_EQ(world.getComponentsCount(), 0);
 	}
 
 	TEST_F(ECSWorldCommandsTests, AddResourceTest)
 	{
-		worldCommands.addResource(Position{});
+		{
+			WorldCommands worldCommands{ world };
+			worldCommands.addResource(Position{});
+		}
 
-		worldCommands.executeCommands(world);
+		world.executeCommands();
 
 		ASSERT_TRUE(world.getResource<Position>());
 	}

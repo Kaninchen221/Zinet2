@@ -192,6 +192,7 @@ namespace zt::core::ecs
 		{
 			constexpr bool IsQueryType = requires { typename T::IsQueryType; };
 			constexpr bool IsResourceType = requires { typename T::IsResourceType; };
+			constexpr bool IsWorldCommandsType = requires { typename T::IsWorldCommandsType; };
 
 			if constexpr (IsQueryType)
 			{
@@ -200,6 +201,10 @@ namespace zt::core::ecs
 			else if constexpr (IsResourceType)
 			{
 				AddResource<T>(systemInfo);
+			}
+			else if constexpr (IsWorldCommandsType)
+			{
+				// Pass
 			}
 			else
 			{

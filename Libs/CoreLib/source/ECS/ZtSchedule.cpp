@@ -236,28 +236,31 @@ namespace zt::core::ecs
 		auto& layers = graph.layers;
 		for (auto& layer : layers)
 		{
-			std::vector<std::jthread> threads;
-			for (auto& node : layer.nodes)
-			{
-				auto& systemAdapter = node.systemAdapter;
-				if (!node.mainThread)
+			{ // Join threads before executing commands on world
+				std::vector<std::jthread> threads;
+				for (auto& node : layer.nodes)
 				{
-					threads.push_back(
-						std::jthread(
-							[&systemAdapter = systemAdapter, &world = world]()
-							{
-								if (systemAdapter)
-									systemAdapter(world);
-							}
-						)
-					);
-				}
-				else
-				{
-					if (systemAdapter)
-						systemAdapter(world);
+					auto& systemAdapter = node.systemAdapter;
+					if (!node.mainThread)
+					{
+						threads.push_back(
+						std::jthread([&systemAdapter = systemAdapter, &world = world]()
+						{
+							if (systemAdapter)
+								systemAdapter(world);
+						})
+						);
+					}
+					else
+					{
+						if (systemAdapter)
+							systemAdapter(world);
+					}
 				}
 			}
+
+			world.executeCommands();
+			world.clearCommands();
 		}
 	}
 }

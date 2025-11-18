@@ -18,6 +18,9 @@ namespace zt::core::ecs
 
 	public:
 
+		using Command = std::function<void(World&)>;
+		using Commands = std::vector<Command>;
+
 		World() noexcept = default;
 		World(const World& other) noexcept = default;
 		World(World&& other) noexcept = default;
@@ -55,10 +58,33 @@ namespace zt::core::ecs
 		// User can't remove resources
 
 		template<class ResourceT>
-		std::decay_t<ResourceT>* addResource(ResourceT&& newResource);
+		auto* addResource(ResourceT&& newResource);
 
-		template<class Resource>
+		template<class ResourceT>
 		auto* getResource(this auto& self);
+
+		/// Commands
+		// Would be nice to completely omit mutexes
+		void addCommands(const Commands& newCommands) 
+		{ 
+			std::lock_guard guard{ addCommandsMutex };
+
+			commands.insert(
+				commands.end(),
+				std::make_move_iterator(newCommands.begin()),
+				std::make_move_iterator(newCommands.end())
+			);
+		}
+
+		void executeCommands()
+		{
+			for (auto& command : commands)
+			{
+				command(*this);
+			}
+		}
+
+		void clearCommands() { commands.clear(); }
 
 	private:
 
@@ -73,6 +99,9 @@ namespace zt::core::ecs
 		/// Resources
 		std::vector<TypeLessVector> resources;
 
+		/// Commands
+		Commands commands;
+		std::mutex addCommandsMutex;
 	};
 
 #pragma warning(push)
@@ -139,16 +168,16 @@ namespace zt::core::ecs
 	}
 
 	template<class ResourceT>
-	std::decay_t<ResourceT>* World::addResource(ResourceT&& newResource)
+	auto* World::addResource(ResourceT&& newResource)
 	{
-		using Resource = std::decay_t<ResourceT>;
+		using Resource = std::remove_cvref_t<ResourceT>;
 
 		for (auto& resource : resources)
 		{
 			// Don't return a valid pointer if the resource already exists
 			// Because functions should be explicit about what they are doing
 			if (resource.hasType<Resource>())
-				return {}; 
+				return static_cast<Resource*>(nullptr);
 		}
 
 		auto& typeLessVector = resources.emplace_back(TypeLessVector::Create<Resource>());
@@ -157,16 +186,21 @@ namespace zt::core::ecs
 		return typeLessVector.get<Resource>(0);
 	}
 
-	template<class Resource>
+	template<class ResourceT>
 	auto* World::getResource(this auto& self)
 	{
+		using Resource = std::remove_cvref_t<ResourceT>;
+
+		using ResultT = std::conditional_t<IsSelfConst<decltype(self)>(),
+			const Resource*, Resource*>;
+
 		for (auto& resource : self.resources)
 		{
 			if (resource.hasType<Resource>())
-				return resource.get<Resource>(0);
+				return static_cast<ResultT>(resource.get<Resource>(0));
 		}
 
-		return static_cast<Resource*>(nullptr);
+		return static_cast<ResultT>(nullptr);
 	}
 
 	template<class... Components>

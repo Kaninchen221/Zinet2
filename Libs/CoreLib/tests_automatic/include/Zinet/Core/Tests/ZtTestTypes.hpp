@@ -6,6 +6,9 @@
 #include "Zinet/Core/ECS/ZtSystemReturnState.hpp"
 #include "Zinet/Core/ECS/ZtQuery.hpp"
 #include "Zinet/Core/ECS/ZtResource.hpp"
+#include "Zinet/Core/ECS/ZtWorldCommands.hpp"
+
+#include "Zinet/Core/Components/ZtExitReason.hpp"
 
 #include <string>
 #include <vector>
@@ -175,5 +178,40 @@ namespace zt::core::ecs::tests
 	{
 	public:
 		static SystemReturnState EntryPoint(ConstQuery<Position, Velocity, Sprite>) { return {}; }
+	};
+
+	class AddResourceSystemTest
+	{
+	public:
+		static SystemReturnState AddPosition(WorldCommands worldCommands) 
+		{
+			worldCommands.addResource(Position{});
+
+			return {}; 
+		}
+	};
+
+	class ExpectResourceSystemTest
+	{
+	public:
+		static SystemReturnState ExpectPosition(ConstResource<Position> positionRes, WorldCommands worldCommands)
+		{ 
+			if (!positionRes)
+			{
+				components::ExitReason exitReason
+				{
+					.exit = true,
+					.reason = "Expected valid resource of class Position"
+				};
+
+				worldCommands.addResource(exitReason);
+			}
+			else
+			{
+				worldCommands.addResource(components::ExitReason{});
+			}
+
+			return {};
+		}
 	};
 }

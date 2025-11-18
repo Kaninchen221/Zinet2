@@ -8,6 +8,8 @@
 
 #include "Zinet/Core/Tests/ZtTestTypes.hpp"
 
+#include "Zinet/Core/Components/ZtExitReason.hpp"
+
 namespace zt::core::ecs::tests
 {
 	class ECSScheduleTests : public ::testing::Test
@@ -213,6 +215,29 @@ namespace zt::core::ecs::tests
 		EXPECT_EQ(layers[0].nodes[0].typeID, GetTypeID<SystemTest_1>());
 		EXPECT_EQ(layers[1].nodes[0].typeID, GetTypeID<SystemTest_2>());
 		EXPECT_EQ(layers[2].nodes[0].typeID, GetTypeID<SystemTest_3>());
+	}
+
+	TEST_F(ECSScheduleTests, AddResourceExpectResourceTest)
+	{
+		Schedule schedule;
+
+		schedule.addSystem(SystemTest_1{}, AddResourceSystemTest::AddPosition, Before{ SystemTest_2{} });
+		schedule.addSystem(SystemTest_2{}, ExpectResourceSystemTest::ExpectPosition);
+
+		schedule.buildGraph();
+		schedule.resolveGraph();
+
+		const auto& graph = schedule.getGraph();
+		// We expect that both systems are in different layers
+		ASSERT_EQ(graph.layers.size(), 2);
+
+		World world;
+
+		schedule.runOnce(world);
+
+		auto exitReasonRes = world.getResource<components::ExitReason>();
+		ASSERT_TRUE(exitReasonRes);
+		ASSERT_FALSE(exitReasonRes->exit);
 	}
 
 	// TODO: Test a situation when we have a lot of systems that can be run at the same time

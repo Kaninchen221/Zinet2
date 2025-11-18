@@ -9,24 +9,23 @@ namespace zt::core::ecs
 {
 	class ZINET_CORE_API WorldCommands
 	{
+		inline static auto Logger = core::ConsoleLogger::Create("zt::core::ecs::WorldCommands");
+
 	public:
 
+		using IsWorldCommandsType = std::true_type;
+
 		// The World param is a placeholder so it could be used in systems
-		WorldCommands(World&) {}
+		WorldCommands(World& world) : world{ world } {}
 		WorldCommands(const WorldCommands& other) noexcept = default;
 		WorldCommands(WorldCommands&& other) noexcept = default;
-		~WorldCommands() noexcept = default;
+		~WorldCommands() noexcept
+		{
+			world.addCommands(commands);
+		}
 
 		WorldCommands& operator = (const WorldCommands& other) noexcept = default;
 		WorldCommands& operator = (WorldCommands&& other) noexcept = default;
-
-		void executeCommands(World& world)
-		{
-			for (auto& command : commands)
-			{
-				command(world);
-			}
-		}
 
 		/// Entities & Components
 		template<class... Components>
@@ -49,14 +48,18 @@ namespace zt::core::ecs
 		template<class ResourceT>
 		void addResource(ResourceT&& newResource)
 		{
-			auto command = [newResource](World& world) { world.addResource(newResource); };
+			auto command = [newResource](World& world) 
+			{ 
+				world.addResource(newResource); 
+			};
+
 			commands.push_back(command);
 		}
 
 	protected:
 
-		using Commands = std::vector<std::function<void(World&)>>;
-		Commands commands;
+		World& world;
+		World::Commands commands;
 
 	};
 }
