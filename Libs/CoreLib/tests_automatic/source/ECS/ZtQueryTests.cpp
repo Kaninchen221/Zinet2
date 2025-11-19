@@ -147,8 +147,8 @@ namespace zt::core::ecs::tests
 			ASSERT_TRUE(false);
 		}
 	}
-
-	TEST(ECSQueryTest, QueryFromConstWorld)
+	
+	TEST(ECSQueryTest, QueryFromConstWorldTest)
 	{
 		using IsConstFalse = std::false_type;
 		static_assert(std::is_same_v<QueryIterator<Position>, QueryIteratorImpl<IsConstFalse, Position>>);
@@ -172,4 +172,27 @@ namespace zt::core::ecs::tests
 			ASSERT_TRUE(position);
 		}
 	}
+
+	TEST(ECSQueryTest, GetComponentsPackTest)
+	{
+		World world;
+
+		const Position expectedPosition{ 23, 1 };
+
+		world.spawn(Position{ expectedPosition }, Velocity{}, Sprite{});
+		world.spawn(Position{ expectedPosition }, Velocity{});
+
+		Query<Position, Velocity> query{ world };
+
+		ASSERT_EQ(query.getComponentsCount(), 4);
+
+		std::vector<TypeLessVector*> componentsPack = query.getComponentsPack<Position>();
+		ASSERT_EQ(componentsPack.size(), 2); // Because we have 2 archetypes
+
+		for (auto components : componentsPack)
+		{
+			ASSERT_EQ(*components->get<Position>(0), expectedPosition);
+		}
+	}
+
 }

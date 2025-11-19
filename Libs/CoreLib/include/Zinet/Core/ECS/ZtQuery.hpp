@@ -44,7 +44,7 @@ namespace zt::core::ecs
 
 			auto entity = entities[currentEntityIndex];
 
-			using ReturnT = std::conditional_t < IsConstT{}, std::tuple<const Components*...>, std::tuple<Components*... >> ;
+			using ReturnT = std::conditional_t<IsConstT{}, std::tuple<const Components*...>, std::tuple<Components*... >> ;
 			return ReturnT{ archetype->getComponentOfType<Components>(entity.getComponentsIndex())... };
 		}
 
@@ -111,8 +111,6 @@ namespace zt::core::ecs
 	template<class... Components>
 	using ConstQueryIterator = QueryIteratorImpl<std::true_type, Components...>;
 
-	// TODO: Allow to get access to each 'buffer' so the user could easily copy the data to other location
-	// Example: Copying data to uniform buffers
 	template<class IsConstType, class... Components>
 	class QueryImpl
 	{
@@ -156,6 +154,11 @@ namespace zt::core::ecs
 
 		size_t getComponentsCount() const noexcept;
 
+		// Useful when you need to fill a buffer with components data
+		// Return an array of TypeLessVectors
+		template<class ComponentType>
+		auto getComponentsPack(this auto& self);
+
 		QueryIteratorImpl<IsConstT, Components...> begin() noexcept { return beginImpl(); }
 		QueryIteratorImpl<IsConstT, Components...> begin() const noexcept { return beginImpl(); }
 
@@ -188,6 +191,24 @@ namespace zt::core::ecs
 			((count += archetype->getComponentsOfType<Components>()->getObjectsCount()), ...);
 		}
 		return count;
+	}
+
+	template<class IsConstType, class... Components>
+	template<class ComponentType>
+	auto QueryImpl<IsConstType, Components...>::getComponentsPack(this auto& self)
+	{
+		// Invalid, return TypeLessVectors
+		using ResultT = std::conditional_t<IsSelfConst<decltype(self)>(), std::vector<const TypeLessVector*>, std::vector<TypeLessVector*>>;
+
+		using ComponentT = std::remove_cvref_t<ComponentType>;
+
+		ResultT result;
+		for (auto archetype : self.archetypes)
+		{
+			result.push_back(archetype->getComponentsOfType<ComponentT>());
+		}
+
+		return result;
 	}
 
 	template<class... Components>
