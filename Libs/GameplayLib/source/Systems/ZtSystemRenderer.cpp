@@ -34,7 +34,7 @@ namespace zt::gameplay::system
 
 	void Renderer::Update(
 		ecs::WorldCommands worldCommands,
-		ecs::Resource<wd::Window> windowRes,
+		ecs::ConstResource<wd::Window> windowRes,
 		ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes,
 		ecs::ConstQuery<component::RenderDrawData> drawDataQuery)
 	{
@@ -84,43 +84,6 @@ namespace zt::gameplay::system
 			return;
 		}
 	}
-
-// 	void Renderer::Update(ecs::World&)
-// 	{
-// 		auto rendererRes = world.getResource<vulkan_renderer::VulkanRenderer>();
-// 		if (!rendererRes)
-// 		{
-// //			return { Level::Error, "Renderer resource is invalid" };
-// 		}
-// 
-// 		if (!rendererRes->nextImage())
-// 		{
-// //			return { Level::Error, "Renderer couldn't switch to next image" };
-// 		}
-// 
-// 		rendererRes->startRecordingDrawCommands();
-// 
-// 		rendererRes->beginRenderPass(rendererRes->getRendererContext().getRenderPass());
-// 
-// 		for (auto [renderDrawData] : ecs::Query<component::RenderDrawData>(world))
-// 		{
-// 			rendererRes->draw(renderDrawData->command);
-// 		}
-// 
-// 		rendererRes->endRenderPass();
-// 
-// 		rendererRes->endRecordingDrawCommands();
-// 
-// 		if (!rendererRes->submitCurrentDisplayImage())
-// 		{
-// //			return { Level::Error, "Renderer couldn't submit draw commands" };
-// 		}
-// 
-// 		if (!rendererRes->displayCurrentImage())
-// 		{
-// //			return { Level::Error, "Renderer couldn't display current image" };
-// 		}
-/*	}*/
 
 	void Renderer::Deinit(ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes)
 	{

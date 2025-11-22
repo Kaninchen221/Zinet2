@@ -4,6 +4,8 @@
 
 #include "Zinet/Core/ECS/ZtWorld.hpp"
 
+#include "Zinet/Core/Components/ZtExitReason.hpp"
+
 #include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
 
@@ -14,80 +16,87 @@
 #include <imgui_impl_vulkan.h>
 
 using namespace zt::vulkan_renderer;
+using namespace zt::core;
 
 namespace zt::gameplay::system
 {
-	void ImGui::Init(core::ecs::World&)
+	void ImGui::Init(
+		ecs::WorldCommands worldCommands,
+		ecs::Resource<wd::Window> windowRes,
+		ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes)
 	{
-// 		auto windowRes = world.getResource<wd::Window>();
-// 		if (!windowRes)
-// 		{
-// //			return { Level::Error, "Couldn't get a window res in the world" };
-// 		}
-// 
-// 		auto rendererRes = world.getResource<VulkanRenderer>();
-// 		if (!rendererRes)
-// 		{
-// //			return { Level::Error, "Couldn't get a renderer res from the world" };
-// 		}
-// 
-// 		auto imGuiIntegrationRes = world.addResource(ImGuiIntegration{});
-// 		if (!imGuiIntegrationRes)
-// 		{
-// //			return { Level::Error, "Couldn't add an imGuiIntegration to the world" };
-// 		}
-// 
-// 		if (!imGuiIntegrationRes->init(rendererRes->getRendererContext(), *windowRes))
-// 		{
-// //			return { Level::Error, "Couldn't init imgui integration" };
-// 		}
-// 
-// 		component::RenderDrawData imGuiRenderDrawData
-// 		{
-// 			.command = vulkan_renderer::ImGuiIntegration::DrawCommand
-// 		};
-// 
-// 		world.spawn(imGuiRenderDrawData);
+		if (!windowRes)
+		{
+			worldCommands.addResource(ExitReason{ true, "Invalid window res"});
+			return;
+		}
+
+		if (!rendererRes)
+		{
+			worldCommands.addResource(ExitReason{ true, "Invalid renderer res" });
+			return;
+		}
+
+		ImGuiIntegration imGuiIntegration;
+		if (!imGuiIntegration.init(rendererRes->getRendererContext(), *windowRes))
+		{
+			worldCommands.addResource(ExitReason{ true, "Couldn't init imGui integration" });
+			return;
+		}
+
+		worldCommands.addResource(std::move(imGuiIntegration));
+		
+		component::RenderDrawData imGuiRenderDrawData
+		{
+			.command = vulkan_renderer::ImGuiIntegration::DrawCommand
+		};
+
+		worldCommands.spawn(std::move(imGuiRenderDrawData));
 	}
 
-	void ImGui::Update(core::ecs::World&)
+	void ImGui::Update(
+		core::ecs::WorldCommands worldCommands,
+		core::ecs::ConstResource<vulkan_renderer::ImGuiIntegration> imGuiIntegrationRes)
 	{
-// 		ImGuiIntegration::ImplSpecificNewFrame();
-// 
-// 		::ImGui::NewFrame();
-// 
-// #	if ZINET_DEBUG
-// 		::ImGui::ShowDemoWindow();
-// #	endif
-// 
-// 		// TODO: Handle imgui calls here in some way like components with commands or use another systems
-// 
-// 		::ImGui::EndFrame();
-// 
-// 		auto imGuiIntegrationRes = world.getResource<ImGuiIntegration>();
-// 		if (!imGuiIntegrationRes)
-// 		{
-// //			return { Level::Error, "Couldn't get the imGuiIntegration from the world" };
-// 		}
-// 
-// 		imGuiIntegrationRes->prepareRenderData();
+		ImGuiIntegration::ImplSpecificNewFrame();
+
+		::ImGui::NewFrame();
+
+#	if ZINET_DEBUG
+		::ImGui::ShowDemoWindow();
+#	endif
+
+		// TODO: Handle imgui calls here in some way like components with commands or use another systems
+
+		::ImGui::EndFrame();
+
+		if (!imGuiIntegrationRes)
+		{
+			worldCommands.addResource(ExitReason{ true, "imGuiIntegration res is invalid" });
+			return;
+		}
+
+ 		imGuiIntegrationRes->prepareRenderData();
 	}
 
-	void ImGui::Deinit(core::ecs::World&)
+	void ImGui::Deinit(
+		ecs::WorldCommands worldCommands,
+		ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+		ecs::Resource<vulkan_renderer::ImGuiIntegration> imGuiIntegrationRes)
 	{
-// 		auto rendererRes = world.getResource<VulkanRenderer>();
-// 		if (!rendererRes)
-// 		{
-// //			return { Level::Error, "Couldn't get a renderer res from the world" };
-// 		}
-// 
-// 		auto imGuiIntegrationRes = world.getResource<ImGuiIntegration>();
-// 		if (!imGuiIntegrationRes)
-// 		{
-// //			return { Level::Error, "Couldn't get an imGuiIntegration to the world" };
-// 		}
-// 
-// 		imGuiIntegrationRes->deinit(rendererRes->getRendererContext());
+		if (!rendererRes)
+		{
+			worldCommands.addResource(ExitReason{ true, "Renderer res is invalid" });
+			return;
+		}
+
+		if (!imGuiIntegrationRes)
+		{
+			worldCommands.addResource(ExitReason{ true, "imGuiIntegration res is invalid" });
+			return;
+		}
+
+		imGuiIntegrationRes->deinit(rendererRes->getRendererContext());
 	}
 
 }

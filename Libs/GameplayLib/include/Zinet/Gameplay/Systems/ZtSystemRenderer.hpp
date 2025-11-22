@@ -32,7 +32,7 @@ namespace zt::gameplay::system
 
 		static void Update(
 			core::ecs::WorldCommands worldCommands, 
-			core::ecs::Resource<wd::Window> windowRes,
+			core::ecs::ConstResource<wd::Window> windowRes,
 			core::ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes,
 			core::ecs::ConstQuery<component::RenderDrawData> drawDataQuery);
 
