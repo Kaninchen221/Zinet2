@@ -22,6 +22,9 @@
 #include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
 
 #include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
+#include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
+
+using namespace zt::gameplay::system;
 
 namespace zt::gameplay::tests
 {
@@ -37,113 +40,99 @@ namespace zt::gameplay::tests
 	// - Remove old systems
 	// - Refactor
 	
-	// Rework this after completing all TODOs from Schedule
-// 	class EngineTests : public ::testing::Test
-// 	{
-// 	protected:
-// 
-// 		inline static auto Logger = ConsoleLogger::Create("zt::gameplay::tests::EngineTests");
-// 
-// 		EngineTests()
-// 		{
-// 		}
-// 
-// 		~EngineTests() override
-// 		{
-// 		}
-// 
-// 		void SetUp() override
-// 		{
-// 			ZT_TIME_LOG(addResources());
-// 
-// 			ZT_TIME_LOG(init());
-// 		}
-// 
-// 		void addResources()
-// 		{
-// 			AssetsStorage assetsStorage;
-// 			assetsStorage.registerAssetClass<core::asset::Text>();
-// 			assetsStorage.registerAssetClass<asset::Texture>();
-// 			assetsStorage.registerAssetClass<asset::Shader>();
-// 			assetsStorage.registerAssetClass<asset::Sampler>();
-// 			ZT_TIME_LOG(assetsStorage.storeAssets());
-// 
-// 			world.addResource(assetsStorage);
-// 
-// 			world.addResource(components::ExitReason{});
-// 		}
-// 
-// 		void init()
-// 		{
-// 			scheduleInit.addSystem(system::Window{}, system::Window::Init);
-// 			scheduleInit.addSystem(system::Renderer{}, system::Renderer::Init);
-// 			scheduleInit.addSystem(system::ImGui{}, system::ImGui::Init);
-// 
-// 			scheduleInit.buildGraph();
-// 			scheduleInit.resolveGraph();
-// 			scheduleInit.runOnce(world);
-// 		}
-// 
-// 		void update();
-// 
-// 		void TearDown() override
-// 		{
-// 			ZT_TIME_LOG(deinit());
-// 		}
-// 
-// 		void deinit()
-// 		{
-// 			scheduleDeinit.addSystem(system::ImGui{}, system::ImGui::Deinit, MainThread);
-// 			scheduleDeinit.addSystem(system::Renderer{}, system::Renderer::Deinit, MainThread);
-// 			scheduleDeinit.addSystem(system::Window{}, system::Window::Deinit, MainThread);
-// 
-// 			scheduleDeinit.requestStop();
-// 			scheduleDeinit.run(world, MainThread);
-// 			scheduleDeinit.waitForStop();
-// 		}
-// 
-// 		enum Threads : ecs::ThreadID
-// 		{
-// 			MainThread, // Window, Renderer, ImGui
-// 			GameplayThread, // Game Logic
-// 		};;
-// 
-// 		ecs::World world;
-// 
-// 		ecs::Schedule scheduleInit;
-// 		ecs::Schedule scheduleUpdate;
-// 		ecs::Schedule scheduleDeinit; 
-// 	};
-// 
-// 	TEST_F(EngineTests, Test)
-// 	{
-// 		ZT_TIME_LOG(update());
-// 	}
-// 
-// 	void EngineTests::update()
-// 	{
-// 		scheduleUpdate.addSystem(system::ImGui{}, system::ImGui::Update, MainThread);
-// 		scheduleUpdate.addSystem(system::Renderer{}, system::Renderer::Update, MainThread); // System Renderer must be before System Window
-// 		scheduleUpdate.addSystem(system::Window{}, system::Window::Update, MainThread);
-// 
-// 		auto exitReason = world.getResource<components::ExitReason>();
-// 		if (!exitReason)
-// 		{
-// 			Logger->error("Couldn't find an exit reason resource");
-// 			return;
-// 		}
-// 
-// 		while (!exitReason->exit)
-// 		{
-// 			if (!IsDebuggerAttached())
-// 				break;
-// 
-// 			scheduleUpdate.run(world, MainThread);
-// 		}
-// 
-// 		Logger->info("ExitReason: {}", exitReason->reason);
-// 
-// 		scheduleUpdate.requestStop();
-// 		scheduleUpdate.waitForStop();
-// 	}
+	class EngineTests : public ::testing::Test
+	{
+	protected:
+
+		inline static auto Logger = ConsoleLogger::Create("zt::gameplay::tests::EngineTests");
+
+		EngineTests()
+		{
+		}
+
+		~EngineTests() override
+		{
+		}
+
+		void SetUp() override
+		{
+			ZT_TIME_LOG(addResources());
+
+			ZT_TIME_LOG(init());
+		}
+
+		void addResources()
+		{
+			AssetsStorage assetsStorage;
+			assetsStorage.registerAssetClass<core::asset::Text>();
+			assetsStorage.registerAssetClass<asset::Texture>();
+			assetsStorage.registerAssetClass<asset::Shader>();
+			assetsStorage.registerAssetClass<asset::Sampler>();
+			ZT_TIME_LOG(assetsStorage.storeAssets());
+
+			world.addResource(assetsStorage);
+		}
+
+		void init()
+		{
+			scheduleInit.addSystem(Window{}, Window::Init, ecs::MainThread{});
+			scheduleInit.addSystem(Renderer{}, Renderer::Init, ecs::After{ Window{} }, ecs::MainThread{});
+			scheduleInit.addSystem(ImGui{}, ImGui::Init, ecs::After{ Window{}, Renderer{} }, ecs::MainThread{});
+
+			scheduleInit.buildGraph();
+			scheduleInit.resolveGraph();
+			scheduleInit.runOnce(world);
+		}
+
+		void update();
+
+		void TearDown() override
+		{
+			ZT_TIME_LOG(deinit());
+		}
+
+		void deinit()
+		{
+			scheduleDeinit.addSystem(Window{}, Window::Deinit, ecs::MainThread{});
+			scheduleDeinit.addSystem(Renderer{}, Renderer::Deinit, ecs::Before{ Window{} }, ecs::MainThread{});
+			scheduleDeinit.addSystem(ImGui{}, ImGui::Deinit, ecs::Before{ Window{}, Renderer{} }, ecs::MainThread{});
+
+			scheduleDeinit.buildGraph();
+			scheduleDeinit.resolveGraph();
+			scheduleDeinit.runOnce(world);
+		}
+
+		ecs::World world;
+
+		ecs::Schedule scheduleInit;
+		ecs::Schedule scheduleUpdate;
+		ecs::Schedule scheduleDeinit; 
+	};
+
+	TEST_F(EngineTests, Test)
+	{
+		ZT_TIME_LOG(update());
+	}
+
+	void EngineTests::update()
+	{
+		scheduleUpdate.addSystem(Window{}, Window::Update, ecs::MainThread{});
+		scheduleUpdate.addSystem(Renderer{}, Renderer::Update, ecs::After{ Window{} }, ecs::MainThread{});
+		scheduleUpdate.addSystem(ImGui{}, ImGui::Update, ecs::Before{ Renderer{} }, ecs::After{ Window{} }, ecs::MainThread{});
+
+		scheduleUpdate.buildGraph();
+		scheduleUpdate.resolveGraph();
+
+		while (true)
+		{
+			auto exitReason = world.getResource<ExitReason>();
+			if (exitReason && exitReason->exit)
+				break;
+
+			scheduleUpdate.runOnce(world);
+
+			if (!IsDebuggerAttached())
+				break;
+		}
+	}
 }

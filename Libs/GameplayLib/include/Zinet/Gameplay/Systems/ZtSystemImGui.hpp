@@ -33,6 +33,7 @@ namespace zt::gameplay::system
 
 		static void Update(
 			core::ecs::WorldCommands worldCommands,
+			core::ecs::ConstResource<wd::Window> windowRes,
 			core::ecs::ConstResource<vulkan_renderer::ImGuiIntegration> imGuiIntegrationRes);
 
 		static void Deinit(

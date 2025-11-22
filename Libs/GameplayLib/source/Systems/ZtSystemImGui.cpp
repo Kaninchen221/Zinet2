@@ -56,8 +56,12 @@ namespace zt::gameplay::system
 
 	void ImGui::Update(
 		core::ecs::WorldCommands worldCommands,
+		core::ecs::ConstResource<wd::Window> windowRes,
 		core::ecs::ConstResource<vulkan_renderer::ImGuiIntegration> imGuiIntegrationRes)
 	{
+		if (windowRes->isMinimized() || !windowRes->isOpen())
+			return;
+
 		ImGuiIntegration::ImplSpecificNewFrame();
 
 		::ImGui::NewFrame();
