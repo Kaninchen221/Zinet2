@@ -28,11 +28,23 @@ namespace zt::wd
 	public:
 
 		Window() noexcept = default;
-		Window(const Window& other) noexcept = default;
-		Window(Window&& other) noexcept = default;
+		Window(const Window& other) noexcept = delete;
+		Window(Window&& other) noexcept
+		{
+			*this = std::move(other);
+		}
 
-		Window& operator = (const Window& other) noexcept = default;
-		Window& operator = (Window&& other) noexcept = default;
+		Window& operator = (const Window& other) noexcept = delete;
+		Window& operator = (Window&& other) noexcept
+		{
+			internalWindow = other.internalWindow;
+			windowEvents = other.windowEvents;
+
+			other.internalWindow = nullptr;
+			other.windowEvents = nullptr;
+
+			return *this;
+		}
 
 		~Window() noexcept;
 

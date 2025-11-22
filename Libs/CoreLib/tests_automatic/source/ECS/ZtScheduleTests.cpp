@@ -235,7 +235,7 @@ namespace zt::core::ecs::tests
 
 		schedule.runOnce(world);
 
-		auto exitReasonRes = world.getResource<components::ExitReason>();
+		auto exitReasonRes = world.getResource<ExitReason>();
 		ASSERT_TRUE(exitReasonRes);
 		ASSERT_FALSE(exitReasonRes->exit);
 	}

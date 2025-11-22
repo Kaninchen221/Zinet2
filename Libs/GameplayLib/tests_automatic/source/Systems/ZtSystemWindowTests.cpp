@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 
 #include "Zinet/Core/ECS/ZtWorld.hpp"
+#include "Zinet/Core/ECS/ZtSchedule.hpp"
 
 #include "Zinet/Window/ZtWindow.hpp"
 
@@ -26,19 +27,37 @@ namespace zt::gameplay::system::tests
 	TEST_F(WindowTests, Test)
 	{
 		ecs::World world;
+		ecs::Schedule schedule;
 
-		Window::Init(world);
+		schedule.addSystem(Window{}, Window::Init);
+
+		schedule.buildGraph();
+		schedule.resolveGraph();
+		schedule.runOnce(world);
 
 		auto windowRes = world.getResource<wd::Window>();
 		ASSERT_TRUE(windowRes);
 		ASSERT_TRUE(windowRes->isOpen());
 
-		auto windowEventsRes = world.getResource<wd::Window>();
-		ASSERT_TRUE(windowEventsRes);
+ 		auto windowEventsRes = world.getResource<wd::WindowEvents>();
+ 		ASSERT_TRUE(windowEventsRes);
+ 
+		schedule.clear();
 
-		Window::Update(world);
+		schedule.addSystem(Window{}, Window::Update);
 
-		Window::Deinit(world);
-		ASSERT_FALSE(windowRes->isOpen());
+		schedule.buildGraph();
+		schedule.resolveGraph();
+		schedule.runOnce(world);
+
+		schedule.clear();
+
+		schedule.addSystem(Window{}, Window::Deinit);
+
+		schedule.buildGraph();
+		schedule.resolveGraph();
+		schedule.runOnce(world);
+
+		ASSERT_FALSE(windowRes->getInternal());
 	}
 }

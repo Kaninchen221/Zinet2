@@ -46,14 +46,16 @@ namespace zt::core::ecs
 		// User can't remove resources
 
 		template<class ResourceT>
-		void addResource(ResourceT&& newResource)
+		void addResource(ResourceT&& resource)
 		{
-			auto command = [newResource](World& world) 
-			{ 
-				world.addResource(newResource); 
+			using Type = std::remove_cvref_t<ResourceT>;
+
+			auto command = [resourceAsPtr = std::make_shared<Type>(std::move(resource))](World& world)
+			{
+				world.addResource(std::move(*resourceAsPtr));
 			};
 
-			commands.push_back(command);
+			commands.push_back(std::move(command));
 		}
 
 	protected:

@@ -56,4 +56,6 @@ namespace zt::core::ecs::tests
 
 		ASSERT_TRUE(world.getResource<Position>());
 	}
+
+	// TODO: Write a test that will test AddResource for an object of a class that is non copyable
 }

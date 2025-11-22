@@ -8,70 +8,53 @@ namespace zt::gameplay
 	{
 		using namespace core;
 
-		void Window::Init(ecs::World& world)
+		void Window::Init(ecs::WorldCommands worldCommands)
 		{
 			wd::GLFW::Init(false);
 
-			auto windowRes = world.addResource(wd::Window{});
-			if (!windowRes)
+			wd::Window windowRes;
+
+			if (!windowRes.create(800, 800))
 			{
-//				return { Level::Error, "Couldn't add a window resource" };
+				worldCommands.addResource(ExitReason{ true, "Couldn't create window" });
 			}
 
-			if (!windowRes->create(800, 800))
-			{
-//				return { Level::Error, "Couldn't create window" };
-			}
-
-			auto windowEventsRes = world.addResource(wd::WindowEvents{ *windowRes });
-			if (!windowEventsRes)
-			{
-//				return { Level::Error, "Couldn't add a window events resource" };
-			}
+			worldCommands.addResource(wd::WindowEvents{ windowRes });
+ 			worldCommands.addResource(windowRes);
 		}
 
-		void Window::Update(ecs::World& world)
+		void Window::Update(
+			core::ecs::Resource<wd::Window> windowRes, 
+			core::ecs::Resource<wd::WindowEvents> windowEventsRes, 
+			ecs::WorldCommands worldCommands)
 		{
-			auto windowRes = world.getResource<wd::Window>();
 			if (!windowRes)
 			{
-//				return { Level::Error, "Couldn't find a window resource" };
+				worldCommands.addResource(ExitReason{ true, "Couldn't find a window resource" });
+				return;
 			}
 
-			auto windowEvents = world.getResource<wd::WindowEvents>();
-			if (!windowEvents)
+			if (!windowEventsRes)
 			{
-//				return { Level::Error, "Couldn't find a window events resource" };
+				worldCommands.addResource(ExitReason{ true, "Couldn't find a window events resource" });
+				return;
 			}
-
+			
 			if (windowRes->isOpen())
 			{
-				windowEvents->pollEvents();
+				windowEventsRes->pollEvents();
 			}
 			else
 			{
 				windowRes->destroyWindow();
 
-				auto exitReason = world.getResource<components::ExitReason>();
-				if (exitReason)
-				{
-					exitReason->exit = true;
-					exitReason->reason = "Window closed";
-				}
-				else
-				{
-//					return { Level::Error, "Couldn't find an exit reason resource" };
-				}
 			}
 		}
 
-		void Window::Deinit(ecs::World& world)
+		void Window::Deinit(core::ecs::Resource<wd::Window> windowRes)
 		{
-			auto windowRes = world.getResource<wd::Window>();
 			if (!windowRes)
-			{
-//				return { Level::Error, "Couldn't find a window resource" };
-			}
+				return;
 
 			if (windowRes->isOpen())
 				windowRes->destroyWindow();

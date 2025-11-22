@@ -134,15 +134,15 @@ namespace zt::wd
 	{
 		// TODO: Linux version
 		// Enable transparent framebuffer on windows platform
-#		if ZINET_WINDOWS
+#	if ZINET_WINDOWS
 		auto hwnd = glfwGetWin32Window(getInternal());
 
 		SetWindowLong(hwnd, GWL_EXSTYLE,
 		GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
 		SetLayeredWindowAttributes(hwnd, 0, static_cast<BYTE>(255), LWA_ALPHA);
-#		else
+#	else
 		TerminateDebug("makeWindowTransparentWhileUsingVulkan is not implemented for this platform");
-#		endif // ZINET_WINDOWS
+#	endif // ZINET_WINDOWS
 	}
 
 	void Window::destroyWindow()

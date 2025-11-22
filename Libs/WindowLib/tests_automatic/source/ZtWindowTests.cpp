@@ -28,6 +28,8 @@ namespace zt::wd::tests
 		}
 	};
 
+	// TODO: Test move ctor and assing operator
+
 	TEST_F(WindowTests, Create)
 	{
 		ASSERT_TRUE(window.create());

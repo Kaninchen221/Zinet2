@@ -124,6 +124,8 @@ namespace zt::core::ecs
 			systems.push_back(systemInfo);
 		}
 
+		void clear() { systems.clear(); graph = Graph{}; }
+
 		auto& getSystems() const noexcept { return systems; }
 
 		void buildGraph();

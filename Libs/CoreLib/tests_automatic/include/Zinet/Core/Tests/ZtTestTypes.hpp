@@ -197,7 +197,7 @@ namespace zt::core::ecs::tests
 		{ 
 			if (!positionRes)
 			{
-				components::ExitReason exitReason
+				ExitReason exitReason
 				{
 					.exit = true,
 					.reason = "Expected valid resource of class Position"
@@ -207,7 +207,7 @@ namespace zt::core::ecs::tests
 			}
 			else
 			{
-				worldCommands.addResource(components::ExitReason{});
+				worldCommands.addResource(ExitReason{});
 			}
 
 			
