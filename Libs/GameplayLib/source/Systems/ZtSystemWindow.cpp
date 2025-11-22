@@ -24,8 +24,8 @@ namespace zt::gameplay
 		}
 
 		void Window::Update(
-			core::ecs::Resource<wd::Window> windowRes, 
-			core::ecs::Resource<wd::WindowEvents> windowEventsRes, 
+			ecs::Resource<wd::Window> windowRes, 
+			ecs::Resource<wd::WindowEvents> windowEventsRes, 
 			ecs::WorldCommands worldCommands)
 		{
 			if (!windowRes)
@@ -51,7 +51,7 @@ namespace zt::gameplay
 			}
 		}
 
-		void Window::Deinit(core::ecs::Resource<wd::Window> windowRes)
+		void Window::Deinit(ecs::Resource<wd::Window> windowRes)
 		{
 			if (!windowRes)
 				return;

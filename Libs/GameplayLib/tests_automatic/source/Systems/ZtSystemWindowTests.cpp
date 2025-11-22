@@ -29,35 +29,43 @@ namespace zt::gameplay::system::tests
 		ecs::World world;
 		ecs::Schedule schedule;
 
-		schedule.addSystem(Window{}, Window::Init);
+		{ // Init
+			schedule.addSystem(Window{}, Window::Init);
 
-		schedule.buildGraph();
-		schedule.resolveGraph();
-		schedule.runOnce(world);
+			schedule.buildGraph();
+			schedule.resolveGraph();
+			schedule.runOnce(world);
 
-		auto windowRes = world.getResource<wd::Window>();
-		ASSERT_TRUE(windowRes);
-		ASSERT_TRUE(windowRes->isOpen());
+			auto windowRes = world.getResource<wd::Window>();
+			ASSERT_TRUE(windowRes);
+			ASSERT_TRUE(windowRes->isOpen());
 
- 		auto windowEventsRes = world.getResource<wd::WindowEvents>();
- 		ASSERT_TRUE(windowEventsRes);
- 
-		schedule.clear();
+			auto windowEventsRes = world.getResource<wd::WindowEvents>();
+			ASSERT_TRUE(windowEventsRes);
 
-		schedule.addSystem(Window{}, Window::Update);
+			schedule.clear();
+		}
 
-		schedule.buildGraph();
-		schedule.resolveGraph();
-		schedule.runOnce(world);
+		{ // Update
+			schedule.addSystem(Window{}, Window::Update);
 
-		schedule.clear();
+			schedule.buildGraph();
+			schedule.resolveGraph();
+			schedule.runOnce(world);
 
-		schedule.addSystem(Window{}, Window::Deinit);
+			schedule.clear();
+		}
 
-		schedule.buildGraph();
-		schedule.resolveGraph();
-		schedule.runOnce(world);
+		{ // Deinit
+			schedule.addSystem(Window{}, Window::Deinit);
 
-		ASSERT_FALSE(windowRes->getInternal());
+			schedule.buildGraph();
+			schedule.resolveGraph();
+			schedule.runOnce(world);
+
+			auto windowRes = world.getResource<wd::Window>();
+			ASSERT_TRUE(windowRes);
+			ASSERT_FALSE(windowRes->getInternal());
+		}
 	}
 }

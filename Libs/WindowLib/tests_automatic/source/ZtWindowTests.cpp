@@ -28,7 +28,7 @@ namespace zt::wd::tests
 		}
 	};
 
-	// TODO: Test move ctor and assing operator
+	// TODO: Test move ctor and assign operator
 
 	TEST_F(WindowTests, Create)
 	{

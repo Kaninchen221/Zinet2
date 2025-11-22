@@ -14,39 +14,79 @@ using namespace zt::core;
 
 namespace zt::gameplay::system
 {
-	void Renderer::Init(ecs::World&)
+	void Renderer::Init(ecs::WorldCommands worldCommands, ecs::Resource<wd::Window> windowRes)
 	{
-// 		auto rendererRes = world.addResource(vulkan_renderer::VulkanRenderer{});
-// 		if (!rendererRes)
-// 		{
-// //			return { Level::Error, "Couldn't add a renderer res to the world" };
-// 		}
-// 
-// 		auto windowRes = world.getResource<wd::Window>();
-// 		if (!windowRes)
-// 		{
-// //			return { Level::Error, "Couldn't get a window res from the world" };
-// 		}
-// 
-// //		if (!rendererRes->init(*windowRes))
-// 		{
-// //			return { Level::Error, "Renderer init failed" };
-// //		}
+		if (!windowRes)
+		{
+			worldCommands.addResource(ExitReason{ true, "Couldn't find a window resource" });
+			return;
+		}
+
+		vulkan_renderer::VulkanRenderer vulkanRenderer;
+		if (!vulkanRenderer.init(*windowRes))
+		{
+			worldCommands.addResource(ExitReason{ true, "Couldn't init renderer" });
+			return;
+		}
+
+		worldCommands.addResource(vulkanRenderer);
 	}
 
-	void Renderer::Update(ecs::World&)
+	void Renderer::Update(
+		ecs::WorldCommands worldCommands,
+		ecs::Resource<wd::Window> windowRes,
+		ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes,
+		ecs::ConstQuery<component::RenderDrawData> drawDataQuery)
 	{
-// 		auto windowRes = world.getResource<wd::Window>();
-// 		if (!windowRes)
-// 		{
-// //			return { Level::Error, "Couldn't find a window resource" };
-// 		}
-// 
-// 		if (windowRes->isMinimized())
-// 		{
-// //			return { Level::Info, "Skip rendering because window is minimized" };
-// 		}
-// 
+		if (!windowRes)
+			return;
+
+		if (windowRes->isMinimized())
+		{
+			Logger->trace("Window is minimized so skip rendering");
+			return;
+		}
+
+		if (!rendererRes)
+		{
+			worldCommands.addResource(ExitReason{ true, "Expected renderer res" });
+			return;
+		}
+
+		if (!rendererRes->nextImage())
+		{
+			worldCommands.addResource(ExitReason{ true, "Renderer couldn't switch to next image" });
+			return;
+		}
+
+		rendererRes->startRecordingDrawCommands();
+
+		rendererRes->beginRenderPass(rendererRes->getRendererContext().getRenderPass());
+
+		for (auto [drawData] : drawDataQuery)
+		{
+			rendererRes->draw(drawData->command);
+		}
+
+		rendererRes->endRenderPass();
+
+		rendererRes->endRecordingDrawCommands();
+
+		if (!rendererRes->submitCurrentDisplayImage())
+		{
+			worldCommands.addResource(ExitReason{ true, "Renderer couldn't submit draw commands" });
+			return;
+		}
+
+		if (!rendererRes->displayCurrentImage())
+		{
+			worldCommands.addResource(ExitReason{ true, "Renderer couldn't display current image" });
+			return;
+		}
+	}
+
+// 	void Renderer::Update(ecs::World&)
+// 	{
 // 		auto rendererRes = world.getResource<vulkan_renderer::VulkanRenderer>();
 // 		if (!rendererRes)
 // 		{
@@ -80,16 +120,13 @@ namespace zt::gameplay::system
 // 		{
 // //			return { Level::Error, "Renderer couldn't display current image" };
 // 		}
-	}
+/*	}*/
 
-	void Renderer::Deinit(ecs::World&)
+	void Renderer::Deinit(ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes)
 	{
-// 		auto rendererRes = world.getResource<vulkan_renderer::VulkanRenderer>();
-// 		if (!rendererRes)
-// 		{
-// //			return { Level::Warn, "Couldn't get a renderer from the world" };
-// 		}
-// 
-// 		rendererRes->deinit();
+		if (!rendererRes)
+			return;
+
+		rendererRes->deinit();
 	}
 }

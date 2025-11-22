@@ -2,27 +2,41 @@
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 
+#include "Zinet/Gameplay/Components/ZtRenderDrawData.hpp"
+
 #include "Zinet/Core/ZtLogger.hpp"
 
-namespace zt::core::ecs
+#include "Zinet/Core/ECS/ZtWorldCommands.hpp"
+#include "Zinet/Core/ECS/ZtResource.hpp"
+#include "Zinet/Core/ECS/ZtQuery.hpp"
+
+namespace zt::wd
 {
-	class World;
+	class Window;
+}
+
+namespace zt::vulkan_renderer
+{
+	class VulkanRenderer;
 }
 
 namespace zt::gameplay::system
 {
-	// TODO: Rewrite it to new schedule system
 	class ZINET_GAMEPLAY_API Renderer
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::system::Renderer");
 	
 	public:
 
-		static void Init(core::ecs::World& world);
+		static void Init(core::ecs::WorldCommands worldCommands, core::ecs::Resource<wd::Window> windowRes);
 
-		static void Update(core::ecs::World& world);
+		static void Update(
+			core::ecs::WorldCommands worldCommands, 
+			core::ecs::Resource<wd::Window> windowRes,
+			core::ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes,
+			core::ecs::ConstQuery<component::RenderDrawData> drawDataQuery);
 
-		static void Deinit(core::ecs::World& world);
+		static void Deinit(core::ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes);
 	};
 
 }

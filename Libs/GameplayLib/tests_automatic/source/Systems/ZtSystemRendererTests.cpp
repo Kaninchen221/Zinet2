@@ -8,6 +8,7 @@
 #include <gtest/gtest.h>
 
 #include "Zinet/Core/ECS/ZtWorld.hpp"
+#include "Zinet/Core/ECS/ZtSchedule.hpp"
 
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
 
@@ -30,30 +31,52 @@ namespace zt::gameplay::system::tests
 
 	TEST_F(RendererTests, Test)
 	{
-// 		ecs::World world;
-// 
-// 		Window::Init(world);
-// 		Renderer::Init(world);
-// 
-// 		bool commandInvoked = false;
-// 		auto command = [&commandInvoked = commandInvoked]([[maybe_unused]] vulkan_renderer::CommandBuffer& commandBuffer)
-// 		{
-// 			commandInvoked = true;
-// 		};
-// 		component::RenderDrawData renderDrawData{ command };
-// 		world.spawn(renderDrawData);
-// 
-// 		auto rendererRes = world.getResource<vulkan_renderer::VulkanRenderer>();
-// 		ASSERT_TRUE(rendererRes);
-// 		ASSERT_TRUE(rendererRes->isInitialized());
-// 
-// 		Renderer::Update(world);
-// 
-// 		EXPECT_TRUE(commandInvoked);
-// 
-// 		Renderer::Deinit(world);
-// 		Window::Deinit(world);
-// 
-// 		ASSERT_FALSE(rendererRes->isInitialized());
+		ecs::World world;
+		ecs::Schedule schedule;
+
+		{ // Init
+			schedule.addSystem(Window{}, Window::Init, ecs::MainThread{});
+			schedule.addSystem(Renderer{}, Renderer::Init, ecs::After{ Window{} }, ecs::MainThread{});
+
+			schedule.buildGraph();
+			schedule.resolveGraph();
+			schedule.runOnce(world);
+
+			auto vulkanRendererRes = world.getResource<vulkan_renderer::VulkanRenderer>();
+			ASSERT_TRUE(vulkanRendererRes);
+			ASSERT_TRUE(vulkanRendererRes->isInitialized());
+
+			schedule.clear();
+		}
+
+		{ // Update
+			schedule.addSystem(Window{}, Window::Update, ecs::MainThread{});
+			schedule.addSystem(Renderer{}, Renderer::Update, ecs::After{ Window{} }, ecs::MainThread{});
+
+			bool commandInvoked = false;
+			auto command = [&commandInvoked = commandInvoked](vulkan_renderer::CommandBuffer&)
+			{
+				commandInvoked = true;
+			};
+			component::RenderDrawData renderDrawData{ command };
+			world.spawn(renderDrawData);
+
+			schedule.buildGraph();
+			schedule.resolveGraph();
+			schedule.runOnce(world);
+
+			EXPECT_TRUE(commandInvoked);
+
+			schedule.clear();
+		}
+
+		{ // Deinit
+			schedule.addSystem(Window{}, Window::Deinit, ecs::MainThread{});
+			schedule.addSystem(Renderer{}, Renderer::Deinit, ecs::Before{ Window{} }, ecs::MainThread{});
+
+			schedule.buildGraph();
+			schedule.resolveGraph();
+			schedule.runOnce(world);
+		}
 	}
 }
