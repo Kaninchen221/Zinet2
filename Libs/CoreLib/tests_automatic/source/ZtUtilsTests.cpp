@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/Core/Tests/ZtTestTypes.hpp"
+
 #include "Zinet/Core/ZtUtils.hpp"
 
 #include <gtest/gtest.h>
@@ -64,4 +66,10 @@ namespace zt::core::tests
 		static_assert(std::tuple_size_v<decltype(tuple)> == expectedSize, "Invalid tuple size");
 	}
 
+	TEST_F(UtilsTests, GetClassNameTest)
+	{
+		// Classes defined "normally" is enough for now
+		std::string className = GetClassName<UtilsTests>();
+		EXPECT_EQ(className, "UtilsTests");
+	}
 }

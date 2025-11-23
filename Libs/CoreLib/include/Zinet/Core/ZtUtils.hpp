@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <string>
 
 #if ZINET_WINDOWS
 #	include <windows.h>
@@ -87,5 +88,23 @@ namespace zt::core
 	constexpr bool IsSelfConst()
 	{
 		return std::is_const_v<std::remove_reference_t<Self>>;
+	}
+
+	template<class Type>
+	constexpr std::string GetClassName()
+	{
+		using T = std::remove_cvref_t<Type>;
+
+#	if ZINET_WINDOWS
+		auto& typeInfo = typeid(T);
+
+		std::string rawName = typeInfo.name();
+		auto offset = rawName.rfind(':') + 1;
+		auto result = rawName.substr(offset, rawName.size() - offset);
+
+		return result;
+#	else
+		assert(false); // Not implemented
+#endif
 	}
 }
