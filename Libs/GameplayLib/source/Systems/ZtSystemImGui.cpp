@@ -54,10 +54,8 @@ namespace zt::gameplay::system
 		worldCommands.spawn(std::move(imGuiRenderDrawData));
 	}
 
-	void ImGui::Update(
-		core::ecs::WorldCommands worldCommands,
-		core::ecs::ConstResource<wd::Window> windowRes,
-		core::ecs::ConstResource<vulkan_renderer::ImGuiIntegration> imGuiIntegrationRes)
+	void ImGui::PreUpdate(
+		core::ecs::ConstResource<wd::Window> windowRes)
 	{
 		if (windowRes->isMinimized() || !windowRes->isOpen())
 			return;
@@ -65,13 +63,12 @@ namespace zt::gameplay::system
 		ImGuiIntegration::ImplSpecificNewFrame();
 
 		::ImGui::NewFrame();
+	}
 
-#	if ZINET_DEBUG
-		::ImGui::ShowDemoWindow();
-#	endif
-
-		// TODO: Handle imgui calls here in some way like components with commands or use another systems
-
+	void ImGui::PostUpdate(
+		core::ecs::WorldCommands worldCommands,
+		core::ecs::ConstResource<vulkan_renderer::ImGuiIntegration> imGuiIntegrationRes)
+	{
 		::ImGui::EndFrame();
 
 		if (!imGuiIntegrationRes)
@@ -80,7 +77,7 @@ namespace zt::gameplay::system
 			return;
 		}
 
- 		imGuiIntegrationRes->prepareRenderData();
+		imGuiIntegrationRes->prepareRenderData();
 	}
 
 	void ImGui::Deinit(

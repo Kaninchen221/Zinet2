@@ -11,6 +11,8 @@
 
 #include <gtest/gtest.h>
 
+#include <imgui.h>
+
 using namespace zt::core;
 using namespace zt::vulkan_renderer;
 
@@ -30,6 +32,14 @@ namespace zt::gameplay::system::tests
 
 		}
 
+		struct CallImGuiWindowLabel{};
+		static void CallImGui()
+		{
+			if (::ImGui::Begin("Test"))
+			{}
+
+			::ImGui::End();
+		}
 	};
 
 	TEST_F(ImGuiTests, PassTest)
@@ -63,7 +73,11 @@ namespace zt::gameplay::system::tests
 		{ // Update
 			schedule.addSystem(Window{}, Window::Update, ecs::MainThread{});
 			schedule.addSystem(Renderer{}, Renderer::Update, ecs::After{ Window{} }, ecs::MainThread{});
-			schedule.addSystem(ImGui{}, ImGui::Update, ecs::Before{ Renderer{} }, ecs::After{ Window{} }, ecs::MainThread{});
+
+			schedule.addSystem(ImGui::Pre{}, ImGui::PreUpdate, ecs::Before{ Renderer{} }, ecs::After{ Window{} }, ecs::MainThread{});
+			schedule.addSystem(ImGui::Post{}, ImGui::PostUpdate, ecs::Before{ Renderer{} }, ecs::After{ ImGui::Pre{} }, ecs::MainThread{});
+
+			schedule.addSystem(CallImGuiWindowLabel{}, CallImGui, ecs::After{ ImGui::Pre{} }, ecs::Before{ ImGui::Post{} });
 
 			schedule.buildGraph();
 			schedule.resolveGraph();

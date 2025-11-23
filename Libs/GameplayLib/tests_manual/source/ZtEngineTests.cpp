@@ -21,6 +21,8 @@
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
 
+#include "Zinet/Gameplay/Editor/ZtEditor.hpp"
+
 #include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
 #include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
 
@@ -118,7 +120,10 @@ namespace zt::gameplay::tests
 	{
 		scheduleUpdate.addSystem(Window{}, Window::Update, ecs::MainThread{});
 		scheduleUpdate.addSystem(Renderer{}, Renderer::Update, ecs::After{ Window{} }, ecs::MainThread{});
-		scheduleUpdate.addSystem(ImGui{}, ImGui::Update, ecs::Before{ Renderer{} }, ecs::After{ Window{} }, ecs::MainThread{});
+		scheduleUpdate.addSystem(ImGui::Pre{}, ImGui::PreUpdate, ecs::Before{ Renderer{} }, ecs::After{ Window{} }, ecs::MainThread{});
+		scheduleUpdate.addSystem(ImGui::Post{}, ImGui::PostUpdate, ecs::Before{ Renderer{} }, ecs::After{ ImGui::Pre{} }, ecs::MainThread{});
+
+		scheduleUpdate.addSystem(Editor{}, Editor::EntryPoint, ecs::After{ ImGui::Pre{} }, ecs::Before{ ImGui::Post{} }, ecs::MainThread{});
 
 		scheduleUpdate.buildGraph();
 		scheduleUpdate.resolveGraph();

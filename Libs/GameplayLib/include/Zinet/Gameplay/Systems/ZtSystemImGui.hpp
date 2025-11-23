@@ -26,14 +26,19 @@ namespace zt::gameplay::system
 
 	public:
 
+		struct Pre{};
+		struct Post{};
+
 		static void Init(
 			core::ecs::WorldCommands worldCommands,
 			core::ecs::Resource<wd::Window> windowRes,
 			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes);
 
-		static void Update(
+		static void PreUpdate(
+			core::ecs::ConstResource<wd::Window> windowRes);
+
+		static void PostUpdate(
 			core::ecs::WorldCommands worldCommands,
-			core::ecs::ConstResource<wd::Window> windowRes,
 			core::ecs::ConstResource<vulkan_renderer::ImGuiIntegration> imGuiIntegrationRes);
 
 		static void Deinit(
