@@ -13,6 +13,7 @@ namespace zt::core::ecs
 			GraphNode graphNode
 			{
 				.typeID = system.label,
+				.typeInfo = system.typeInfo,
 				.systemAdapter = system.systemAdapter,
 				.after = system.after,
 				.before = system.before,

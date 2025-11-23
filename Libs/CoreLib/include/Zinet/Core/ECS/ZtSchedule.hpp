@@ -29,6 +29,7 @@ namespace zt::core::ecs
 	struct ZINET_CORE_API SystemInfo
 	{
 		TypeID label = InvalidID;
+		const std::type_info* typeInfo{};
 		std::function<void(World&)> systemAdapter;
 		std::vector<TypeID> before;
 		std::vector<TypeID> after;
@@ -65,6 +66,7 @@ namespace zt::core::ecs
 	struct ZINET_CORE_API GraphNode
 	{
 		TypeID typeID{};
+		const std::type_info* typeInfo{};
 		std::function<void(World&)> systemAdapter;
 		std::vector<TypeID> after;
 		std::vector<TypeID> before;
@@ -113,6 +115,7 @@ namespace zt::core::ecs
 			SystemInfo systemInfo
 			{
 				.label = GetTypeID<LabelT>(),
+				.typeInfo = &typeid(LabelT)
 			};
 
 			(ResolveDeps(systemInfo, deps), ...);

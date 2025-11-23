@@ -240,6 +240,25 @@ namespace zt::core::ecs::tests
 		ASSERT_FALSE(exitReasonRes->exit);
 	}
 
+	TEST_F(ECSScheduleTests, TypeInfoTest)
+	{
+		Schedule schedule;
+
+		schedule.addSystem(EmptySystemTest{}, EmptySystemTest::EntryPoint);
+
+		schedule.buildGraph();
+		schedule.resolveGraph();
+
+		auto& graph = schedule.getGraph();
+		ASSERT_EQ(graph.layers.size(), 1);
+
+		auto& layer = graph.layers.front();
+		ASSERT_EQ(layer.nodes.size(), 1);
+
+		auto& node = layer.nodes.front();
+		ASSERT_EQ(node.typeInfo, &typeid(EmptySystemTest));
+	}
+
 	// TODO: Test a situation when we have a lot of systems that can be run at the same time
 	// In test: The number of systems must exceeds the number of threads pool size
 	// What needs to be done: The systems can't be in one layer but must be distributed along all layers
