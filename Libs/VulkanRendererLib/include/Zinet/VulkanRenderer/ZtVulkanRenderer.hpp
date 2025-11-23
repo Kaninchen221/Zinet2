@@ -9,6 +9,8 @@
 
 #include "Zinet/Math/ZtVecTypes.hpp"
 
+#include "Zinet/Window/ZtWindow.hpp"
+
 namespace zt::wd
 {
 	class Window;
@@ -28,11 +30,24 @@ namespace zt::vulkan_renderer
 
 		VulkanRenderer() = default;
 		VulkanRenderer(const VulkanRenderer& other) = default;
-		VulkanRenderer(VulkanRenderer&& other) = default;
+		VulkanRenderer(VulkanRenderer&& other) 
+		{  
+			*this = std::move(other);
+		};
 		~VulkanRenderer() noexcept = default;
 
 		VulkanRenderer& operator = (const VulkanRenderer& other) noexcept = default;
-		VulkanRenderer& operator = (VulkanRenderer&& other) noexcept = default;
+		VulkanRenderer& operator = (VulkanRenderer&& other) noexcept
+		{
+			rendererContext = std::move(other.rendererContext);
+			initialized = other.initialized;
+
+			other.initialized = false;
+
+			wd::Window::SetWindowResizedCallback(this, WindowResizedCallback);
+
+			return *this;
+		}
 
 		bool init(wd::Window& window);
 

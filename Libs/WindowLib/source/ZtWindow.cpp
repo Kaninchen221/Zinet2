@@ -69,14 +69,14 @@ namespace zt::wd
         }
 
         Window* window = static_cast<Window*>(windowUserPointer);
-		if (window->windowResizedCallback && window->windowResizedCallbackUserPointer)
+		if (window->WindowResizedCallback && window->WindowResizedCallbackUserPointer)
 		{
-			window->windowResizedCallback.invoke(window->windowResizedCallbackUserPointer, Vector2i{ width, height });
+			window->WindowResizedCallback.invoke(window->WindowResizedCallbackUserPointer, Vector2i{ width, height });
 		}
 		else
 		{
 			Logger->warn("windowResizedCallback {} or windowResizedCallbackUserPointer {} is nullptr", 
-				window->windowResizedCallback.isValid(), window->windowResizedCallbackUserPointer);
+				window->WindowResizedCallback.isValid(), window->WindowResizedCallbackUserPointer);
 		}
     }
 
@@ -92,6 +92,19 @@ namespace zt::wd
 			return;
 
         glfwSetWindowShouldClose(internalWindow, true);
+	}
+
+	void Window::SetWindowResizedCallback(void* userPointer, WindowResizedCallbackT callback)
+	{
+		if (userPointer && callback)
+		{
+			WindowResizedCallback = callback;
+			WindowResizedCallbackUserPointer = userPointer;
+		}
+		else
+		{
+			Logger->error("Can't bind user pointer: {} : Is callback valid: {}", userPointer, static_cast<bool>(callback));
+		}
 	}
 
 	void Window::swapBuffers()

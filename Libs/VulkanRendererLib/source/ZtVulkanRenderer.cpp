@@ -8,7 +8,7 @@ namespace zt::vulkan_renderer
 
 	bool VulkanRenderer::init(wd::Window& window)
 	{
-		window.setWindowResizedCallback(this, WindowResizedCallback);
+		wd::Window::SetWindowResizedCallback(this, WindowResizedCallback);
 
 		if (!rendererContext.create(window))
 			return false;
