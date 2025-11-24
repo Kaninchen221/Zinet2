@@ -87,10 +87,16 @@ namespace zt::gameplay
 						ImGui::TextFMT("Systems count: {}", layer.nodes.size());
 
 						ImGui::Separator();
-						for (auto& node : layer.nodes)
+						for (size_t nodeIndex = 0; auto& node : layer.nodes)
 						{
 							ImGui::TextFMT("{}", node.typeInfo->name());
+							ImGui::TextFMT("Main thread: {}", node.mainThread);
 							ImGui::TextFMT("Execute time: {:.6f}ms", node.executeTime.getAsMilliseconds());
+
+							++nodeIndex;
+
+							if (nodeIndex < layer.nodes.size())
+								ImGui::Separator();
 						}
 
 						++layerIndex;
