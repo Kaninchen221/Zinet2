@@ -12,9 +12,9 @@ using namespace zt::core;
 namespace zt::gameplay
 {
 	void Editor::EntryPoint(ecs::ConstResource<wd::Window> windowRes,
-		ecs::ConstResource<ecs::Graph> graphRes)
+		GraphResT graphRes)
 	{
-		if (!windowRes || !windowRes->isOpen())
+		if (!windowRes || !windowRes->isOpen() || windowRes->isMinimized())
 			return;
 
 #	if ZINET_DEBUG
@@ -48,13 +48,23 @@ namespace zt::gameplay
 		ImGui::EndMenu();
 	}
 
-	void Editor::ScheduleGraphWindow(ecs::ConstResource<core::ecs::Graph> graphRes)
+	void Editor::ScheduleGraphWindow(GraphResT graphRes)
 	{
+		if (!graphRes)
+		{
+			Logger->error("graphRes is invalid");
+			return;
+		}
+
+		auto* graph = *graphRes.get();
+
 		const ImGuiWindowFlags windowFlags = ImGuiWindowFlags_HorizontalScrollbar;
 		if (ImGui::Begin("Schedule Graph", &OpenScheduleGraphWindow, windowFlags))
 		{
-			auto& layers = graphRes->layers;
+			auto& layers = graph->layers;
 			ImGui::TextFMT("Layers count: {}", layers.size());
+
+			ImGui::TextFMT("Schedule collects execute time: {}", bool(ZINET_TIME_TRACE));
 
 			const ImGuiChildFlags childFlags = ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY;
 			if (ImGui::BeginChild("Schedule Graph Table Child", ImVec2(0, 0), childFlags))
@@ -74,13 +84,13 @@ namespace zt::gameplay
 						ImGui::TableNextColumn();
 
 						ImGui::TextFMT("Layer {}", layerIndex);
-						ImGui::TextFMT("Nodes count: {}", layer.nodes.size());
+						ImGui::TextFMT("Systems count: {}", layer.nodes.size());
 
 						ImGui::Separator();
 						for (auto& node : layer.nodes)
 						{
 							ImGui::TextFMT("{}", node.typeInfo->name());
-							// TODO: Add info how long it takes to execute each node
+							ImGui::TextFMT("Execute time: {:.6f}ms", node.executeTime.getAsMilliseconds());
 						}
 
 						++layerIndex;

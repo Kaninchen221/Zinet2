@@ -4,6 +4,7 @@
 #include "Zinet/Core/ZtFunction.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtFunctionTraits.hpp"
+#include "Zinet/Core/ZtTime.hpp"
 
 #include "Zinet/Core/ECS/ZtTypes.hpp"
 #include "Zinet/Core/ECS/ZtWorld.hpp"
@@ -71,6 +72,7 @@ namespace zt::core::ecs
 		std::vector<TypeID> after;
 		std::vector<TypeID> before;
 		bool mainThread = false;
+		Time executeTime;
 	};
 
 	struct ZINET_CORE_API GraphEdge

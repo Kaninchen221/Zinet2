@@ -1,5 +1,9 @@
 #include "Zinet/Core/ECS/ZtSchedule.hpp"
 
+#if ZINET_TIME_TRACE
+#	include "Zinet/Core/ZtClock.hpp"
+#endif
+
 #include <ranges>
 
 namespace zt::core::ecs
@@ -245,17 +249,34 @@ namespace zt::core::ecs
 					if (!node.mainThread)
 					{
 						threads.push_back(
-						std::jthread([&systemAdapter = systemAdapter, &world = world]()
+						std::jthread([&node = node, &world = world]()
 						{
+#						if ZINET_TIME_TRACE
+							Clock clock;
+#						endif
+
+							auto& systemAdapter = node.systemAdapter;
 							if (systemAdapter)
 								systemAdapter(world);
+
+#						if ZINET_TIME_TRACE
+							node.executeTime = clock.getElapsedTime();
+#						endif
 						})
 						);
 					}
 					else
 					{
+#					if ZINET_TIME_TRACE
+						Clock clock;
+#					endif
+
 						if (systemAdapter)
 							systemAdapter(world);
+
+#					if ZINET_TIME_TRACE
+						node.executeTime = clock.getElapsedTime();
+#					endif
 					}
 				}
 			}

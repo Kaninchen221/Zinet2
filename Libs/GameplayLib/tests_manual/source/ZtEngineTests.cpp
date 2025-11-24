@@ -128,8 +128,8 @@ namespace zt::gameplay::tests
 		scheduleUpdate.buildGraph();
 		scheduleUpdate.resolveGraph();
 
-		// Add a copy of the graph as a resource so we can access it from systems
-		auto graph = scheduleUpdate.getGraph();
+		// Add a ptr to the graph as a resource so we can access it from systems
+		const auto* graph = &scheduleUpdate.getGraph();
 		world.addResource(graph);
 
 		while (true)

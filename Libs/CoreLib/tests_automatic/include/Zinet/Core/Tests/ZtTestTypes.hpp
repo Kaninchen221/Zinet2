@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <thread>
 
 namespace zt::core::ecs
 {
@@ -153,6 +154,16 @@ namespace zt::core::ecs::tests
 	{
 	public:
 		static void EntryPoint() {}
+	};
+
+	class SleepSystemTest
+	{
+	public:
+		static void Sleep1ms()
+		{
+			auto duration = std::chrono::milliseconds{ 1 };
+			std::this_thread::sleep_for(duration);
+		}
 	};
 
 	class ReadWritePositionResSystemTest

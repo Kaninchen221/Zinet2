@@ -259,6 +259,35 @@ namespace zt::core::ecs::tests
 		ASSERT_EQ(node.typeInfo, &typeid(EmptySystemTest));
 	}
 
+	TEST_F(ECSScheduleTests, TypeExecuteTimeTest)
+	{
+		Schedule schedule;
+
+		schedule.addSystem(SystemTest_1{}, SleepSystemTest::Sleep1ms);
+		schedule.addSystem(SystemTest_2{}, SleepSystemTest::Sleep1ms, MainThread{});
+
+		schedule.buildGraph();
+		schedule.resolveGraph();
+
+		World world;
+		schedule.runOnce(world);
+
+		auto& graph = schedule.getGraph();
+		ASSERT_EQ(graph.layers.size(), 1);
+
+		auto& layer = graph.layers.front();
+		ASSERT_EQ(layer.nodes.size(), 2);
+
+		for (auto& node : layer.nodes)
+		{
+#	if ZINET_TIME_TRACE
+			ASSERT_NE(node.executeTime, 0);
+#	else
+			ASSERT_EQ(node.executeTime, 0); // Don't measure the execute time if ZINET_TIME_TRACE is false
+#	endif
+		}
+	}
+
 	// TODO: Test a situation when we have a lot of systems that can be run at the same time
 	// In test: The number of systems must exceeds the number of threads pool size
 	// What needs to be done: The systems can't be in one layer but must be distributed along all layers
