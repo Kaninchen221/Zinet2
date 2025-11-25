@@ -20,6 +20,7 @@
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemSprites.hpp"
 
 #include "Zinet/Gameplay/Editor/ZtEditor.hpp"
 
@@ -80,6 +81,7 @@ namespace zt::gameplay::tests
 			scheduleInit.addSystem(Window{}, Window::Init, ecs::MainThread{});
 			scheduleInit.addSystem(Renderer{}, Renderer::Init, ecs::After{ Window{} }, ecs::MainThread{});
 			scheduleInit.addSystem(ImGui{}, ImGui::Init, ecs::After{ Window{}, Renderer{} }, ecs::MainThread{});
+			scheduleInit.addSystem(Sprites{}, Sprites::Init);
 
 			scheduleInit.buildGraph();
 			scheduleInit.resolveGraph();
@@ -98,6 +100,7 @@ namespace zt::gameplay::tests
 			scheduleDeinit.addSystem(Window{}, Window::Deinit, ecs::MainThread{});
 			scheduleDeinit.addSystem(Renderer{}, Renderer::Deinit, ecs::Before{ Window{} }, ecs::MainThread{});
 			scheduleDeinit.addSystem(ImGui{}, ImGui::Deinit, ecs::Before{ Window{}, Renderer{} }, ecs::MainThread{});
+			scheduleDeinit.addSystem(Sprites{}, Sprites::Deinit);
 
 			scheduleDeinit.buildGraph();
 			scheduleDeinit.resolveGraph();
@@ -124,6 +127,8 @@ namespace zt::gameplay::tests
 		scheduleUpdate.addSystem(ImGui::Post{}, ImGui::PostUpdate, ecs::Before{ Renderer{} }, ecs::After{ ImGui::Pre{} }, ecs::MainThread{});
 
 		scheduleUpdate.addSystem(Editor{}, Editor::EntryPoint, ecs::After{ ImGui::Pre{} }, ecs::Before{ ImGui::Post{} }, ecs::MainThread{});
+
+		scheduleUpdate.addSystem(Sprites{}, Sprites::Update, ecs::Before{ Renderer{}, Editor{} });
 
 		scheduleUpdate.buildGraph();
 		scheduleUpdate.resolveGraph();
