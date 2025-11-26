@@ -319,6 +319,13 @@ namespace zt::vulkan_renderer::tests
 
 				ImGui::EndFrame();
 
+				auto& io = ::ImGui::GetIO();
+				if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+				{
+					ImGui::UpdatePlatformWindows();
+					//ImGui::RenderPlatformWindowsDefault(); // It's called outside the main loop
+				}
+
 				imGuiIntegration.prepareRenderData();
 			}
 
