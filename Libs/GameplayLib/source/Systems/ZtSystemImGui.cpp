@@ -82,11 +82,6 @@ namespace zt::gameplay::system
 			renderDrawData->shouldDraw = shouldDrawImGui;
 		}
 
-// 		if (!shouldDrawImGui)
-// 			imGuiData->skipDraw = true;
-// 		else
-// 			imGuiData->skipDraw = false;
-
 		if (!windowRes->isOpen())
 			return;
 

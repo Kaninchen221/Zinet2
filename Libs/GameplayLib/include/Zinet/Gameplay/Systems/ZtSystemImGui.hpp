@@ -25,7 +25,6 @@ namespace zt::gameplay
 {
 	struct ZINET_GAMEPLAY_API ImGuiData
 	{
-		//bool skipDraw = false;
 		bool skipImGui = false;
 	};
 }
