@@ -53,7 +53,8 @@ namespace zt::vulkan_renderer::tests
 			renderer.init(window);
 			auto& rendererContext = renderer.getRendererContext();
 
-			imGuiIntegration.init(renderer.getRendererContext(), window);
+			constexpr bool multiViewport = false;
+			imGuiIntegration.init(renderer.getRendererContext(), window, multiViewport);
 
 			vertexShaderModule = CreateShaderModule("shader.vert", ShaderType::Vertex, rendererContext.getDevice());
 			ASSERT_TRUE(vertexShaderModule.isValid());
@@ -274,9 +275,6 @@ namespace zt::vulkan_renderer::tests
 
 			if (useImGui)
 			{
-				auto& io = ImGui::GetIO();
-				io.ConfigFlags &= ~ImGuiConfigFlags_ViewportsEnable;
-
 				ImGuiIntegration::ImplSpecificNewFrame();
 
 				ImGui::NewFrame();
@@ -322,6 +320,7 @@ namespace zt::vulkan_renderer::tests
 
 				ImGui::EndFrame();
 
+				auto& io = ImGui::GetIO();
 				if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 				{
 					ImGui::UpdatePlatformWindows();

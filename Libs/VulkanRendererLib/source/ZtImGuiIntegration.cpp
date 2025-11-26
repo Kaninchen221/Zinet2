@@ -16,7 +16,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool ImGuiIntegration::init(const RendererContext& rendererContext, wd::Window& window)
+	bool ImGuiIntegration::init(const RendererContext& rendererContext, wd::Window& window, bool multiViewport)
 	{
 		{
 			// Copied from imgui demo
@@ -53,7 +53,9 @@ namespace zt::vulkan_renderer
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+
+		if (multiViewport)
+			io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
 		
 		if (!ImGui_ImplGlfw_InitForVulkan(window.getInternal(), true))
 		{
