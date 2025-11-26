@@ -58,7 +58,7 @@ namespace zt::gameplay::system::tests
 			{
 				commandInvoked = true;
 			};
-			component::RenderDrawData renderDrawData{ command };
+			component::RenderDrawData renderDrawData{ .shouldDraw = true, .command = command };
 			world.spawn(renderDrawData);
 
 			schedule.buildGraph();
