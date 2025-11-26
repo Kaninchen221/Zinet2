@@ -274,6 +274,9 @@ namespace zt::vulkan_renderer::tests
 
 			if (useImGui)
 			{
+				auto& io = ImGui::GetIO();
+				io.ConfigFlags &= ~ImGuiConfigFlags_ViewportsEnable;
+
 				ImGuiIntegration::ImplSpecificNewFrame();
 
 				ImGui::NewFrame();
@@ -319,7 +322,6 @@ namespace zt::vulkan_renderer::tests
 
 				ImGui::EndFrame();
 
-				auto& io = ::ImGui::GetIO();
 				if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 				{
 					ImGui::UpdatePlatformWindows();
