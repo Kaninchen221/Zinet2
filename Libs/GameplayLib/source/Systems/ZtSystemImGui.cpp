@@ -37,8 +37,14 @@ namespace zt::gameplay::system
 			return;
 		}
 
+		// TODO: Refactor this fix
+		// Fix github actions
+		int monitorsCount = 0;
+		glfwGetMonitors(&monitorsCount);
+		const bool useMultiViewport = monitorsCount > 0;
+
 		ImGuiIntegration imGuiIntegration;
-		if (!imGuiIntegration.init(rendererRes->getRendererContext(), *windowRes))
+		if (!imGuiIntegration.init(rendererRes->getRendererContext(), *windowRes, useMultiViewport))
 		{
 			worldCommands.addResource(ExitReason{ true, "Couldn't init imGui integration" });
 			return;
