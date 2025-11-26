@@ -191,6 +191,7 @@ namespace zt::core::ecs::tests
 		Schedule schedule;
 
 		schedule.addSystem(SystemTest_3{}, ReadOnlyPositionVelocitySpriteComponentsSystemTest::EntryPoint);
+		schedule.addSystem(SystemTest_4{}, ReadOnlyPositionVelocitySpriteComponentsSystemTest::EntryPoint);
 
 		schedule.addSystem(SystemTest_1{}, ReadWritePositionVelocitySpriteComponentsSystemTest::EntryPoint);
 		schedule.addSystem(SystemTest_2{}, ReadWritePositionVelocitySpriteComponentsSystemTest::EntryPoint);
@@ -209,7 +210,7 @@ namespace zt::core::ecs::tests
 
 		ASSERT_EQ(layers[0].nodes.size(), 1);
 		ASSERT_EQ(layers[1].nodes.size(), 1);
-		ASSERT_EQ(layers[2].nodes.size(), 1);
+		ASSERT_EQ(layers[2].nodes.size(), 2);
 
 		// Systems added first have higher priority
 		EXPECT_EQ(layers[0].nodes[0].typeID, GetTypeID<SystemTest_1>());
