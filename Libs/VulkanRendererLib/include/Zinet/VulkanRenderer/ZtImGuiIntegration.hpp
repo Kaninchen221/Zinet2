@@ -32,7 +32,7 @@ namespace zt::vulkan_renderer
 		ImGuiIntegration& operator = (const ImGuiIntegration& other) noexcept = delete;
 		ImGuiIntegration& operator = (ImGuiIntegration&& other) noexcept = default;
 
-		bool init(const RendererContext& rendererContext, wd::Window& window);
+		bool init(const RendererContext& rendererContext, wd::Window& window, bool multiViewport = true);
 
 		void deinit(const RendererContext& rendererContext);
 
