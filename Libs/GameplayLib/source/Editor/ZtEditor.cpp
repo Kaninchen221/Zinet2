@@ -1,5 +1,7 @@
 #include "Zinet/Gameplay/Editor/ZtEditor.hpp"
 
+#include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
+
 #include <imgui.h>
 
 #include "Zinet/Window/ZtWindow.hpp"
@@ -9,16 +11,17 @@
 
 using namespace zt::core;
 
-namespace zt::gameplay
+namespace zt::gameplay::system
 {
-	void Editor::EntryPoint(ecs::ConstResource<wd::Window> windowRes,
+	void Editor::EntryPoint(
+		ecs::ConstResource<ImGuiData> imGuiData,
 		GraphResT graphRes)
 	{
-		if (!windowRes || !windowRes->isOpen() || windowRes->isMinimized())
+		if (imGuiData->skipImGui)
 			return;
 
 #	if ZINET_DEBUG
-		ImGui::ShowDemoWindow();
+		::ImGui::ShowDemoWindow();
 #	endif
 
 		MainMenuBar();
@@ -31,21 +34,21 @@ namespace zt::gameplay
 
 	void Editor::MainMenuBar()
 	{
-		ImGui::BeginMainMenuBar();
+		::ImGui::BeginMainMenuBar();
 
 		ToolsSubMenu();
 
-		ImGui::EndMainMenuBar();
+		::ImGui::EndMainMenuBar();
 	}
 
 	void Editor::ToolsSubMenu()
 	{
-		if (!ImGui::BeginMenu("Tools"))
+		if (!::ImGui::BeginMenu("Tools"))
 			return;
 
-		ImGui::MenuItem("Schedule Graph", nullptr, &OpenScheduleGraphWindow, true);
+		::ImGui::MenuItem("Schedule Graph", nullptr, &OpenScheduleGraphWindow, true);
 
-		ImGui::EndMenu();
+		::ImGui::EndMenu();
 	}
 
 	void Editor::ScheduleGraphWindow(GraphResT graphRes)
@@ -59,15 +62,15 @@ namespace zt::gameplay
 		auto* graph = *graphRes.get();
 
 		const ImGuiWindowFlags windowFlags = ImGuiWindowFlags_HorizontalScrollbar;
-		if (ImGui::Begin("Schedule Graph", &OpenScheduleGraphWindow, windowFlags))
+		if (::ImGui::Begin("Schedule Graph", &OpenScheduleGraphWindow, windowFlags))
 		{
 			auto& layers = graph->layers;
-			ImGui::TextFMT("Layers count: {}", layers.size());
+			::ImGui::TextFMT("Layers count: {}", layers.size());
 
-			ImGui::TextFMT("Schedule collects execute time: {}", bool(ZINET_TIME_TRACE));
+			::ImGui::TextFMT("Schedule collects execute time: {}", bool(ZINET_TIME_TRACE));
 
 			const ImGuiChildFlags childFlags = ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY;
-			if (ImGui::BeginChild("Schedule Graph Table Child", ImVec2(0, 0), childFlags))
+			if (::ImGui::BeginChild("Schedule Graph Table Child", ImVec2(0, 0), childFlags))
 			{
 				const auto columnsCount = static_cast<int32_t>(layers.size());
 
@@ -75,41 +78,41 @@ namespace zt::gameplay
 					ImGuiTableFlags_Borders |
 					ImGuiTableFlags_SizingFixedFit;
 
-				if (ImGui::BeginTable("ScheduleGraphTable", columnsCount, tableFlags))
+				if (::ImGui::BeginTable("ScheduleGraphTable", columnsCount, tableFlags))
 				{
-					ImGui::TableNextRow();
+					::ImGui::TableNextRow();
 
 					for (size_t layerIndex = 0; auto& layer : layers)
 					{
-						ImGui::TableNextColumn();
+						::ImGui::TableNextColumn();
 
-						ImGui::TextFMT("Layer {}", layerIndex);
-						ImGui::TextFMT("Systems count: {}", layer.nodes.size());
+						::ImGui::TextFMT("Layer {}", layerIndex);
+						::ImGui::TextFMT("Systems count: {}", layer.nodes.size());
 
-						ImGui::Separator();
+						::ImGui::Separator();
 						for (size_t nodeIndex = 0; auto& node : layer.nodes)
 						{
-							ImGui::TextFMT("{}", node.typeInfo->name());
-							ImGui::TextFMT("Main thread: {}", node.mainThread);
-							ImGui::TextFMT("Execute time: {:.6f}ms", node.executeTime.getAsMilliseconds());
+							::ImGui::TextFMT("{}", node.typeInfo->name());
+							::ImGui::TextFMT("Main thread: {}", node.mainThread);
+							::ImGui::TextFMT("Execute time: {:.6f}ms", node.executeTime.getAsMilliseconds());
 
 							++nodeIndex;
 
 							if (nodeIndex < layer.nodes.size())
-								ImGui::Separator();
+								::ImGui::Separator();
 						}
 
 						++layerIndex;
 					}
 
-					ImGui::EndTable();
+					::ImGui::EndTable();
 				}
 			}
 
-			ImGui::EndChild();
+			::ImGui::EndChild();
 		}
 
-		ImGui::End();
+		::ImGui::End();
 	}
 
 }

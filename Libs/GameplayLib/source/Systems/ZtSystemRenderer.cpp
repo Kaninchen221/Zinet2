@@ -65,7 +65,8 @@ namespace zt::gameplay::system
 
 		for (auto [drawData] : drawDataQuery)
 		{
-			rendererRes->draw(drawData->command);
+			if (drawData->shouldDraw)
+				rendererRes->draw(drawData->command);
 		}
 
 		rendererRes->endRenderPass();

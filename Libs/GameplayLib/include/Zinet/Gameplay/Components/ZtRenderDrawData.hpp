@@ -11,6 +11,7 @@ namespace zt::gameplay::component
 	{
 		using Command = vulkan_renderer::VulkanRenderer::Command;
 
+		bool shouldDraw = true;
 		Command command;
 	};
 }
