@@ -19,10 +19,13 @@ namespace zt::vulkan_renderer
 
 	void VulkanRenderer::deinit()
 	{
-		rendererContext.device.waitIdle();
+		if (isInitialized())
+		{
+			rendererContext.device.waitIdle();
 
-		rendererContext.destroy();
-		initialized = false;
+			rendererContext.destroy();
+			initialized = false;
+		}
 	}
 
 	bool VulkanRenderer::nextImage()

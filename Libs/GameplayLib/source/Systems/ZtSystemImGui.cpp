@@ -51,13 +51,43 @@ namespace zt::gameplay::system
 			.command = vulkan_renderer::ImGuiIntegration::DrawCommand
 		};
 
-		worldCommands.spawn(std::move(imGuiRenderDrawData));
+		worldCommands.spawn(imGuiRenderDrawData, ImGui{});
+
+		worldCommands.addResource(ImGuiData{}); // TODO: Test it
 	}
 
 	void ImGui::PreUpdate(
-		core::ecs::ConstResource<wd::Window> windowRes)
+		ecs::Resource<ImGuiData> imGuiData,
+		ecs::Query<component::RenderDrawData, ImGui> imGuiRenderDrawDataQuery,
+		ecs::ConstResource<wd::Window> windowRes)
 	{
-		if (windowRes->isMinimized() || !windowRes->isOpen())
+		const bool isWindowMinimized = windowRes->isMinimized();
+		const bool isWindowOpen = windowRes->isOpen();
+		const bool shouldDrawImGui = !isWindowMinimized && isWindowOpen;
+
+		imGuiData->skipImGui = isWindowMinimized || !isWindowOpen;
+
+#	if ZINET_SANITY_CHECK
+		// We expect only one render draw data for imgui
+		// 2 components because we expect imgui component as a filter for Query
+		if (imGuiRenderDrawDataQuery.getComponentsCount() != 2)
+		{
+			Logger->error("We expect only one render draw data for imgui");
+			return;
+		}
+#	endif
+
+		for (auto [renderDrawData, imgui] : imGuiRenderDrawDataQuery)
+		{
+			renderDrawData->shouldDraw = shouldDrawImGui;
+		}
+
+// 		if (!shouldDrawImGui)
+// 			imGuiData->skipDraw = true;
+// 		else
+// 			imGuiData->skipDraw = false;
+
+		if (!windowRes->isOpen())
 			return;
 
 		ImGuiIntegration::ImplSpecificNewFrame();
@@ -66,10 +96,21 @@ namespace zt::gameplay::system
 	}
 
 	void ImGui::PostUpdate(
-		core::ecs::WorldCommands worldCommands,
-		core::ecs::ConstResource<vulkan_renderer::ImGuiIntegration> imGuiIntegrationRes)
+		ecs::WorldCommands worldCommands,
+		ecs::ConstResource<wd::Window> windowRes,
+		ecs::ConstResource<vulkan_renderer::ImGuiIntegration> imGuiIntegrationRes)
 	{
+		if (!windowRes->isOpen())
+			return;
+
 		::ImGui::EndFrame();
+
+		// Update additional Platform Windows
+		auto& io = ::ImGui::GetIO();
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			::ImGui::UpdatePlatformWindows();
+		}
 
 		if (!imGuiIntegrationRes)
 		{

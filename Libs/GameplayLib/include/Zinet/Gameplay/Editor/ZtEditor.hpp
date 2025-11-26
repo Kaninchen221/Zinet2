@@ -12,6 +12,11 @@ namespace zt::wd
 
 namespace zt::gameplay
 {
+	struct ImGuiData;
+}
+
+namespace zt::gameplay::system
+{
 	class ZINET_GAMEPLAY_API Editor
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::Editor");
@@ -20,7 +25,8 @@ namespace zt::gameplay
 
 		using GraphResT = core::ecs::ConstResource<const core::ecs::Graph*>;
 
-		static void EntryPoint(core::ecs::ConstResource<wd::Window> windowRes,
+		static void EntryPoint(
+			core::ecs::ConstResource<ImGuiData> imGuiData,
 			GraphResT graphRes);
 
 	private:
