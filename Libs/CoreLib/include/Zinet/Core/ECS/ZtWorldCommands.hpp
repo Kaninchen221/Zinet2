@@ -31,8 +31,19 @@ namespace zt::core::ecs
 		template<class... Components>
 		void spawn(Components&&... components)
 		{
-			auto command = [components...](World& world) { world.spawn(components...); };
-			commands.push_back(command);
+			auto asTuple = std::tuple(std::forward<Components>(components)...);
+
+			auto command = 
+			[components = std::make_shared<decltype(asTuple)>(std::move(asTuple))]
+			(World& world) mutable
+			{
+				std::apply([&](auto&&... args) 
+				{
+					world.spawn(std::move(args)...);
+				}, *components);
+			};
+
+			commands.push_back(std::move(command));
 		}
 
 		void remove(const Entity& entity)

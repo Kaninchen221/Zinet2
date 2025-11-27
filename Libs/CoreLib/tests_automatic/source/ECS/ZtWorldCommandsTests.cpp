@@ -24,6 +24,8 @@ namespace zt::core::ecs::tests
 		world.executeCommands();
 
 		ASSERT_EQ(world.getComponentsCount(), 2);
+
+		// TODO: Write a test that will test spawn for an object of a class that is non copyable
 	}
 
 	TEST_F(ECSWorldCommandsTests, RemoveEntityTest)
