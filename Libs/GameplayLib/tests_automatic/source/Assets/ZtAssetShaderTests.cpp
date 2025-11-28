@@ -39,10 +39,12 @@ namespace zt::gameplay::asset::tests
 		ASSERT_TRUE(asset->load(assetsStorage.getAssetsFinder().getRootPath()));
 		ASSERT_TRUE(asset->isLoaded());
 		ASSERT_FALSE(asset->getText().empty());
+		ASSERT_FALSE(asset->getCompileResult().empty());
 
 		asset->unload();
 		ASSERT_FALSE(asset->isLoaded());
 		ASSERT_TRUE(asset->getText().empty());
+		ASSERT_TRUE(asset->getCompileResult().empty());
 
 	}
 }
