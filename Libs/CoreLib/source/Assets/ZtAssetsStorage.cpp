@@ -127,18 +127,6 @@ namespace zt::core
 		}
 	}
 
-	ObjectHandle<Asset> AssetsStorage::get(const AssetsKey& key)
-	{
-		auto findResult = assets.find(key);
-		if (findResult == assets.end())
-		{
-			Logger->info("Couldn't find asset with key: {}", key);
-			return nullptr;
-		}
-
-		return &findResult->second;
-	}
-
 	AssetsStorage::LoadMinimalAssetResult AssetsStorage::loadAssetMetaData(const fs::path& assetPath) const
 	{
 		File file;

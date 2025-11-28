@@ -51,6 +51,22 @@ namespace zt::core::tests
 		}
 	}
 
+	TEST_F(AssetsStorageTests, GetAsTest)
+	{
+		assetsStorage.registerAssetClass<asset::Text>();
+
+		bool result = assetsStorage.storeAssets();
+		ASSERT_TRUE(result);
+
+		auto asset = assetsStorage.getAs<asset::Text>("Content/placeholder.txt");
+		ASSERT_TRUE(asset);
+
+		const auto& constAssetsStorage = assetsStorage;
+
+		auto constAsset = constAssetsStorage.getAs<asset::Text>("Content/placeholder.txt");
+		ASSERT_TRUE(constAsset);
+	}
+
 	TEST_F(AssetsStorageTests, LoadMinimalAssetTest)
 	{
 		AssetsFinder::FindAssetsInput findAssetsInput

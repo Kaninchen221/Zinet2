@@ -5,6 +5,7 @@
 #include "Zinet/Core/ZtObjectRefCounter.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtClassRegistry.hpp"
+#include "Zinet/Core/ZtUtils.hpp"
 
 #include "Zinet/Core/Assets/ZtAssetsFinder.hpp"
 #include "Zinet/Core/Assets/ZtAsset.hpp"
@@ -45,10 +46,11 @@ namespace zt::core
 		template<std::derived_from<Asset> AssetT>
 		void registerAssetClass();
 
-		ObjectHandle<Asset> get(const AssetsKey& key);
+		// TODO: Test non const and const like GetAs<>
+		auto get(this auto& self, const AssetsKey& key);
 
 		template<std::derived_from<Asset> AssetT>
-		ObjectHandle<AssetT> getAs(const AssetsKey& key);
+		auto getAs(this auto& self, const AssetsKey& key);
 
 		AssetHandlers getAssets() { return assetHandlers; }
 
@@ -71,14 +73,34 @@ namespace zt::core
 		classRegistry.registerClass<AssetT>();
 	}
 
-	template<std::derived_from<Asset> AssetT>
-	ObjectHandle<AssetT> AssetsStorage::getAs(const AssetsKey& key)
+	auto AssetsStorage::get(this auto& self, const AssetsKey& key)
 	{
-		auto assetHandle = get(key);
-		if (!assetHandle)
-			return ObjectHandle<AssetT>{ nullptr };
+		using ResultT = std::conditional_t<IsSelfConst<decltype(self)>(),
+			::zt::ObjectHandle<Asset, const ObjectRefCounter>, ::zt::ObjectHandle<Asset, ObjectRefCounter>>;
 
-		auto result = ObjectHandle<AssetT>(assetHandle);
+		auto findResult = self.assets.find(key);
+		if (findResult == self.assets.end())
+		{
+			Logger->info("Couldn't find asset with key: {}", key);
+			return ResultT{ static_cast<ObjectRefCounter*>(nullptr) };
+		}
+
+		return ResultT( &findResult->second );
+	}
+
+	template<std::derived_from<Asset> AssetT>
+	auto AssetsStorage::getAs(this auto& self, const AssetsKey& key)
+	{
+		using ObjectRefCounterT = std::conditional_t<IsSelfConst<decltype(self)>(),
+			const ObjectRefCounter, ObjectRefCounter>;
+
+		using ResultT = ::zt::ObjectHandle<AssetT, ObjectRefCounterT>;
+
+		auto assetHandle = self.get(key);
+		if (!assetHandle)
+			return ResultT( static_cast<ObjectRefCounterT*>(nullptr) );
+
+		auto result = ResultT(assetHandle);
 		return result;
 	}
 }
