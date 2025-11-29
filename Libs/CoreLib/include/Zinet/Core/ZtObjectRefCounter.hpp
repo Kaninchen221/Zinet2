@@ -53,6 +53,7 @@ namespace zt::core
 	protected:
 		size_t refCount = 0;
 		// TODO: Objects should be stored in a better way than some random place in the memory
+		// Use TypeLessVector to store assets?
 		std::unique_ptr<Object> object;
 	};
 }
