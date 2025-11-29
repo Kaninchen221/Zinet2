@@ -6,9 +6,6 @@
 
 namespace zt::core
 {
-	// TODO: More info
-	// - Add file, line of code?
-
 	struct ZINET_CORE_API ExitReason
 	{
 		enum Level
