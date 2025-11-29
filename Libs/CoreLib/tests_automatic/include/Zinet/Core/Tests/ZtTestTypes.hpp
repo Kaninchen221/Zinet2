@@ -7,7 +7,7 @@
 #include "Zinet/Core/ECS/ZtResource.hpp"
 #include "Zinet/Core/ECS/ZtWorldCommands.hpp"
 
-#include "Zinet/Core/Components/ZtExitReason.hpp"
+#include "Zinet/Core/ZtExitReason.hpp"
 
 #include <string>
 #include <vector>

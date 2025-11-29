@@ -9,7 +9,7 @@
 #include "Zinet/Core/ECS/ZtSchedule.hpp"
 #include "Zinet/Core/ECS/ZtQuery.hpp"
 
-#include "Zinet/Core/Components/ZtExitReason.hpp"
+#include "Zinet/Core/ZtExitReason.hpp"
 
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
 

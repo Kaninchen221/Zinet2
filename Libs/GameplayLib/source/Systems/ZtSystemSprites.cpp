@@ -6,7 +6,7 @@
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
 
-#include "Zinet/Core/Components/ZtExitReason.hpp"
+#include "Zinet/Core/ZtExitReason.hpp"
 
 namespace zt::gameplay
 {

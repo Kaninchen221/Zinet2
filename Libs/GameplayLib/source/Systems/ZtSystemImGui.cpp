@@ -4,7 +4,7 @@
 
 #include "Zinet/Core/ECS/ZtWorld.hpp"
 
-#include "Zinet/Core/Components/ZtExitReason.hpp"
+#include "Zinet/Core/ZtExitReason.hpp"
 
 #include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"

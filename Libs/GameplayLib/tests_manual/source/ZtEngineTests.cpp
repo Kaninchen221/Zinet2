@@ -11,7 +11,7 @@
 #include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
 
-#include "Zinet/Core/Components/ZtExitReason.hpp"
+#include "Zinet/Core/ZtExitReason.hpp"
 
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"

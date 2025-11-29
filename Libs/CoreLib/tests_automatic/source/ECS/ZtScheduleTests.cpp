@@ -8,7 +8,7 @@
 
 #include "Zinet/Core/Tests/ZtTestTypes.hpp"
 
-#include "Zinet/Core/Components/ZtExitReason.hpp"
+#include "Zinet/Core/ZtExitReason.hpp"
 
 namespace zt::core::ecs::tests
 {

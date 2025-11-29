@@ -1,6 +1,6 @@
 ﻿#include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
-#include "Zinet/Core/Components/ZtExitReason.hpp"
+#include "Zinet/Core/ZtExitReason.hpp"
 
 namespace zt::gameplay
 {

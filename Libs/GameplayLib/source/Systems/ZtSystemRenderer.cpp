@@ -4,7 +4,7 @@
 
 #include "Zinet/Core/ECS/ZtWorld.hpp"
 #include "Zinet/Core/ECS/ZtQuery.hpp"
-#include "Zinet/Core/Components/ZtExitReason.hpp"
+#include "Zinet/Core/ZtExitReason.hpp"
 
 #include "Zinet/Window/ZtWindow.hpp"
 
