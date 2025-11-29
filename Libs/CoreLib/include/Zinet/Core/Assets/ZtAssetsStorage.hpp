@@ -46,7 +46,6 @@ namespace zt::core
 		template<std::derived_from<Asset> AssetT>
 		void registerAssetClass();
 
-		// TODO: Test non const and const like GetAs<>
 		auto get(this auto& self, const AssetsKey& key);
 
 		template<std::derived_from<Asset> AssetT>
