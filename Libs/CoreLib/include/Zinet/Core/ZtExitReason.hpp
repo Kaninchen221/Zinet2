@@ -6,13 +6,19 @@
 
 namespace zt::core
 {
-	// TODO: More info 
-	// - Add level of exit reason? Like: Info, warn, error, fatal?
+	// TODO: More info
 	// - Add file, line of code?
 
 	struct ZINET_CORE_API ExitReason
 	{
-		bool exit = false;
+		enum Level
+		{
+			Info,
+			Error,
+			Critical
+		};
+
 		std::string reason;
+		Level level = Error;
 	};
 }

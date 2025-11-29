@@ -81,7 +81,7 @@ namespace zt::gameplay::tests
 			scheduleInit.addSystem(Window{}, Window::Init, ecs::MainThread{});
 			scheduleInit.addSystem(Renderer{}, Renderer::Init, ecs::After{ Window{} }, ecs::MainThread{});
 			scheduleInit.addSystem(ImGui{}, ImGui::Init, ecs::After{ Window{}, Renderer{} }, ecs::MainThread{});
-			scheduleInit.addSystem(Sprites{}, Sprites::Init);
+			scheduleInit.addSystem(Sprites{}, Sprites::Init, ecs::After{ Renderer{} });
 
 			scheduleInit.buildGraph();
 			scheduleInit.resolveGraph();
@@ -140,8 +140,22 @@ namespace zt::gameplay::tests
 		while (true)
 		{
 			auto exitReason = world.getResource<ExitReason>();
-			if (exitReason && exitReason->exit)
+			if (exitReason)
+			{
+				switch (exitReason->level)
+				{
+				case ExitReason::Info:
+					Logger->info("Exit because: {}", exitReason->reason);
+					break;
+				case ExitReason::Error:
+					Logger->error("Exit because: {}", exitReason->reason);
+					break;
+				case ExitReason::Critical:
+					Logger->critical("Exit because: {}", exitReason->reason);
+					break;
+				}
 				break;
+			}
 
 			scheduleUpdate.runOnce(world);
 

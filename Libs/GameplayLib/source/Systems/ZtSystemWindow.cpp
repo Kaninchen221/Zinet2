@@ -48,7 +48,7 @@ namespace zt::gameplay
 			{
 				windowRes->requestCloseWindow();
 				windowRes->destroyWindow();
-				worldCommands.addResource(ExitReason{ true, "Window closed" });
+				worldCommands.addResource(ExitReason{ true, "Window closed", ExitReason::Info });
 			}
 		}
 
