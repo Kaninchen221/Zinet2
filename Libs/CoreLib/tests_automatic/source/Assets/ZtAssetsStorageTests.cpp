@@ -12,23 +12,9 @@ namespace zt::core::tests
 	{
 	protected:
 
-		AssetsStorageTests()
-		{
-		}
-
-		~AssetsStorageTests() override
-		{
-		}
-
-		void SetUp() override
-		{
-		}
-
-		void TearDown() override
-		{
-		}
-
 		AssetsStorage assetsStorage;
+		inline static std::string AssetKey = "Content/placeholder.txt";
+		inline static std::string InvalidAssetKey = "invalid path";
 	};
 
 	TEST_F(AssetsStorageTests, StoreAssetsTest)
@@ -38,10 +24,10 @@ namespace zt::core::tests
 		bool result = assetsStorage.storeAssets();
 		ASSERT_TRUE(result);
 
-		auto validAsset = assetsStorage.get("Content/placeholder.txt");
+		auto validAsset = assetsStorage.get(AssetKey);
 		ASSERT_TRUE(validAsset);
 
-		auto invalidAsset = assetsStorage.get("invalid path");
+		auto invalidAsset = assetsStorage.get(InvalidAssetKey);
 		ASSERT_FALSE(invalidAsset);
 
 		assetsStorage.unloadAssets();
@@ -51,6 +37,22 @@ namespace zt::core::tests
 		}
 	}
 
+	TEST_F(AssetsStorageTests, GetTest)
+	{
+		assetsStorage.registerAssetClass<asset::Text>();
+
+		bool result = assetsStorage.storeAssets();
+		ASSERT_TRUE(result);
+		
+		auto asset = assetsStorage.get(AssetKey);
+		ASSERT_TRUE(asset);
+
+		const auto& constAssetsStorage = assetsStorage;
+
+		auto constAsset = constAssetsStorage.get(AssetKey);
+		ASSERT_TRUE(constAsset);
+	}
+
 	TEST_F(AssetsStorageTests, GetAsTest)
 	{
 		assetsStorage.registerAssetClass<asset::Text>();
@@ -58,12 +60,12 @@ namespace zt::core::tests
 		bool result = assetsStorage.storeAssets();
 		ASSERT_TRUE(result);
 
-		auto asset = assetsStorage.getAs<asset::Text>("Content/placeholder.txt");
+		auto asset = assetsStorage.getAs<asset::Text>(AssetKey);
 		ASSERT_TRUE(asset);
 
 		const auto& constAssetsStorage = assetsStorage;
 
-		auto constAsset = constAssetsStorage.getAs<asset::Text>("Content/placeholder.txt");
+		auto constAsset = constAssetsStorage.getAs<asset::Text>(AssetKey);
 		ASSERT_TRUE(constAsset);
 	}
 
