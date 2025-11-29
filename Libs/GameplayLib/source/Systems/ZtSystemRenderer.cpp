@@ -18,14 +18,14 @@ namespace zt::gameplay::system
 	{
 		if (!windowRes)
 		{
-			worldCommands.addResource(ExitReason{ true, "Couldn't find a window resource" });
+			worldCommands.addResource(ExitReason{ "Couldn't find a window resource" });
 			return;
 		}
 
 		vulkan_renderer::VulkanRenderer vulkanRenderer;
 		if (!vulkanRenderer.init(*windowRes))
 		{
-			worldCommands.addResource(ExitReason{ true, "Couldn't init renderer" });
+			worldCommands.addResource(ExitReason{ "Couldn't init renderer" });
 			return;
 		}
 
@@ -49,13 +49,13 @@ namespace zt::gameplay::system
 
 		if (!rendererRes)
 		{
-			worldCommands.addResource(ExitReason{ true, "Expected renderer res" });
+			worldCommands.addResource(ExitReason{ "Expected renderer res" });
 			return;
 		}
 
 		if (!rendererRes->nextImage())
 		{
-			worldCommands.addResource(ExitReason{ true, "Renderer couldn't switch to next image" });
+			worldCommands.addResource(ExitReason{ "Renderer couldn't switch to next image" });
 			return;
 		}
 
@@ -75,13 +75,13 @@ namespace zt::gameplay::system
 
 		if (!rendererRes->submitCurrentDisplayImage())
 		{
-			worldCommands.addResource(ExitReason{ true, "Renderer couldn't submit draw commands" });
+			worldCommands.addResource(ExitReason{ "Renderer couldn't submit draw commands" });
 			return;
 		}
 
 		if (!rendererRes->displayCurrentImage())
 		{
-			worldCommands.addResource(ExitReason{ true, "Renderer couldn't display current image" });
+			worldCommands.addResource(ExitReason{ "Renderer couldn't display current image" });
 			return;
 		}
 	}

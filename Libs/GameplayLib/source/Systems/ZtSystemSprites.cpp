@@ -22,19 +22,19 @@ namespace zt::gameplay
 		{
 			if (!rendererRes)
 			{
-				worldCommands.addResource(ExitReason{ true, "Expected rendererRes" });
+				worldCommands.addResource(ExitReason{ "Expected rendererRes" });
 				return;
 			}
 
 			if (!rendererRes->isInitialized())
 			{
-				worldCommands.addResource(ExitReason{ true, "Expected initialized renderer" });
+				worldCommands.addResource(ExitReason{ "Expected initialized renderer" });
 				return;
 			}
 
 			if (!assetsStorageRes)
 			{
-				worldCommands.addResource(ExitReason{ true, "Expected assetsStorageRes" });
+				worldCommands.addResource(ExitReason{ "Expected assetsStorageRes" });
 				return;
 			}
 
@@ -91,7 +91,7 @@ namespace zt::gameplay
 			{
 				if (!shader->load(Paths::RootPath()))
 				{
-					worldCommands.addResource(ExitReason{ true, "Couldn't load vertex shader asset" });
+					worldCommands.addResource(ExitReason{ "Couldn't load vertex shader asset" });
 					return { nullptr };
 				}
 			}
@@ -99,7 +99,7 @@ namespace zt::gameplay
 			ShaderModule shaderModule{ nullptr };
 			if (!shaderModule.create(renderer.getRendererContext().getDevice(), shader->getCompileResult()))
 			{
-				worldCommands.addResource(ExitReason{ true, "Couldn't create the vertex shader module" });
+				worldCommands.addResource(ExitReason{ "Couldn't create the vertex shader module" });
 				return { nullptr };
 			}
 

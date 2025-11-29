@@ -16,7 +16,7 @@ namespace zt::gameplay
 
 			if (!windowRes.create(800, 800))
 			{
-				worldCommands.addResource(ExitReason{ true, "Couldn't create window" });
+				worldCommands.addResource(ExitReason{ "Couldn't create window" });
 			}
 
 			worldCommands.addResource(wd::WindowEvents{ windowRes });
@@ -30,13 +30,13 @@ namespace zt::gameplay
 		{
 			if (!windowRes)
 			{
-				worldCommands.addResource(ExitReason{ true, "Couldn't find a window resource" });
+				worldCommands.addResource(ExitReason{ "Couldn't find a window resource" });
 				return;
 			}
 
 			if (!windowEventsRes)
 			{
-				worldCommands.addResource(ExitReason{ true, "Couldn't find a window events resource" });
+				worldCommands.addResource(ExitReason{ "Couldn't find a window events resource" });
 				return;
 			}
 			
@@ -48,7 +48,7 @@ namespace zt::gameplay
 			{
 				windowRes->requestCloseWindow();
 				windowRes->destroyWindow();
-				worldCommands.addResource(ExitReason{ true, "Window closed", ExitReason::Info });
+				worldCommands.addResource(ExitReason{ "Window closed", ExitReason::Info });
 			}
 		}
 

@@ -27,13 +27,13 @@ namespace zt::gameplay::system
 	{
 		if (!windowRes)
 		{
-			worldCommands.addResource(ExitReason{ true, "Invalid window res"});
+			worldCommands.addResource(ExitReason{ "Invalid window res"});
 			return;
 		}
 
 		if (!rendererRes)
 		{
-			worldCommands.addResource(ExitReason{ true, "Invalid renderer res" });
+			worldCommands.addResource(ExitReason{ "Invalid renderer res" });
 			return;
 		}
 
@@ -46,7 +46,7 @@ namespace zt::gameplay::system
 		ImGuiIntegration imGuiIntegration;
 		if (!imGuiIntegration.init(rendererRes->getRendererContext(), *windowRes, useMultiViewport))
 		{
-			worldCommands.addResource(ExitReason{ true, "Couldn't init imGui integration" });
+			worldCommands.addResource(ExitReason{ "Couldn't init imGui integration" });
 			return;
 		}
 
@@ -115,7 +115,7 @@ namespace zt::gameplay::system
 
 		if (!imGuiIntegrationRes)
 		{
-			worldCommands.addResource(ExitReason{ true, "imGuiIntegration res is invalid" });
+			worldCommands.addResource(ExitReason{ "imGuiIntegration res is invalid" });
 			return;
 		}
 
@@ -129,13 +129,13 @@ namespace zt::gameplay::system
 	{
 		if (!rendererRes)
 		{
-			worldCommands.addResource(ExitReason{ true, "Renderer res is invalid" });
+			worldCommands.addResource(ExitReason{ "Renderer res is invalid" });
 			return;
 		}
 
 		if (!imGuiIntegrationRes)
 		{
-			worldCommands.addResource(ExitReason{ true, "imGuiIntegration res is invalid" });
+			worldCommands.addResource(ExitReason{ "imGuiIntegration res is invalid" });
 			return;
 		}
 
