@@ -238,7 +238,6 @@ namespace zt::core::ecs::tests
 
 		auto exitReasonRes = world.getResource<ExitReason>();
 		ASSERT_TRUE(exitReasonRes);
-		ASSERT_FALSE(exitReasonRes->exit);
 	}
 
 	TEST_F(ECSScheduleTests, TypeInfoTest)

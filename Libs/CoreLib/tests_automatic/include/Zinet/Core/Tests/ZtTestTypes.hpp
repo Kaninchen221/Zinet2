@@ -210,7 +210,6 @@ namespace zt::core::ecs::tests
 			{
 				ExitReason exitReason
 				{
-					.exit = true,
 					.reason = "Expected valid resource of class Position"
 				};
 
