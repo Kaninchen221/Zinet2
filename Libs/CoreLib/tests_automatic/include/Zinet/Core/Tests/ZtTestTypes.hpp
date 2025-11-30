@@ -271,4 +271,21 @@ namespace zt::core::ecs::tests
 
 		int value = 0;
 	};
+
+	class NonTrivialClass
+	{
+	public:
+		explicit NonTrivialClass(int value) : value{ value } {}
+
+		NonTrivialClass() noexcept = default;
+		NonTrivialClass(const NonTrivialClass& other) noexcept = delete;
+		NonTrivialClass(NonTrivialClass&& other) noexcept = default;
+
+		NonTrivialClass& operator = (const NonTrivialClass& other) = delete;
+		NonTrivialClass& operator = (NonTrivialClass&& other) noexcept = default;
+		~NonTrivialClass() noexcept = default;
+
+		int value = 0;
+		std::vector<int> vector;
+	};
 }

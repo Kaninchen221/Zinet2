@@ -7,6 +7,7 @@
 
 namespace zt::core::ecs
 {
+	// WorldCommands doesn't support non-movable classes (It's WIP, TODO)
 	class ZINET_CORE_API WorldCommands
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::core::ecs::WorldCommands");

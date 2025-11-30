@@ -13,68 +13,26 @@ namespace zt::core::ecs::tests
 	protected:
 		World world;
 
+		template<class ComponentT>
+		void testSpawnComponent();
+
 		template<class ResourceT>
 		void testAddResource();
 	};
 
-	TEST_F(ECSWorldCommandsTests, SpawnTrivialTypeTest)
+	TEST_F(ECSWorldCommandsTests, SpawnEntityTrivialTypeTest)
 	{
-		const int expectedValue = 40;
-
-		{
-			WorldCommands worldCommands{ world };
-			worldCommands.spawn(int{ expectedValue });
-		}
-		world.executeCommands();
-		world.clearCommands();
-
-		ASSERT_EQ(world.getComponentsCount(), 1);
-		Query<int> query{ world };
-		for (auto [component] : query)
-		{
-			EXPECT_EQ(*component, expectedValue);
-		}
+		testSpawnComponent<int>();
 	}
 
-	TEST_F(ECSWorldCommandsTests, SpawnEntityNonMovableClassTest)
+	TEST_F(ECSWorldCommandsTests, SpawnEntityNonTrivialTypeTest)
 	{
-		// TODO: Handle non copyable classes
-		/*
-		const int expectedValue = 40;
-
-		{
-			WorldCommands worldCommands{ world };
-			worldCommands.spawn(NonMovableClass{ expectedValue });
-		}
-		world.executeCommands();
-		world.clearCommands();
-
-		ASSERT_EQ(world.getComponentsCount(), 1);
-		Query<NonMovableClass> query{ world };
-		for (auto [component] : query)
-		{
-			EXPECT_EQ(component->value, expectedValue);
-		}
-		*/
+		testSpawnComponent<NonTrivialClass>();
 	}
 
-	TEST_F(ECSWorldCommandsTests, SpawnEntityNonCopyableClassTest)
+	TEST_F(ECSWorldCommandsTests, SpawnEntityNonCopyableTypeTest)
 	{
-		const int expectedValue = 40;
-
-		{
-			WorldCommands worldCommands{ world };
-			worldCommands.spawn(NonCopyableClass{ expectedValue });
-		}
-		world.executeCommands();
-		world.clearCommands();
-
-		ASSERT_EQ(world.getComponentsCount(), 1);
-		Query<NonCopyableClass> query{ world };
-		for (auto [component] : query)
-		{
-			EXPECT_EQ(component->value, expectedValue);
-		}
+		testSpawnComponent<NonCopyableClass>();
 	}
 
 	TEST_F(ECSWorldCommandsTests, RemoveEntityTest)
@@ -101,11 +59,34 @@ namespace zt::core::ecs::tests
 		testAddResource<TrivialClass>();
 	}
 
-	// TODO: Test add resource for a class that is non movable
-
 	TEST_F(ECSWorldCommandsTests, AddResourceNonCopyableTypeTest)
 	{
 		testAddResource<NonCopyableClass>();
+	}
+
+	template<class ComponentT>
+	void ECSWorldCommandsTests::testSpawnComponent()
+	{
+		const int expectedValue = 40;
+
+		{
+			WorldCommands worldCommands{ world };
+			world.spawn(ComponentT{ expectedValue });
+		}
+
+		world.executeCommands();
+
+		ASSERT_EQ(world.getComponentsCount(), 1);
+		Query<ComponentT> query{ world };
+		for (auto [component] : query)
+		{
+			ASSERT_TRUE(component);
+
+			if constexpr (requires { ComponentT::value; })
+				ASSERT_EQ(component->value, expectedValue);
+			else
+				ASSERT_EQ(*component, expectedValue);
+		}
 	}
 
 	template<class ResourceT>
@@ -117,12 +98,11 @@ namespace zt::core::ecs::tests
 			WorldCommands worldCommands{ world };
 			worldCommands.addResource(NonCopyableClass{ expectedValue });
 		}
+
 		world.executeCommands();
 
 		auto resource = world.getResource<NonCopyableClass>();
 		ASSERT_TRUE(resource);
 		ASSERT_EQ(resource->value, expectedValue);
 	}
-
-	// TODO: Write a test that will test AddResource for an object of a class that is non copyable
 }
