@@ -255,4 +255,20 @@ namespace zt::core::ecs::tests
 
 		int value = 0;
 	};
+
+	class TrivialClass
+	{
+	public:
+		explicit TrivialClass(int value) : value{ value } {}
+
+		TrivialClass() noexcept = default;
+		TrivialClass(const TrivialClass& other) noexcept = delete;
+		TrivialClass(TrivialClass&& other) noexcept = default;
+
+		TrivialClass& operator = (const TrivialClass& other) = delete;
+		TrivialClass& operator = (TrivialClass&& other) noexcept = default;
+		~TrivialClass() noexcept = default;
+
+		int value = 0;
+	};
 }

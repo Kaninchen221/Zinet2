@@ -12,6 +12,9 @@ namespace zt::core::ecs::tests
 	{
 	protected:
 		World world;
+
+		template<class ResourceT>
+		void testAddResource();
 	};
 
 	TEST_F(ECSWorldCommandsTests, SpawnTrivialTypeTest)
@@ -93,16 +96,32 @@ namespace zt::core::ecs::tests
 		ASSERT_EQ(world.getComponentsCount(), 0);
 	}
 
-	TEST_F(ECSWorldCommandsTests, AddResourceTest)
+	TEST_F(ECSWorldCommandsTests, AddResourceTrivialTypeTest)
 	{
+		testAddResource<TrivialClass>();
+	}
+
+	// TODO: Test add resource for a class that is non movable
+
+	TEST_F(ECSWorldCommandsTests, AddResourceNonCopyableTypeTest)
+	{
+		testAddResource<NonCopyableClass>();
+	}
+
+	template<class ResourceT>
+	void ECSWorldCommandsTests::testAddResource()
+	{
+		const int expectedValue = 50;
+
 		{
 			WorldCommands worldCommands{ world };
-			worldCommands.addResource(Position{});
+			worldCommands.addResource(NonCopyableClass{ expectedValue });
 		}
-
 		world.executeCommands();
 
-		ASSERT_TRUE(world.getResource<Position>());
+		auto resource = world.getResource<NonCopyableClass>();
+		ASSERT_TRUE(resource);
+		ASSERT_EQ(resource->value, expectedValue);
 	}
 
 	// TODO: Write a test that will test AddResource for an object of a class that is non copyable
