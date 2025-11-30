@@ -223,4 +223,36 @@ namespace zt::core::ecs::tests
 			
 		}
 	};
+
+	class NonMovableClass
+	{
+	public:
+		explicit NonMovableClass(int value) : value{ value } {}
+
+		NonMovableClass() noexcept = default;
+		NonMovableClass(const NonMovableClass& other) noexcept = default;
+		NonMovableClass(NonMovableClass&& other) noexcept = delete;
+
+		NonMovableClass& operator = (const NonMovableClass& other) = default;
+		NonMovableClass& operator = (NonMovableClass&& other) noexcept = delete;
+		~NonMovableClass() noexcept = default;
+
+		int value = 0;
+	};
+
+	class NonCopyableClass
+	{
+	public:
+		explicit NonCopyableClass(int value) : value{ value } {}
+
+		NonCopyableClass() noexcept = default;
+		NonCopyableClass(const NonCopyableClass& other) noexcept = delete;
+		NonCopyableClass(NonCopyableClass&& other) noexcept = default;
+
+		NonCopyableClass& operator = (const NonCopyableClass& other) = delete;
+		NonCopyableClass& operator = (NonCopyableClass&& other) noexcept = default;
+		~NonCopyableClass() noexcept = default;
+
+		int value = 0;
+	};
 }

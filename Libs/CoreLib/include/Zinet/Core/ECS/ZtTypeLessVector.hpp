@@ -128,14 +128,14 @@ namespace zt::core::ecs
 		size_t byteIndex = InvalidIndex;
 		size_t objectIndex = InvalidIndex;
 
-		// Try to place a new component at a released index
+		// Index for a new component at a released index
 		if (!removedObjects.empty())
 		{
 			objectIndex = removedObjects.back();
 			removedObjects.pop_back();
 			byteIndex = objectIndex * typeSize;
 		}
-		else // Place new component at the end
+		else // Index for a new component at the end
 		{
 			reallocateElements<Object>();
 
@@ -147,7 +147,7 @@ namespace zt::core::ecs
 		++objectsCount;
 
 		Object& storedObject = reinterpret_cast<Object&>(buffer[byteIndex]);
-		std::construct_at(&storedObject, std::move(object));
+		std::construct_at(&storedObject, std::forward<Object>(object));
 
 		return objectIndex;
 	}

@@ -63,7 +63,7 @@ namespace zt::core::ecs
 		auto* getResource(this auto& self);
 
 		/// Commands
-		// Would be nice to completely omit mutexes
+		// Would be nice to completly omit mutexes
 		void addCommands(const Commands& newCommands) 
 		{ 
 			std::lock_guard guard{ addCommandsMutex };
@@ -159,11 +159,11 @@ namespace zt::core::ecs
 		for (auto& archetype : archetypes)
 		{
 			if (archetype.typesEqual<Components...>())
-				return archetype.add(entity, components...);
+				return archetype.add(entity, std::forward<Components>(components)...);
 		}
 
 		auto& archetype = archetypes.emplace_back(Archetype::Create<Components...>());
-		return archetype.add(entity, components...);
+		return archetype.add(entity, std::forward<Components>(components)...);
 	}
 
 	template<class ResourceT>

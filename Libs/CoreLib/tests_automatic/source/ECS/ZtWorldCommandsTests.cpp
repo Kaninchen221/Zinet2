@@ -14,18 +14,64 @@ namespace zt::core::ecs::tests
 		World world;
 	};
 
-	TEST_F(ECSWorldCommandsTests, SpawnEntityTest)
+	TEST_F(ECSWorldCommandsTests, SpawnTrivialTypeTest)
 	{
+		const int expectedValue = 40;
+
 		{
 			WorldCommands worldCommands{ world };
-			worldCommands.spawn(Position{}, Velocity{});
+			worldCommands.spawn(int{ expectedValue });
 		}
-
 		world.executeCommands();
+		world.clearCommands();
 
-		ASSERT_EQ(world.getComponentsCount(), 2);
+		ASSERT_EQ(world.getComponentsCount(), 1);
+		Query<int> query{ world };
+		for (auto [component] : query)
+		{
+			EXPECT_EQ(*component, expectedValue);
+		}
+	}
 
-		// TODO: Write a test that will test spawn for an object of a class that is non copyable
+	TEST_F(ECSWorldCommandsTests, SpawnEntityNonMovableClassTest)
+	{
+		// TODO: Handle non copyable classes
+		/*
+		const int expectedValue = 40;
+
+		{
+			WorldCommands worldCommands{ world };
+			worldCommands.spawn(NonMovableClass{ expectedValue });
+		}
+		world.executeCommands();
+		world.clearCommands();
+
+		ASSERT_EQ(world.getComponentsCount(), 1);
+		Query<NonMovableClass> query{ world };
+		for (auto [component] : query)
+		{
+			EXPECT_EQ(component->value, expectedValue);
+		}
+		*/
+	}
+
+	TEST_F(ECSWorldCommandsTests, SpawnEntityNonCopyableClassTest)
+	{
+		const int expectedValue = 40;
+
+		{
+			WorldCommands worldCommands{ world };
+			worldCommands.spawn(NonCopyableClass{ expectedValue });
+		}
+		world.executeCommands();
+		world.clearCommands();
+
+		ASSERT_EQ(world.getComponentsCount(), 1);
+		Query<NonCopyableClass> query{ world };
+		for (auto [component] : query)
+		{
+			EXPECT_EQ(component->value, expectedValue);
+		}
 	}
 
 	TEST_F(ECSWorldCommandsTests, RemoveEntityTest)

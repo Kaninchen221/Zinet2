@@ -15,7 +15,6 @@ namespace zt::core::ecs
 
 		using IsWorldCommandsType = std::true_type;
 
-		// The World param is a placeholder so it could be used in systems
 		WorldCommands(World& world) : world{ world } {}
 		WorldCommands(const WorldCommands& other) noexcept = default;
 		WorldCommands(WorldCommands&& other) noexcept = default;
@@ -32,18 +31,30 @@ namespace zt::core::ecs
 		void spawn(Components&&... components)
 		{
 			auto asTuple = std::tuple(std::forward<Components>(components)...);
+			using TupleT = decltype(asTuple);
+
+			std::shared_ptr<TupleT> tupleAsSharedPtr;
+
+			if constexpr (std::is_copy_constructible_v<TupleT>)
+			{
+				tupleAsSharedPtr = std::make_shared<decltype(asTuple)>(asTuple);
+			}
+			else if (std::is_move_constructible_v<TupleT>)
+			{
+				tupleAsSharedPtr = std::make_shared<decltype(asTuple)>(std::move(asTuple));
+			}
 
 			auto command = 
-			[components = std::make_shared<decltype(asTuple)>(std::move(asTuple))]
+			[components = tupleAsSharedPtr]
 			(World& world) mutable
 			{
 				std::apply([&](auto&&... args) 
 				{
-					world.spawn(std::move(args)...);
+					world.spawn(std::forward<decltype(args)>(args)...);
 				}, *components);
 			};
 
-			commands.push_back(std::move(command));
+			commands.push_back(command);
 		}
 
 		void remove(const Entity& entity)

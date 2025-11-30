@@ -65,7 +65,7 @@ namespace zt::core::ecs
 		size_t addSingleComponent(Component&& component)
 		{
 			auto components = getComponentsOfType<Component>();
-			return components->add(component);
+			return components->add(std::forward<Component>(component));
 		}
 	};
 
@@ -87,7 +87,7 @@ namespace zt::core::ecs
 			return InvalidIndex;
 
 		size_t index = InvalidIndex;
-		((index = addSingleComponent(components)), ...);
+		((index = addSingleComponent(std::forward<Components>(components))), ...);
 
 		if (index != InvalidIndex)
 			entities.emplace_back(entity.getID(), index);
