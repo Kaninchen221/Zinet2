@@ -2,7 +2,7 @@
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 
-#include "Zinet/Gameplay/Components/ZtRenderDrawData.hpp"
+#include "Zinet/Gameplay/ZtRenderDrawData.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -47,7 +47,7 @@ namespace zt::gameplay::system
 
 		static void PreUpdate(
 			core::ecs::Resource<ImGuiData> imGuiData,
-			core::ecs::Query<component::RenderDrawData, ImGui> imGuiRenderDrawDataQuery,
+			core::ecs::Query<RenderDrawData, ImGui> imGuiRenderDrawDataQuery,
 			core::ecs::ConstResource<wd::Window> windowRes);
 
 		static void PostUpdate(

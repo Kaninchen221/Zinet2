@@ -2,7 +2,7 @@
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 
-#include "Zinet/Gameplay/Components/ZtRenderDrawData.hpp"
+#include "Zinet/Gameplay/ZtRenderDrawData.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
@@ -34,7 +34,7 @@ namespace zt::gameplay::system
 			core::ecs::WorldCommands worldCommands, 
 			core::ecs::ConstResource<wd::Window> windowRes,
 			core::ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes,
-			core::ecs::ConstQuery<component::RenderDrawData> drawDataQuery);
+			core::ecs::ConstQuery<RenderDrawData> drawDataQuery);
 
 		static void Deinit(core::ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes);
 	};

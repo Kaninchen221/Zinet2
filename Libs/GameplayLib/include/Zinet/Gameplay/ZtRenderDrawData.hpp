@@ -4,8 +4,7 @@
 
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
 
-// TODO: Again... I think storing this kind of classes is a bad habit because they can be used as a resource
-namespace zt::gameplay::component
+namespace zt::gameplay
 {
 	struct ZINET_GAMEPLAY_API RenderDrawData
 	{

@@ -3,7 +3,7 @@
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
-#include "Zinet/Gameplay/Components/ZtRenderDrawData.hpp"
+#include "Zinet/Gameplay/ZtRenderDrawData.hpp"
 
 #include <gtest/gtest.h>
 
@@ -58,7 +58,7 @@ namespace zt::gameplay::system::tests
 			{
 				commandInvoked = true;
 			};
-			component::RenderDrawData renderDrawData{ .shouldDraw = true, .command = command };
+			RenderDrawData renderDrawData{ .shouldDraw = true, .command = command };
 			world.spawn(renderDrawData);
 
 			schedule.buildGraph();

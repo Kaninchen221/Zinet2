@@ -1,6 +1,6 @@
 ﻿#include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
 
-#include "Zinet/Gameplay/Components/ZtRenderDrawData.hpp"
+#include "Zinet/Gameplay/ZtRenderDrawData.hpp"
 
 #include "Zinet/Core/ECS/ZtWorld.hpp"
 
@@ -52,7 +52,7 @@ namespace zt::gameplay::system
 
 		worldCommands.addResource(std::move(imGuiIntegration));
 		
-		component::RenderDrawData imGuiRenderDrawData
+		RenderDrawData imGuiRenderDrawData
 		{
 			.command = vulkan_renderer::ImGuiIntegration::DrawCommand
 		};
@@ -64,7 +64,7 @@ namespace zt::gameplay::system
 
 	void ImGui::PreUpdate(
 		ecs::Resource<ImGuiData> imGuiData,
-		ecs::Query<component::RenderDrawData, ImGui> imGuiRenderDrawDataQuery,
+		ecs::Query<RenderDrawData, ImGui> imGuiRenderDrawDataQuery,
 		ecs::ConstResource<wd::Window> windowRes)
 	{
 		const bool isWindowMinimized = windowRes->isMinimized();

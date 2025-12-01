@@ -1,6 +1,6 @@
 ﻿#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 
-#include "Zinet/Gameplay/Components/ZtRenderDrawData.hpp"
+#include "Zinet/Gameplay/ZtRenderDrawData.hpp"
 
 #include "Zinet/Core/ECS/ZtWorld.hpp"
 #include "Zinet/Core/ECS/ZtQuery.hpp"
@@ -36,7 +36,7 @@ namespace zt::gameplay::system
 		ecs::WorldCommands worldCommands,
 		ecs::ConstResource<wd::Window> windowRes,
 		ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes,
-		ecs::ConstQuery<component::RenderDrawData> drawDataQuery)
+		ecs::ConstQuery<RenderDrawData> drawDataQuery)
 	{
 		if (!windowRes)
 			return;
