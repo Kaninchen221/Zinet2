@@ -59,7 +59,7 @@ namespace zt::gameplay::system
 
 		worldCommands.spawn(imGuiRenderDrawData, ImGui{});
 
-		worldCommands.addResource(ImGuiData{}); // TODO: Test it
+		worldCommands.addResource(ImGuiData{});
 	}
 
 	void ImGui::PreUpdate(

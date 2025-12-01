@@ -66,6 +66,10 @@ namespace zt::gameplay::system::tests
 
 			auto query = ecs::Query<RenderDrawData>{ world };
 			EXPECT_EQ(query.getComponentsCount(), 1);
+			
+			auto imGuiDataRes = world.getResource<ImGuiData>();
+			ASSERT_TRUE(imGuiDataRes);
+			ASSERT_FALSE(imGuiDataRes->skipImGui);
 
 			schedule.clear();
 		}
