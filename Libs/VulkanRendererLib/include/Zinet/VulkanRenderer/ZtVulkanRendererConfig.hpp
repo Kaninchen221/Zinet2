@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
+#include "Zinet/Core/ZtDebug.hpp"
 
 #ifndef ZINET_STATIC
 #	if ZINET_WINDOWS
@@ -40,16 +41,4 @@
 
 #include <exception>
 
-// Override VMA_ASSERT
-namespace zt::vulkan_renderer
-{
-    inline void throwException(bool exprResult, const char* exprText)
-    {
-        if (!exprResult)
-        {
-            throw std::exception(exprText); // TODO: Change it, because it can't be catched
-        }
-    }
-}
-
-#define VMA_ASSERT(_EXPR) do { zt::vulkan_renderer::throwException(_EXPR, #_EXPR); } while (0)
+#define VMA_ASSERT(_EXPR) do { zt::Ensure(_EXPR); assert(_EXPR); } while (0)
