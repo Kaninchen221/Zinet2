@@ -2,8 +2,6 @@
 
 #include "Zinet/Gameplay/Systems/ZtSystemScript.hpp"
 
-#include "Zinet/Core/ZtObjectsStorage.hpp"
-
 #include <gtest/gtest.h>
 
 namespace zt::gameplay::systems::tests

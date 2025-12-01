@@ -2,8 +2,6 @@
 
 #include "Zinet/Gameplay/Systems/ZtSystemTickable.hpp"
 
-#include "Zinet/Core/ZtObjectsStorage.hpp"
-
 #include <gtest/gtest.h>
 
 namespace zt::gameplay::system::tests
