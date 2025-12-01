@@ -5,11 +5,11 @@
 
 namespace zt::core::ecs::tests
 {
-	namespace TestSystemIncrementar
+	namespace TestSystemIncrementer
 	{
-		void entryPoint(World& world)
+		void entryPoint(Query<Counter> counters)
 		{
-			for (auto [counter] : Query<Counter>(world))
+			for (auto [counter] : counters)
 			{
 				counter->value++;
 			}

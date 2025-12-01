@@ -38,9 +38,6 @@ namespace zt::gameplay::system::tests
 		ecs::World world;
 		ecs::Schedule schedule;
 
-		// TODO: Write something like Schedule::runSystemOnce(SystemLabel, System, World&)? 
-		// So we could skip writing addSystem, buildGraph etc.
-
 		wd::GLFW::Init();
 
 		wd::Window window;

@@ -141,6 +141,17 @@ namespace zt::core::ecs
 
 		void runOnce(World& world);
 
+		template<class LabelT, class SystemT>
+		constexpr void runOneSystemOnce(LabelT, SystemT system, World& world) noexcept
+		{
+			clear();
+			addSystem(LabelT{}, system);
+			buildGraph();
+			resolveGraph();
+			runOnce(world);
+			clear();
+		}
+
 	private:
 
 		template<class Dependency>

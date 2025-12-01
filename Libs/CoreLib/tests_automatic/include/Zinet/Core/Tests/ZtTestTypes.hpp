@@ -66,11 +66,11 @@ namespace zt::core::ecs::tests
 		inline void entryPoint([[maybe_unused]] World& world) { doSomething();}
 	}
 
-	namespace TestSystemIncrementar
+	namespace TestSystemIncrementer
 	{
 		struct Label {};
 
-		void entryPoint(World& world);
+		void entryPoint(Query<Counter> counters);
 	}
 
 	// Example of a resource class
@@ -196,8 +196,6 @@ namespace zt::core::ecs::tests
 		static void AddPosition(WorldCommands worldCommands) 
 		{
 			worldCommands.addResource(Position{});
-
-			 
 		}
 	};
 

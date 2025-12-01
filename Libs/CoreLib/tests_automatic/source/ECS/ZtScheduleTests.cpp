@@ -288,6 +288,24 @@ namespace zt::core::ecs::tests
 		}
 	}
 
+	TEST_F(ECSScheduleTests, RunOneSystemOnceTest)
+	{
+		Schedule schedule;
+		World world;
+
+		world.spawn(Counter{});
+		world.spawn(Counter{});
+
+		schedule.runOneSystemOnce(TestSystemIncrementer::Label{}, TestSystemIncrementer::entryPoint, world);
+
+		Query<Counter> query{ world };
+		for (auto [counter] : query)
+		{
+			ASSERT_TRUE(counter);
+			ASSERT_EQ(counter->value, 1);
+		}
+	}
+
 	// TODO: Test a situation when we have a lot of systems that can be run at the same time
 	// In test: The number of systems must exceeds the number of threads pool size
 	// What needs to be done: The systems can't be in one layer but must be distributed along all layers
