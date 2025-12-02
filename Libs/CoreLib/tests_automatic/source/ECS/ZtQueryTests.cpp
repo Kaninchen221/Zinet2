@@ -182,16 +182,25 @@ namespace zt::core::ecs::tests
 		world.spawn(Position{ expectedPosition }, Velocity{}, Sprite{});
 		world.spawn(Position{ expectedPosition }, Velocity{});
 
-		Query<Position, Velocity> query{ world };
+		{ // Non-const query
+			Query<Position, Velocity> query{ world };
 
-		ASSERT_EQ(query.getComponentsCount(), 4);
+			ASSERT_EQ(query.getComponentsCount(), 4);
 
-		std::vector<TypeLessVector*> componentsPack = query.getComponentsPack<Position>();
-		ASSERT_EQ(componentsPack.size(), 2); // Because we have 2 archetypes
+			std::vector<TypeLessVector*> componentsPack = query.getComponentsPack<Position>();
+			ASSERT_EQ(componentsPack.size(), 2); // Because we have 2 archetypes
 
-		for (auto components : componentsPack)
-		{
-			ASSERT_EQ(*components->get<Position>(0), expectedPosition);
+			for (auto components : componentsPack)
+			{
+				ASSERT_EQ(*components->get<Position>(0), expectedPosition);
+			}
+		}
+
+		{ // ConstQuery
+			ConstQuery<Position, Velocity> constQuery{ world };
+
+			std::vector<const TypeLessVector*> componentsPack = constQuery.getComponentsPack<Position>();
+			ASSERT_EQ(componentsPack.size(), 2); // Because we have 2 archetypes
 		}
 	}
 

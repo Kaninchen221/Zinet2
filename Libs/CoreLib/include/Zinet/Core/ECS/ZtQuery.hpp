@@ -197,8 +197,7 @@ namespace zt::core::ecs
 	template<class ComponentType>
 	auto QueryImpl<IsConstType, Components...>::getComponentsPack(this auto& self)
 	{
-		// Invalid, return TypeLessVectors
-		using ResultT = std::conditional_t<IsSelfConst<decltype(self)>(), std::vector<const TypeLessVector*>, std::vector<TypeLessVector*>>;
+		using ResultT = std::conditional_t<IsConstType{}, std::vector<const TypeLessVector*>, std::vector<TypeLessVector* >> ;
 
 		using ComponentT = std::remove_cvref_t<ComponentType>;
 
