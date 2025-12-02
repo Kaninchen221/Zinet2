@@ -24,10 +24,10 @@ namespace zt::core::tests
 		bool result = assetsStorage.storeAssets();
 		ASSERT_TRUE(result);
 
-		auto validAsset = assetsStorage.get(AssetKey);
+		AssetHandle validAsset = assetsStorage.get(AssetKey);
 		ASSERT_TRUE(validAsset);
 
-		auto invalidAsset = assetsStorage.get(InvalidAssetKey);
+		AssetHandle invalidAsset = assetsStorage.get(InvalidAssetKey);
 		ASSERT_FALSE(invalidAsset);
 
 		assetsStorage.unloadAssets();
@@ -44,12 +44,12 @@ namespace zt::core::tests
 		bool result = assetsStorage.storeAssets();
 		ASSERT_TRUE(result);
 		
-		auto asset = assetsStorage.get(AssetKey);
+		AssetHandle asset = assetsStorage.get(AssetKey);
 		ASSERT_TRUE(asset);
 
 		const auto& constAssetsStorage = assetsStorage;
 
-		auto constAsset = constAssetsStorage.get(AssetKey);
+		ConstAssetHandle constAsset = constAssetsStorage.get(AssetKey);
 		ASSERT_TRUE(constAsset);
 	}
 
@@ -60,12 +60,12 @@ namespace zt::core::tests
 		bool result = assetsStorage.storeAssets();
 		ASSERT_TRUE(result);
 
-		auto asset = assetsStorage.getAs<asset::Text>(AssetKey);
+		AssetHandle asset = assetsStorage.getAs<asset::Text>(AssetKey);
 		ASSERT_TRUE(asset);
 
 		const auto& constAssetsStorage = assetsStorage;
 
-		auto constAsset = constAssetsStorage.getAs<asset::Text>(AssetKey);
+		ConstAssetHandle constAsset = constAssetsStorage.getAs<asset::Text>(AssetKey);
 		ASSERT_TRUE(constAsset);
 	}
 

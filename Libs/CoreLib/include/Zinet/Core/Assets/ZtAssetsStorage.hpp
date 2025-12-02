@@ -18,6 +18,9 @@ namespace zt::core
 	template<std::derived_from<Asset> AssetT>
 	using AssetHandle = ObjectHandle<AssetT, true>;
 
+	template<std::derived_from<Asset> AssetT>
+	using ConstAssetHandle = ObjectHandle<AssetT, true, const ObjectRefCounter>;
+
 	class AssetsStorage : public Object
 	{
 	protected:
