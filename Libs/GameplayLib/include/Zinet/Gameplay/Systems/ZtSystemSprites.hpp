@@ -2,6 +2,8 @@
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 
+#include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
+
 #include "Zinet/Core/ZtLogger.hpp"
 
 #include "Zinet/Core/ECS/ZtWorldCommands.hpp"
@@ -60,6 +62,11 @@ namespace zt::gameplay::system
 		static vulkan_renderer::ShaderModule CreateShaderModule(
 			core::ecs::WorldCommands worldCommands,
 			const vulkan_renderer::VulkanRenderer& renderer,
+			const core::AssetsStorage& assetsStorage,
+			std::string assetShaderKey);
+
+		static core::ConstAssetHandle<asset::Texture> GetTexture(
+			core::ecs::WorldCommands worldCommands,
 			const core::AssetsStorage& assetsStorage,
 			std::string assetShaderKey);
 

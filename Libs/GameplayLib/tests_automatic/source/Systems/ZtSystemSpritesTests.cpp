@@ -84,19 +84,24 @@ namespace zt::gameplay::system::tests
 			ecs::Query<Sprite, Buffer, ConstAssetHandle<asset::Texture>> query{ world };
 
 			// We expect the label, one buffer and one const asset handle to the texture
-			//ASSERT_EQ(query.getComponentsCount(), 3);
+			ASSERT_EQ(query.getComponentsCount(), 3);
 
-			for (auto [label, transformBuffer, texture] : query)
+			for (auto [label, transformBuffer, textureAsset] : query)
 			{
 				ASSERT_TRUE(transformBuffer->isValid());
 
 				const size_t expectedSize = spritesCount * sizeof(Transform);
 				ASSERT_EQ(expectedSize, transformBuffer->getSize());
 
-				//ASSERT_TRUE(texture);
+				ASSERT_TRUE(textureAsset);
+				ASSERT_TRUE(textureAsset->isValid());
+
+				auto texture = textureAsset->get();
+				ASSERT_TRUE(texture->isLoaded());
 			}
 
-			// Texture
+			// TODO:
+			// Sampler
 			// Descriptors
 			// GraphicsPipeline
 			// RenderDrawData

@@ -1,6 +1,7 @@
 ﻿#include "Zinet/Gameplay/Systems/ZtSystemSprites.hpp"
 
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
+#include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 
 #include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
@@ -21,6 +22,7 @@ namespace zt::gameplay
 			ecs::ConstResource<VulkanRenderer> rendererRes,
 			ecs::ConstResource<core::AssetsStorage> assetsStorageRes)
 		{
+			// TODO: Refactor to validate method
 			if (!rendererRes)
 			{
 				worldCommands.addResource(ExitReason{ "Expected rendererRes" });
@@ -56,7 +58,12 @@ namespace zt::gameplay
 			
 			shaderModules.insert({ ShaderType::Fragment, &fragmentShaderModule });
 
-			worldCommands.spawn(Sprite{}, std::move(transformBuffer));
+			// Texture
+			auto texture = GetTexture(worldCommands, *assetsStorageRes, "Content/Textures/default_texture.png");
+			if (!texture)
+				return;
+			
+			worldCommands.spawn(Sprite{}, std::move(transformBuffer), texture);
 
 			// Destroy shader modules
 			{
@@ -94,6 +101,12 @@ namespace zt::gameplay
 			std::string assetShaderKey)
 		{
 			auto shader = assetsStorage.getAs<asset::Shader>(assetShaderKey);
+
+			if (!shader)
+			{
+				worldCommands.addResource(ExitReason{ fmt::format("Couldn't get shader asset: {}", assetShaderKey) });
+				return { nullptr };
+			}
 
 			if (!shader->isLoaded())
 			{
@@ -149,6 +162,29 @@ namespace zt::gameplay
 			return buffer;
 		}
 
+		ConstAssetHandle<asset::Texture> Sprites::GetTexture(
+			ecs::WorldCommands worldCommands, 
+			const AssetsStorage& assetsStorage, 
+			std::string assetShaderKey)
+		{
+			auto texture = assetsStorage.getAs<asset::Texture>("Content/Textures/default_texture.png");
+			if (!texture)
+			{
+				worldCommands.addResource(ExitReason{ fmt::format("Couldn't get texture asset: {}", assetShaderKey) });
+				return { nullptr };
+			}
+
+			if (!texture->isLoaded())
+			{
+				if (!texture->load(Paths::RootPath()))
+				{
+					worldCommands.addResource(ExitReason{ "Couldn't load texture asset" });
+					return { nullptr };
+				}
+			}
+
+			return texture;
+		}
 
 	}
 }
