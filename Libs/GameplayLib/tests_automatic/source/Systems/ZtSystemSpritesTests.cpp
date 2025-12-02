@@ -26,23 +26,26 @@ namespace zt::gameplay::system::tests
 
 		void SetUp() override
 		{
+			ASSERT_TRUE(window.create(200, 200));
 		}
 
 		void TearDown() override
 		{
+			auto rendererRes = world.getResource<VulkanRenderer>();
+			ASSERT_TRUE(rendererRes);
+			rendererRes->deinit();
+
+			window.destroyWindow();
 		}
+
+		wd::GLFW glfw;
+		wd::Window window;
+		ecs::World world;
+		ecs::Schedule schedule;
 	};
 
 	TEST_F(SpritesTests, Test)
 	{
-		ecs::World world;
-		ecs::Schedule schedule;
-
-		wd::GLFW::Init();
-
-		wd::Window window;
-		ASSERT_TRUE(window.create(200, 200));
-
 		auto rendererRes = world.addResource(VulkanRenderer{});
 		ASSERT_TRUE(rendererRes->init(window));
 
@@ -54,24 +57,31 @@ namespace zt::gameplay::system::tests
 
 		world.addResource(assetsStorage);
 
+		// Spawn Sprites
+		const size_t spritesCount = 10;
+		for (size_t index = 0; index < spritesCount; ++index)
+			world.spawn(Sprite{}, Transform{});	
+
 		{ // Init
-			schedule.addSystem(Sprites{}, Sprites::Init);
+			schedule.runOneSystemOnce(Sprites{}, Sprites::Init, world);
 
-			schedule.buildGraph();
-			schedule.resolveGraph();
-			schedule.runOnce(world);
+			ecs::Query<Sprite, Buffer> query{ world };
 
-			schedule.clear();
+			// We expect the label, and one buffer
+			ASSERT_EQ(query.getComponentsCount(), 2);
 
-			// TODO: Now work on descriptors
+			for (auto [label, transformBuffer] : query)
+			{
+				ASSERT_TRUE(transformBuffer->isValid());
 
-// 			ecs::ConstQuery<GraphicsPipeline> query{ world };
-// 			EXPECT_EQ(query.getComponentsCount(), 1);
-			
-// 			for (auto [graphicsPipeline] : query)
-// 			{
-// 				EXPECT_TRUE(graphicsPipeline->isValid());
-// 			}
+				const size_t expectedSize = spritesCount * sizeof(Transform);
+				ASSERT_EQ(expectedSize, transformBuffer->getSize());
+			}
+
+			// Descriptors
+			// GraphicsPipeline
+			// RenderDrawData
+			// Fill Transform Buffer with data
 
 			if (auto exitReason = world.getResource<ExitReason>())
 				FAIL() << exitReason->reason;
@@ -102,9 +112,5 @@ namespace zt::gameplay::system::tests
 			if (auto exitReason = world.getResource<ExitReason>())
 				FAIL() << exitReason->reason;
 		}
-
-		rendererRes->deinit();
-		window.destroyWindow();
-		wd::GLFW::Deinit();
 	}
 }

@@ -16,7 +16,8 @@ namespace zt::gameplay
 		using namespace vulkan_renderer;
 
 		void Sprites::Init(
-			ecs::WorldCommands worldCommands, 
+			ecs::WorldCommands worldCommands,
+			ecs::ConstQuery<Sprite, vulkan_renderer::Transform> sprites,
 			ecs::ConstResource<VulkanRenderer> rendererRes,
 			ecs::ConstResource<core::AssetsStorage> assetsStorageRes)
 		{
@@ -38,6 +39,8 @@ namespace zt::gameplay
 				return;
 			}
 
+			auto transformBuffer = CreateTransformBuffer(rendererRes, sprites);
+
 			std::map<ShaderType, const ShaderModule*> shaderModules;
 
 			// Shader Modules
@@ -53,29 +56,34 @@ namespace zt::gameplay
 			
 			shaderModules.insert({ ShaderType::Fragment, &fragmentShaderModule });
 
-			std::array<DescriptorInfo, 2> descriptorInfos;
-			/// Add descriptor infos
-
-			// shader modules
-			// descriptors
-// 			GraphicsPipelineCreateInfo createInfo
-// 			{
-// 				.rendererContext = rendererRes->getRendererContext(),
-// 				.shaderModules = std::move(shaderModules),
-// 			};
-// 
-// 			GraphicsPipeline graphicsPipeline;
-// 			graphicsPipeline.create(createInfo);
-
-// 			worldCommands.spawn(
-// 				std::move(graphicsPipeline)
-// 			);
+			worldCommands.spawn(Sprite{}, std::move(transformBuffer));
 
 			// Destroy shader modules
 			{
 				auto& device = rendererRes->getRendererContext().getDevice();
 				vertexShaderModule.destroy(device);
 				fragmentShaderModule.destroy(device);
+			}
+		}
+
+		void Sprites::Deinit(
+			core::ecs::WorldCommands worldCommands,
+			core::ecs::Query<Sprite, vulkan_renderer::Buffer> query,
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes
+		)
+		{
+			if (!rendererRes)
+			{
+				worldCommands.addResource(ExitReason{ "Expected rendererRes" });
+				return;
+			}
+
+			auto& rendererContext = rendererRes->getRendererContext();
+			auto& vma = rendererContext.getVMA();
+
+			for (auto [sprites, buffer] : query)
+			{
+				buffer->destroy(vma);
 			}
 		}
 
@@ -106,38 +114,41 @@ namespace zt::gameplay
 			return shaderModule;
 		}
 
-// 		DescriptorInfo Sprites::CreateDescriptorInfo()
-// 		{
-// 			if (!transformsMatricesBuffer.isValid())
-// 				return {};
-// 
-// 			DescriptorInfo result;
-// 
-// 			result.buffersPacks.emplace_back().buffersPerType[VK_DESCRIPTOR_TYPE_STORAGE_BUFFER].push_back(&transformsMatricesBuffer);
-// 
-// 			if (!assetTexture.isValid() || !assetTexture->isLoaded())
-// 			{
-// 				Logger->error("AssetTexture is invalid");
-// 				return result;
-// 			}
-// 
-// 			auto& sampler = assetTexture->sampler;
-// 			if (!sampler.isValid() || !sampler->isLoaded())
-// 			{
-// 				Logger->error("Sampler of texture is invalid");
-// 				return result;
-// 			}
-// 
-// 			result.texturesInfos =
-// 			{
-// 				vulkan_renderer::TextureInfo
-// 				{
-// 					.texture = &assetTexture->texture,
-// 					.sampler = &sampler.get()->sampler,
-// 					.shaderType = vulkan_renderer::ShaderType::Fragment
-// 				}
-// 			};
-// 		}
+		Buffer Sprites::CreateTransformBuffer(
+			ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, 
+			ecs::ConstQuery<Sprite, vulkan_renderer::Transform>& sprites)
+		{
+			using namespace core;
+			using namespace vulkan_renderer;
+
+			auto& rendererContext = rendererRes->getRendererContext();
+			auto& vma = rendererContext.getVMA();
+
+			VkDeviceSize bufferSize{};
+			auto componentsPack = sprites.getComponentsPack<Transform>();
+			for (auto components : componentsPack)
+			{
+				bufferSize += components->getObjectsCapacity();
+			}
+			bufferSize *= sizeof(Transform);
+
+			VkBufferCreateInfo createInfo
+			{
+				.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+				.size = bufferSize,
+				.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+				.sharingMode = VK_SHARING_MODE_EXCLUSIVE
+			};
+
+			Buffer buffer{ nullptr };
+			if (!buffer.create(vma, createInfo))
+			{
+				Logger->error("Couldn't create transform buffer");
+			}
+
+			return buffer;
+		}
+
 
 	}
 }
