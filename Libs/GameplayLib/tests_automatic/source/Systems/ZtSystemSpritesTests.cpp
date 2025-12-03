@@ -92,7 +92,7 @@ namespace zt::gameplay::system::tests
 
 			ASSERT_EQ(query.getComponentsCount(), 4);
 
-			for (auto [label, transformBuffer, textureAsset, samplerAsset] : query)
+			for (auto [label, transformBuffer, textureAssetHandle, samplerAssetHandle] : query)
 			{
 				ASSERT_TRUE(transformBuffer);
 				ASSERT_TRUE(transformBuffer->isValid());
@@ -100,18 +100,19 @@ namespace zt::gameplay::system::tests
 				const size_t expectedSize = spritesCount * sizeof(Transform);
 				ASSERT_EQ(expectedSize, transformBuffer->getSize());
 
-				ASSERT_TRUE(textureAsset);
-				ASSERT_TRUE(textureAsset->isValid());
+				ASSERT_TRUE(textureAssetHandle);
+				ASSERT_TRUE(textureAssetHandle->isValid());
 
-				auto texture = textureAsset->get();
-				ASSERT_TRUE(texture->isLoaded());
+				auto textureAsset = textureAssetHandle->get();
+				ASSERT_TRUE(textureAsset->isLoaded());
 
-				ASSERT_TRUE(samplerAsset);
-				ASSERT_TRUE(samplerAsset->isValid());
+				ASSERT_TRUE(samplerAssetHandle);
+				ASSERT_TRUE(samplerAssetHandle->isValid());
+				auto samplerAsset = samplerAssetHandle->get();
+				ASSERT_TRUE(samplerAsset->isLoaded());
 			}
 
 			// TODO:
-			// Sampler
 			// Descriptors
 			// GraphicsPipeline
 			// RenderDrawData
