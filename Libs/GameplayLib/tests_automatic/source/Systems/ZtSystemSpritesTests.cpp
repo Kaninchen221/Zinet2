@@ -57,7 +57,7 @@ namespace zt::gameplay::system::tests
 		ecs::Schedule schedule;
 	};
 
-	// TODO: (Sprites)
+	// TODO: Sprites (Later)
 	// - Parametrize shaders
 	// - Parametrize used texture (or add something like atlas of textures?)
 	// - Parametrize used texture sampler
@@ -112,7 +112,7 @@ namespace zt::gameplay::system::tests
 				ASSERT_TRUE(samplerAsset->isLoaded());
 			}
 
-			// TODO:
+			// TODO: Sprites (now)
 			// Descriptors
 			// GraphicsPipeline
 			// RenderDrawData
