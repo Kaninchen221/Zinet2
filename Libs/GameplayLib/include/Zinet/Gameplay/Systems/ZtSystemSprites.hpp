@@ -3,8 +3,11 @@
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
 
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
+#include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtExitReason.hpp"
+#include "Zinet/Core/ZtPaths.hpp"
 
 #include "Zinet/Core/ECS/ZtWorldCommands.hpp"
 #include "Zinet/Core/ECS/ZtResource.hpp"
@@ -63,12 +66,43 @@ namespace zt::gameplay::system
 			core::ecs::WorldCommands worldCommands,
 			const vulkan_renderer::VulkanRenderer& renderer,
 			const core::AssetsStorage& assetsStorage,
-			std::string assetShaderKey);
+			std::string assetKey);
 
-		static core::ConstAssetHandle<asset::Texture> GetTexture(
+		// TODO: Move this function out from the system Sprites scope
+		template<class AssetT>
+		static core::ConstAssetHandle<AssetT> GetAsset(
 			core::ecs::WorldCommands worldCommands,
 			const core::AssetsStorage& assetsStorage,
-			std::string assetShaderKey);
+			std::string assetKey);
 
 	};
+
+	template<class AssetT>
+	static core::ConstAssetHandle<AssetT>
+		Sprites::GetAsset(
+			core::ecs::WorldCommands worldCommands, 
+			const core::AssetsStorage& assetsStorage, 
+			std::string assetKey)
+	{
+		using ResulT = core::ConstAssetHandle<AssetT>;
+
+		auto asset = assetsStorage.getAs<AssetT>(assetKey);
+		if (!asset)
+		{
+			worldCommands.addResource(core::ExitReason{ fmt::format("Couldn't get asset: {}", assetKey) });
+			return ResulT{ nullptr };
+		}
+
+		if (!asset->isLoaded())
+		{
+			if (!asset->load(core::Paths::RootPath()))
+			{
+				worldCommands.addResource(core::ExitReason{ "Couldn't load asset" });
+				return ResulT{ nullptr };
+			}
+		}
+
+		return asset;
+	}
+
 }

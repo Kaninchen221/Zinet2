@@ -7,8 +7,6 @@
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
 
-#include "Zinet/Core/ZtExitReason.hpp"
-
 namespace zt::gameplay
 {
 	namespace system
@@ -59,11 +57,16 @@ namespace zt::gameplay
 			shaderModules.insert({ ShaderType::Fragment, &fragmentShaderModule });
 
 			// Texture
-			auto texture = GetTexture(worldCommands, *assetsStorageRes, "Content/Textures/default_texture.png");
+			auto texture = GetAsset<asset::Texture>(worldCommands, *assetsStorageRes, "Content/Textures/default_texture.png");
 			if (!texture)
 				return;
-			
-			worldCommands.spawn(Sprite{}, std::move(transformBuffer), texture);
+
+			// Sampler
+			auto sampler = GetAsset<asset::Sampler>(worldCommands, *assetsStorageRes, "Content/Samplers/linear.sampler");
+			if (!sampler)
+				return;
+
+			worldCommands.spawn(Sprite{}, std::move(transformBuffer), texture, sampler);
 
 			// Destroy shader modules
 			{
@@ -98,29 +101,17 @@ namespace zt::gameplay
 			ecs::WorldCommands worldCommands,
 			const VulkanRenderer& renderer,
 			const AssetsStorage& assetsStorage,
-			std::string assetShaderKey)
+			std::string assetKey)
 		{
-			auto shader = assetsStorage.getAs<asset::Shader>(assetShaderKey);
-
-			if (!shader)
-			{
-				worldCommands.addResource(ExitReason{ fmt::format("Couldn't get shader asset: {}", assetShaderKey) });
-				return { nullptr };
-			}
-
-			if (!shader->isLoaded())
-			{
-				if (!shader->load(Paths::RootPath()))
-				{
-					worldCommands.addResource(ExitReason{ "Couldn't load vertex shader asset" });
-					return { nullptr };
-				}
-			}
-
 			ShaderModule shaderModule{ nullptr };
+
+			auto shader = GetAsset<asset::Shader>(worldCommands, assetsStorage, assetKey);
+			if (!shader)
+				return shaderModule;
+
 			if (!shaderModule.create(renderer.getRendererContext().getDevice(), shader->getCompileResult()))
 			{
-				worldCommands.addResource(ExitReason{ "Couldn't create the vertex shader module" });
+				worldCommands.addResource(ExitReason{ "Couldn't create a shader module" });
 				return { nullptr };
 			}
 
@@ -160,30 +151,6 @@ namespace zt::gameplay
 			}
 
 			return buffer;
-		}
-
-		ConstAssetHandle<asset::Texture> Sprites::GetTexture(
-			ecs::WorldCommands worldCommands, 
-			const AssetsStorage& assetsStorage, 
-			std::string assetShaderKey)
-		{
-			auto texture = assetsStorage.getAs<asset::Texture>("Content/Textures/default_texture.png");
-			if (!texture)
-			{
-				worldCommands.addResource(ExitReason{ fmt::format("Couldn't get texture asset: {}", assetShaderKey) });
-				return { nullptr };
-			}
-
-			if (!texture->isLoaded())
-			{
-				if (!texture->load(Paths::RootPath()))
-				{
-					worldCommands.addResource(ExitReason{ "Couldn't load texture asset" });
-					return { nullptr };
-				}
-			}
-
-			return texture;
 		}
 
 	}

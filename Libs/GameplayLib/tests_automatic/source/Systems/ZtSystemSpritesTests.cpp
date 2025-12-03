@@ -60,6 +60,7 @@ namespace zt::gameplay::system::tests
 	// TODO: (Sprites)
 	// - Parametrize shaders
 	// - Parametrize used texture (or add something like atlas of textures?)
+	// - Parametrize used texture sampler
 	TEST_F(SpritesTests, Test)
 	{
 		auto rendererRes = world.addResource(VulkanRenderer{});
@@ -81,13 +82,19 @@ namespace zt::gameplay::system::tests
 		{ // Init
 			schedule.runOneSystemOnce(Sprites{}, Sprites::Init, world);
 
-			ecs::Query<Sprite, Buffer, ConstAssetHandle<asset::Texture>> query{ world };
+			using QueryT = ecs::Query<
+				Sprite, Buffer, 
+				ConstAssetHandle<asset::Texture>, 
+				ConstAssetHandle<asset::Sampler>
+			>;
 
-			// We expect the label, one buffer and one const asset handle to the texture
-			ASSERT_EQ(query.getComponentsCount(), 3);
+			QueryT query{ world };
 
-			for (auto [label, transformBuffer, textureAsset] : query)
+			ASSERT_EQ(query.getComponentsCount(), 4);
+
+			for (auto [label, transformBuffer, textureAsset, samplerAsset] : query)
 			{
+				ASSERT_TRUE(transformBuffer);
 				ASSERT_TRUE(transformBuffer->isValid());
 
 				const size_t expectedSize = spritesCount * sizeof(Transform);
@@ -98,6 +105,9 @@ namespace zt::gameplay::system::tests
 
 				auto texture = textureAsset->get();
 				ASSERT_TRUE(texture->isLoaded());
+
+				ASSERT_TRUE(samplerAsset);
+				ASSERT_TRUE(samplerAsset->isValid());
 			}
 
 			// TODO:
