@@ -8,6 +8,8 @@
 
 #include <algorithm>
 
+// TODO: Move the type TypeLessVector to zt::core namespace
+// TODO: Add iterators to the TypeLessVector so we can use for range loop
 namespace zt::core::ecs
 {
 	class TypeLessVector
