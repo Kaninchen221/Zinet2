@@ -9,19 +9,60 @@
 #include <algorithm>
 
 // TODO: Move the type TypeLessVector to zt::core namespace
-// TODO: Add iterators to the TypeLessVector so we can use for range loop
 namespace zt::core::ecs
 {
+	class TypeLessVector;
+
+	class TypeLessVectorIterator
+	{
+	public:
+
+		TypeLessVectorIterator(TypeLessVector* vector, size_t startingIndex = 0) noexcept
+			: vector(vector), currentIndex(startingIndex)
+		{
+#	if ZINET_SANITY_CHECK
+			if (!Ensure(vector))
+				Terminate();
+#	endif
+		}
+
+		TypeLessVectorIterator() noexcept = delete;
+		TypeLessVectorIterator(const TypeLessVectorIterator& other) noexcept = default;
+		TypeLessVectorIterator(TypeLessVectorIterator&& other) noexcept = default;
+
+		TypeLessVectorIterator& operator = (const TypeLessVectorIterator& other) noexcept = default;
+		TypeLessVectorIterator& operator = (TypeLessVectorIterator&& other) noexcept = default;
+
+		~TypeLessVectorIterator() noexcept = default;
+
+		bool operator == (const TypeLessVectorIterator& other) const noexcept;
+
+		bool operator != (const TypeLessVectorIterator& other) const noexcept;
+
+		TypeLessVectorIterator& operator ++ () noexcept;
+
+		void* operator * () const noexcept;
+
+	private:
+
+		TypeLessVector* vector{};
+		size_t currentIndex = 0;
+
+	};
+
 	class TypeLessVector
 	{
 	public:
 
+		TypeLessVector() noexcept = delete;
+		TypeLessVector(const TypeLessVector& other) noexcept = delete;
 		TypeLessVector(TypeLessVector&& other) noexcept
 			: typeID(other.typeID), destructor(other.destructor), typeSize(other.typeSize), isTriviallyDestructible(other.isTriviallyDestructible)
 		{ 
 			*this = std::move(other); 
 		};
 
+		TypeLessVector& operator = (const TypeLessVector& other) noexcept = delete;
 		TypeLessVector& operator = (TypeLessVector&& other) noexcept
 		{
 			buffer = std::move(other.buffer);
@@ -49,9 +90,15 @@ namespace zt::core::ecs
 		template<class T>
 		auto get(this auto& self, size_t index);
 
+		// TODO: Test it
+		auto getPtr(size_t index) noexcept { return buffer.data() + (index * typeSize); }
+
 		bool isValidIndex(size_t index) const noexcept;
 
 		size_t getFirstValidIndex() const noexcept;
+
+		// TODO: Test it
+		size_t getLastIndex() const noexcept { return objectsCount + removedObjects.size() - 1; }
 
 		template<class T>
 		bool hasType() const noexcept { return GetTypeID<std::decay_t<T>>() == typeID; }
@@ -61,6 +108,9 @@ namespace zt::core::ecs
 		size_t getObjectsCapacity() const noexcept { return objectsCapacity; }
 
 		auto getTypeID() const noexcept { return typeID; }
+
+		TypeLessVectorIterator begin() noexcept { return TypeLessVectorIterator{ this, getFirstValidIndex() }; }
+		TypeLessVectorIterator end() noexcept { return TypeLessVectorIterator{ this, getLastIndex() + 1 }; }
 
 	private:
 
@@ -73,11 +123,6 @@ namespace zt::core::ecs
 
 		template<class T>
 		void reallocateElements();
-
-		TypeLessVector() noexcept = delete;
-		TypeLessVector(const TypeLessVector& other) noexcept = delete;
-
-		TypeLessVector& operator = (const TypeLessVector& other) noexcept = delete;
 
 		Buffer buffer;
 

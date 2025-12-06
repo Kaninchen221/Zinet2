@@ -201,4 +201,35 @@ namespace zt::core::ecs::tests
 
 		ASSERT_EQ(NotTrivialType::GetObjectsCounter(), 0);
 	}
+
+	TEST_F(ECSTypeLessVectorTests, IteratorsTest)
+	{
+		TypeLessVector vector = TypeLessVector::Create<Sprite>();
+
+		const size_t count = 6;
+		for (size_t i = 0; i < count; ++i)
+			vector.add(Sprite{ int(i) });
+		
+		vector.remove(0);
+		vector.remove(2);
+		vector.remove(5);
+
+		const std::vector<int> expectedIds = { 1, 3, 4 };
+		ASSERT_EQ(vector.getObjectsCount(), expectedIds.size());
+
+		TypeLessVectorIterator it = vector.begin();
+		TypeLessVectorIterator end = vector.end();
+		size_t idIndex = 0;
+		for (it; it != end; ++it)
+		{
+			void* rawPtr = *it;
+			auto& sprite = *reinterpret_cast<Sprite*>(rawPtr);
+
+			EXPECT_EQ(sprite.id, expectedIds[idIndex]);
+
+			++idIndex;
+		}
+
+		// TODO: Add const iterators (See ecs::Query)
+	}
 }

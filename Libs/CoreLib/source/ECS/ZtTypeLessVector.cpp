@@ -2,6 +2,32 @@
 
 namespace zt::core::ecs
 {
+	bool TypeLessVectorIterator::operator==(const TypeLessVectorIterator& other) const noexcept
+	{
+		return vector == other.vector && currentIndex == other.currentIndex;
+	}
+
+	bool TypeLessVectorIterator::operator!=(const TypeLessVectorIterator& other) const noexcept
+	{
+		return !operator==(other);
+	}
+
+	TypeLessVectorIterator& TypeLessVectorIterator::operator++() noexcept
+	{
+		do
+		{
+			currentIndex++;
+		} 
+		while (!vector->isValidIndex(currentIndex) && currentIndex < vector->getLastIndex() + 1);
+
+		return *this;
+	}
+
+	void* TypeLessVectorIterator::operator*() const noexcept
+	{
+		return vector->getPtr(currentIndex);
+	}
+
 	TypeLessVector::~TypeLessVector() noexcept
 	{
 		if (isTriviallyDestructible)
@@ -65,4 +91,5 @@ namespace zt::core::ecs
 
 		return InvalidIndex;
 	}
+
 }
