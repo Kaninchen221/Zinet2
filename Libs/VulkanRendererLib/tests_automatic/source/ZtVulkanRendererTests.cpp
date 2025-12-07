@@ -34,14 +34,6 @@ namespace zt::vulkan_renderer::tests
 	{
 	protected:
 
-		VulkanRendererTests()
-		{
-		}
-
-		~VulkanRendererTests() override
-		{
-		}
-
 		void SetUp() override
 		{
 			wd::GLFW::Init(false);

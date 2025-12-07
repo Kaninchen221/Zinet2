@@ -5,6 +5,8 @@
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
 
 #include "Zinet/VulkanRenderer/ZtShadersCompiler.hpp"
+#include "Zinet/VulkanRenderer/ZtRendererContext.hpp"
+#include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
 
 namespace zt::gameplay::asset
 {
@@ -34,6 +36,8 @@ namespace zt::gameplay::asset
 		void show() override;
 
 		auto& getCompileResult() const { return result; }
+
+		std::optional<vulkan_renderer::ShaderModule> createResource(vulkan_renderer::RendererContext& rendererContext);
 
 	protected:
 
