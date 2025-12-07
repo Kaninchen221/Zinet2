@@ -30,6 +30,8 @@ namespace zt::gameplay::asset
 
 		auto& getImage() const noexcept { return image; }
 
+		// TODO: Impl createResource like in the asset::Shader
+
 	protected:
 
 		core::Image image;
