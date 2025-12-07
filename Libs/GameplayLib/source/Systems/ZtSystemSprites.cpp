@@ -18,7 +18,7 @@ namespace zt::gameplay
 			ecs::WorldCommands worldCommands,
 			ecs::ConstQuery<Sprite, vulkan_renderer::Transform> sprites,
 			ecs::ConstResource<VulkanRenderer> rendererRes,
-			ecs::ConstResource<core::AssetsStorage> assetsStorageRes)
+			ecs::ConstResource<core::AssetStorage> assetStorageRes)
 		{
 			// TODO: Refactor to validate method
 			if (!rendererRes)
@@ -33,9 +33,9 @@ namespace zt::gameplay
 				return;
 			}
 
-			if (!assetsStorageRes)
+			if (!assetStorageRes)
 			{
-				worldCommands.addResource(ExitReason{ "Expected assetsStorageRes" });
+				worldCommands.addResource(ExitReason{ "Expected assetStorageRes" });
 				return;
 			}
 
@@ -44,25 +44,25 @@ namespace zt::gameplay
 			std::map<ShaderType, const ShaderModule*> shaderModules;
 
 			// Shader Modules
-			auto vertexShaderModule = CreateShaderModule(worldCommands, *rendererRes, *assetsStorageRes, "Content/Shaders/shader_sprites.vert");
+			auto vertexShaderModule = CreateShaderModule(worldCommands, *rendererRes, *assetStorageRes, "Content/Shaders/shader_sprites.vert");
 			if (!vertexShaderModule)
 				return;
 			
 			shaderModules.insert({ ShaderType::Vertex, &vertexShaderModule });
 
-			auto fragmentShaderModule = CreateShaderModule(worldCommands, *rendererRes, *assetsStorageRes, "Content/Shaders/shader_sprites.frag");
+			auto fragmentShaderModule = CreateShaderModule(worldCommands, *rendererRes, *assetStorageRes, "Content/Shaders/shader_sprites.frag");
 			if (!fragmentShaderModule)
 				return;
 			
 			shaderModules.insert({ ShaderType::Fragment, &fragmentShaderModule });
 
 			// Texture
-			auto texture = GetAsset<asset::Texture>(worldCommands, *assetsStorageRes, "Content/Textures/default_texture.png");
+			auto texture = GetAsset<asset::Texture>(worldCommands, *assetStorageRes, "Content/Textures/default_texture.png");
 			if (!texture)
 				return;
 
 			// Sampler
-			auto sampler = GetAsset<asset::Sampler>(worldCommands, *assetsStorageRes, "Content/Samplers/linear.sampler");
+			auto sampler = GetAsset<asset::Sampler>(worldCommands, *assetStorageRes, "Content/Samplers/linear.sampler");
 			if (!sampler)
 				return;
 
@@ -100,12 +100,12 @@ namespace zt::gameplay
 		ShaderModule Sprites::CreateShaderModule(
 			ecs::WorldCommands worldCommands,
 			const VulkanRenderer& renderer,
-			const AssetsStorage& assetsStorage,
+			const AssetStorage& assetStorage,
 			std::string assetKey)
 		{
 			ShaderModule shaderModule{ nullptr };
 
-			auto shader = GetAsset<asset::Shader>(worldCommands, assetsStorage, assetKey);
+			auto shader = GetAsset<asset::Shader>(worldCommands, assetStorage, assetKey);
 			if (!shader)
 				return shaderModule;
 

@@ -22,11 +22,11 @@ namespace zt::core
 	using ConstAssetHandle = ObjectHandle<AssetT, true, const ObjectRefCounter>;
 
 	// TODO: Rename class name to AssetStorage
-	class AssetsStorage : public Object
+	class AssetStorage : public Object
 	{
 	protected:
 
-		inline static auto Logger = ConsoleLogger::Create("zt::core::AssetsStorage");
+		inline static auto Logger = ConsoleLogger::Create("zt::core::AssetStorage");
 
 	public:
 
@@ -35,13 +35,13 @@ namespace zt::core
 		using AssetHandlers = std::vector<ObjectHandle<Asset>>;
 		using LoadMinimalAssetResult = std::optional<Asset>;
 
-		AssetsStorage() = default;
-		AssetsStorage(const AssetsStorage& other) = default;
-		AssetsStorage(AssetsStorage&& other) noexcept = default;
-		~AssetsStorage() noexcept = default;
+		AssetStorage() = default;
+		AssetStorage(const AssetStorage& other) = default;
+		AssetStorage(AssetStorage&& other) noexcept = default;
+		~AssetStorage() noexcept = default;
 
-		AssetsStorage& operator = (const AssetsStorage& other) = default;
-		AssetsStorage& operator = (AssetsStorage&& other) noexcept = default;
+		AssetStorage& operator = (const AssetStorage& other) = default;
+		AssetStorage& operator = (AssetStorage&& other) noexcept = default;
 
 		bool storeAssets();
 
@@ -71,12 +71,12 @@ namespace zt::core
 	};
 
 	template<std::derived_from<Asset> AssetT>
-	void AssetsStorage::registerAssetClass()
+	void AssetStorage::registerAssetClass()
 	{
 		classRegistry.registerClass<AssetT>();
 	}
 
-	auto AssetsStorage::get(this auto& self, const AssetsKey& key)
+	auto AssetStorage::get(this auto& self, const AssetsKey& key)
 	{
 		using ResultT = std::conditional_t<IsSelfConst<decltype(self)>(),
 			::zt::ObjectHandle<Asset, const ObjectRefCounter>, ::zt::ObjectHandle<Asset, ObjectRefCounter>>;
@@ -92,7 +92,7 @@ namespace zt::core
 	}
 
 	template<std::derived_from<Asset> AssetT>
-	auto AssetsStorage::getAs(this auto& self, const AssetsKey& key)
+	auto AssetStorage::getAs(this auto& self, const AssetsKey& key)
 	{
 		using ObjectRefCounterT = std::conditional_t<IsSelfConst<decltype(self)>(),
 			const ObjectRefCounter, ObjectRefCounter>;

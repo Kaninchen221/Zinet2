@@ -12,7 +12,7 @@
 
 #include "Zinet/Core/ZtExitReason.hpp"
 
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
 #include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
 
@@ -66,13 +66,13 @@ namespace zt::gameplay::system::tests
 		auto rendererRes = world.addResource(VulkanRenderer{});
 		ASSERT_TRUE(rendererRes->init(window));
 
-		AssetsStorage assetsStorage;
-		assetsStorage.registerAssetClass<asset::Texture>();
-		assetsStorage.registerAssetClass<asset::Shader>();
-		assetsStorage.registerAssetClass<asset::Sampler>();
-		assetsStorage.storeAssets();
+		AssetStorage assetStorage;
+		assetStorage.registerAssetClass<asset::Texture>();
+		assetStorage.registerAssetClass<asset::Shader>();
+		assetStorage.registerAssetClass<asset::Sampler>();
+		assetStorage.storeAssets();
 
-		world.addResource(assetsStorage);
+		world.addResource(assetStorage);
 
 		// Spawn Sprites
 		const size_t spritesCount = 10;

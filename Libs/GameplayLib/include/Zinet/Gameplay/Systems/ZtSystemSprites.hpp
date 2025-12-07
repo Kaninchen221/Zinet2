@@ -13,7 +13,7 @@
 #include "Zinet/Core/ECS/ZtResource.hpp"
 #include "Zinet/Core/ECS/ZtQuery.hpp"
 
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
 #include "Zinet/Window/ZtWindow.hpp"
 #include "Zinet/Window/ZtWindowEvents.hpp"
@@ -45,7 +45,7 @@ namespace zt::gameplay::system
 			core::ecs::WorldCommands worldCommands,
 			core::ecs::ConstQuery<Sprite, vulkan_renderer::Transform> sprites,
 			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
-			core::ecs::ConstResource<core::AssetsStorage> assetsStorageRes);
+			core::ecs::ConstResource<core::AssetStorage> assetStorageRes);
 
 		static void Update(core::ecs::WorldCommands) {}
 
@@ -65,14 +65,14 @@ namespace zt::gameplay::system
 		static vulkan_renderer::ShaderModule CreateShaderModule(
 			core::ecs::WorldCommands worldCommands,
 			const vulkan_renderer::VulkanRenderer& renderer,
-			const core::AssetsStorage& assetsStorage,
+			const core::AssetStorage& assetStorage,
 			std::string assetKey);
 
 		// TODO: Move this function out from the system Sprites scope
 		template<class AssetT>
 		static core::ConstAssetHandle<AssetT> GetAsset(
 			core::ecs::WorldCommands worldCommands,
-			const core::AssetsStorage& assetsStorage,
+			const core::AssetStorage& assetStorage,
 			std::string assetKey);
 
 	};
@@ -81,12 +81,12 @@ namespace zt::gameplay::system
 	static core::ConstAssetHandle<AssetT>
 		Sprites::GetAsset(
 			core::ecs::WorldCommands worldCommands, 
-			const core::AssetsStorage& assetsStorage, 
+			const core::AssetStorage& assetStorage, 
 			std::string assetKey)
 	{
 		using ResulT = core::ConstAssetHandle<AssetT>;
 
-		auto asset = assetsStorage.getAs<AssetT>(assetKey);
+		auto asset = assetStorage.getAs<AssetT>(assetKey);
 		if (!asset)
 		{
 			worldCommands.addResource(core::ExitReason{ fmt::format("Couldn't get asset: {}", assetKey) });

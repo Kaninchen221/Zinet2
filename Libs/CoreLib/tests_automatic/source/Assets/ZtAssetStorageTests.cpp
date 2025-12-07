@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
 
 #include <gtest/gtest.h>
@@ -8,68 +8,68 @@
 namespace zt::core::tests
 {
 
-	class AssetsStorageTests : public ::testing::Test
+	class AssetStorageTests : public ::testing::Test
 	{
 	protected:
 
-		AssetsStorage assetsStorage;
+		AssetStorage assetStorage;
 		inline static std::string AssetKey = "Content/placeholder.txt";
 		inline static std::string InvalidAssetKey = "invalid path";
 	};
 
-	TEST_F(AssetsStorageTests, StoreAssetsTest)
+	TEST_F(AssetStorageTests, StoreAssetsTest)
 	{
-		assetsStorage.registerAssetClass<asset::Text>();
+		assetStorage.registerAssetClass<asset::Text>();
 
-		bool result = assetsStorage.storeAssets();
+		bool result = assetStorage.storeAssets();
 		ASSERT_TRUE(result);
 
-		AssetHandle validAsset = assetsStorage.get(AssetKey);
+		AssetHandle validAsset = assetStorage.get(AssetKey);
 		ASSERT_TRUE(validAsset);
 
-		AssetHandle invalidAsset = assetsStorage.get(InvalidAssetKey);
+		AssetHandle invalidAsset = assetStorage.get(InvalidAssetKey);
 		ASSERT_FALSE(invalidAsset);
 
-		assetsStorage.unloadAssets();
-		for (auto& asset : assetsStorage.getAssets())
+		assetStorage.unloadAssets();
+		for (auto& asset : assetStorage.getAssets())
 		{
 			EXPECT_FALSE(asset);
 		}
 	}
 
-	TEST_F(AssetsStorageTests, GetTest)
+	TEST_F(AssetStorageTests, GetTest)
 	{
-		assetsStorage.registerAssetClass<asset::Text>();
+		assetStorage.registerAssetClass<asset::Text>();
 
-		bool result = assetsStorage.storeAssets();
+		bool result = assetStorage.storeAssets();
 		ASSERT_TRUE(result);
 		
-		AssetHandle asset = assetsStorage.get(AssetKey);
+		AssetHandle asset = assetStorage.get(AssetKey);
 		ASSERT_TRUE(asset);
 
-		const auto& constAssetsStorage = assetsStorage;
+		const auto& constAssetStorage = assetStorage;
 
-		ConstAssetHandle constAsset = constAssetsStorage.get(AssetKey);
+		ConstAssetHandle constAsset = constAssetStorage.get(AssetKey);
 		ASSERT_TRUE(constAsset);
 	}
 
-	TEST_F(AssetsStorageTests, GetAsTest)
+	TEST_F(AssetStorageTests, GetAsTest)
 	{
-		assetsStorage.registerAssetClass<asset::Text>();
+		assetStorage.registerAssetClass<asset::Text>();
 
-		bool result = assetsStorage.storeAssets();
+		bool result = assetStorage.storeAssets();
 		ASSERT_TRUE(result);
 
-		AssetHandle asset = assetsStorage.getAs<asset::Text>(AssetKey);
+		AssetHandle asset = assetStorage.getAs<asset::Text>(AssetKey);
 		ASSERT_TRUE(asset);
 
-		const auto& constAssetsStorage = assetsStorage;
+		const auto& constAssetStorage = assetStorage;
 
-		ConstAssetHandle constAsset = constAssetsStorage.getAs<asset::Text>(AssetKey);
+		ConstAssetHandle constAsset = constAssetStorage.getAs<asset::Text>(AssetKey);
 		ASSERT_TRUE(constAsset);
 	}
 
-	TEST_F(AssetsStorageTests, LoadMinimalAssetTest)
+	TEST_F(AssetStorageTests, LoadMinimalAssetTest)
 	{
 		AssetsFinder::FindAssetsInput findAssetsInput
 		{
@@ -84,7 +84,7 @@ namespace zt::core::tests
 		EXPECT_EQ(findAssetsResult.files.size(), 1u);
 		EXPECT_EQ(findAssetsResult.assets.size(), 1u);
 
-		auto optionalAsset = assetsStorage.loadAssetMetaData(findAssetsResult.assets.front());
+		auto optionalAsset = assetStorage.loadAssetMetaData(findAssetsResult.assets.front());
 
 		ASSERT_TRUE(optionalAsset);
 

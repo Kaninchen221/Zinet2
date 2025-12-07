@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Zinet/Core/Assets/ZtAssetsStorage.hpp>
+#include <Zinet/Core/Assets/ZtAssetStorage.hpp>
 
 #include <Zinet/Gameplay/Assets/ZtAssetSampler.hpp>
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
@@ -26,16 +26,16 @@ namespace zt::gameplay::asset::tests
 
 	TEST_F(SamplerTests, Test)
 	{
-		core::AssetsStorage assetsStorage;
-		assetsStorage.registerAssetClass<Sampler>();
+		core::AssetStorage assetStorage;
+		assetStorage.registerAssetClass<Sampler>();
 
-		bool result = assetsStorage.storeAssets();
+		bool result = assetStorage.storeAssets();
 		ASSERT_TRUE(result);
 
-		auto asset = assetsStorage.getAs<Sampler>("Content/Samplers/linear.sampler");
+		auto asset = assetStorage.getAs<Sampler>("Content/Samplers/linear.sampler");
 		ASSERT_TRUE(asset);
 
-		ASSERT_TRUE(asset->load(assetsStorage.getAssetsFinder().getRootPath()));
+		ASSERT_TRUE(asset->load(assetStorage.getAssetsFinder().getRootPath()));
 		ASSERT_TRUE(asset->isLoaded());
 		ASSERT_FALSE(asset->getTypeString().empty());
 

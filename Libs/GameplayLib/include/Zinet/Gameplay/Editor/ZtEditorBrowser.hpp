@@ -8,7 +8,7 @@
 #include "Zinet/Core/ZtConcepts.hpp"
 #include "Zinet/Core/ZtImgui.hpp"
 
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
 namespace zt::gameplay
 {

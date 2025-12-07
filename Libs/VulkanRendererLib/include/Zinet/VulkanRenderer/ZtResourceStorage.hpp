@@ -6,7 +6,7 @@
 
 #include "Zinet/Core/ZtLogger.hpp"
 
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
 #include "Zinet/Core/ECS/ZtTypeLessVector.hpp"
 

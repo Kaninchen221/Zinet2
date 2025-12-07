@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
 #include <Zinet/Gameplay/Assets/ZtAssetTexture.hpp>
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
@@ -27,15 +27,15 @@ namespace zt::gameplay::asset::tests
 
 	TEST_F(TextureTests, Test)
 	{
-		core::AssetsStorage assetsStorage;
-		assetsStorage.registerAssetClass<Texture>();
+		core::AssetStorage assetStorage;
+		assetStorage.registerAssetClass<Texture>();
 
-		assetsStorage.storeAssets();
+		assetStorage.storeAssets();
 
-		auto asset = assetsStorage.getAs<Texture>("Content/Textures/image.png");
+		auto asset = assetStorage.getAs<Texture>("Content/Textures/image.png");
 		ASSERT_TRUE(asset);
 
-		ASSERT_TRUE(asset->load(assetsStorage.getAssetsFinder().getRootPath()));
+		ASSERT_TRUE(asset->load(assetStorage.getAssetsFinder().getRootPath()));
 		ASSERT_TRUE(asset->isLoaded());
 
 		ASSERT_TRUE(asset->getImage().getData());

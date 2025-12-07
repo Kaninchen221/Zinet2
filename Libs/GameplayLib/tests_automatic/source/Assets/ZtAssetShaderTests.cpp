@@ -4,7 +4,7 @@
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
 #include <gtest/gtest.h>
 
@@ -17,8 +17,8 @@ namespace zt::gameplay::asset::tests
 
 		void SetUp() override
 		{
-			assetsStorage.registerAssetClass<Shader>();
-			bool result = assetsStorage.storeAssets();
+			assetStorage.registerAssetClass<Shader>();
+			bool result = assetStorage.storeAssets();
 			ASSERT_TRUE(result);
 		}
 
@@ -28,14 +28,14 @@ namespace zt::gameplay::asset::tests
 
 		core::AssetHandle<asset::Shader> getShaderAssetHandle()
 		{
-			auto asset = assetsStorage.getAs<Shader>("Content/Shaders/shader.vert");
+			auto asset = assetStorage.getAs<Shader>("Content/Shaders/shader.vert");
 			if (!asset)
 				return {};
 
 			return asset;
 		}
 
-		core::AssetsStorage assetsStorage;
+		core::AssetStorage assetStorage;
 	};
 
 	TEST_F(ShaderTests, Test)

@@ -1,4 +1,4 @@
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 #include "Zinet/Core/ZtFile.hpp"
 #include "Zinet/Core/ZtObjectRefCounter.hpp"
 
@@ -7,7 +7,7 @@
 
 namespace zt::core
 {
-	bool AssetsStorage::storeAssets()
+	bool AssetStorage::storeAssets()
 	{
 		const AssetsFinder::FindAssetsInput input
 		{
@@ -92,7 +92,7 @@ namespace zt::core
 		return result;
 	}
 
-	void AssetsStorage::unloadAssets()
+	void AssetStorage::unloadAssets()
 	{
 		for (auto& assetHandle : assetHandlers)
 		{
@@ -127,7 +127,7 @@ namespace zt::core
 		}
 	}
 
-	AssetsStorage::LoadMinimalAssetResult AssetsStorage::loadAssetMetaData(const fs::path& assetPath) const
+	AssetStorage::LoadMinimalAssetResult AssetStorage::loadAssetMetaData(const fs::path& assetPath) const
 	{
 		File file;
 		file.open(assetPath, FileOpenMode::Read);

@@ -8,7 +8,7 @@
 #include "Zinet/Core/ECS/ZtWorld.hpp"
 #include "Zinet/Core/ECS/ZtSchedule.hpp"
 
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
 
 #include "Zinet/Core/ZtExitReason.hpp"
@@ -66,14 +66,14 @@ namespace zt::gameplay::tests
 
 		void addResources()
 		{
-			AssetsStorage assetsStorage;
-			assetsStorage.registerAssetClass<core::asset::Text>();
-			assetsStorage.registerAssetClass<asset::Texture>();
-			assetsStorage.registerAssetClass<asset::Shader>();
-			assetsStorage.registerAssetClass<asset::Sampler>();
-			ZT_TIME_LOG(assetsStorage.storeAssets());
+			AssetStorage assetStorage;
+			assetStorage.registerAssetClass<core::asset::Text>();
+			assetStorage.registerAssetClass<asset::Texture>();
+			assetStorage.registerAssetClass<asset::Shader>();
+			assetStorage.registerAssetClass<asset::Sampler>();
+			ZT_TIME_LOG(assetStorage.storeAssets());
 
-			world.addResource(assetsStorage);
+			world.addResource(assetStorage);
 		}
 
 		void init()

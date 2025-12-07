@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
 #include <gtest/gtest.h>
 
@@ -16,13 +16,13 @@ namespace zt::core::asset::tests
 
 	TEST_F(TextTests, Test)
 	{
-		AssetsStorage assetsStorage;
-		assetsStorage.registerAssetClass<Text>();
+		AssetStorage assetStorage;
+		assetStorage.registerAssetClass<Text>();
 
-		bool result = assetsStorage.storeAssets();
+		bool result = assetStorage.storeAssets();
 		ASSERT_TRUE(result);
 
-		auto textAsset = assetsStorage.getAs<Text>("Content/placeholder.txt");
+		auto textAsset = assetStorage.getAs<Text>("Content/placeholder.txt");
 		ASSERT_TRUE(textAsset);
 
 		ASSERT_TRUE(textAsset->load(Paths::RootPath()));
