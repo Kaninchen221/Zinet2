@@ -21,7 +21,6 @@ namespace zt::core
 	template<std::derived_from<Asset> AssetT>
 	using ConstAssetHandle = ObjectHandle<AssetT, true, const ObjectRefCounter>;
 
-	// TODO: Rename class name to AssetStorage
 	class AssetStorage : public Object
 	{
 	protected:
