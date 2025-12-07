@@ -17,6 +17,8 @@ namespace zt::gameplay::asset
 	{
 	public:
 
+		using ResourceOptT = std::optional<vulkan_renderer::ShaderModule>;
+
 		Shader() : Text{ { "frag", "vert" } } { autoLoad = false; }
 		Shader(const Shader& other) : Text{other} {}
 		Shader(Shader&& other) noexcept = default;
@@ -37,7 +39,7 @@ namespace zt::gameplay::asset
 
 		auto& getCompileResult() const { return result; }
 
-		std::optional<vulkan_renderer::ShaderModule> createResource(vulkan_renderer::RendererContext& rendererContext);
+		ResourceOptT createResource(vulkan_renderer::RendererContext& rendererContext);
 
 	protected:
 

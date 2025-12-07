@@ -7,11 +7,17 @@
 #include "Zinet/Core/ZtPaths.hpp"
 #include "Zinet/Core/ZtImage.hpp"
 
+#include "Zinet/VulkanRenderer/ZtRendererContext.hpp"
+#include "Zinet/VulkanRenderer/ZtTexture.hpp"
+
 namespace zt::gameplay::asset
 {
 	class ZINET_GAMEPLAY_API Texture : public core::Asset
 	{
 	public:
+
+		using ResourceOptT = std::optional<vulkan_renderer::Texture>;
+
 		Texture(const Extensions& extensions = { "png" }) : core::Asset{ extensions } {}
 		Texture(const Texture& other) : core::Asset(other) {}
 		Texture(Texture&& other) noexcept = default;
@@ -30,7 +36,7 @@ namespace zt::gameplay::asset
 
 		auto& getImage() const noexcept { return image; }
 
-		// TODO: Impl createResource like in the asset::Shader
+		ResourceOptT createResource(vulkan_renderer::RendererContext& rendererContext);
 
 	protected:
 

@@ -52,7 +52,7 @@ namespace zt::gameplay::asset
 		ImGui::Text(text);
 	}
 
-	std::optional<vulkan_renderer::ShaderModule> Shader::createResource(vulkan_renderer::RendererContext& rendererContext)
+	Shader::ResourceOptT Shader::createResource(vulkan_renderer::RendererContext& rendererContext)
 	{
 		auto& device = rendererContext.getDevice();
 

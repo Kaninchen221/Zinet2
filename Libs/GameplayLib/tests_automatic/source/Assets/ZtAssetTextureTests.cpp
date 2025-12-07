@@ -17,31 +17,70 @@ namespace zt::gameplay::asset::tests
 
 		void SetUp() override
 		{
+			assetStorage.registerAssetClass<Texture>();
+			bool result = assetStorage.storeAssets();
+			ASSERT_TRUE(result);
 		}
 
 		void TearDown() override
 		{
 		}
 
+		core::AssetHandle<asset::Texture> getShaderAssetHandle()
+		{
+			auto asset = assetStorage.getAs<Texture>("Content/Textures/default_texture.png");
+			if (!asset)
+				return {};
+
+			return asset;
+		}
+
+		core::AssetStorage assetStorage;
 	};
 
 	TEST_F(TextureTests, Test)
 	{
-		core::AssetStorage assetStorage;
-		assetStorage.registerAssetClass<Texture>();
+		auto assetHandle = getShaderAssetHandle();
+		ASSERT_TRUE(assetHandle);
 
-		assetStorage.storeAssets();
+		ASSERT_TRUE(assetHandle->load(core::Paths::RootPath()));
+		ASSERT_TRUE(assetHandle->isLoaded());
 
-		auto asset = assetStorage.getAs<Texture>("Content/Textures/image.png");
-		ASSERT_TRUE(asset);
+		ASSERT_TRUE(assetHandle->getImage().getData());
 
-		ASSERT_TRUE(asset->load(assetStorage.getAssetsFinder().getRootPath()));
-		ASSERT_TRUE(asset->isLoaded());
+		assetHandle->unload();
+		ASSERT_FALSE(assetHandle->isLoaded());
+	}
 
-		ASSERT_TRUE(asset->getImage().getData());
+	TEST_F(TextureTests, CreateResourceTest)
+	{
+		auto assetHandle = getShaderAssetHandle();
+		ASSERT_TRUE(assetHandle);
+		ASSERT_TRUE(assetHandle->load(core::Paths::RootPath()));
 
-		asset->unload();
-		ASSERT_FALSE(asset->isLoaded());
+		wd::GLFW::Init();
 
+		wd::Window window;
+		ASSERT_TRUE(window.create(2, 2));
+
+		vulkan_renderer::RendererContext rendererContext;
+		ASSERT_TRUE(rendererContext.create(window));
+		
+		std::optional<vulkan_renderer::Texture> texture = assetHandle->createResource(rendererContext);
+		//EXPECT_TRUE(texture); // TODO: Finish this test
+
+		if (texture)
+		{
+			auto& device = rendererContext.getDevice();
+			auto& vma = rendererContext.getVMA();
+
+			texture->destroy(device, vma);
+		}
+
+		rendererContext.destroy();
+
+		window.destroyWindow();
+
+		wd::GLFW::Deinit();
 	}
 }

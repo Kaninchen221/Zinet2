@@ -48,5 +48,9 @@ namespace zt::gameplay::asset
 		loaded = false;
 	}
 
+	Texture::ResourceOptT Texture::createResource(vulkan_renderer::RendererContext&)
+	{
+		return {};
+	}
 }
 
