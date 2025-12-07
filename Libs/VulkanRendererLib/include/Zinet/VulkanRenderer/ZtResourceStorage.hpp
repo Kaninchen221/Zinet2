@@ -72,7 +72,7 @@ namespace zt::vulkan_renderer
 		
 		AssetT& asset = *assetHandle.get();
 
-		constexpr bool hasCreateFunc = requires { { asset.createResource(RendererContext{}) } -> std::same_as<ResourceT>; };
+		constexpr bool hasCreateFunc = requires { { asset.createResource(RendererContext{}) } -> std::same_as<std::optional<ResourceT>>; };
 
 		static_assert(hasCreateFunc,
 			"AssetT must have a createResource method that will return an object of class ResourceT from the asset"
@@ -94,8 +94,16 @@ namespace zt::vulkan_renderer
 		auto newRequest = [self = this, assetHandle = assetHandle]
 		(const RendererContext& rendererContext) -> bool
 		{
+			if (!assetHandle)
+				return false;
+
+			if (!assetHandle->isLoaded())
+				return false;
+
 			using ResourceHandleT = ResourceHandle<ResourceT, AssetT>;
 			auto resource = assetHandle->createResource(rendererContext);
+			if (!resource)
+				return false;
 
 			auto resourceHandle = self->findResourceHandle<ResourceT, AssetT>(assetHandle);
 			resourceHandle->resource = std::move(resource);

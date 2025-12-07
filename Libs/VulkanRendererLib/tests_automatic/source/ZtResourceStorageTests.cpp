@@ -41,7 +41,12 @@ namespace zt::vulkan_renderer::tests
 		{
 		public:
 
-			Resource createResource(const RendererContext&) 
+			Asset()
+			{
+				loaded = true;
+			}
+
+			std::optional<Resource> createResource(const RendererContext&) 
 			{ 
 				Resource resource{ expectedValue };
 				return resource;
