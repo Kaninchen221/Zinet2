@@ -8,7 +8,7 @@
 #include <limits>
 #include <vector>
 
-namespace zt::core::ecs
+namespace zt::core
 {
 	constexpr inline static size_t InvalidIndex = std::numeric_limits<size_t>::max();
 

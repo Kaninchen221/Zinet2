@@ -2,11 +2,11 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtTypes.hpp"
+#include "Zinet/Core/ZtDebug.hpp"
 
 #include "Zinet/Core/ECS/ZtEntity.hpp"
-#include "Zinet/Core/ECS/ZtTypes.hpp"
 #include "Zinet/Core/ECS/ZtArchetype.hpp"
-#include "Zinet/Core/ZtDebug.hpp"
 
 #include <utility>
 

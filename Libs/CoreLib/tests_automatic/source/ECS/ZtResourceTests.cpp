@@ -2,8 +2,9 @@
 
 #include <gtest/gtest.h>
 
+#include "Zinet/Core/ZtTypeLessVector.hpp"
+
 #include "Zinet/Core/ECS/ZtResource.hpp"
-#include "Zinet/Core/ECS/ZtTypeLessVector.hpp"
 
 #include "Zinet/Core/Tests/ZtTestTypes.hpp"
 

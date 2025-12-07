@@ -19,7 +19,7 @@ namespace zt::core::ecs
 	class World;
 }
 
-namespace zt::core::ecs::tests
+namespace zt::core::tests
 {
 	struct Sprite
 	{
@@ -63,14 +63,14 @@ namespace zt::core::ecs::tests
 
 		inline void doSomething() {}
 
-		inline void entryPoint([[maybe_unused]] World& world) { doSomething();}
+		inline void entryPoint([[maybe_unused]] ecs::World& world) { doSomething();}
 	}
 
 	namespace TestSystemIncrementer
 	{
 		struct Label {};
 
-		void entryPoint(Query<Counter> counters);
+		void entryPoint(ecs::Query<Counter> counters);
 	}
 
 	// Example of a resource class
@@ -169,31 +169,31 @@ namespace zt::core::ecs::tests
 	class ReadWritePositionResSystemTest
 	{
 	public:
-		static void EntryPoint(Resource<Position>) {}
+		static void EntryPoint(ecs::Resource<Position>) {}
 	};
 
 	class ReadOnlyPositionResSystemTest
 	{
 	public:
-		static void EntryPoint(ConstResource<Position>) {}
+		static void EntryPoint(ecs::ConstResource<Position>) {}
 	};
 
 	class ReadWritePositionVelocitySpriteComponentsSystemTest
 	{
 	public:
-		static void EntryPoint(Query<Position, Velocity, Sprite>) {}
+		static void EntryPoint(ecs::Query<Position, Velocity, Sprite>) {}
 	};
 
 	class ReadOnlyPositionVelocitySpriteComponentsSystemTest
 	{
 	public:
-		static void EntryPoint(ConstQuery<Position, Velocity, Sprite>) {}
+		static void EntryPoint(ecs::ConstQuery<Position, Velocity, Sprite>) {}
 	};
 
 	class AddResourceSystemTest
 	{
 	public:
-		static void AddPosition(WorldCommands worldCommands) 
+		static void AddPosition(ecs::WorldCommands worldCommands)
 		{
 			worldCommands.addResource(Position{});
 		}
@@ -202,7 +202,7 @@ namespace zt::core::ecs::tests
 	class ExpectResourceSystemTest
 	{
 	public:
-		static void ExpectPosition(ConstResource<Position> positionRes, WorldCommands worldCommands)
+		static void ExpectPosition(ecs::ConstResource<Position> positionRes, ecs::WorldCommands worldCommands)
 		{ 
 			if (!positionRes)
 			{

@@ -1,15 +1,14 @@
 #pragma once
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
+#include "Zinet/Core/ZtTypes.hpp"
+#include "Zinet/Core/ZtDebug.hpp"
 
 #include "Zinet/Core/ECS/ZtEntity.hpp"
-#include "Zinet/Core/ECS/ZtTypes.hpp"
-#include "Zinet/Core/ZtDebug.hpp"
 
 #include <algorithm>
 
-// TODO: Move the type TypeLessVector to zt::core namespace
-namespace zt::core::ecs
+namespace zt::core
 {
 	class TypeLessVector;
 
@@ -91,6 +90,8 @@ namespace zt::core::ecs
 		auto get(this auto& self, size_t index);
 
 		// TODO: Test it
+		// Get pointer to the last element
+		// The returned pointer can point to removed element
 		auto getPtr(size_t index) noexcept { return buffer.data() + (index * typeSize); }
 
 		bool isValidIndex(size_t index) const noexcept;
@@ -139,7 +140,7 @@ namespace zt::core::ecs
 	};
 }
 
-namespace zt::core::ecs
+namespace zt::core
 {
 	template<class T>
 	TypeLessVector TypeLessVector::Create()

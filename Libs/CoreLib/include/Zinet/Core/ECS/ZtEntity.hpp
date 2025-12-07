@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
-
-#include "Zinet/Core/ECS/ZtTypes.hpp"
+#include "Zinet/Core/ZtTypes.hpp"
 
 namespace zt::core::ecs
 {

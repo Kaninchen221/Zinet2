@@ -2,13 +2,16 @@
 
 #include <gtest/gtest.h>
 
+#include "Zinet/Core/ZtTypeLessVector.hpp"
+
 #include "Zinet/Core/ECS/ZtQuery.hpp"
-#include "Zinet/Core/ECS/ZtTypeLessVector.hpp"
 
 #include "Zinet/Core/Tests/ZtTestTypes.hpp"
 
 namespace zt::core::ecs::tests
 {
+	using namespace zt::core::tests;
+
 	class ECSQueryTests : public ::testing::Test
 	{
 	protected:

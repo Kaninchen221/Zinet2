@@ -2,8 +2,8 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtTypes.hpp"
 
-#include "Zinet/Core/ECS/ZtTypes.hpp"
 #include "Zinet/Core/ECS/ZtWorld.hpp"
 
 #include <vector>

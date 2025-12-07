@@ -8,6 +8,8 @@
 
 namespace zt::core::ecs::tests
 {
+	using namespace zt::core::tests;
+
 	class ECSWorldCommandsTests : public ::testing::Test
 	{
 	protected:

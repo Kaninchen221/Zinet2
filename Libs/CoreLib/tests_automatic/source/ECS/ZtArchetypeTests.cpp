@@ -8,6 +8,8 @@
 
 namespace zt::core::ecs::tests
 {
+	using namespace zt::core::tests;
+
 	class ECSArchetypeTests : public ::testing::Test
 	{
 	protected:

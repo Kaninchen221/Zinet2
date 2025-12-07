@@ -8,7 +8,7 @@
 
 #include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
-#include "Zinet/Core/ECS/ZtTypeLessVector.hpp"
+#include "Zinet/Core/ZtTypeLessVector.hpp"
 
 #include <vulkan/vulkan.h>
 
@@ -31,7 +31,7 @@ namespace zt::vulkan_renderer
 
 		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::ResourceStorage");
 
-		using Resources = std::vector<core::ecs::TypeLessVector>;
+		using Resources = std::vector<core::TypeLessVector>;
 		using Requests = std::vector<std::function<bool(const RendererContext&)>>;
 
 	public:
@@ -147,7 +147,7 @@ namespace zt::vulkan_renderer
 			}
 		}
 
-		auto& handles = resources.emplace_back(core::ecs::TypeLessVector::Create<ResourceHandleT>());
+		auto& handles = resources.emplace_back(core::TypeLessVector::Create<ResourceHandleT>());
 		return handles.add(ResourceHandleT{ .assetHandle = assetHandle });
 	}
 }

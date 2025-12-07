@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
+#include "Zinet/Core/ZtTypes.hpp"
+#include "Zinet/Core/ZtTypeLessVector.hpp"
 
 #include "Zinet/Core/ECS/ZtEntity.hpp"
-#include "Zinet/Core/ECS/ZtTypes.hpp"
-#include "Zinet/Core/ECS/ZtTypeLessVector.hpp"
 
 #include <algorithm>
 #include <ranges>

@@ -1,6 +1,6 @@
-#include "Zinet/Core/ECS/ZtTypeLessVector.hpp"
+#include "Zinet/Core/ZtTypeLessVector.hpp"
 
-namespace zt::core::ecs
+namespace zt::core
 {
 	bool TypeLessVectorIterator::operator==(const TypeLessVectorIterator& other) const noexcept
 	{

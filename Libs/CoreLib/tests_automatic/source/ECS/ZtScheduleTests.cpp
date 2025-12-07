@@ -3,15 +3,17 @@
 #include <gtest/gtest.h>
 
 #include "Zinet/Core/ECS/ZtSchedule.hpp"
-#include "Zinet/Core/ECS/ZtTypes.hpp"
 #include "Zinet/Core/ECS/ZtQuery.hpp"
 
 #include "Zinet/Core/Tests/ZtTestTypes.hpp"
 
+#include "Zinet/Core/ZtTypes.hpp"
 #include "Zinet/Core/ZtExitReason.hpp"
 
 namespace zt::core::ecs::tests
 {
+	using namespace zt::core::tests;
+
 	class ECSScheduleTests : public ::testing::Test
 	{
 

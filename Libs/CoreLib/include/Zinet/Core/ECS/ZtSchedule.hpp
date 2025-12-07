@@ -5,8 +5,8 @@
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtFunctionTraits.hpp"
 #include "Zinet/Core/ZtTime.hpp"
+#include "Zinet/Core/ZtTypes.hpp"
 
-#include "Zinet/Core/ECS/ZtTypes.hpp"
 #include "Zinet/Core/ECS/ZtWorld.hpp"
 
 #include <vector>

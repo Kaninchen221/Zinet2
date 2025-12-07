@@ -9,6 +9,8 @@
 
 namespace zt::core::ecs::tests
 {
+	using namespace zt::core::tests;
+
 	class ECSWorldTests : public ::testing::Test
 	{
 	protected:

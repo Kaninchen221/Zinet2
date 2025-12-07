@@ -3,23 +3,25 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "Zinet/Core/ECS/ZtTypeLessVector.hpp"
-#include "Zinet/Core/ECS/ZtTypes.hpp"
+#include "Zinet/Core/ZtTypeLessVector.hpp"
+#include "Zinet/Core/ZtTypes.hpp"
 
 #include "Zinet/Core/Tests/ZtTestTypes.hpp"
 
 #include <ranges>
 #include <numeric>
 
-namespace zt::core::ecs::tests
+namespace zt::core::tests
 {
-	class ECSTypeLessVectorTests : public ::testing::Test
+	using namespace zt::core::ecs;
+
+	class TypeLessVectorTests : public ::testing::Test
 	{
 	protected:
 
 	};
 
-	TEST_F(ECSTypeLessVectorTests, CreateTest)
+	TEST_F(TypeLessVectorTests, CreateTest)
 	{
 		const Position expectedPosition{ 1.0f, 2.0f };
 		TypeLessVector vector = TypeLessVector::Create<Position>();
@@ -28,7 +30,7 @@ namespace zt::core::ecs::tests
 		ASSERT_EQ(vector.getObjectsCount(), 0);
 	}
 
-	TEST_F(ECSTypeLessVectorTests, GetFromInvalidIndexTest)
+	TEST_F(TypeLessVectorTests, GetFromInvalidIndexTest)
 	{
 		TypeLessVector vector = TypeLessVector::Create<Position>();
 		auto sprite = vector.get<Sprite>(0);
@@ -36,7 +38,7 @@ namespace zt::core::ecs::tests
 		ASSERT_FALSE(sprite);
 	}
 
-	TEST_F(ECSTypeLessVectorTests, IsValidIndexTest)
+	TEST_F(TypeLessVectorTests, IsValidIndexTest)
 	{
 		TypeLessVector vector = TypeLessVector::Create<Position>();
 		vector.add(Position{});
@@ -52,7 +54,7 @@ namespace zt::core::ecs::tests
 		ASSERT_FALSE(vector.isValidIndex(3)); // Out of bounds index
 	}
 
-	TEST_F(ECSTypeLessVectorTests, GetFirstValidIndexTest)
+	TEST_F(TypeLessVectorTests, GetFirstValidIndexTest)
 	{
 		TypeLessVector vector = TypeLessVector::Create<Position>();
 
@@ -75,7 +77,7 @@ namespace zt::core::ecs::tests
 		ASSERT_EQ(vector.getFirstValidIndex(), InvalidIndex);
 	}
 
-	TEST_F(ECSTypeLessVectorTests, AddTest)
+	TEST_F(TypeLessVectorTests, AddTest)
 	{
 		TypeLessVector vector = TypeLessVector::Create<Sprite>();
 
@@ -94,7 +96,7 @@ namespace zt::core::ecs::tests
 		ASSERT_EQ(actualSecondSprite->id, expectedSecondSprite.id);
 	}
 
-	TEST_F(ECSTypeLessVectorTests, GetVectorCountTest)
+	TEST_F(TypeLessVectorTests, GetVectorCountTest)
 	{
 		TypeLessVector vector = TypeLessVector::Create<Position>();
 		vector.add(Position{});
@@ -106,7 +108,7 @@ namespace zt::core::ecs::tests
 		ASSERT_EQ(vector.getObjectsCount(), 2);
 	}
 
-	TEST_F(ECSTypeLessVectorTests, GetVectorCapacityTest)
+	TEST_F(TypeLessVectorTests, GetVectorCapacityTest)
 	{
 		TypeLessVector vector = TypeLessVector::Create<Position>();
 		vector.add(Position{});
@@ -118,7 +120,7 @@ namespace zt::core::ecs::tests
 		ASSERT_EQ(vector.getObjectsCapacity(), 3);
 	}
 
-	TEST_F(ECSTypeLessVectorTests, RemoveTest)
+	TEST_F(TypeLessVectorTests, RemoveTest)
 	{
 		TypeLessVector vector = TypeLessVector::Create<Sprite>();
 
@@ -142,7 +144,7 @@ namespace zt::core::ecs::tests
 		}
 	}
 
-	TEST_F(ECSTypeLessVectorTests, HasTypeTest)
+	TEST_F(TypeLessVectorTests, HasTypeTest)
 	{
 		TypeLessVector vector = TypeLessVector::Create<Sprite>();
 
@@ -150,7 +152,7 @@ namespace zt::core::ecs::tests
 		ASSERT_FALSE(vector.hasType<Position>());
 	}
 
-	TEST_F(ECSTypeLessVectorTests, AddTypeWithComplexDataLikeSTDVectorTest)
+	TEST_F(TypeLessVectorTests, AddTypeWithComplexDataLikeSTDVectorTest)
 	{
 		ASSERT_EQ(NotTrivialType::GetObjectsCounter(), 0);
 
@@ -202,7 +204,7 @@ namespace zt::core::ecs::tests
 		ASSERT_EQ(NotTrivialType::GetObjectsCounter(), 0);
 	}
 
-	TEST_F(ECSTypeLessVectorTests, IteratorsTest)
+	TEST_F(TypeLessVectorTests, IteratorsTest)
 	{
 		TypeLessVector vector = TypeLessVector::Create<Sprite>();
 
