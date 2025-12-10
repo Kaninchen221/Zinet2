@@ -92,7 +92,8 @@ namespace zt::vulkan_renderer
 		auto& getRenderPass() const noexcept { return renderPass; }
 		auto& getDescriptorPool() noexcept { return descriptorPool; }
 		auto& getDescriptorPool() const noexcept { return descriptorPool; }
-		
+		auto& getTransferCommandBuffer() const noexcept { return transferCommandBuffer; }
+
 	protected:
 
 		Instance instance{ nullptr };
@@ -104,6 +105,8 @@ namespace zt::vulkan_renderer
 		SwapChain swapChain{ nullptr };
 		Queue queue{ nullptr };
 		CommandPool commandPool{ nullptr };
+
+		CommandBuffer transferCommandBuffer{ nullptr };
 
 		// TODO: RenderPass should be passed by the user
 		RenderPass renderPass{ nullptr };

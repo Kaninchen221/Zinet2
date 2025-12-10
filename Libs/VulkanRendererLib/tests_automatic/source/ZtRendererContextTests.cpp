@@ -46,5 +46,6 @@ namespace zt::vulkan_renderer::tests
 
 	TEST_F(RendererContextTests, PassTest)
 	{
+		EXPECT_TRUE(rendererContext.getTransferCommandBuffer());
 	}
 }
