@@ -25,14 +25,21 @@ namespace zt::vulkan_renderer
 		std::optional<ResourceT> resource;
 	};
 
-	// TODO: Handle destroying resources
+	struct ResourceDecorator
+	{
+		using DestroyFuncT = std::function<void(void* handle, const RendererContext& rendererContext)>;
+
+		core::TypeLessVector handles;
+		DestroyFuncT destroyFunc;
+	};
+
 	class ZINET_VULKAN_RENDERER_API ResourceStorage
 	{
 	protected:
 
 		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::ResourceStorage");
 
-		using Resources = std::vector<core::TypeLessVector>;
+		using Resources = std::vector<ResourceDecorator>;
 		using Requests = std::vector<std::function<bool(const RendererContext&)>>;
 
 	public:
@@ -50,13 +57,15 @@ namespace zt::vulkan_renderer
 
 		bool createResources(const RendererContext& rendererContext);
 
+		void clear(const RendererContext& rendererContext);
+
 	protected:
 
 		template<class ResourceT, class AssetT>
 		ResourceHandle<ResourceT, AssetT>* findResourceHandle(core::ConstAssetHandle<AssetT> assetHandle) noexcept;
 
 		template<class ResourceT, class AssetT>
-		size_t addResourceHandle(core::ConstAssetHandle<AssetT> assetHandle) noexcept;
+		void addResourceHandle(core::ConstAssetHandle<AssetT> assetHandle) noexcept;
 
 		Resources resources;
 		Requests requests;
@@ -78,6 +87,11 @@ namespace zt::vulkan_renderer
 		static_assert(hasCreateFunc,
 			"AssetT must have a createResource method that will return an object of class ResourceT from the asset"
 			" and takes RendererContext& as a param");
+
+		constexpr bool hasDestroyFunc = requires (ResourceT* resource){ { resource->destroy(RendererContext{}) }; };
+
+		static_assert(hasDestroyFunc,
+			"ResourceT must have a destroy method that takes RendererContext& as a param");
 
 		auto resourceHandle = findResourceHandle<ResourceT, AssetT>(assetHandle);
 		if (resourceHandle && resourceHandle->resource.has_value())
@@ -107,6 +121,12 @@ namespace zt::vulkan_renderer
 				return false;
 
 			auto resourceHandle = self->findResourceHandle<ResourceT, AssetT>(assetHandle);
+			if (!resourceHandle)
+			{
+				Logger->critical("Couldn't find a resource handle but it should already exists");
+				return false;
+			}
+
 			resourceHandle->resource = std::move(resource);
 
 			return true;
@@ -120,8 +140,10 @@ namespace zt::vulkan_renderer
 	ResourceHandle<ResourceT, AssetT>* vulkan_renderer::ResourceStorage::findResourceHandle(core::ConstAssetHandle<AssetT> assetHandle) noexcept
 	{
 		using ResourceHandleT = ResourceHandle<ResourceT, AssetT>;
-		for (auto& handles : resources)
+		for (auto& resourceDecorator : resources)
 		{
+			auto& handles = resourceDecorator.handles;
+
 			if (handles.hasType<ResourceHandleT>())
 			{
 				for (auto handleRawPtr : handles)
@@ -137,18 +159,32 @@ namespace zt::vulkan_renderer
 	}
 
 	template<class ResourceT, class AssetT>
-	size_t ResourceStorage::addResourceHandle(core::ConstAssetHandle<AssetT> assetHandle) noexcept
+	void ResourceStorage::addResourceHandle(core::ConstAssetHandle<AssetT> assetHandle) noexcept
 	{
 		using ResourceHandleT = ResourceHandle<ResourceT, AssetT>;
-		for (auto& handles : resources)
+		for (auto& resourceDecorator : resources)
 		{
+			auto& handles = resourceDecorator.handles;
+
 			if (handles.hasType<ResourceHandleT>())
 			{
-				return handles.add(ResourceHandleT{ .assetHandle = assetHandle });
+				handles.add(ResourceHandleT{ .assetHandle = assetHandle });
 			}
 		}
 
-		auto& handles = resources.emplace_back(core::TypeLessVector::Create<ResourceHandleT>());
-		return handles.add(ResourceHandleT{ .assetHandle = assetHandle });
+		auto& resourceDecorator = resources.emplace_back(
+			ResourceDecorator{
+				.handles = core::TypeLessVector::Create<ResourceHandleT>(),
+				.destroyFunc = [](void* handlePtr, const RendererContext& rendererContext)
+				{
+					auto* resourceHandle = reinterpret_cast<ResourceHandleT*>(handlePtr);
+					if (resourceHandle->resource.has_value())
+					{
+						resourceHandle->resource->destroy(rendererContext);
+					}
+				}
+			}
+		);
+		resourceDecorator.handles.add(ResourceHandleT{ .assetHandle = assetHandle });
 	}
 }

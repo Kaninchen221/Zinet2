@@ -32,9 +32,39 @@ namespace zt::vulkan_renderer::tests
 
 		class Resource 
 		{
+			inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::tests::ResourceStorageTests::Resource");
+
 		public:
 
-			int value{};
+			Resource(int value) : value{ value } {}
+			Resource(const Resource& other) = delete;
+			Resource(Resource&& other) noexcept = default;
+			~Resource() 
+			{ 
+				if (errorCallback)
+					errorCallback(); 
+			}
+
+			Resource& operator = (const Resource& other) = delete;
+			Resource& operator = (Resource&& other) noexcept = default;
+
+			auto getValue() const noexcept { return value; }
+
+			// Typical destroy method
+			void destroy(const VMA&) noexcept { errorCallback = {}; }
+
+			// Destroy method for ResourceStorage
+			void destroy(const RendererContext& rendererContext) noexcept { destroy(rendererContext.getVMA()); }
+
+		private:
+
+			int value = 0;
+
+			std::function<void()> errorCallback = []()
+			{
+				Logger->error("You didn't call destroy for Resource class object");
+			};
+
 		};
 
 		class Asset : public core::Asset
@@ -84,6 +114,10 @@ namespace zt::vulkan_renderer::tests
 
 		resource = resourceStorage.request<Resource, Asset>(assetHandle);
 		ASSERT_TRUE(resource);
-		ASSERT_EQ(resource->value, expectedValue);
+		ASSERT_EQ(resource->getValue(), expectedValue);
+
+		// Resource storage must be cleaned before destructor call to avoid errors related
+		// to not destroyed vulkan resources
+		resourceStorage.clear(constRendererContext);
 	}
 }
