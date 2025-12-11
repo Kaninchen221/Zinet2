@@ -80,6 +80,9 @@ namespace zt::core
 		template<class T>
 		static TypeLessVector Create();
 
+		// TODO: Test it
+		void clear();
+
 		// Return the index of added component
 		template<class T>
 		size_t add(T&& object);
@@ -110,8 +113,8 @@ namespace zt::core
 
 		auto getTypeID() const noexcept { return typeID; }
 
-		TypeLessVectorIterator begin() noexcept { return TypeLessVectorIterator{ this, getFirstValidIndex() }; }
-		TypeLessVectorIterator end() noexcept { return TypeLessVectorIterator{ this, getLastIndex() + 1 }; }
+		TypeLessVectorIterator begin() noexcept;
+		TypeLessVectorIterator end() noexcept;
 
 	private:
 

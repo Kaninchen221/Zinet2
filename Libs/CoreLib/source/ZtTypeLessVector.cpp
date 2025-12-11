@@ -30,6 +30,11 @@ namespace zt::core
 
 	TypeLessVector::~TypeLessVector() noexcept
 	{
+		clear();
+	}
+
+	void TypeLessVector::clear()
+	{
 		if (isTriviallyDestructible)
 			return;
 
@@ -41,6 +46,8 @@ namespace zt::core
 			const size_t index = i * typeSize;
 			destructor.invoke(&buffer[index]);
 		}
+
+		objectsCount = 0;
 	}
 
 	bool TypeLessVector::remove(size_t index)
@@ -90,6 +97,20 @@ namespace zt::core
 		}
 
 		return InvalidIndex;
+	}
+
+	TypeLessVectorIterator TypeLessVector::begin() noexcept
+	{
+		// TODO: Write isEmpty method
+		if (getObjectsCount() == 0)
+			return end();
+
+		return TypeLessVectorIterator{ this, getFirstValidIndex() };
+	}
+
+	TypeLessVectorIterator TypeLessVector::end() noexcept
+	{
+		return TypeLessVectorIterator{ this, getLastIndex() + 1 };
 	}
 
 }

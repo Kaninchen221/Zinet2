@@ -235,4 +235,13 @@ namespace zt::core::tests
 
 		// TODO: Add const iterators (See ecs::Query)
 	}
+
+	TEST_F(TypeLessVectorTests, ForRangeOverEmptyVectorTest)
+	{
+		TypeLessVector vector = TypeLessVector::Create<Sprite>();
+		for ([[maybe_unused]] auto rawPtr : vector)
+		{
+			ASSERT_TRUE(false); // "We shouldn't enter this block";
+		}
+	}
 }
