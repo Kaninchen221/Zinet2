@@ -25,6 +25,7 @@ namespace zt::vulkan_renderer
 		std::optional<ResourceT> resource;
 	};
 
+	// TODO: Handle destroying resources
 	class ZINET_VULKAN_RENDERER_API ResourceStorage
 	{
 	protected:

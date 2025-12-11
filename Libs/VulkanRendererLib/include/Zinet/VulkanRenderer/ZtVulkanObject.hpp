@@ -45,6 +45,8 @@ namespace zt::vulkan_renderer
 
 		operator bool() const noexcept { return isValid(); }
 
+		// TODO: Add a release method that will release the handle without destroying the object?
+
 	protected:
 
 		HandleType objectHandle = nullptr;

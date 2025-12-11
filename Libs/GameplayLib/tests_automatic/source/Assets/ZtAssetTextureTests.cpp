@@ -67,7 +67,7 @@ namespace zt::gameplay::asset::tests
 		ASSERT_TRUE(rendererContext.create(window));
 		
 		std::optional<vulkan_renderer::Texture> texture = assetHandle->createResource(rendererContext);
-		//EXPECT_TRUE(texture); // TODO: Finish this test
+		EXPECT_TRUE(texture);
 
 		if (texture)
 		{

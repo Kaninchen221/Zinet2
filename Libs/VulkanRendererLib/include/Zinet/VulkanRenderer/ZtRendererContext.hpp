@@ -23,6 +23,7 @@
 #include "Zinet/VulkanRenderer/ZtDescriptorSets.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtFunction.hpp"
 
 #include <vulkan/vulkan.h>
 
@@ -93,6 +94,37 @@ namespace zt::vulkan_renderer
 		auto& getDescriptorPool() noexcept { return descriptorPool; }
 		auto& getDescriptorPool() const noexcept { return descriptorPool; }
 		auto& getTransferCommandBuffer() const noexcept { return transferCommandBuffer; }
+
+		using TransferCommands = std::function<void(const CommandBuffer&)>;
+
+		void enqueueTransferCommands(TransferCommands transferCommands)
+		{
+			// TODO: Refactor it
+			// We need to store the enqueued commands and allow the renderer to execute them when needed
+
+			if (!transferCommandBuffer.begin())
+				return;
+
+			transferCommands(transferCommandBuffer);
+
+			if (!transferCommandBuffer.end())
+				return;
+
+			const std::array vkCommandBuffers = { transferCommandBuffer.get() };
+
+			auto submitInfo = CommandBuffer::GetDefaultSubmitInfo();
+			submitInfo.commandBufferCount = 1;
+			submitInfo.pCommandBuffers = vkCommandBuffers.data();
+
+			if (!queue.submit(std::array{ submitInfo }))
+				return;
+
+			if (!queue.waitIdle())
+				return;
+
+			if (!device.waitIdle())
+				return;
+		}
 
 	protected:
 

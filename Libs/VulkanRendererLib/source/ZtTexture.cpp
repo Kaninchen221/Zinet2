@@ -62,13 +62,14 @@ namespace zt::vulkan_renderer
 	{
 		imageView.destroy(device);
 		image.destroy(vma);
+		buffer.destroy(vma);
 	}
 
-	void Texture::fillWithImageBuffer(const FillWithImageBufferInput& input) const noexcept
+	void Texture::fillWithImageBuffer(const FillWithImageBufferInput& input) noexcept
 	{
 		const auto& imageOffset = input.imageOffset;
 		const auto& imageExtent = input.imageExtent;
-		const auto& buffer = input.buffer;
+		buffer = std::move(input.buffer);
 		const auto& commandBuffer = input.commandBuffer;
 
 		{
