@@ -57,6 +57,8 @@ namespace zt::vulkan_renderer
 
 		bool createResources(const RendererContext& rendererContext);
 
+		// TODO: Add method to destroy specific resource via asset handle
+
 		void clear(const RendererContext& rendererContext);
 
 	protected:
