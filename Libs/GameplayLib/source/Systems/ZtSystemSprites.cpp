@@ -134,6 +134,9 @@ namespace zt::gameplay
 			{
 				bufferSize += components->getObjectsCapacity();
 			}
+			if (bufferSize <= 0)
+				return Buffer{ nullptr };
+
 			bufferSize *= sizeof(Transform);
 
 			VkBufferCreateInfo createInfo
