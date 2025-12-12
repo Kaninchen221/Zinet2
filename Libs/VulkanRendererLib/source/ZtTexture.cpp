@@ -3,6 +3,7 @@
 #include "Zinet/VulkanRenderer/ZtVMA.hpp"
 #include "Zinet/VulkanRenderer/ZtCommandBuffer.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtRendererContext.hpp"
 
 namespace zt::vulkan_renderer
 {
@@ -63,6 +64,11 @@ namespace zt::vulkan_renderer
 		imageView.destroy(device);
 		image.destroy(vma);
 		buffer.destroy(vma);
+	}
+
+	void Texture::destroy(const RendererContext& rendererContext) noexcept
+	{
+		destroy(rendererContext.getDevice(), rendererContext.getVMA());
 	}
 
 	void Texture::fillWithImageBuffer(const FillWithImageBufferInput& input) noexcept

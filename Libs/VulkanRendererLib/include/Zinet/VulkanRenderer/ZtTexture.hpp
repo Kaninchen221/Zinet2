@@ -20,6 +20,7 @@ namespace zt::vulkan_renderer
 	class VMA;
 	class Buffer;
 	class CommandBuffer;
+	class RendererContext;
 
 	struct FillWithImageBufferInput
 	{
@@ -48,6 +49,8 @@ namespace zt::vulkan_renderer
 		bool create(const Device& device, const VMA& vma, const Vector2ui& size);
 
 		void destroy(const Device& device, const VMA& vma) noexcept;
+
+		void destroy(const RendererContext& rendererContext) noexcept;
 
 		bool isValid() const noexcept;
 

@@ -1,5 +1,6 @@
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
+#include "Zinet/VulkanRenderer/ZtRendererContext.hpp"
 
 namespace zt::vulkan_renderer
 {
@@ -53,6 +54,11 @@ namespace zt::vulkan_renderer
 			vkDestroyShaderModule(device.get(), objectHandle, nullptr);
 			objectHandle = nullptr;
 		}
+	}
+
+	void ShaderModule::destroy(const RendererContext& rendererContext) noexcept
+	{
+		destroy(rendererContext.getDevice());
 	}
 
 }
