@@ -14,7 +14,7 @@
 
 #include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
-#include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
+#include "Zinet/VulkanRenderer/ZtResourceStorage.hpp"
 
 namespace zt::gameplay::system::tests
 {
@@ -36,12 +36,13 @@ namespace zt::gameplay::system::tests
 			auto& rendererContext = rendererRes->getRendererContext();
 			auto& vma = rendererContext.getVMA();
 
-			ecs::Query<Buffer> buffers{ world };
-			for (auto [buffer] : buffers)
+			ecs::Query<Sprites::Data> query{ world };
+			for (auto [data] : query)
 			{
-				if (buffer && buffer->isValid())
+				auto& buffer = data->transformBuffer;
+				if (buffer && buffer.isValid())
 				{
-					buffer->destroy(vma);
+					buffer.destroy(vma);
 				}
 			}
 
@@ -64,7 +65,11 @@ namespace zt::gameplay::system::tests
 	TEST_F(SpritesTests, Test)
 	{
 		auto rendererRes = world.addResource(VulkanRenderer{});
+		ASSERT_TRUE(rendererRes);
 		ASSERT_TRUE(rendererRes->init(window));
+
+		auto resourceStorageRes = world.addResource(ResourceStorage{});
+		ASSERT_TRUE(resourceStorageRes);
 
 		AssetStorage assetStorage;
 		assetStorage.registerAssetClass<asset::Texture>();
@@ -82,33 +87,32 @@ namespace zt::gameplay::system::tests
 		{ // Init
 			schedule.runOneSystemOnce(Sprites{}, Sprites::Init, world);
 
-			using QueryT = ecs::Query<
-				Sprite, Buffer, 
-				ConstAssetHandle<asset::Texture>, 
-				ConstAssetHandle<asset::Sampler>
-			>;
+			using QueryT = ecs::Query<Sprites::Data>;
 
 			QueryT query{ world };
+			ASSERT_EQ(query.getComponentsCount(), 1);
 
-			ASSERT_EQ(query.getComponentsCount(), 4);
-
-			for (auto [label, transformBuffer, textureAssetHandle, samplerAssetHandle] : query)
+			for (auto [data] : query)
 			{
+				auto& transformBuffer = data->transformBuffer;
+				auto& textureAssetHandle = data->texture;
+				auto& samplerAssetHandle = data->sampler;
+
 				ASSERT_TRUE(transformBuffer);
-				ASSERT_TRUE(transformBuffer->isValid());
+				ASSERT_TRUE(transformBuffer.isValid());
 
 				const size_t expectedSize = spritesCount * sizeof(Transform);
-				ASSERT_EQ(expectedSize, transformBuffer->getSize());
+				ASSERT_EQ(expectedSize, transformBuffer.getSize());
 
 				ASSERT_TRUE(textureAssetHandle);
-				ASSERT_TRUE(textureAssetHandle->isValid());
+				ASSERT_TRUE(textureAssetHandle.isValid());
 
-				auto textureAsset = textureAssetHandle->get();
+				auto textureAsset = textureAssetHandle.get();
 				ASSERT_TRUE(textureAsset->isLoaded());
 
 				ASSERT_TRUE(samplerAssetHandle);
-				ASSERT_TRUE(samplerAssetHandle->isValid());
-				auto samplerAsset = samplerAssetHandle->get();
+				ASSERT_TRUE(samplerAssetHandle.isValid());
+				auto samplerAsset = samplerAssetHandle.get();
 				ASSERT_TRUE(samplerAsset->isLoaded());
 			}
 
@@ -121,6 +125,8 @@ namespace zt::gameplay::system::tests
 			if (auto exitReason = world.getResource<ExitReason>())
 				FAIL() << exitReason->reason;
 		}
+
+		resourceStorageRes->createResources(rendererRes->getRendererContext());
 
 		{ // Update
 			schedule.runOneSystemOnce(Sprites{}, Sprites::Update, world);

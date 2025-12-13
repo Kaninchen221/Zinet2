@@ -66,7 +66,7 @@ namespace zt::gameplay
 			if (!sampler)
 				return;
 
-			worldCommands.spawn(Sprite{}, std::move(transformBuffer), texture, sampler);
+			worldCommands.spawn(Data{ std::move(transformBuffer), texture, sampler });
 
 			// Destroy shader modules
 			{

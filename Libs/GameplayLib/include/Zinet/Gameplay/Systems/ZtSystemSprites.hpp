@@ -41,13 +41,20 @@ namespace zt::gameplay::system
 
 	public:
 
+		struct Data
+		{
+			vulkan_renderer::Buffer transformBuffer{ nullptr };
+			core::ConstAssetHandle<asset::Texture> texture;
+			core::ConstAssetHandle<asset::Sampler> sampler;
+		};
+
 		static void Init(
 			core::ecs::WorldCommands worldCommands,
 			core::ecs::ConstQuery<Sprite, vulkan_renderer::Transform> sprites,
 			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
 			core::ecs::ConstResource<core::AssetStorage> assetStorageRes);
 
-		static void Update(core::ecs::WorldCommands) {}
+		static void Update(core::ecs::WorldCommands) {};
 
 		static void Deinit(
 			core::ecs::WorldCommands worldCommands,
