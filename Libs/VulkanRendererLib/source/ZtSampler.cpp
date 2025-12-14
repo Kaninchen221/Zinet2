@@ -1,5 +1,6 @@
 #include "Zinet/VulkanRenderer/ZtSampler.hpp"
 #include "Zinet/VulkanRenderer/ZtDevice.hpp"
+#include "Zinet/VulkanRenderer/ZtRendererContext.hpp"
 
 namespace zt::vulkan_renderer
 {
@@ -54,4 +55,9 @@ namespace zt::vulkan_renderer
 		}
 	}
 
+
+	void Sampler::destroy(const RendererContext& rendererContext) noexcept
+	{
+		destroy(rendererContext.getDevice());
+	}
 }

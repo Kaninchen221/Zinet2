@@ -39,6 +39,7 @@ namespace zt::gameplay::asset
 
 		auto& getCompileResult() const { return result; }
 
+		// TODO: Test it
 		ResourceOptT createResource(vulkan_renderer::RendererContext& rendererContext);
 
 	protected:

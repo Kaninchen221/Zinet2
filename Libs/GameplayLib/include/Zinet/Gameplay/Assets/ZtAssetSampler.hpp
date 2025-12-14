@@ -5,11 +5,19 @@
 #include "Zinet/Core/Assets/ZtAsset.hpp"
 #include "Zinet/Core/ZtPaths.hpp"
 
+#include "Zinet/VulkanRenderer/ZtSampler.hpp"
+
+namespace zt::vulkan_renderer
+{
+	class RendererContext;
+}
+
 namespace zt::gameplay::asset
 {
 	class ZINET_GAMEPLAY_API Sampler : public core::Asset
 	{
 	public:
+		using ResourceOptT = std::optional<vulkan_renderer::Sampler>;
 
 		Sampler(const Extensions& extensions = { "sampler" }) : Asset{ extensions } {}
 		Sampler(const Sampler& other) : Asset(other) {}
@@ -33,6 +41,9 @@ namespace zt::gameplay::asset
 		}
 
 		auto& getTypeString() const { return typeStr; }
+
+		// TODO: Test it
+		ResourceOptT createResource(vulkan_renderer::RendererContext& rendererContext);
 
 	protected:
 

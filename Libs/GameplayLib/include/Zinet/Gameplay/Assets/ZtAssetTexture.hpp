@@ -36,6 +36,7 @@ namespace zt::gameplay::asset
 
 		auto& getImage() const noexcept { return image; }
 
+		// TODO: Test it
 		ResourceOptT createResource(vulkan_renderer::RendererContext& rendererContext);
 
 	protected:

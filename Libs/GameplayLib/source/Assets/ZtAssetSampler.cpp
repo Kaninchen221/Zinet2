@@ -41,5 +41,10 @@ namespace zt::gameplay::asset
 		loaded = false;
 	}
 
+	Sampler::ResourceOptT Sampler::createResource(vulkan_renderer::RendererContext&)
+	{
+		// TODO: Write impl
+		return { nullptr };
+	}
 }
 
