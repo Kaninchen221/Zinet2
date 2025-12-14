@@ -40,7 +40,7 @@ namespace zt::vulkan_renderer
 		inline static auto Logger = core::ConsoleLogger::Create("zt::vulkan_renderer::ResourceStorage");
 
 		using Resources = std::vector<ResourceDecorator>;
-		using Requests = std::vector<std::function<bool(const RendererContext&)>>;
+		using Requests = std::vector<std::function<bool(RendererContext&)>>;
 
 	public:
 
@@ -55,7 +55,7 @@ namespace zt::vulkan_renderer
 		template<class ResourceT, class AssetT>
 		const ResourceT* request(core::ConstAssetHandle<AssetT> assetHandle);
 
-		bool createResources(const RendererContext& rendererContext);
+		bool createResources(RendererContext& rendererContext);
 
 		// TODO: Add method to destroy specific resource via asset handle
 
@@ -84,11 +84,15 @@ namespace zt::vulkan_renderer
 		
 		AssetT& asset = *assetHandle.get();
 
-		constexpr bool hasCreateFunc = requires { { asset.createResource(RendererContext{}) } -> std::same_as<std::optional<ResourceT>>; };
+		constexpr bool hasCreateFunc = requires(RendererContext& rendererContext)
+		{ 
+			{ asset.createResource(rendererContext) }
+			-> std::same_as<std::optional<ResourceT>>; 
+		};
 
 		static_assert(hasCreateFunc,
 			"AssetT must have a createResource method that will return an object of class ResourceT from the asset"
-			" and takes RendererContext& as a param");
+			" and takes const RendererContext& as a param");
 
 		constexpr bool hasDestroyFunc = requires (ResourceT* resource){ { resource->destroy(RendererContext{}) }; };
 
@@ -109,7 +113,7 @@ namespace zt::vulkan_renderer
 
 		// Add new resource request
 		auto newRequest = [self = this, assetHandle = assetHandle]
-		(const RendererContext& rendererContext) -> bool
+		(RendererContext& rendererContext) -> bool
 		{
 			if (!assetHandle)
 				return false;

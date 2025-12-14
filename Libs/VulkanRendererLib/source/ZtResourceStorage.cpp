@@ -2,7 +2,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool ResourceStorage::createResources(const RendererContext& rendererContext)
+	bool ResourceStorage::createResources(RendererContext& rendererContext)
 	{
 		bool anyRequestFailed = false;
 		for (auto request : requests)
