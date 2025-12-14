@@ -1,5 +1,7 @@
 #include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
 
+#include "Zinet/VulkanRenderer/ZtRendererContext.hpp"
+
 #include "Zinet/Core/ZtFile.hpp"
 
 namespace zt::gameplay::asset
@@ -41,10 +43,19 @@ namespace zt::gameplay::asset
 		loaded = false;
 	}
 
-	Sampler::ResourceOptT Sampler::createResource(vulkan_renderer::RendererContext&)
+	Sampler::ResourceOptT Sampler::createResource(vulkan_renderer::RendererContext& rendererContext)
 	{
-		// TODO: Write impl
-		return { nullptr };
+		vulkan_renderer::Sampler sampler{ nullptr };
+		auto createInfo = vulkan_renderer::Sampler::GetDefaultCreateInfo();
+
+		auto filter = vulkan_renderer::SamplerTypeFromString(typeStr);
+		createInfo.magFilter = filter;
+		createInfo.minFilter = filter;
+
+		if (!sampler.create(rendererContext.getDevice(), createInfo))
+			return { nullptr };
+
+		return sampler;
 	}
 }
 
