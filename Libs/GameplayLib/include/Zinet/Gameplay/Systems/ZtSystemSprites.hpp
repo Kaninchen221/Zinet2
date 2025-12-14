@@ -28,6 +28,7 @@
 namespace zt::vulkan_renderer
 {
 	class VulkanRenderer;
+	class ResourceStorage;
 }
 
 namespace zt::gameplay::system
@@ -52,9 +53,13 @@ namespace zt::gameplay::system
 			core::ecs::WorldCommands worldCommands,
 			core::ecs::ConstQuery<Sprite, vulkan_renderer::Transform> sprites,
 			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
-			core::ecs::ConstResource<core::AssetStorage> assetStorageRes);
+			core::ecs::ConstResource<core::AssetStorage> assetStorageRes,
+			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes);
 
-		static void Update(core::ecs::WorldCommands) {};
+		static void Update(
+			core::ecs::WorldCommands worldCommands,
+			core::ecs::ConstQuery<Data> spriteSystemData,
+			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes);
 
 		static void Deinit(
 			core::ecs::WorldCommands worldCommands,

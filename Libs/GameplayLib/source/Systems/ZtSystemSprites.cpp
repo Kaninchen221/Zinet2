@@ -6,6 +6,7 @@
 #include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
 #include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
 #include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
+#include "Zinet/VulkanRenderer/ZtResourceStorage.hpp"
 
 namespace zt::gameplay
 {
@@ -18,7 +19,8 @@ namespace zt::gameplay
 			ecs::WorldCommands worldCommands,
 			ecs::ConstQuery<Sprite, vulkan_renderer::Transform> sprites,
 			ecs::ConstResource<VulkanRenderer> rendererRes,
-			ecs::ConstResource<core::AssetStorage> assetStorageRes)
+			ecs::ConstResource<core::AssetStorage> assetStorageRes,
+			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes)
 		{
 			// TODO: Refactor to validate method
 			if (!rendererRes)
@@ -36,6 +38,12 @@ namespace zt::gameplay
 			if (!assetStorageRes)
 			{
 				worldCommands.addResource(ExitReason{ "Expected assetStorageRes" });
+				return;
+			}
+
+			if (!resourceStorageRes)
+			{
+				worldCommands.addResource(ExitReason{ "Expected resource storage res" });
 				return;
 			}
 
@@ -68,11 +76,44 @@ namespace zt::gameplay
 
 			worldCommands.spawn(Data{ std::move(transformBuffer), texture, sampler });
 
+			// Ask for resources
+			resourceStorageRes->request<vulkan_renderer::Texture>(texture);
+			resourceStorageRes->request<vulkan_renderer::Sampler>(sampler);
+
 			// Destroy shader modules
 			{
 				auto& device = rendererRes->getRendererContext().getDevice();
 				vertexShaderModule.destroy(device);
 				fragmentShaderModule.destroy(device);
+			}
+		}
+
+		void Sprites::Update(
+			ecs::WorldCommands worldCommands,
+			core::ecs::ConstQuery<Data> spriteSystemData,
+			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes)
+		{
+			if (!resourceStorageRes)
+			{
+				worldCommands.addResource(ExitReason{ "Expected resource storage res" });
+				return;
+			}
+
+			for (auto [data] : spriteSystemData)
+			{
+				auto texture = resourceStorageRes->request<vulkan_renderer::Texture>(data->texture);
+				if (!texture || !texture->isValid())
+				{
+					Logger->warn("Expected a valid texture");
+					return;
+				}
+
+				auto sampler = resourceStorageRes->request<vulkan_renderer::Sampler>(data->sampler);
+				if (!sampler || !sampler->isValid())
+				{
+					Logger->warn("Expected a valid sampler");
+					return;
+				}
 			}
 		}
 

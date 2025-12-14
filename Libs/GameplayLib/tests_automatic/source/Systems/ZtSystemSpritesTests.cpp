@@ -46,11 +46,16 @@ namespace zt::gameplay::system::tests
 				}
 			}
 
+			auto resourceStorageRes = world.getResource<vulkan_renderer::ResourceStorage>();
+			resourceStorageRes->clear(rendererContext);
+
 			ASSERT_TRUE(rendererRes);
 			rendererRes->deinit();
 
 			window.destroyWindow();
 		}
+
+		using QuerySpritesDataT = ecs::Query<Sprites::Data>;
 
 		wd::GLFW glfw;
 		wd::Window window;
@@ -87,9 +92,7 @@ namespace zt::gameplay::system::tests
 		{ // Init
 			schedule.runOneSystemOnce(Sprites{}, Sprites::Init, world);
 
-			using QueryT = ecs::Query<Sprites::Data>;
-
-			QueryT query{ world };
+			QuerySpritesDataT query{ world };
 			ASSERT_EQ(query.getComponentsCount(), 1);
 
 			for (auto [data] : query)
