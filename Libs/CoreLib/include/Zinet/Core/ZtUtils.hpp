@@ -43,6 +43,7 @@ namespace zt::core
 	}
 
 	// Shouldn't be used outside the program like for saving
+	// TODO: Use more unique way to generate GUIDs. See "CoCreateGuid"
 	template<class T>
 	inline size_t GetTypeID() noexcept
 	{

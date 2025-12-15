@@ -29,6 +29,8 @@ namespace zt::core::ecs
 		World& operator = (const World& other) noexcept = default;
 		World& operator = (World&& other) noexcept = default;
 
+		// TODO: Write optimized methods that will allow to spawn enormous amount of entities at once
+
 		/// Entities & Components
 		template<class... Components>
 		Entity spawn(Components&&... components);
