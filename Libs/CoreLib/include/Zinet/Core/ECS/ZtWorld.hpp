@@ -24,7 +24,11 @@ namespace zt::core::ecs
 		World() noexcept = default;
 		World(const World& other) noexcept = default;
 		World(World&& other) noexcept = default;
-		~World() noexcept = default;
+		~World() noexcept
+		{
+			archetypes.clear();
+			resources.clear();
+		}
 
 		World& operator = (const World& other) noexcept = default;
 		World& operator = (World&& other) noexcept = default;
