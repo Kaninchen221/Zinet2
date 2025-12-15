@@ -4,6 +4,7 @@
 
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 #include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
+#include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/ZtExitReason.hpp"
@@ -42,23 +43,21 @@ namespace zt::gameplay::system
 
 	public:
 
+		// TODO: Store this data in an Entity with Sprite component as a filter
 		struct Data
 		{
 			vulkan_renderer::Buffer transformBuffer{ nullptr };
 			core::ConstAssetHandle<asset::Texture> texture;
 			core::ConstAssetHandle<asset::Sampler> sampler;
+			core::ConstAssetHandle<asset::Shader> vertexShader;
+			core::ConstAssetHandle<asset::Shader> fragmentShader;
 		};
 
-		static void Init(
-			core::ecs::WorldCommands worldCommands,
-			core::ecs::ConstQuery<Sprite, vulkan_renderer::Transform> sprites,
-			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
-			core::ecs::ConstResource<core::AssetStorage> assetStorageRes,
-			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes);
+		static void Init();
 
 		static void Update(
 			core::ecs::WorldCommands worldCommands,
-			core::ecs::ConstQuery<Data> spriteSystemData,
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
 			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes);
 
 		static void Deinit(

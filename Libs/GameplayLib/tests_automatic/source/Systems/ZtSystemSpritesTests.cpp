@@ -76,54 +76,38 @@ namespace zt::gameplay::system::tests
 		auto resourceStorageRes = world.addResource(ResourceStorage{});
 		ASSERT_TRUE(resourceStorageRes);
 
-		AssetStorage assetStorage;
+		auto& assetStorage = *world.addResource(AssetStorage{});
 		assetStorage.registerAssetClass<asset::Texture>();
 		assetStorage.registerAssetClass<asset::Shader>();
 		assetStorage.registerAssetClass<asset::Sampler>();
 		assetStorage.storeAssets();
 
-		world.addResource(assetStorage);
+		auto samplerAsset = assetStorage.getAs<asset::Sampler>("Content/Samplers/linear.sampler");
+		ASSERT_TRUE(samplerAsset);
+
+		auto textureAsset = assetStorage.getAs<asset::Texture>("Content/Textures/default_texture.png");
+		ASSERT_TRUE(textureAsset);
+
+		auto vertexShaderAsset = assetStorage.getAs<asset::Shader>("Content/Shaders/shader_sprites.vert");
+		ASSERT_TRUE(vertexShaderAsset);
+
+		auto fragmentShaderAsset = assetStorage.getAs<asset::Shader>("Content/Shaders/shader_sprites.frag");
+		ASSERT_TRUE(fragmentShaderAsset);
 
 		// Spawn Sprites
 		const size_t spritesCount = 10;
 		for (size_t index = 0; index < spritesCount; ++index)
-			world.spawn(Sprite{}, Transform{});	
+		{
+			auto samplerAssetCopy = samplerAsset;
+			auto textureAssetCopy = textureAsset;
+			auto vertexShaderAssetCopy = vertexShaderAsset;
+			auto fragmentShaderAssetCopy = fragmentShaderAsset;
+			world.spawn(Sprite{}, Transform{}, samplerAssetCopy, textureAssetCopy, vertexShaderAssetCopy, fragmentShaderAssetCopy);
+			// TODO: Maybe add some way to define Entity to reduce redundancy of defining Entity types
+		}
 
 		{ // Init
 			schedule.runOneSystemOnce(Sprites{}, Sprites::Init, world);
-
-			QuerySpritesDataT query{ world };
-			ASSERT_EQ(query.getComponentsCount(), 1);
-
-			for (auto [data] : query)
-			{
-				auto& transformBuffer = data->transformBuffer;
-				auto& textureAssetHandle = data->texture;
-				auto& samplerAssetHandle = data->sampler;
-
-				ASSERT_TRUE(transformBuffer);
-				ASSERT_TRUE(transformBuffer.isValid());
-
-				const size_t expectedSize = spritesCount * sizeof(Transform);
-				ASSERT_EQ(expectedSize, transformBuffer.getSize());
-
-				ASSERT_TRUE(textureAssetHandle);
-				ASSERT_TRUE(textureAssetHandle.isValid());
-
-				auto textureAsset = textureAssetHandle.get();
-				ASSERT_TRUE(textureAsset->isLoaded());
-
-				ASSERT_TRUE(samplerAssetHandle);
-				ASSERT_TRUE(samplerAssetHandle.isValid());
-				auto samplerAsset = samplerAssetHandle.get();
-				ASSERT_TRUE(samplerAsset->isLoaded());
-			}
-
-			// TODO: Sprites (now)
-			// Descriptors
-			// GraphicsPipeline
-			// RenderDrawData
-			// Fill Transform Buffer with data
 
 			if (auto exitReason = world.getResource<ExitReason>())
 				FAIL() << exitReason->reason;
@@ -133,6 +117,17 @@ namespace zt::gameplay::system::tests
 
 		{ // Update
 			schedule.runOneSystemOnce(Sprites{}, Sprites::Update, world);
+
+			// TODO: Sprites
+			// 1.
+			// Sort sprites using their components to create graphics pipelines only once per unique combination?
+			// Or handle only one combination for now
+			// 
+			// 2. Create descriptors
+			// 3. Create graphics pipelines
+			// 4. Expect a valid GraphicsPipeline in test
+			// 5. Create and expect render draw data
+			// 6. Update transform buffers
 
 			if (auto exitReason = world.getResource<ExitReason>())
 				FAIL() << exitReason->reason;
