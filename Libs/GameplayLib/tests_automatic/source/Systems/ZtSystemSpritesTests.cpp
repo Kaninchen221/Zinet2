@@ -28,6 +28,59 @@ namespace zt::gameplay::system::tests
 		void SetUp() override
 		{
 			ASSERT_TRUE(window.create(200, 200));
+
+			auto rendererRes = world.addResource(VulkanRenderer{});
+			ASSERT_TRUE(rendererRes);
+			ASSERT_TRUE(rendererRes->init(window));
+
+			auto resourceStorageRes = world.addResource(ResourceStorage{});
+			ASSERT_TRUE(resourceStorageRes);
+
+			auto& assetStorage = *world.addResource(AssetStorage{});
+			assetStorage.registerAssetClass<asset::Texture>();
+			assetStorage.registerAssetClass<asset::Shader>();
+			assetStorage.registerAssetClass<asset::Sampler>();
+			assetStorage.storeAssets();
+
+			{
+				const auto& constAssetStorage = assetStorage;
+				auto samplerAsset = constAssetStorage.getAs<asset::Sampler>("Content/Samplers/linear.sampler");
+				ASSERT_TRUE(samplerAsset);
+				ASSERT_TRUE(samplerAsset->load(Paths::RootPath()));
+
+				auto textureAsset = constAssetStorage.getAs<asset::Texture>("Content/Textures/default_texture.png");
+				ASSERT_TRUE(textureAsset);
+				ASSERT_TRUE(textureAsset->load(Paths::RootPath()));
+
+				auto vertexShaderAsset = constAssetStorage.getAs<asset::Shader>("Content/Shaders/shader_sprites.vert");
+				ASSERT_TRUE(vertexShaderAsset);
+				ASSERT_TRUE(vertexShaderAsset->load(Paths::RootPath()));
+
+				auto fragmentShaderAsset = constAssetStorage.getAs<asset::Shader>("Content/Shaders/shader_sprites.frag");
+				ASSERT_TRUE(fragmentShaderAsset);
+				ASSERT_TRUE(fragmentShaderAsset->load(Paths::RootPath()));
+
+				// Spawn system::Sprites input info
+				// TODO: Refactor it, maybe put it into system::Sprite::Init?
+
+				auto samplerAssetCopy = samplerAsset;
+				auto textureAssetCopy = textureAsset;
+
+				world.spawn(
+					system::Sprites{},
+					vulkan_renderer::GraphicsPipeline{},
+					ShaderAssetsPack{
+						.vertexShaderAsset = vertexShaderAsset,
+						.fragmentShaderAsset = fragmentShaderAsset
+					},
+					textureAssetCopy,
+					samplerAssetCopy,
+					vulkan_renderer::Buffer{ nullptr });
+
+				// Sanity check 
+				system::Sprites::SystemComponentsQuery testQuery{ world };
+				ASSERT_FALSE(testQuery.isEmpty());
+			}
 		}
 
 		void TearDown() override
@@ -36,14 +89,9 @@ namespace zt::gameplay::system::tests
 			auto& rendererContext = rendererRes->getRendererContext();
 			auto& vma = rendererContext.getVMA();
 
-			ecs::Query<Sprites::Data> query{ world };
-			for (auto [data] : query)
+			for (auto [buffer] : ecs::Query<Buffer>{ world })
 			{
-				auto& buffer = data->transformBuffer;
-				if (buffer && buffer.isValid())
-				{
-					buffer.destroy(vma);
-				}
+				buffer->destroy(vma);
 			}
 
 			auto resourceStorageRes = world.getResource<vulkan_renderer::ResourceStorage>();
@@ -55,54 +103,19 @@ namespace zt::gameplay::system::tests
 			window.destroyWindow();
 		}
 
-		using QuerySpritesDataT = ecs::Query<Sprites::Data>;
-
 		wd::GLFW glfw;
 		wd::Window window;
 		ecs::World world;
 		ecs::Schedule schedule;
 	};
 
-	// TODO: Sprites (Later)
-	// - Parametrize shaders
-	// - Parametrize used texture (or add something like atlas of textures?)
-	// - Parametrize used texture sampler
 	TEST_F(SpritesTests, Test)
 	{
-		auto rendererRes = world.addResource(VulkanRenderer{});
-		ASSERT_TRUE(rendererRes);
-		ASSERT_TRUE(rendererRes->init(window));
-
-		auto resourceStorageRes = world.addResource(ResourceStorage{});
-		ASSERT_TRUE(resourceStorageRes);
-
-		auto& assetStorage = *world.addResource(AssetStorage{});
-		assetStorage.registerAssetClass<asset::Texture>();
-		assetStorage.registerAssetClass<asset::Shader>();
-		assetStorage.registerAssetClass<asset::Sampler>();
-		assetStorage.storeAssets();
-
-		auto samplerAsset = assetStorage.getAs<asset::Sampler>("Content/Samplers/linear.sampler");
-		ASSERT_TRUE(samplerAsset);
-
-		auto textureAsset = assetStorage.getAs<asset::Texture>("Content/Textures/default_texture.png");
-		ASSERT_TRUE(textureAsset);
-
-		auto vertexShaderAsset = assetStorage.getAs<asset::Shader>("Content/Shaders/shader_sprites.vert");
-		ASSERT_TRUE(vertexShaderAsset);
-
-		auto fragmentShaderAsset = assetStorage.getAs<asset::Shader>("Content/Shaders/shader_sprites.frag");
-		ASSERT_TRUE(fragmentShaderAsset);
-
 		// Spawn Sprites
 		const size_t spritesCount = 10;
 		for (size_t index = 0; index < spritesCount; ++index)
 		{
-			auto samplerAssetCopy = samplerAsset;
-			auto textureAssetCopy = textureAsset;
-			auto vertexShaderAssetCopy = vertexShaderAsset;
-			auto fragmentShaderAssetCopy = fragmentShaderAsset;
-			world.spawn(Sprite{}, Transform{}, samplerAssetCopy, textureAssetCopy, vertexShaderAssetCopy, fragmentShaderAssetCopy);
+			world.spawn(Sprite{}, Transform{}); // TODO: Apply a valid transform 
 			// TODO: Maybe add some way to define Entity to reduce redundancy of defining Entity types
 		}
 
@@ -113,11 +126,7 @@ namespace zt::gameplay::system::tests
 				FAIL() << exitReason->reason;
 		}
 
-		resourceStorageRes->createResources(rendererRes->getRendererContext());
-
 		{ // Update
-			schedule.runOneSystemOnce(Sprites{}, Sprites::Update, world);
-
 			// TODO: Sprites
 			// 1.
 			// Sort sprites using their components to create graphics pipelines only once per unique combination?
@@ -128,6 +137,24 @@ namespace zt::gameplay::system::tests
 			// 4. Expect a valid GraphicsPipeline in test
 			// 5. Create and expect render draw data
 			// 6. Update transform buffers
+
+			// We need to run the update method two times because the system is requesting renderer resources
+			for (size_t i = 0; i < 2; i++)
+			{
+				schedule.runOneSystemOnce(Sprites{}, Sprites::Update, world);
+
+				auto rendererRes = world.getResource<VulkanRenderer>();
+				auto resourceStorageRes = world.getResource<ResourceStorage>();
+				resourceStorageRes->createResources(rendererRes->getRendererContext());
+			}
+			
+			system::Sprites::SystemComponentsQuery query{ world };
+			ASSERT_EQ(query.getComponentsCount(), 6); // Sanity check
+			for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, transformBuffer] : query)
+			{
+				ASSERT_TRUE(graphicsPipeline);
+				//EXPECT_TRUE(graphicsPipeline->isValid());
+			}
 
 			if (auto exitReason = world.getResource<ExitReason>())
 				FAIL() << exitReason->reason;

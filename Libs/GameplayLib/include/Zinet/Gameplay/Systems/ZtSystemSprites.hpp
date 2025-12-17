@@ -37,26 +37,41 @@ namespace zt::gameplay::system
 	struct Sprite
 	{};
 
+	// TODO: Refactor it
+	// I created it because we can't have a two components in the same type in one query
+	struct ShaderAssetsPack
+	{
+		core::ConstAssetHandle<asset::Shader> vertexShaderAsset;
+		core::ConstAssetHandle<asset::Shader> fragmentShaderAsset;
+	};
+
 	class ZINET_GAMEPLAY_API Sprites
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::system::Sprites");
 
 	public:
 
-		// TODO: Store this data in an Entity with Sprite component as a filter
-		struct Data
-		{
-			vulkan_renderer::Buffer transformBuffer{ nullptr };
-			core::ConstAssetHandle<asset::Texture> texture;
-			core::ConstAssetHandle<asset::Sampler> sampler;
-			core::ConstAssetHandle<asset::Shader> vertexShader;
-			core::ConstAssetHandle<asset::Shader> fragmentShader;
-		};
+		using SpriteQuery = core::ecs::ConstQuery<
+			Sprite,
+			vulkan_renderer::Transform
+			// Texture region
+		>;
+
+		using SystemComponentsQuery = core::ecs::Query <
+			Sprites,
+			vulkan_renderer::GraphicsPipeline,
+			ShaderAssetsPack,
+			core::ConstAssetHandle<asset::Texture>, // Atlas texture
+			core::ConstAssetHandle<asset::Sampler>,
+			vulkan_renderer::Buffer // Transform buffer
+		>;
 
 		static void Init();
 
 		static void Update(
 			core::ecs::WorldCommands worldCommands,
+			SpriteQuery sprites,
+			SystemComponentsQuery systemComponents,
 			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
 			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes);
 
@@ -68,52 +83,11 @@ namespace zt::gameplay::system
 
 	private:
 
-		static vulkan_renderer::Buffer CreateTransformBuffer(
+		static bool CreateTransformBuffer(
 			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
-			core::ecs::ConstQuery<Sprite, vulkan_renderer::Transform>& sprites
+			SpriteQuery& sprites,
+			vulkan_renderer::Buffer& buffer
 		);
 
-		static vulkan_renderer::ShaderModule CreateShaderModule(
-			core::ecs::WorldCommands worldCommands,
-			const vulkan_renderer::VulkanRenderer& renderer,
-			const core::AssetStorage& assetStorage,
-			std::string assetKey);
-
-		// TODO: Move this function out from the system Sprites scope
-		template<class AssetT>
-		static core::ConstAssetHandle<AssetT> GetAsset(
-			core::ecs::WorldCommands worldCommands,
-			const core::AssetStorage& assetStorage,
-			std::string assetKey);
-
 	};
-
-	template<class AssetT>
-	static core::ConstAssetHandle<AssetT>
-		Sprites::GetAsset(
-			core::ecs::WorldCommands worldCommands, 
-			const core::AssetStorage& assetStorage, 
-			std::string assetKey)
-	{
-		using ResulT = core::ConstAssetHandle<AssetT>;
-
-		auto asset = assetStorage.getAs<AssetT>(assetKey);
-		if (!asset)
-		{
-			worldCommands.addResource(core::ExitReason{ fmt::format("Couldn't get asset: {}", assetKey) });
-			return ResulT{ nullptr };
-		}
-
-		if (!asset->isLoaded())
-		{
-			if (!asset->load(core::Paths::RootPath()))
-			{
-				worldCommands.addResource(core::ExitReason{ "Couldn't load asset" });
-				return ResulT{ nullptr };
-			}
-		}
-
-		return asset;
-	}
-
 }

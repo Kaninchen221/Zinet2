@@ -154,6 +154,9 @@ namespace zt::core::ecs
 
 		size_t getComponentsCount() const noexcept;
 
+		// TODO: Test it
+		bool isEmpty() const noexcept { return getComponentsCount() == 0; }
+
 		// Useful when you need to fill a buffer with components data
 		// Return an array of TypeLessVectors
 		template<class ComponentType>

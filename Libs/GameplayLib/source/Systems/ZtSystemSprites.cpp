@@ -21,10 +21,83 @@ namespace zt::gameplay
 
 		void Sprites::Update(
 			core::ecs::WorldCommands,
-			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer>,
-			core::ecs::Resource<vulkan_renderer::ResourceStorage>)
-		{
-			//auto transformBuffer = CreateTransformBuffer(rendererRes, sprites);
+			SpriteQuery sprites,
+			SystemComponentsQuery systemComponents,
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes)
+		{	
+			// Create graphics pipelines
+			if (!systemComponents.isEmpty())
+			{
+				for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, transformBuffer] : systemComponents)
+				{
+					if (graphicsPipeline->isValid())
+						continue;
+
+					auto vertexShaderModule = resourceStorageRes->request<ShaderModule>(shaderAssetsPack->vertexShaderAsset);
+					auto fragmentShaderModule = resourceStorageRes->request<ShaderModule>(shaderAssetsPack->fragmentShaderAsset);
+					auto texture = resourceStorageRes->request<Texture>(*textureAsset);
+					auto sampler = resourceStorageRes->request<Sampler>(*samplerAsset);
+
+					if (!vertexShaderModule || !fragmentShaderModule || !texture || !sampler)
+					{
+						Logger->trace("Skip graphics pipeline creation because one of assets is not loaded");
+						continue;
+					}
+
+					if (!CreateTransformBuffer(rendererRes, sprites, *transformBuffer))
+					{
+						Logger->error("Couldn't create transform buffer");
+						continue;
+					}
+
+					vulkan_renderer::ShaderModules shaderModules
+					{ 
+						{ vulkan_renderer::ShaderType::Vertex, vertexShaderModule },
+						{ vulkan_renderer::ShaderType::Fragment, fragmentShaderModule }
+					};
+
+					TextureInfo textureInfo
+					{
+						.texture = texture,
+						.sampler = sampler,
+						.shaderType = ShaderType::Fragment
+					};
+
+					GraphicsPipelineCreateInfo createInfo
+					{
+						.rendererContext = rendererRes->getRendererContext(),
+						.shaderModules = shaderModules,
+						.descriptorInfos =
+						{
+							DescriptorInfo
+							{
+								.buffersPacks = {},
+								.texturesInfos = { textureInfo },
+							},
+							DescriptorInfo
+							{
+								.buffersPacks =
+								{
+									vulkan_renderer::BuffersPack
+									{
+										.binding = 0,
+										.buffersPerType =
+										{
+											{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, { transformBuffer } }
+										}
+									}
+								},
+								.texturesInfos{}
+							}
+						},
+						.descriptorSetsCount = rendererRes->getRendererContext().getDisplayImagesCount()
+					};
+
+					// TODO: Now camera
+					//graphicsPipeline->create(createInfo);
+				}
+			}
 		}
 
 		void Sprites::Deinit(
@@ -48,9 +121,10 @@ namespace zt::gameplay
 			}
 		}
 
-		Buffer Sprites::CreateTransformBuffer(
+		bool Sprites::CreateTransformBuffer(
 			ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, 
-			ecs::ConstQuery<Sprite, vulkan_renderer::Transform>& sprites)
+			SpriteQuery& sprites,
+			vulkan_renderer::Buffer& buffer)
 		{
 			using namespace core;
 			using namespace vulkan_renderer;
@@ -62,10 +136,16 @@ namespace zt::gameplay
 			auto componentsPack = sprites.getComponentsPack<Transform>();
 			for (auto components : componentsPack)
 			{
+				if (!components)
+				{
+					Logger->error("Components is null");
+					return false;
+				}
+
 				bufferSize += components->getObjectsCapacity();
 			}
 			if (bufferSize <= 0)
-				return Buffer{ nullptr };
+				return false;
 
 			bufferSize *= sizeof(Transform);
 
@@ -77,10 +157,10 @@ namespace zt::gameplay
 				.sharingMode = VK_SHARING_MODE_EXCLUSIVE
 			};
 
-			Buffer buffer{ nullptr };
 			if (!buffer.create(vma, createInfo))
 			{
 				Logger->error("Couldn't create transform buffer");
+				return false;
 			}
 
 			return buffer;

@@ -35,6 +35,9 @@ namespace zt::core::ecs
 
 		// TODO: Write optimized methods that will allow to spawn enormous amount of entities at once
 
+		// TODO: Add check that will block adding more than one component of the same type in one entity OR
+		// Handle this situation but this is not easy and easier way is just making an another struct that will pack doubled components
+		// into one structure
 		/// Entities & Components
 		template<class... Components>
 		Entity spawn(Components&&... components);

@@ -49,7 +49,7 @@ namespace zt::core
 	{
 		// As for now typeid is good enough
 		// For MSVC the hashes will be different because we are using namespaces
-		auto& type = typeid(T);
+		auto& type = typeid(std::decay_t<T>);
 		return type.hash_code();
 	}
 
