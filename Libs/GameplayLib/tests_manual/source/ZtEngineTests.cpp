@@ -26,6 +26,7 @@
 
 #include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
 #include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
+#include "Zinet/VulkanRenderer/ZtResourceStorage.hpp"
 
 using namespace zt::gameplay::system;
 
