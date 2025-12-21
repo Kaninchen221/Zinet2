@@ -4,6 +4,17 @@
 
 namespace zt::vulkan_renderer
 {
+	bool Camera::operator==(const Camera& other) const noexcept
+	{
+		return
+			position == other.position &&
+			lookingAt == other.lookingAt &&
+			upVector == other.upVector &&
+			fieldOfView == other.fieldOfView &&
+			aspectRatio == other.aspectRatio &&
+			clipping == other.clipping;
+	}
+
 	Camera::MatrixT Camera::getViewMatrix() const noexcept
 	{
 		return glm::lookAt(position, lookingAt, upVector);

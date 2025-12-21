@@ -33,6 +33,9 @@ namespace zt::vulkan_renderer
 		Camera& operator = (const Camera& other) noexcept = default;
 		Camera& operator = (Camera&& other) noexcept = default;
 
+		// TODO: Test it
+		bool operator == (const Camera& other) const noexcept;
+
 		MatrixT getViewMatrix() const noexcept;
 
 		void setPosition(const Vector3f& newPosition) noexcept { position = newPosition; }
