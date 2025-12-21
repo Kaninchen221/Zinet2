@@ -28,7 +28,7 @@ namespace zt::gameplay
 			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes)
 		{	
 			// TODO: Refactor validation of resources
-			// Put it in the world class?
+			// Put it in the world/schedule class?
 			if (!rendererRes)
 			{
 				Logger->error("Renderer res is invalid");
@@ -52,11 +52,16 @@ namespace zt::gameplay
 			{
 				for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, buffers] : systemComponents)
 				{
-					if (graphicsPipeline->isValid())
-						continue;
-
 					auto& transformBuffer = buffers->transform;
 					auto& cameraBuffer = buffers->camera;
+
+					if (graphicsPipeline->isValid())
+					{
+						// TODO: Update transform buffer
+						UpdateCameraBuffer(rendererRes, cameraManagerRes, cameraBuffer);
+
+						continue;
+					}
 
 					auto vertexShaderModule = resourceStorageRes->request<ShaderModule>(shaderAssetsPack->vertexShaderAsset);
 					auto fragmentShaderModule = resourceStorageRes->request<ShaderModule>(shaderAssetsPack->fragmentShaderAsset);
@@ -75,8 +80,7 @@ namespace zt::gameplay
 						continue;
 					}
 
-					// TODO: Now this
-					if (!CreateCameraBuffer(rendererRes, sprites, cameraBuffer))
+					if (!CreateCameraBuffer(rendererRes, cameraBuffer))
 					{
 						Logger->error("Couldn't create camera buffer");
 						continue;
@@ -114,7 +118,7 @@ namespace zt::gameplay
 										}
 									}
 								},
-								.texturesInfos = { textureInfo },
+								.texturesInfos = {},
 							},
 							DescriptorInfo
 							{
@@ -129,13 +133,12 @@ namespace zt::gameplay
 										}
 									}
 								},
-								.texturesInfos{}
+								.texturesInfos{ textureInfo }
 							}
 						},
 						.descriptorSetsCount = rendererRes->getRendererContext().getDisplayImagesCount()
 					};
 
-					// TODO: Now camera
 					graphicsPipeline->create(createInfo);
 				}
 			}
@@ -143,7 +146,7 @@ namespace zt::gameplay
 
 		void Sprites::Deinit(
 			core::ecs::WorldCommands worldCommands,
-			core::ecs::Query<Sprite, vulkan_renderer::Buffer> query,
+			SystemComponentsQuery systemComponents,
 			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes
 		)
 		{
@@ -156,9 +159,12 @@ namespace zt::gameplay
 			auto& rendererContext = rendererRes->getRendererContext();
 			auto& vma = rendererContext.getVMA();
 
-			for (auto [sprites, buffer] : query)
+			for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, buffers] : systemComponents)
 			{
-				buffer->destroy(vma);
+				buffers->transform.destroy(vma);
+				buffers->camera.destroy(vma);
+
+				graphicsPipeline->destroy(rendererContext);
 			}
 		}
 
@@ -205,6 +211,55 @@ namespace zt::gameplay
 			}
 
 			return buffer;
+		}
+
+		bool Sprites::CreateCameraBuffer(core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, vulkan_renderer::Buffer& buffer)
+		{
+			using namespace core;
+			using namespace vulkan_renderer;
+
+			auto& rendererContext = rendererRes->getRendererContext();
+			auto& vma = rendererContext.getVMA();
+
+			VkDeviceSize bufferSize = sizeof(Camera::MatrixT) * 2; // View + Perspective matrices
+
+			VkBufferCreateInfo createInfo
+			{
+				.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+				.size = bufferSize,
+				.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+				.sharingMode = VK_SHARING_MODE_EXCLUSIVE
+			};
+
+			if (!buffer.create(vma, createInfo))
+			{
+				Logger->error("Couldn't create transform buffer");
+				return false;
+			}
+
+			return buffer;
+		}
+
+		bool Sprites::UpdateCameraBuffer(
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, 
+			core::ecs::ConstResource<CameraManager> cameraManagerRes, 
+			vulkan_renderer::Buffer& buffer)
+		{
+			const auto& rendererContext = rendererRes->getRendererContext();
+			const auto& vma = rendererContext.getVMA();
+
+			const auto& camera = cameraManagerRes->getCamera();
+
+			auto viewMatrix = camera.getViewMatrix();
+			auto perspectiveMatrix = camera.getPerspectiveMatrix();
+
+			if (!buffer.fillWithObject(vma, viewMatrix))
+				return false;
+
+			if (!buffer.fillWithObject(vma, perspectiveMatrix, sizeof(Camera::MatrixT)))
+				return false;
+
+			return true;
 		}
 
 	}

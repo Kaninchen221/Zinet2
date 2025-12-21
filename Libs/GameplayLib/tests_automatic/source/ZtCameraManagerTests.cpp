@@ -23,11 +23,6 @@ namespace zt::gameplay::system::tests
 		const float fov = 90;
 	};
 
-	// Some starting camera
-	// BlendToCamera (DestinationCamera, BlendTime)
-	// 
-	// Update (DeltaTime)
-
 	TEST_F(CameraManagerTests, SetGetTest)
 	{
 		Camera expectedCamera;

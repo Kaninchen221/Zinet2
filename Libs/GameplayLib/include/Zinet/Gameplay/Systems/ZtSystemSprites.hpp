@@ -85,7 +85,7 @@ namespace zt::gameplay::system
 
 		static void Deinit(
 			core::ecs::WorldCommands worldCommands,
-			core::ecs::Query<Sprite, vulkan_renderer::Buffer> query,
+			SystemComponentsQuery systemComponents,
 			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes
 		);
 
@@ -97,5 +97,15 @@ namespace zt::gameplay::system
 			vulkan_renderer::Buffer& buffer
 		);
 
+		static bool CreateCameraBuffer(
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			vulkan_renderer::Buffer& buffer
+		);
+
+		static bool UpdateCameraBuffer(
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			core::ecs::ConstResource<CameraManager> cameraManagerRes,
+			vulkan_renderer::Buffer& buffer
+		);
 	};
 }
