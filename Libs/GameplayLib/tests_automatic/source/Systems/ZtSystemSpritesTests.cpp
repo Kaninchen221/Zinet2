@@ -36,6 +36,9 @@ namespace zt::gameplay::system::tests
 			auto resourceStorageRes = world.addResource(ResourceStorage{});
 			ASSERT_TRUE(resourceStorageRes);
 
+			auto cameraManagerRes = world.addResource(CameraManager{});
+			ASSERT_TRUE(cameraManagerRes);
+
 			auto& assetStorage = *world.addResource(AssetStorage{});
 			assetStorage.registerAssetClass<asset::Texture>();
 			assetStorage.registerAssetClass<asset::Shader>();
@@ -75,7 +78,7 @@ namespace zt::gameplay::system::tests
 					},
 					textureAssetCopy,
 					samplerAssetCopy,
-					vulkan_renderer::Buffer{ nullptr });
+					SpritesBuffers{});
 
 				// Sanity check 
 				system::Sprites::SystemComponentsQuery testQuery{ world };
@@ -150,10 +153,10 @@ namespace zt::gameplay::system::tests
 			
 			system::Sprites::SystemComponentsQuery query{ world };
 			ASSERT_EQ(query.getComponentsCount(), 6); // Sanity check
-			for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, transformBuffer] : query)
+			for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, buffers] : query)
 			{
 				ASSERT_TRUE(graphicsPipeline);
-				//EXPECT_TRUE(graphicsPipeline->isValid());
+				EXPECT_TRUE(graphicsPipeline->isValid());
 			}
 
 			if (auto exitReason = world.getResource<ExitReason>())

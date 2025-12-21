@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
+#include "Zinet/Gameplay/ZtCameraManager.hpp"
 
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 #include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
@@ -39,10 +40,16 @@ namespace zt::gameplay::system
 
 	// TODO: Refactor it
 	// I created it because we can't have a two components in the same type in one query
-	struct ShaderAssetsPack
+	struct ZINET_GAMEPLAY_API ShaderAssetsPack
 	{
 		core::ConstAssetHandle<asset::Shader> vertexShaderAsset;
 		core::ConstAssetHandle<asset::Shader> fragmentShaderAsset;
+	};
+
+	struct ZINET_GAMEPLAY_API SpritesBuffers
+	{
+		vulkan_renderer::Buffer transform{ nullptr };
+		vulkan_renderer::Buffer camera{ nullptr };
 	};
 
 	class ZINET_GAMEPLAY_API Sprites
@@ -63,7 +70,7 @@ namespace zt::gameplay::system
 			ShaderAssetsPack,
 			core::ConstAssetHandle<asset::Texture>, // Atlas texture
 			core::ConstAssetHandle<asset::Sampler>,
-			vulkan_renderer::Buffer // Transform buffer
+			SpritesBuffers
 		>;
 
 		static void Init();
@@ -73,6 +80,7 @@ namespace zt::gameplay::system
 			SpriteQuery sprites,
 			SystemComponentsQuery systemComponents,
 			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			core::ecs::ConstResource<CameraManager> cameraManagerRes,
 			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes);
 
 		static void Deinit(

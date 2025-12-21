@@ -24,30 +24,61 @@ namespace zt::gameplay
 			SpriteQuery sprites,
 			SystemComponentsQuery systemComponents,
 			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			core::ecs::ConstResource<CameraManager> cameraManagerRes,
 			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes)
 		{	
+			// TODO: Refactor validation of resources
+			// Put it in the world class?
+			if (!rendererRes)
+			{
+				Logger->error("Renderer res is invalid");
+				return;
+			}
+
+			if (!resourceStorageRes)
+			{
+				Logger->error("Resource Storage res is invalid");
+				return;
+			}
+
+			if (!cameraManagerRes)
+			{
+				Logger->error("CameraManager res is invalid");
+				return;
+			}
+
 			// Create graphics pipelines
 			if (!systemComponents.isEmpty())
 			{
-				for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, transformBuffer] : systemComponents)
+				for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, buffers] : systemComponents)
 				{
 					if (graphicsPipeline->isValid())
 						continue;
+
+					auto& transformBuffer = buffers->transform;
+					auto& cameraBuffer = buffers->camera;
 
 					auto vertexShaderModule = resourceStorageRes->request<ShaderModule>(shaderAssetsPack->vertexShaderAsset);
 					auto fragmentShaderModule = resourceStorageRes->request<ShaderModule>(shaderAssetsPack->fragmentShaderAsset);
 					auto texture = resourceStorageRes->request<Texture>(*textureAsset);
 					auto sampler = resourceStorageRes->request<Sampler>(*samplerAsset);
 
-					if (!vertexShaderModule || !fragmentShaderModule || !texture || !sampler)
+					if (!vertexShaderModule || !fragmentShaderModule || !texture || !sampler || !buffers)
 					{
 						Logger->trace("Skip graphics pipeline creation because one of assets is not loaded");
 						continue;
 					}
 
-					if (!CreateTransformBuffer(rendererRes, sprites, *transformBuffer))
+					if (!CreateTransformBuffer(rendererRes, sprites, transformBuffer))
 					{
 						Logger->error("Couldn't create transform buffer");
+						continue;
+					}
+
+					// TODO: Now this
+					if (!CreateCameraBuffer(rendererRes, sprites, cameraBuffer))
+					{
+						Logger->error("Couldn't create camera buffer");
 						continue;
 					}
 
@@ -72,7 +103,17 @@ namespace zt::gameplay
 						{
 							DescriptorInfo
 							{
-								.buffersPacks = {},
+								.buffersPacks = 
+								{
+									vulkan_renderer::BuffersPack
+									{
+										.binding = 0,
+										.buffersPerType =
+										{
+											{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, { &cameraBuffer } }
+										}
+									}
+								},
 								.texturesInfos = { textureInfo },
 							},
 							DescriptorInfo
@@ -84,7 +125,7 @@ namespace zt::gameplay
 										.binding = 0,
 										.buffersPerType =
 										{
-											{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, { transformBuffer } }
+											{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, { &transformBuffer } }
 										}
 									}
 								},
@@ -95,7 +136,7 @@ namespace zt::gameplay
 					};
 
 					// TODO: Now camera
-					//graphicsPipeline->create(createInfo);
+					graphicsPipeline->create(createInfo);
 				}
 			}
 		}
