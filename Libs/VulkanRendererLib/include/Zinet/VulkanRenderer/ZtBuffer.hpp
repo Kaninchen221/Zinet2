@@ -64,6 +64,9 @@ namespace zt::vulkan_renderer
 
 		bool fillWithImage(const VMA& vma, const core::Image& image, size_t bytesDstOffset = 0);
 
+		// TODO: Test it
+		bool fillWithData(const VMA& vma, const void* src, size_t srcSize, size_t bytesDstOffset = 0);
+
 		template<core::STDContainer ContainerT>
 		bool getDataToSTDContainer(const VMA& vma, ContainerT& contiguousContainer, size_t bytesSrcOffset = 0) const;
 
@@ -78,7 +81,7 @@ namespace zt::vulkan_renderer
 
 	protected:
 
-		VkResult fillWithData(const VMA& vma, const void* src, size_t srcSize, size_t bytesDstOffset = 0) const;
+		VkResult fillWithDataInternal(const VMA& vma, const void* src, size_t srcSize, size_t bytesDstOffset = 0) const;
 
 		VkResult getData(const VMA& vma, void* dst, size_t dstSize, size_t bytesDstOffset = 0) const noexcept;
 
@@ -142,7 +145,7 @@ namespace zt::vulkan_renderer
 			return false;
 
 		const auto containerSize = sizeof(typename ContainerT::value_type) * stdContainer.size();
-		const auto result = fillWithData(vma, stdContainer.data(), containerSize, bytesOffset);
+		const auto result = fillWithDataInternal(vma, stdContainer.data(), containerSize, bytesOffset);
 
 		if (result == VK_SUCCESS)
 		{
@@ -161,7 +164,7 @@ namespace zt::vulkan_renderer
 		if (!isValid())
 			return false;
 
-		const auto result = fillWithData(vma, &object, sizeof(ObjectT), bytesOffset);
+		const auto result = fillWithDataInternal(vma, &object, sizeof(ObjectT), bytesOffset);
 
 		if (result == VK_SUCCESS)
 		{

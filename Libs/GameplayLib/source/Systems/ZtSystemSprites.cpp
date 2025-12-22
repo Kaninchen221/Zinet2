@@ -52,12 +52,17 @@ namespace zt::gameplay
 			{
 				for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, buffers] : systemComponents)
 				{
-					auto& transformBuffer = buffers->transform;
+					auto& positionBuffer = buffers->position;
+					auto& rotationBuffer = buffers->rotation;
+					auto& scaleBuffer = buffers->scale;
 					auto& cameraBuffer = buffers->camera;
 
 					if (graphicsPipeline->isValid())
 					{
-						// TODO: Update transform buffer
+						UpdateComponentBuffer(rendererRes, sprites.getComponentsPack<Position>(), positionBuffer);
+						UpdateComponentBuffer(rendererRes, sprites.getComponentsPack<Rotation>(), rotationBuffer);
+						UpdateComponentBuffer(rendererRes, sprites.getComponentsPack<Scale>(), scaleBuffer);
+
 						UpdateCameraBuffer(rendererRes, cameraManagerRes, cameraBuffer);
 
 						continue;
@@ -74,9 +79,21 @@ namespace zt::gameplay
 						continue;
 					}
 
-					if (!CreateTransformBuffer(rendererRes, sprites, transformBuffer))
+					if (!CreateComponentBuffer(rendererRes, sprites.getComponentsPack<Position>(), positionBuffer))
 					{
-						Logger->error("Couldn't create transform buffer");
+						Logger->error("Couldn't create position buffer");
+						continue;
+					}
+
+					if (!CreateComponentBuffer(rendererRes, sprites.getComponentsPack<Rotation>(), rotationBuffer))
+					{
+						Logger->error("Couldn't create rotation buffer");
+						continue;
+					}
+
+					if (!CreateComponentBuffer(rendererRes, sprites.getComponentsPack<Scale>(), scaleBuffer))
+					{
+						Logger->error("Couldn't create scale buffer");
 						continue;
 					}
 
@@ -99,6 +116,7 @@ namespace zt::gameplay
 						.shaderType = ShaderType::Fragment
 					};
 
+					// TODO: Refactor
 					GraphicsPipelineCreateInfo createInfo
 					{
 						.rendererContext = rendererRes->getRendererContext(),
@@ -129,7 +147,23 @@ namespace zt::gameplay
 										.binding = 0,
 										.buffersPerType =
 										{
-											{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, { &transformBuffer } }
+											{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, { &positionBuffer } }
+										}
+									},
+									vulkan_renderer::BuffersPack
+									{
+										.binding = 1,
+										.buffersPerType =
+										{
+											{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, { &rotationBuffer } }
+										}
+									},
+									vulkan_renderer::BuffersPack
+									{
+										.binding = 2,
+										.buffersPerType =
+										{
+											{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, { &scaleBuffer } }
 										}
 									}
 								},
@@ -161,56 +195,13 @@ namespace zt::gameplay
 
 			for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, buffers] : systemComponents)
 			{
-				buffers->transform.destroy(vma);
+				buffers->position.destroy(vma);
+				buffers->rotation.destroy(vma);
+				buffers->scale.destroy(vma);
 				buffers->camera.destroy(vma);
 
 				graphicsPipeline->destroy(rendererContext);
 			}
-		}
-
-		bool Sprites::CreateTransformBuffer(
-			ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, 
-			SpriteQuery& sprites,
-			vulkan_renderer::Buffer& buffer)
-		{
-			using namespace core;
-			using namespace vulkan_renderer;
-
-			auto& rendererContext = rendererRes->getRendererContext();
-			auto& vma = rendererContext.getVMA();
-
-			VkDeviceSize bufferSize{};
-			auto componentsPack = sprites.getComponentsPack<Transform>();
-			for (auto components : componentsPack)
-			{
-				if (!components)
-				{
-					Logger->error("Components is null");
-					return false;
-				}
-
-				bufferSize += components->getObjectsCapacity();
-			}
-			if (bufferSize <= 0)
-				return false;
-
-			bufferSize *= sizeof(Transform);
-
-			VkBufferCreateInfo createInfo
-			{
-				.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-				.size = bufferSize,
-				.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-				.sharingMode = VK_SHARING_MODE_EXCLUSIVE
-			};
-
-			if (!buffer.create(vma, createInfo))
-			{
-				Logger->error("Couldn't create transform buffer");
-				return false;
-			}
-
-			return buffer;
 		}
 
 		bool Sprites::CreateCameraBuffer(core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, vulkan_renderer::Buffer& buffer)
@@ -220,6 +211,12 @@ namespace zt::gameplay
 
 			auto& rendererContext = rendererRes->getRendererContext();
 			auto& vma = rendererContext.getVMA();
+
+			if (buffer)
+			{
+				Logger->warn("Passed a valid buffer");
+				return false;
+			}
 
 			VkDeviceSize bufferSize = sizeof(Camera::MatrixT) * 2; // View + Perspective matrices
 

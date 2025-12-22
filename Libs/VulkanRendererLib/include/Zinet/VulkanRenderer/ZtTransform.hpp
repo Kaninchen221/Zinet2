@@ -13,6 +13,7 @@ namespace zt::vulkan_renderer
 {
 	class RendererContext;
 
+	// TODO: Test if the Transform class has a size of its members
 	class  Transform
 	{
 	protected:

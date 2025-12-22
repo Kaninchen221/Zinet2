@@ -11,6 +11,7 @@
 #include "Zinet/Core/ECS/ZtQuery.hpp"
 
 #include "Zinet/Core/ZtExitReason.hpp"
+#include "Zinet/Core/ZtTimeLog.hpp"
 
 #include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
@@ -118,7 +119,8 @@ namespace zt::gameplay::system::tests
 		const size_t spritesCount = 10;
 		for (size_t index = 0; index < spritesCount; ++index)
 		{
-			world.spawn(Sprite{}, Transform{}); // TODO: Apply a valid transform 
+			world.spawn(Sprite{}, zt::Position{ { 0, 0, 0 } }, zt::Rotation{ 0 }, zt::Scale{ { 1, 1, 1 } });
+			// TODO: Apply a random: position, scale and rotation
 			// TODO: Maybe add some way to define Entity to reduce redundancy of defining Entity types
 		}
 
@@ -133,18 +135,18 @@ namespace zt::gameplay::system::tests
 			// TODO: Sprites
 			// 1.
 			// Sort sprites using their components to create graphics pipelines only once per unique combination?
-			// Or handle only one combination for now
+			// Or handle only one combination for now <-- for now we have only one combination
 			// 
-			// 2. Create descriptors
-			// 3. Create graphics pipelines
-			// 4. Expect a valid GraphicsPipeline in test
-			// 5. Create and expect render draw data
+			// 2. Create descriptors <-- Done
+			// 3. Create graphics pipelines <-- Done
+			// 4. Expect a valid GraphicsPipeline in test <-- Done
+			// 5. Create and expect render draw data <-- Now this
 			// 6. Update transform buffers
 
 			// We need to run the update method two times because the system is requesting renderer resources
-			for (size_t i = 0; i < 2; i++)
+			for (size_t i = 0; i < 4; i++)
 			{
-				schedule.runOneSystemOnce(Sprites{}, Sprites::Update, world);
+				ZT_TIME_LOG(schedule.runOneSystemOnce(Sprites{}, Sprites::Update, world));
 
 				auto rendererRes = world.getResource<VulkanRenderer>();
 				auto resourceStorageRes = world.getResource<ResourceStorage>();

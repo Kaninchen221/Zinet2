@@ -113,8 +113,12 @@ namespace zt::core
 
 		auto getTypeID() const noexcept { return typeID; }
 
+		auto getTypeSize() const noexcept { return typeSize; }
+
 		TypeLessVectorIterator begin() noexcept;
 		TypeLessVectorIterator end() noexcept;
+
+		const auto* data() const noexcept { return buffer.data(); }
 
 	private:
 

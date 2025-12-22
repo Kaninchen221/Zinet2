@@ -48,7 +48,9 @@ namespace zt::gameplay::system
 
 	struct ZINET_GAMEPLAY_API SpritesBuffers
 	{
-		vulkan_renderer::Buffer transform{ nullptr };
+		vulkan_renderer::Buffer position{ nullptr };
+		vulkan_renderer::Buffer rotation{ nullptr };
+		vulkan_renderer::Buffer scale{ nullptr };
 		vulkan_renderer::Buffer camera{ nullptr };
 	};
 
@@ -60,11 +62,13 @@ namespace zt::gameplay::system
 
 		using SpriteQuery = core::ecs::ConstQuery<
 			Sprite,
-			vulkan_renderer::Transform
+			Position,
+			Rotation,
+			Scale
 			// Texture region
 		>;
 
-		using SystemComponentsQuery = core::ecs::Query <
+		using SystemComponentsQuery = core::ecs::Query<
 			Sprites,
 			vulkan_renderer::GraphicsPipeline,
 			ShaderAssetsPack,
@@ -91,9 +95,15 @@ namespace zt::gameplay::system
 
 	private:
 
-		static bool CreateTransformBuffer(
+		static bool CreateComponentBuffer(
 			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
-			SpriteQuery& sprites,
+			const auto& componentsPack,
+			vulkan_renderer::Buffer& buffer
+		);
+
+		static bool UpdateComponentBuffer(
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			const auto& componentsPack,
 			vulkan_renderer::Buffer& buffer
 		);
 
@@ -108,4 +118,84 @@ namespace zt::gameplay::system
 			vulkan_renderer::Buffer& buffer
 		);
 	};
+
+	bool Sprites::CreateComponentBuffer(core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, const auto& componentsPack, vulkan_renderer::Buffer& buffer)
+	{
+		using namespace core;
+		using namespace vulkan_renderer;
+
+		auto& rendererContext = rendererRes->getRendererContext();
+		auto& vma = rendererContext.getVMA();
+
+		if (buffer)
+		{
+			Logger->warn("Passed a valid buffer");
+			return false;
+		}
+
+		VkDeviceSize bufferSize{};
+		for (auto components : componentsPack)
+		{
+			if (!components)
+			{
+				Logger->error("Components is null");
+				return false;
+			}
+
+			bufferSize += components->getObjectsCapacity();
+		}
+		if (bufferSize <= 0)
+			return false;
+
+		bufferSize *= componentsPack.front()->getTypeSize();
+
+		VkBufferCreateInfo createInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+			.size = bufferSize,
+			.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			.sharingMode = VK_SHARING_MODE_EXCLUSIVE
+		};
+
+		if (!buffer.create(vma, createInfo))
+		{
+			Logger->error("Couldn't create a component buffer");
+			return false;
+		}
+
+		return buffer;
+	}
+
+	bool Sprites::UpdateComponentBuffer(core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, const auto& componentsPack, vulkan_renderer::Buffer& buffer)
+	{
+		using namespace vulkan_renderer;
+
+		const auto& rendererContext = rendererRes->getRendererContext();
+		const auto& vma = rendererContext.getVMA();
+
+		if (!buffer)
+		{
+			Logger->error("Buffer is invalid");
+			return false;
+		}
+
+		size_t offset = 0;
+		for (auto components : componentsPack)
+		{
+			if (!components)
+			{
+				Logger->error("Components is null");
+				return false;
+			}
+
+			const auto data = components->data();
+			// TODO: Handle situations when we remove entities (so some components are invalid, perhaps additional buffer for discarding?)
+			const size_t bufferSize = components->getObjectsCount() * components->getTypeSize();
+			buffer.fillWithData(vma, data, bufferSize, offset);
+
+			offset += bufferSize;
+		}
+
+		return true;
+	}
 }
