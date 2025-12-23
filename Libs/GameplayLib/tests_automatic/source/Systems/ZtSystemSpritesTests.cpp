@@ -140,8 +140,9 @@ namespace zt::gameplay::system::tests
 			// 2. Create descriptors <-- Done
 			// 3. Create graphics pipelines <-- Done
 			// 4. Expect a valid GraphicsPipeline in test <-- Done
-			// 5. Create and expect render draw data <-- Now this
-			// 6. Update transform buffers
+			// 5. Vertex and indices buffers <-- Now this
+			// 6. Create and expect render draw data 
+			// 7. Update transform buffers
 
 			// We need to run the update method two times because the system is requesting renderer resources
 			for (size_t i = 0; i < 4; i++)
