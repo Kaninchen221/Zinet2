@@ -44,7 +44,7 @@ namespace zt::vulkan_renderer
 
 		void destroy(const RendererContext& rendererContext) noexcept;
 
-		void draw(RendererContext& rendererContext, const DrawInfo& drawInfo, CommandBuffer& commandBuffer);
+		void draw(const RendererContext& rendererContext, const DrawInfo& drawInfo, CommandBuffer& commandBuffer) const;
 
 		bool isValid() const noexcept;
 
@@ -64,7 +64,7 @@ namespace zt::vulkan_renderer
 		DescriptorSets objectDescriptorSets;
 
 		using VkDescriptorSets = std::array<VkDescriptorSet, 2>;
-		VkDescriptorSets vkDescriptorSets;
+		mutable VkDescriptorSets vkDescriptorSets;
 
 		PipelineLayout pipelineLayout{ nullptr };
 		Pipeline pipeline{ nullptr };

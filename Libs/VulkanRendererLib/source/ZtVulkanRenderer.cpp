@@ -98,6 +98,15 @@ namespace zt::vulkan_renderer
 		commandBuffer.beginRenderPass(renderPass, displayImage.framebuffer, extent);
 	}
 
+	void VulkanRenderer::draw(const GraphicsPipeline& graphicsPipeline, const DrawInfo& drawInfo)
+	{
+		auto& displayImage = rendererContext.getCurrentDisplayImage();
+		auto& commandBuffer = displayImage.commandBuffer;
+
+		commandBuffer.bindPipeline(graphicsPipeline.getPipeline());
+		graphicsPipeline.draw(rendererContext, drawInfo, commandBuffer);
+	}
+
 	void VulkanRenderer::draw(const Command& command)
 	{
 		auto& displayImage = rendererContext.getCurrentDisplayImage();
@@ -111,7 +120,7 @@ namespace zt::vulkan_renderer
 		}
 #	endif
 
-		command(commandBuffer);
+		command(commandBuffer, rendererContext);
 	}
 
 	void VulkanRenderer::endRenderPass()

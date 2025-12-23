@@ -124,7 +124,7 @@ namespace zt::vulkan_renderer
 		ImGui_ImplGlfw_NewFrame();
 	}
 
-	void ImGuiIntegration::DrawCommand(CommandBuffer& commandBuffer)
+	void ImGuiIntegration::DrawCommand(CommandBuffer& commandBuffer, const RendererContext&)
 	{
 		// Render additional Platform Windows
 		auto& io = ImGui::GetIO();

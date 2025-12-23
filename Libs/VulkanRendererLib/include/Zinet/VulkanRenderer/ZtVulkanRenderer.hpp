@@ -27,7 +27,7 @@ namespace zt::vulkan_renderer
 	public:
 
 		// TODO: Rename to DrawCommands
-		using Command = std::function<void(CommandBuffer&)>;
+		using Command = std::function<void(CommandBuffer&, const RendererContext&)>;
 
 		VulkanRenderer() = default;
 		VulkanRenderer(const VulkanRenderer& other) = default;
@@ -59,6 +59,8 @@ namespace zt::vulkan_renderer
 		void startRecordingDrawCommands();
 
 		void beginRenderPass(RenderPass& renderPass);
+
+		void draw(const GraphicsPipeline& graphicsPipeline, const DrawInfo& drawInfo);
 
 		void draw(const Command& command);
 

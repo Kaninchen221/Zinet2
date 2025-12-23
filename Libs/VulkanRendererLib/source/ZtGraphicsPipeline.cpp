@@ -62,7 +62,7 @@ namespace zt::vulkan_renderer
 	}
 
 	void GraphicsPipeline::draw(
-		[[maybe_unused]] RendererContext& rendererContext, const DrawInfo& drawInfo, CommandBuffer& commandBuffer)
+		const RendererContext& rendererContext, const DrawInfo& drawInfo, CommandBuffer& commandBuffer) const
 	{
 		vkDescriptorSets =
 		{

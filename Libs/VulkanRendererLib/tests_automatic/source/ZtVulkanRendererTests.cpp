@@ -330,16 +330,7 @@ namespace zt::vulkan_renderer::tests
 
 				renderer.beginRenderPass(renderer.getRendererContext().getRenderPass());
 
-				auto drawCommand =
-				[&graphicsPipeline = graphicsPipeline, &rendererContext = renderer.getRendererContext(), &drawInfo = drawInfo]
-				(CommandBuffer& commandBuffer)
-				{
-					commandBuffer.bindPipeline(graphicsPipeline.getPipeline());
-
-					graphicsPipeline.draw(rendererContext, drawInfo, commandBuffer);
-				};
-
-				renderer.draw(drawCommand);
+				renderer.draw(graphicsPipeline, drawInfo);
 				renderer.draw(ImGuiIntegration::DrawCommand);
 
 				renderer.endRenderPass();
