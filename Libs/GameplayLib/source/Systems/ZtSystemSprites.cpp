@@ -79,6 +79,18 @@ namespace zt::gameplay
 						continue;
 					}
 
+					if (!CreateVertexBuffer(rendererRes, buffers->vertex))
+					{
+						Logger->error("Couldn't create vertex buffer");
+						continue;
+					}
+
+					if (!CreateIndexBuffer(rendererRes, buffers->index))
+					{
+						Logger->error("Couldn't create index buffer");
+						continue;
+					}
+
 					if (!CreateComponentBuffer(rendererRes, sprites.getComponentsPack<Position>(), positionBuffer))
 					{
 						Logger->error("Couldn't create position buffer");
@@ -195,13 +207,77 @@ namespace zt::gameplay
 
 			for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, buffers] : systemComponents)
 			{
-				buffers->position.destroy(vma);
-				buffers->rotation.destroy(vma);
-				buffers->scale.destroy(vma);
-				buffers->camera.destroy(vma);
+				buffers->destroy(vma);
 
 				graphicsPipeline->destroy(rendererContext);
 			}
+		}
+
+		bool Sprites::CreateVertexBuffer(core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, vulkan_renderer::Buffer& buffer)
+		{
+			if (buffer)
+			{
+				Logger->warn("Passed a valid buffer");
+				return false;
+			}
+
+			const DrawInfo::Vertices vertices = {
+				{{-0.5f, 0.5f, 1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {0.f, 0.f}},
+				{{0.5f,  0.5f, 1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {1.f, 0.f}},
+				{{0.5f,  -0.5f,  1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {1.f, 1.f}},
+				{{-0.5f, -0.5f,  1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {0.f, 1.f}}
+			};
+
+			auto& rendererContext = rendererRes->getRendererContext();
+			auto& vma = rendererContext.getVMA();
+
+			const auto createInfo = Buffer::GetVertexBufferCreateInfo(vertices);
+			if (!buffer.create(vma, createInfo))
+			{
+				Logger->info("Couldn't create vertex buffer");
+				return false;
+			}
+				
+			if (!buffer.fillWithSTDContainer(vma, vertices))
+			{
+				Logger->info("Couldn't fill vertex buffer");
+				return false;
+			}
+
+			return true;
+		}
+
+		bool Sprites::CreateIndexBuffer(core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, vulkan_renderer::Buffer& buffer)
+		{
+			if (buffer)
+			{
+				Logger->warn("Passed a valid buffer");
+				return false;
+			}
+
+			const DrawInfo::Indices indices =
+			{
+				0, 1, 2,
+				2, 3, 0
+			};
+
+			auto& rendererContext = rendererRes->getRendererContext();
+			auto& vma = rendererContext.getVMA();
+
+			const auto createInfo = Buffer::GetIndexBufferCreateInfo(indices);
+			if (!buffer.create(vma, createInfo))
+			{
+				Logger->info("Couldn't create vertex buffer");
+				return false;
+			}
+
+			if (!buffer.fillWithSTDContainer(vma, indices))
+			{
+				Logger->info("Couldn't fill vertex buffer");
+				return false;
+			}
+
+			return true;
 		}
 
 		bool Sprites::CreateCameraBuffer(core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, vulkan_renderer::Buffer& buffer)

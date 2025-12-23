@@ -48,10 +48,22 @@ namespace zt::gameplay::system
 
 	struct ZINET_GAMEPLAY_API SpritesBuffers
 	{
+		vulkan_renderer::Buffer vertex{ nullptr };
+		vulkan_renderer::Buffer index{ nullptr };
 		vulkan_renderer::Buffer position{ nullptr };
 		vulkan_renderer::Buffer rotation{ nullptr };
 		vulkan_renderer::Buffer scale{ nullptr };
 		vulkan_renderer::Buffer camera{ nullptr };
+
+		void destroy(const vulkan_renderer::VMA& vma) noexcept
+		{
+			vertex.destroy(vma);
+			index.destroy(vma);
+			position.destroy(vma);
+			rotation.destroy(vma);
+			scale.destroy(vma);
+			camera.destroy(vma);
+		}
 	};
 
 	class ZINET_GAMEPLAY_API Sprites
@@ -94,6 +106,16 @@ namespace zt::gameplay::system
 		);
 
 	private:
+
+		static bool CreateVertexBuffer(
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			vulkan_renderer::Buffer& buffer
+		);
+
+		static bool CreateIndexBuffer(
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			vulkan_renderer::Buffer& buffer
+		);
 
 		static bool CreateComponentBuffer(
 			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,

@@ -93,9 +93,11 @@ namespace zt::gameplay::system::tests
 			auto& rendererContext = rendererRes->getRendererContext();
 			auto& vma = rendererContext.getVMA();
 
-			for (auto [buffer] : ecs::Query<Buffer>{ world })
+			for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, buffers] : Sprites::SystemComponentsQuery{ world })
 			{
-				buffer->destroy(vma);
+				buffers->destroy(vma);
+
+				graphicsPipeline->destroy(rendererContext);
 			}
 
 			auto resourceStorageRes = world.getResource<vulkan_renderer::ResourceStorage>();
@@ -158,6 +160,13 @@ namespace zt::gameplay::system::tests
 			ASSERT_EQ(query.getComponentsCount(), 6); // Sanity check
 			for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, buffers] : query)
 			{
+				ASSERT_TRUE(buffers->index);
+				ASSERT_TRUE(buffers->vertex);
+				ASSERT_TRUE(buffers->camera);
+				ASSERT_TRUE(buffers->position);
+				ASSERT_TRUE(buffers->scale);
+				ASSERT_TRUE(buffers->rotation);
+
 				ASSERT_TRUE(graphicsPipeline);
 				EXPECT_TRUE(graphicsPipeline->isValid());
 			}
