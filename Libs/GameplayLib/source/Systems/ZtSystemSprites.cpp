@@ -50,7 +50,7 @@ namespace zt::gameplay
 			// Create graphics pipelines
 			if (!systemComponents.isEmpty())
 			{
-				for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, buffers] : systemComponents)
+				for ([[maybe_unused]] auto [label, graphicsPipeline, drawInfo, shaderAssetsPack, textureAsset, samplerAsset, buffers] : systemComponents)
 				{
 					auto& positionBuffer = buffers->position;
 					auto& rotationBuffer = buffers->rotation;
@@ -90,6 +90,11 @@ namespace zt::gameplay
 						Logger->error("Couldn't create index buffer");
 						continue;
 					}
+
+					drawInfo->vertexBuffer = &buffers->vertex;
+					drawInfo->indexBuffer = &buffers->index;
+					drawInfo->indexCount = 4u;
+					drawInfo->instances = static_cast<uint32_t>(sprites.getComponentsCount());
 
 					if (!CreateComponentBuffer(rendererRes, sprites.getComponentsPack<Position>(), positionBuffer))
 					{
@@ -205,7 +210,7 @@ namespace zt::gameplay
 			auto& rendererContext = rendererRes->getRendererContext();
 			auto& vma = rendererContext.getVMA();
 
-			for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, buffers] : systemComponents)
+			for ([[maybe_unused]] auto [label, graphicsPipeline, drawInfo, shaderAssetsPack, textureAsset, samplerAsset, buffers] : systemComponents)
 			{
 				buffers->destroy(vma);
 

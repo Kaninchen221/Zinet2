@@ -83,6 +83,7 @@ namespace zt::gameplay::system
 		using SystemComponentsQuery = core::ecs::Query<
 			Sprites,
 			vulkan_renderer::GraphicsPipeline,
+			vulkan_renderer::DrawInfo,
 			ShaderAssetsPack,
 			core::ConstAssetHandle<asset::Texture>, // Atlas texture
 			core::ConstAssetHandle<asset::Sampler>,

@@ -73,6 +73,7 @@ namespace zt::gameplay::system::tests
 				world.spawn(
 					system::Sprites{},
 					vulkan_renderer::GraphicsPipeline{},
+					vulkan_renderer::DrawInfo{},
 					ShaderAssetsPack{
 						.vertexShaderAsset = vertexShaderAsset,
 						.fragmentShaderAsset = fragmentShaderAsset
@@ -93,7 +94,7 @@ namespace zt::gameplay::system::tests
 			auto& rendererContext = rendererRes->getRendererContext();
 			auto& vma = rendererContext.getVMA();
 
-			for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, buffers] : Sprites::SystemComponentsQuery{ world })
+			for ([[maybe_unused]] auto [label, graphicsPipeline, drawInfo, shaderAssetsPack, textureAsset, samplerAsset, buffers] : Sprites::SystemComponentsQuery{ world })
 			{
 				buffers->destroy(vma);
 
@@ -157,8 +158,8 @@ namespace zt::gameplay::system::tests
 			}
 			
 			system::Sprites::SystemComponentsQuery query{ world };
-			ASSERT_EQ(query.getComponentsCount(), 6); // Sanity check
-			for ([[maybe_unused]] auto [label, graphicsPipeline, shaderAssetsPack, textureAsset, samplerAsset, buffers] : query)
+			ASSERT_EQ(query.getComponentsCount(), 7); // Sanity check
+			for ([[maybe_unused]] auto [label, graphicsPipeline, drawInfo, shaderAssetsPack, textureAsset, samplerAsset, buffers] : query)
 			{
 				ASSERT_TRUE(buffers->index);
 				ASSERT_TRUE(buffers->vertex);
@@ -169,11 +170,40 @@ namespace zt::gameplay::system::tests
 
 				ASSERT_TRUE(graphicsPipeline);
 				EXPECT_TRUE(graphicsPipeline->isValid());
+
+				{
+					ASSERT_TRUE(drawInfo->indexBuffer);
+					ASSERT_TRUE(drawInfo->vertexBuffer);
+					ASSERT_NE(drawInfo->indexCount, 0);
+					ASSERT_NE(drawInfo->instances, 0);
+
+					auto rendererRes = world.getResource<VulkanRenderer>();
+					auto& renderer = *rendererRes;
+
+					ASSERT_TRUE(renderer.nextImage());
+
+					renderer.startRecordingDrawCommands();
+
+					renderer.beginRenderPass(renderer.getRendererContext().getRenderPass());
+
+					renderer.draw(*graphicsPipeline, *drawInfo);
+
+					renderer.endRenderPass();
+
+					renderer.endRecordingDrawCommands();
+
+					ASSERT_TRUE(renderer.submitCurrentDisplayImage());
+
+					ASSERT_TRUE(renderer.displayCurrentImage());
+				}
 			}
 
 			if (auto exitReason = world.getResource<ExitReason>())
 				FAIL() << exitReason->reason;
 		}
+
+		auto rendererRes = world.getResource<VulkanRenderer>();
+		rendererRes->waitForCompleteDrawing();
 
 		{ // Deinit
 			schedule.runOneSystemOnce(Sprites{}, Sprites::Deinit, world);

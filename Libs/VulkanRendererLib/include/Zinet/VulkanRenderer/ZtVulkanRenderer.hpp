@@ -79,6 +79,8 @@ namespace zt::vulkan_renderer
 
 		bool isInitialized() const noexcept { return initialized; }
 
+		void waitForCompleteDrawing() { rendererContext.queue.waitIdle(); }
+
 	protected:
 
 		RendererContext rendererContext;

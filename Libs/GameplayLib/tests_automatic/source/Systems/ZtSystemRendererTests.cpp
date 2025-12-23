@@ -54,7 +54,8 @@ namespace zt::gameplay::system::tests
 			schedule.addSystem(Renderer{}, Renderer::Update, ecs::After{ Window{} }, ecs::MainThread{});
 
 			bool commandInvoked = false;
-			auto command = [&commandInvoked = commandInvoked](vulkan_renderer::CommandBuffer&)
+			auto command = [&commandInvoked = commandInvoked]
+			(vulkan_renderer::CommandBuffer&, const vulkan_renderer::RendererContext&)
 			{
 				commandInvoked = true;
 			};
