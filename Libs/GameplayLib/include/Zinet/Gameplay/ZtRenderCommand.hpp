@@ -6,7 +6,7 @@
 
 namespace zt::gameplay
 {
-	struct ZINET_GAMEPLAY_API RenderDrawData
+	struct ZINET_GAMEPLAY_API RenderCommand
 	{
 		using Command = vulkan_renderer::VulkanRenderer::Command;
 

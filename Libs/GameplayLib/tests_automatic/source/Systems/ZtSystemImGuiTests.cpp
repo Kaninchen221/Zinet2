@@ -64,7 +64,7 @@ namespace zt::gameplay::system::tests
 			ASSERT_TRUE(imGuiIntegrationRes);
 			ASSERT_TRUE(imGuiIntegrationRes->isInitialized());
 
-			auto query = ecs::Query<RenderDrawData>{ world };
+			auto query = ecs::Query<RenderCommand>{ world };
 			EXPECT_EQ(query.getComponentsCount(), 1);
 			
 			auto imGuiDataRes = world.getResource<ImGuiData>();

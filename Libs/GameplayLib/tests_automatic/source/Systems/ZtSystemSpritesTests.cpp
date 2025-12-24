@@ -145,7 +145,7 @@ namespace zt::gameplay::system::tests
 			// 4. Expect a valid GraphicsPipeline in test <-- Done
 			// 5. Vertex and indices buffers <-- Done
 			// 6. Create and expect render draw data <-- Done
-			// 7. Use RenderDrawData? <-- Now this
+			// 7. Use RenderCommand? <-- Now this
 			// 8. Update transform buffers
 
 			// We need to run the update method two times because the system is requesting renderer resources
