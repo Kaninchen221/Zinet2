@@ -26,7 +26,6 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		// TODO: Rename to DrawCommands
 		using Command = std::function<void(CommandBuffer&, const RendererContext&)>;
 
 		VulkanRenderer() = default;
