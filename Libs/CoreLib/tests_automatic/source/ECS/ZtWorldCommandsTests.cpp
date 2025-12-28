@@ -44,7 +44,7 @@ namespace zt::core::ecs::tests
 			WorldCommands worldCommands{ world };
 			entity = world.spawn(Position{}, Velocity{});
 		}
-		ASSERT_EQ(world.getComponentsCount(), 2);
+		ASSERT_EQ(world.getComponentCount(), 2);
 
 		{
 			WorldCommands worldCommands{ world };
@@ -53,7 +53,7 @@ namespace zt::core::ecs::tests
 
 		world.executeCommands();
 
-		ASSERT_EQ(world.getComponentsCount(), 0);
+		ASSERT_EQ(world.getComponentCount(), 0);
 	}
 
 	TEST_F(ECSWorldCommandsTests, AddResourceTrivialTypeTest)
@@ -78,7 +78,7 @@ namespace zt::core::ecs::tests
 
 		world.executeCommands();
 
-		ASSERT_EQ(world.getComponentsCount(), 1);
+		ASSERT_EQ(world.getComponentCount(), 1);
 		Query<ComponentT> query{ world };
 		for (auto [component] : query)
 		{

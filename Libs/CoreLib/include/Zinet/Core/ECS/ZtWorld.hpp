@@ -52,7 +52,7 @@ namespace zt::core::ecs
 		template<class Component>
 		std::vector<TypeLessVector*> getComponentsOfType() noexcept;
 
-		size_t getComponentsCount() const noexcept;
+		size_t getComponentCount() const noexcept;
 
 		size_t getArchetypesCount() const noexcept { return archetypes.size(); }
 

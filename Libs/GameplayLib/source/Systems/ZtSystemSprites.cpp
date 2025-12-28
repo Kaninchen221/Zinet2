@@ -165,7 +165,7 @@ namespace zt::gameplay
 					drawInfo->vertexBuffer = &buffers->vertex;
 					drawInfo->indexBuffer = &buffers->index;
 					drawInfo->indexCount = 6u;
-					drawInfo->instances = static_cast<uint32_t>(sprites.getComponentsCount() / sprites.getTypeCount());
+					drawInfo->instances = static_cast<uint32_t>(sprites.getComponentCount() / sprites.getTypeCount());
 
 					if (!CreateComponentBuffer(rendererRes, sprites.getComponentsPack<Position>(), positionBuffer, "Sprites Position Buffer"))
 					{

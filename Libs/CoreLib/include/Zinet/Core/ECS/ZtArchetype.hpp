@@ -44,7 +44,7 @@ namespace zt::core::ecs
 
 		size_t getEntitiesCount() const noexcept { return entities.size(); }
 
-		size_t getComponentsCount() const noexcept;
+		size_t getComponentCount() const noexcept;
 
 		auto& getEntities() const noexcept { return entities; }
 

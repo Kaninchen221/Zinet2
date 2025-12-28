@@ -152,14 +152,11 @@ namespace zt::core::ecs
 		QueryImpl& operator = (const QueryImpl& other) noexcept = default;
 		QueryImpl& operator = (QueryImpl&& other) noexcept = default;
 
-		// TODO: Rename to getComponentCount
-		size_t getComponentsCount() const noexcept;
+		size_t getComponentCount() const noexcept;
 
-		// TODO: Test it
-		size_t getTypeCount() const noexcept { return sizeof...(Components); }
+		constexpr size_t getTypeCount() const noexcept { return sizeof...(Components); }
 
-		// TODO: Test it
-		bool isEmpty() const noexcept { return getComponentsCount() == 0; }
+		bool isEmpty() const noexcept { return getComponentCount() == 0; }
 
 		// Useful when you need to fill a buffer with components data
 		// Return an array of TypeLessVectors
@@ -182,7 +179,7 @@ namespace zt::core::ecs
 	};
 
 	template<class IsConstType, class... Components>
-	size_t QueryImpl<IsConstType, Components...>::getComponentsCount() const noexcept
+	size_t QueryImpl<IsConstType, Components...>::getComponentCount() const noexcept
 	{
 		size_t count = 0;
 		for (const auto& archetype : archetypes)

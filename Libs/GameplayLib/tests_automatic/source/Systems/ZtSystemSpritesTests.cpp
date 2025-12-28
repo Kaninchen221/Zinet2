@@ -95,17 +95,8 @@ namespace zt::gameplay::system::tests
 
 		{ // Update
 			// TODO: Sprites
-			// 1.
-			// Sort sprites using their components to create graphics pipelines only once per unique combination?
-			// Or handle only one combination for now <-- for now we have only one combination
+			// 1. Handle situation when we remove a sprite
 			// 
-			// 2. Create descriptors <-- Done
-			// 3. Create graphics pipelines <-- Done
-			// 4. Expect a valid GraphicsPipeline in test <-- Done
-			// 5. Vertex and indices buffers <-- Done
-			// 6. Create and expect render draw data <-- Done
-			// 7. Use RenderCommand? <-- Now this
-			// 8. Update transform buffers
 
 			// We need to run the update method at least two times because the system is requesting renderer resources
 			for (size_t i = 0; i < 4; i++)
@@ -118,7 +109,7 @@ namespace zt::gameplay::system::tests
 			}
 			
 			system::Sprites::SystemComponentsQuery query{ world };
-			ASSERT_EQ(query.getComponentsCount(), 7); // Sanity check
+			ASSERT_EQ(query.getComponentCount(), 7); // Sanity check
 			for ([[maybe_unused]] auto [label, graphicsPipeline, drawInfo, shaderAssetsPack, textureAsset, samplerAsset, buffers] : query)
 			{
 				ASSERT_TRUE(buffers->index);

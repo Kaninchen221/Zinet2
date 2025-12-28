@@ -25,12 +25,12 @@ namespace zt::core::ecs
 		return false;
 	}
 
-	size_t World::getComponentsCount() const noexcept
+	size_t World::getComponentCount() const noexcept
 	{
 		size_t count = 0;
 		for (const auto& archetype : archetypes)
 		{
-			count += archetype.getComponentsCount();
+			count += archetype.getComponentCount();
 		}
 		return count;
 	}

@@ -36,13 +36,13 @@ namespace zt::core::ecs::tests
 	TEST_F(ECSQueryTests, GetComponentsCountTest)
 	{
 		const Query<Sprite> querySprites{ world };
-		EXPECT_EQ(querySprites.getComponentsCount(), expectedSpritesCount);
+		EXPECT_EQ(querySprites.getComponentCount(), expectedSpritesCount);
 
 		const Query<Velocity> queryVelocities{ world };
-		EXPECT_EQ(queryVelocities.getComponentsCount(), expectedVelocitiesCount);
+		EXPECT_EQ(queryVelocities.getComponentCount(), expectedVelocitiesCount);
 
 		const Query<Position> queryPositions{ world };
-		EXPECT_EQ(queryPositions.getComponentsCount(), expectedPositionsCount);
+		EXPECT_EQ(queryPositions.getComponentCount(), expectedPositionsCount);
 	}
 
 	TEST_F(ECSQueryTests, IteratorsSingleComponentTypeTest)
@@ -98,6 +98,25 @@ namespace zt::core::ecs::tests
 		}
 
 		ASSERT_EQ(counter, expectedSpritesCount);
+	}
+
+	TEST_F(ECSQueryTests, GetTypeCountTest)
+	{
+		const Query<Sprite> spriteQuery{ world };
+		ASSERT_EQ(spriteQuery.getTypeCount(), 1);
+
+		const Query<Sprite, Velocity> secondQuery{ world };
+		ASSERT_EQ(secondQuery.getTypeCount(), 2);
+	}
+
+	TEST_F(ECSQueryTests, IsEmptyTest)
+	{
+		World emptyWorld;
+		const Query<Sprite> emptyQuery{ emptyWorld };
+		ASSERT_TRUE(emptyQuery.isEmpty());
+
+		const Query<Sprite> query{ world };
+		ASSERT_FALSE(query.isEmpty());
 	}
 }
 
@@ -168,7 +187,7 @@ namespace zt::core::ecs::tests
 
 		ConstQuery<Position> query{ constWorld };
 
-		ASSERT_TRUE(query.getComponentsCount() > 0);
+		ASSERT_TRUE(query.getComponentCount() > 0);
 
 		for (const auto [position] : query)
 		{
@@ -188,7 +207,7 @@ namespace zt::core::ecs::tests
 		{ // Non-const query
 			Query<Position, Velocity> query{ world };
 
-			ASSERT_EQ(query.getComponentsCount(), 4);
+			ASSERT_EQ(query.getComponentCount(), 4);
 
 			std::vector<TypeLessVector*> componentsPack = query.getComponentsPack<Position>();
 			ASSERT_EQ(componentsPack.size(), 2); // Because we have 2 archetypes

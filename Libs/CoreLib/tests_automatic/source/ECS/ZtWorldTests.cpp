@@ -182,10 +182,10 @@ namespace zt::core::ecs::tests
 	{
 		world.spawn(Sprite{});
 		world.spawn(Sprite{});
-		ASSERT_EQ(world.getComponentsCount(), 2);
+		ASSERT_EQ(world.getComponentCount(), 2);
 
 		world.spawn(Sprite{}, Position{});
-		ASSERT_EQ(world.getComponentsCount(), 4);
+		ASSERT_EQ(world.getComponentCount(), 4);
 	}
 
 	TEST_F(ECSWorldTests, AddResourceTest)

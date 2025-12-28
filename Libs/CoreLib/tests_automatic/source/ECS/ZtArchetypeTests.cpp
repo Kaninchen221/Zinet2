@@ -198,10 +198,10 @@ namespace zt::core::ecs::tests
 
 		const Entity entity{ 0, 0 };
 		archetype.add(entity, Position{}, Sprite{});
-		ASSERT_EQ(archetype.getComponentsCount(), 2);
+		ASSERT_EQ(archetype.getComponentCount(), 2);
 
 		archetype.add(entity, Position{}, Sprite{});
 		archetype.add(entity, Position{}, Sprite{});
-		ASSERT_EQ(archetype.getComponentsCount(), 6);
+		ASSERT_EQ(archetype.getComponentCount(), 6);
 	}
 }

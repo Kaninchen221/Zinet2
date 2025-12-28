@@ -76,7 +76,7 @@ namespace zt::gameplay::system
 #	if ZINET_SANITY_CHECK
 		// We expect only one render draw data for imgui
 		// 2 components because we expect imgui component as a filter for Query
-		if (imGuiRenderDrawDataQuery.getComponentsCount() != 2)
+		if (imGuiRenderDrawDataQuery.getComponentCount() != 2)
 		{
 			Logger->error("We expect only one render draw data for imgui");
 			return;

@@ -34,7 +34,7 @@ namespace zt::core::ecs
 		return false;
 	}
 
-	size_t Archetype::getComponentsCount() const noexcept
+	size_t Archetype::getComponentCount() const noexcept
 	{
 		if (componentsPack.empty())
 			return 0;
