@@ -98,12 +98,12 @@ namespace zt::core::ecs::tests
 
 		{
 			WorldCommands worldCommands{ world };
-			worldCommands.addResource(NonCopyableClass{ expectedValue });
+			worldCommands.addResource(ResourceT{ expectedValue });
 		}
 
 		world.executeCommands();
 
-		auto resource = world.getResource<NonCopyableClass>();
+		auto resource = world.getResource<ResourceT>();
 		ASSERT_TRUE(resource);
 		ASSERT_EQ(resource->value, expectedValue);
 	}

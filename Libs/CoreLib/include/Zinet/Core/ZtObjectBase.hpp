@@ -4,8 +4,6 @@
 
 namespace zt::core
 {
-	class ClassInfoBase;
-
 	class  ObjectBase
 	{
 

@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <tuple>
 
+// TODO: Remove this class
 namespace zt::core
 {
 	template<std::derived_from<Object> BaseClassType>

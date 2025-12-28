@@ -139,6 +139,7 @@ namespace zt::core::ecs
 
 		auto& getGraph() const noexcept { return graph; }
 
+		// TODO: When schedule found a system that needs resource of type T and a resource of type T doesn't exist in the world, then the Schedule should log about this and skip executing of that system
 		void runOnce(World& world);
 
 		template<class LabelT, class SystemT>

@@ -17,6 +17,7 @@ namespace zt::core
 	class Archive;
 	class JsonArchive;
 
+	// TODO: Review and refactor this class
 	class Object : public ObjectBase
 	{
 		ObjectWeakHandle<Object> self;

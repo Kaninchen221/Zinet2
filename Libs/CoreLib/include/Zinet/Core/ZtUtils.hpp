@@ -12,6 +12,7 @@
 
 namespace zt::core
 {
+	// TODO: It's old function from time when I wanted to have Debian version of the engine. Replace usages of it and then remove it.
 	inline bool Contains(auto&& container, auto&& value)
 	{
 		// https://github.com/shadps4-emu/shadPS4/issues/799#issuecomment-2391126439

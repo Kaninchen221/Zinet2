@@ -8,6 +8,11 @@
 namespace zt::core::ecs
 {
 	// WorldCommands doesn't support non-movable classes (It's WIP, TODO)
+	// TODO: WorldCommands
+	// - spawn and addResource must support:
+	//   - r-value and const and non const l-value (review tests)
+	// - Omit using shared_ptr and other dynamic allocations
+
 	class ZINET_CORE_API WorldCommands
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("zt::core::ecs::WorldCommands");

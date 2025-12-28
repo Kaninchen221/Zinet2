@@ -7,7 +7,7 @@
 
 #include "Zinet/Core/ZtDebug.hpp"
 #include <map>
-
+// TODO: Remove this class
 #ifdef ZINET_COLLECT_ALLOCATION_DEBUG_DATA
 
 template<typename Operation>

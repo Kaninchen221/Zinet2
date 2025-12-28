@@ -27,11 +27,6 @@ namespace zt::core::tests
         {
         }
 
-        class ObjectBaseDerived : public ObjectBase
-        {
-		public:
-            virtual const ClassInfoBase* getClassInfo() { return nullptr; };
-        };
     };
 
     TEST_F(ObjectBaseTests, PassTest)

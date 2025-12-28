@@ -4,7 +4,7 @@
 
 namespace zt::core
 {
-
+	// TODO: Remove this class
 	constexpr int InvalidIndex = -1;
 
 	struct Static

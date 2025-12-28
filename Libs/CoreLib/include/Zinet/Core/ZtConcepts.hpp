@@ -13,6 +13,7 @@ namespace zt::core
 		t.end();
 	};
 
+	// TODO: Rename to NonSTDContainer
 	template<typename T>
 	concept NotSTDContainer = !STDContainer<T>;
 
@@ -21,6 +22,7 @@ namespace zt::core
 		{ t.operator ->() };
 		{ t.operator bool() };
 	};
+
 	template<class T>
 	concept NotLikeSmartPointer = !LikeSmartPointer<T>;
 

@@ -12,6 +12,7 @@
 
 namespace zt::gameplay::asset
 {
+	// TODO: Remove The "Static"
 	template<std::derived_from<core::Asset> AssetT, class Static = core::Static::No>
 	class Property
 	{

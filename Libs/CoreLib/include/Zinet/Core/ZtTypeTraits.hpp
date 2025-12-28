@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <functional>
 
+// TODO: Remove this file
 namespace zt::core
 {
 	template<typename FirstFunctionPointer, typename SecondFunctionPointer>
