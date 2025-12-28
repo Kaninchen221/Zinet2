@@ -7,6 +7,7 @@
 #include "Zinet/Core/ZtArchive.hpp"
 #include "Zinet/Core/ZtFile.hpp"
 
+// TODO: How to make a serialization? Save/Load is our most important case
 namespace zt::gameplay::system
 {
 	class ZINET_GAMEPLAY_API Save
