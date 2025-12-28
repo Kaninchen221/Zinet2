@@ -152,7 +152,11 @@ namespace zt::core::ecs
 		QueryImpl& operator = (const QueryImpl& other) noexcept = default;
 		QueryImpl& operator = (QueryImpl&& other) noexcept = default;
 
+		// TODO: Rename to getComponentCount
 		size_t getComponentsCount() const noexcept;
+
+		// TODO: Test it
+		size_t getTypeCount() const noexcept { return sizeof...(Components); }
 
 		// TODO: Test it
 		bool isEmpty() const noexcept { return getComponentsCount() == 0; }

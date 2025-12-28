@@ -15,8 +15,79 @@ namespace zt::gameplay
 		using namespace core;
 		using namespace vulkan_renderer;
 
-		void Sprites::Init()
+		void Sprites::Init(
+			core::ecs::WorldCommands worldCommands, 
+			core::ecs::ConstResource<core::AssetStorage> assetStorageRes)
 		{
+			auto samplerAsset = assetStorageRes->getAs<asset::Sampler>("Content/Samplers/linear.sampler");
+			if (!samplerAsset)
+			{
+				Logger->error("Couldn't get sampler asset");
+				return;
+			}
+			
+			if (!samplerAsset->load(core::Paths::RootPath()))
+			{
+				Logger->error("Couldn't load sampler asset");
+				return;
+			}
+
+			auto textureAsset = assetStorageRes->getAs<asset::Texture>("Content/Textures/default_texture.png");
+			if (!textureAsset)
+			{
+				Logger->error("Couldn't get texture asset");
+				return;
+			}
+			
+			if (!textureAsset->load(core::Paths::RootPath()))
+			{
+				Logger->error("Couldn't load texture asset");
+				return;
+			}
+
+			auto vertexShaderAsset = assetStorageRes->getAs<asset::Shader>("Content/Shaders/shader_sprites.vert");
+			if (!vertexShaderAsset)
+			{
+				Logger->error("Couldn't get vertex shader asset");
+				return;
+			}
+			
+			if (!vertexShaderAsset->load(core::Paths::RootPath()))
+			{
+				Logger->error("Couldn't load vertex asset");
+				return;
+			}
+
+			auto fragmentShaderAsset = assetStorageRes->getAs<asset::Shader>("Content/Shaders/shader_sprites.frag");
+			if (!fragmentShaderAsset)
+			{
+				Logger->error("Couldn't get fragment shader asset");
+				return;
+			}
+			
+			if (!fragmentShaderAsset->load(core::Paths::RootPath()))
+			{
+				Logger->error("Couldn't load fragment asset");
+				return;
+			}
+
+			// Spawn system::Sprites input info
+			// TODO: Refactor it
+
+			auto samplerAssetCopy = samplerAsset;
+			auto textureAssetCopy = textureAsset;
+
+			worldCommands.spawn(
+				system::Sprites{},
+				vulkan_renderer::GraphicsPipeline{},
+				vulkan_renderer::DrawInfo{},
+				ShaderAssetsPack{
+					.vertexShaderAsset = vertexShaderAsset,
+					.fragmentShaderAsset = fragmentShaderAsset
+				},
+				textureAssetCopy,
+				samplerAssetCopy,
+				SpritesBuffers{});
 		}
 
 		void Sprites::Update(
@@ -75,7 +146,7 @@ namespace zt::gameplay
 
 					if (!vertexShaderModule || !fragmentShaderModule || !texture || !sampler || !buffers)
 					{
-						Logger->trace("Skip graphics pipeline creation because one of assets is not loaded");
+						Logger->debug("Skip graphics pipeline creation because one of renderer resources is not loaded");
 						continue;
 					}
 
@@ -93,22 +164,22 @@ namespace zt::gameplay
 
 					drawInfo->vertexBuffer = &buffers->vertex;
 					drawInfo->indexBuffer = &buffers->index;
-					drawInfo->indexCount = 4u;
-					drawInfo->instances = static_cast<uint32_t>(sprites.getComponentsCount());
+					drawInfo->indexCount = 6u;
+					drawInfo->instances = static_cast<uint32_t>(sprites.getComponentsCount() / sprites.getTypeCount());
 
-					if (!CreateComponentBuffer(rendererRes, sprites.getComponentsPack<Position>(), positionBuffer))
+					if (!CreateComponentBuffer(rendererRes, sprites.getComponentsPack<Position>(), positionBuffer, "Sprites Position Buffer"))
 					{
 						Logger->error("Couldn't create position buffer");
 						continue;
 					}
 
-					if (!CreateComponentBuffer(rendererRes, sprites.getComponentsPack<Rotation>(), rotationBuffer))
+					if (!CreateComponentBuffer(rendererRes, sprites.getComponentsPack<Rotation>(), rotationBuffer, "Sprites Rotation Buffer"))
 					{
 						Logger->error("Couldn't create rotation buffer");
 						continue;
 					}
 
-					if (!CreateComponentBuffer(rendererRes, sprites.getComponentsPack<Scale>(), scaleBuffer))
+					if (!CreateComponentBuffer(rendererRes, sprites.getComponentsPack<Scale>(), scaleBuffer, "Sprites Scale Buffer"))
 					{
 						Logger->error("Couldn't create scale buffer");
 						continue;
@@ -191,6 +262,10 @@ namespace zt::gameplay
 					};
 
 					graphicsPipeline->create(createInfo);
+
+					auto& device = rendererRes->getRendererContext().getDevice();
+					device.setDebugName(graphicsPipeline->getPipeline(), "Sprites Graphics Pipeline", VK_OBJECT_TYPE_PIPELINE);
+					device.setDebugName(graphicsPipeline->getPipelineLayout(), "Sprites Graphics Pipeline Layout", VK_OBJECT_TYPE_PIPELINE_LAYOUT);
 				}
 			}
 		}
@@ -227,14 +302,15 @@ namespace zt::gameplay
 			}
 
 			const DrawInfo::Vertices vertices = {
-				{{-0.5f, 0.5f, 1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {0.f, 0.f}},
-				{{0.5f,  0.5f, 1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {1.f, 0.f}},
+				{{-0.5f,  0.5f,  1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {0.f, 0.f}},
+				{{0.5f,   0.5f,  1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {1.f, 0.f}},
 				{{0.5f,  -0.5f,  1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {1.f, 1.f}},
 				{{-0.5f, -0.5f,  1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {0.f, 1.f}}
 			};
 
 			auto& rendererContext = rendererRes->getRendererContext();
 			auto& vma = rendererContext.getVMA();
+			auto& device = rendererContext.getDevice();
 
 			const auto createInfo = Buffer::GetVertexBufferCreateInfo(vertices);
 			if (!buffer.create(vma, createInfo))
@@ -248,6 +324,8 @@ namespace zt::gameplay
 				Logger->info("Couldn't fill vertex buffer");
 				return false;
 			}
+
+			device.setDebugName(buffer, "Sprites vertex buffer", VK_OBJECT_TYPE_BUFFER);
 
 			return true;
 		}
@@ -268,19 +346,22 @@ namespace zt::gameplay
 
 			auto& rendererContext = rendererRes->getRendererContext();
 			auto& vma = rendererContext.getVMA();
+			auto& device = rendererContext.getDevice();
 
 			const auto createInfo = Buffer::GetIndexBufferCreateInfo(indices);
 			if (!buffer.create(vma, createInfo))
 			{
-				Logger->info("Couldn't create vertex buffer");
+				Logger->info("Couldn't create index buffer");
 				return false;
 			}
 
 			if (!buffer.fillWithSTDContainer(vma, indices))
 			{
-				Logger->info("Couldn't fill vertex buffer");
+				Logger->info("Couldn't fill index buffer");
 				return false;
 			}
+
+			device.setDebugName(buffer, "Sprites index buffer", VK_OBJECT_TYPE_BUFFER);
 
 			return true;
 		}
@@ -292,6 +373,7 @@ namespace zt::gameplay
 
 			auto& rendererContext = rendererRes->getRendererContext();
 			auto& vma = rendererContext.getVMA();
+			auto& device = rendererContext.getDevice();
 
 			if (buffer)
 			{
@@ -314,6 +396,8 @@ namespace zt::gameplay
 				Logger->error("Couldn't create transform buffer");
 				return false;
 			}
+
+			device.setDebugName(buffer, "Sprites camera buffer", VK_OBJECT_TYPE_BUFFER);
 
 			return buffer;
 		}

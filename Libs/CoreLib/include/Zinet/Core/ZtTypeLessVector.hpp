@@ -105,7 +105,7 @@ namespace zt::core
 		size_t getLastIndex() const noexcept { return objectsCount + removedObjects.size() - 1; }
 
 		template<class T>
-		bool hasType() const noexcept { return GetTypeID<std::decay_t<T>>() == typeID; }
+		bool hasType() const noexcept { return GetTypeID<T>() == typeID; }
 
 		size_t getObjectsCount() const noexcept { return objectsCount; }
 

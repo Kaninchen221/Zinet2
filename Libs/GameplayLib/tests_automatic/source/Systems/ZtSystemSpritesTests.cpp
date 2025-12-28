@@ -45,47 +45,6 @@ namespace zt::gameplay::system::tests
 			assetStorage.registerAssetClass<asset::Shader>();
 			assetStorage.registerAssetClass<asset::Sampler>();
 			assetStorage.storeAssets();
-
-			{
-				const auto& constAssetStorage = assetStorage;
-				auto samplerAsset = constAssetStorage.getAs<asset::Sampler>("Content/Samplers/linear.sampler");
-				ASSERT_TRUE(samplerAsset);
-				ASSERT_TRUE(samplerAsset->load(Paths::RootPath()));
-
-				auto textureAsset = constAssetStorage.getAs<asset::Texture>("Content/Textures/default_texture.png");
-				ASSERT_TRUE(textureAsset);
-				ASSERT_TRUE(textureAsset->load(Paths::RootPath()));
-
-				auto vertexShaderAsset = constAssetStorage.getAs<asset::Shader>("Content/Shaders/shader_sprites.vert");
-				ASSERT_TRUE(vertexShaderAsset);
-				ASSERT_TRUE(vertexShaderAsset->load(Paths::RootPath()));
-
-				auto fragmentShaderAsset = constAssetStorage.getAs<asset::Shader>("Content/Shaders/shader_sprites.frag");
-				ASSERT_TRUE(fragmentShaderAsset);
-				ASSERT_TRUE(fragmentShaderAsset->load(Paths::RootPath()));
-
-				// Spawn system::Sprites input info
-				// TODO: Refactor it, maybe put it into system::Sprite::Init?
-
-				auto samplerAssetCopy = samplerAsset;
-				auto textureAssetCopy = textureAsset;
-
-				world.spawn(
-					system::Sprites{},
-					vulkan_renderer::GraphicsPipeline{},
-					vulkan_renderer::DrawInfo{},
-					ShaderAssetsPack{
-						.vertexShaderAsset = vertexShaderAsset,
-						.fragmentShaderAsset = fragmentShaderAsset
-					},
-					textureAssetCopy,
-					samplerAssetCopy,
-					SpritesBuffers{});
-
-				// Sanity check 
-				system::Sprites::SystemComponentsQuery testQuery{ world };
-				ASSERT_FALSE(testQuery.isEmpty());
-			}
 		}
 
 		void TearDown() override
@@ -148,7 +107,7 @@ namespace zt::gameplay::system::tests
 			// 7. Use RenderCommand? <-- Now this
 			// 8. Update transform buffers
 
-			// We need to run the update method two times because the system is requesting renderer resources
+			// We need to run the update method at least two times because the system is requesting renderer resources
 			for (size_t i = 0; i < 4; i++)
 			{
 				ZT_TIME_LOG(schedule.runOneSystemOnce(Sprites{}, Sprites::Update, world));

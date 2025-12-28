@@ -47,7 +47,7 @@ namespace zt::vulkan_renderer
 		ResourceStorage() noexcept = default;
 		ResourceStorage(const ResourceStorage& other) noexcept = default;
 		ResourceStorage(ResourceStorage&& other) noexcept = default;
-		~ResourceStorage() noexcept = default;
+		~ResourceStorage() noexcept = default; // TODO: Add a warning if we didn't call clear before destruction
 
 		ResourceStorage& operator = (const ResourceStorage& other) noexcept = default;
 		ResourceStorage& operator = (ResourceStorage&& other) noexcept = default;

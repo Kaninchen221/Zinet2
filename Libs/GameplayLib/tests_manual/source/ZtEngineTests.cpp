@@ -12,6 +12,7 @@
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
 
 #include "Zinet/Core/ZtExitReason.hpp"
+#include "Zinet/Core/ZtRandom.hpp"
 
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
@@ -75,6 +76,10 @@ namespace zt::gameplay::tests
 			ZT_TIME_LOG(assetStorage.storeAssets());
 
 			world.addResource(assetStorage);
+
+			world.addResource(vulkan_renderer::ResourceStorage{});
+
+			world.addResource(CameraManager{});
 		}
 
 		void init()
@@ -87,6 +92,17 @@ namespace zt::gameplay::tests
 			scheduleInit.buildGraph();
 			scheduleInit.resolveGraph();
 			scheduleInit.runOnce(world);
+
+			// Spawn Sprites
+			core::Random random;
+			const size_t spritesCount = 4;
+			for (size_t index = 0; index < spritesCount; ++index)
+			{
+				auto position = zt::Position{ { random.real<float>(-20, 20), random.real<float>(-20, 20), 100} };
+				world.spawn(Sprite{}, position, zt::Rotation{glm::radians(0.f)}, zt::Scale{{4, 4, 1}});
+				// TODO: Apply a random: position, scale and rotation
+				// TODO: Maybe add some way to define Entity to reduce redundancy of defining Entity types
+			}
 		}
 
 		void update();
@@ -101,7 +117,7 @@ namespace zt::gameplay::tests
 			scheduleDeinit.addSystem(Window{}, Window::Deinit, ecs::MainThread{});
 			scheduleDeinit.addSystem(Renderer{}, Renderer::Deinit, ecs::Before{ Window{} }, ecs::MainThread{});
 			scheduleDeinit.addSystem(ImGui{}, ImGui::Deinit, ecs::Before{ Window{}, Renderer{} }, ecs::MainThread{});
-			scheduleDeinit.addSystem(Sprites{}, Sprites::Deinit);
+			scheduleDeinit.addSystem(Sprites{}, Sprites::Deinit, ecs::Before{ Renderer{} }, ecs::MainThread{});
 
 			scheduleDeinit.buildGraph();
 			scheduleDeinit.resolveGraph();
@@ -159,9 +175,6 @@ namespace zt::gameplay::tests
 			}
 
 			scheduleUpdate.runOnce(world);
-
-			if (!IsDebuggerAttached())
-				break;
 		}
 	}
 }

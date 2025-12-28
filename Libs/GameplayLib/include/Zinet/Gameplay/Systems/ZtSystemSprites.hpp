@@ -33,13 +33,15 @@ namespace zt::vulkan_renderer
 	class ResourceStorage;
 }
 
+namespace zt::gameplay
+{
+	struct Sprite {};
+}
+
 namespace zt::gameplay::system
 {
-	struct Sprite
-	{};
-
 	// TODO: Refactor it
-	// I created it because we can't have a two components in the same type in one query
+	// I created it because we can't have two components in the same type in one query
 	struct ZINET_GAMEPLAY_API ShaderAssetsPack
 	{
 		core::ConstAssetHandle<asset::Shader> vertexShaderAsset;
@@ -90,7 +92,9 @@ namespace zt::gameplay::system
 			SpritesBuffers
 		>;
 
-		static void Init();
+		static void Init(
+			core::ecs::WorldCommands worldCommands,
+			core::ecs::ConstResource<core::AssetStorage> assetStorageRes);
 
 		static void Update(
 			core::ecs::WorldCommands worldCommands,
@@ -121,7 +125,8 @@ namespace zt::gameplay::system
 		static bool CreateComponentBuffer(
 			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
 			const auto& componentsPack,
-			vulkan_renderer::Buffer& buffer
+			vulkan_renderer::Buffer& buffer,
+			std::optional<std::string> debugName = {}
 		);
 
 		static bool UpdateComponentBuffer(
@@ -142,13 +147,18 @@ namespace zt::gameplay::system
 		);
 	};
 
-	bool Sprites::CreateComponentBuffer(core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, const auto& componentsPack, vulkan_renderer::Buffer& buffer)
+	bool Sprites::CreateComponentBuffer(
+		core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, 
+		const auto& componentsPack, 
+		vulkan_renderer::Buffer& buffer,
+		std::optional<std::string> debugName)
 	{
 		using namespace core;
 		using namespace vulkan_renderer;
 
 		auto& rendererContext = rendererRes->getRendererContext();
 		auto& vma = rendererContext.getVMA();
+		auto& device = rendererContext.getDevice();
 
 		if (buffer)
 		{
@@ -165,7 +175,7 @@ namespace zt::gameplay::system
 				return false;
 			}
 
-			bufferSize += components->getObjectsCapacity();
+			bufferSize += components->getObjectsCount();
 		}
 		if (bufferSize <= 0)
 			return false;
@@ -185,6 +195,9 @@ namespace zt::gameplay::system
 			Logger->error("Couldn't create a component buffer");
 			return false;
 		}
+
+		if (debugName)
+			device.setDebugName(buffer, debugName->c_str(), VK_OBJECT_TYPE_BUFFER);
 
 		return buffer;
 	}

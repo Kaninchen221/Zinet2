@@ -22,7 +22,7 @@ namespace zt::vulkan_renderer
 	struct DrawInfo
 	{
 		using Vertices = std::vector<Vertex>;
-		using Indices = std::vector<std::uint16_t>;
+		using Indices = std::vector<std::uint32_t>;
 
 		Buffer* vertexBuffer{};
 		Buffer* indexBuffer{};

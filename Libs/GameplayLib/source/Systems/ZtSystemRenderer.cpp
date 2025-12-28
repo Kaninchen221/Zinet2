@@ -36,7 +36,9 @@ namespace zt::gameplay::system
 		ecs::WorldCommands worldCommands,
 		ecs::ConstResource<wd::Window> windowRes,
 		ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes,
-		ecs::ConstQuery<RenderCommand> drawCommandQuery)
+		ecs::ConstQuery<RenderCommand> drawCommandQuery,
+		DrawDataQuery drawDataQuery,
+		ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes)
 	{
 		if (!windowRes)
 			return;
@@ -63,6 +65,12 @@ namespace zt::gameplay::system
 
 		rendererRes->beginRenderPass(rendererRes->getRendererContext().getRenderPass());
 
+		for (auto [graphicsPipeline, drawInfo] : drawDataQuery)
+		{
+			if (graphicsPipeline->isValid())
+				rendererRes->draw(*graphicsPipeline, *drawInfo);
+		}
+
 		for (auto [drawCommand] : drawCommandQuery)
 		{
 			if (drawCommand->shouldDraw)
@@ -84,12 +92,20 @@ namespace zt::gameplay::system
 			worldCommands.addResource(ExitReason{ "Renderer couldn't display current image" });
 			return;
 		}
+
+		// Create requested resources
+		// TODO: Maybe move it to another system?
+		resourceStorageRes->createResources(rendererRes->getRendererContext());
 	}
 
-	void Renderer::Deinit(ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes)
+	void Renderer::Deinit(
+		ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes,
+		ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes)
 	{
 		if (!rendererRes)
 			return;
+
+		resourceStorageRes->clear(rendererRes->getRendererContext());
 
 		rendererRes->deinit();
 	}
