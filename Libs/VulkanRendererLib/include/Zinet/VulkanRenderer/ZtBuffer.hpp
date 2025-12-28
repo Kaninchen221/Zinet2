@@ -75,7 +75,7 @@ namespace zt::vulkan_renderer
 
 		void destroy(const VMA& vma) noexcept;
 
-		std::uint32_t getSize() const noexcept { return size; }
+		auto getSize() const noexcept { return size; }
 
 		VmaAllocation getAllocation() const noexcept { return allocation; }
 
@@ -86,7 +86,7 @@ namespace zt::vulkan_renderer
 		VkResult getData(const VMA& vma, void* dst, size_t dstSize, size_t bytesDstOffset = 0) const noexcept;
 
 		VmaAllocation allocation{};
-		std::uint32_t size{};
+		uint32_t size{};
 
 	};
 

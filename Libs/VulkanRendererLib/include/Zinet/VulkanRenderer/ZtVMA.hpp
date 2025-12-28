@@ -31,7 +31,7 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		VMA(HandleType newObjectHandle)
+		VMA(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle) {}
 
 		VMA() noexcept = delete;

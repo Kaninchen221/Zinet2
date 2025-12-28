@@ -24,7 +24,7 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Surface(HandleType newObjectHandle)
+		Surface(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle) {}
 
 		Surface() noexcept = delete;

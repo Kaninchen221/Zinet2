@@ -21,7 +21,7 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		ShaderModule(HandleType newObjectHandle)
+		ShaderModule(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle)
 		{}
 

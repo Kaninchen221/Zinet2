@@ -19,7 +19,7 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Queue(HandleType newObjectHandle, std::uint32_t newQueueFamilyIndex = InvalidIndex) noexcept
+		Queue(HandleType newObjectHandle, uint32_t newQueueFamilyIndex = InvalidIndex) noexcept
 			: VulkanObject(newObjectHandle),
 			 queueFamilyIndex{ newQueueFamilyIndex }
 		{}
@@ -42,7 +42,7 @@ namespace zt::vulkan_renderer
 
 	protected:
 
-		std::uint32_t queueFamilyIndex = InvalidIndex;
+		uint32_t queueFamilyIndex = InvalidIndex;
 
 	};
 
@@ -55,7 +55,7 @@ namespace zt::vulkan_renderer
 		}
 		else
 		{
-			Logger->error("vkQueueSubmit returned false, value: {}", static_cast<std::int32_t>(result));
+			Logger->error("vkQueueSubmit returned false, value: {}", static_cast<int32_t>(result));
 			return false;
 		}
 	}

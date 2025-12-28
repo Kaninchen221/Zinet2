@@ -30,7 +30,7 @@ namespace zt::gameplay::system
 			}
 
 			// TODO: I need some way to get a tick time inside systems
-			cameraManagerRes->update(core::Time::FromMilliseconds(16.6f);
+			cameraManagerRes->update(core::Time::FromMilliseconds(16.6f));
 		}
 
 	};

@@ -20,7 +20,7 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		PipelineLayout(HandleType newObjectHandle)
+		PipelineLayout(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle) {}
 
 		PipelineLayout() noexcept = delete;

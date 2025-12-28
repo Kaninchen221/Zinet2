@@ -19,7 +19,7 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		DebugUtilsMessenger(HandleType newObjectHandle)
+		DebugUtilsMessenger(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle) {}
 
 		DebugUtilsMessenger() noexcept = delete;

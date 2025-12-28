@@ -39,6 +39,7 @@ namespace zt::vulkan_renderer
 	BuffersPack operator + (const BuffersPack& first, const BuffersPack& second);
 
 	// TODO: REALY TEST IT
+	// Choose between always setting manually the binding or automatically 
 	struct DescriptorInfo
 	{
 		std::vector<BuffersPack> buffersPacks;

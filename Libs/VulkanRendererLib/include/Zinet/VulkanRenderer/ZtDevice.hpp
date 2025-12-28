@@ -55,7 +55,7 @@ namespace zt::vulkan_renderer
 
 	protected:
 
-		std::uint32_t queueFamilyIndex = InvalidIndex;
+		uint32_t queueFamilyIndex = InvalidIndex;
 
 		using SetDebugUtilsObjectNameT = core::Function<VkResult, VkDevice, const VkDebugUtilsObjectNameInfoEXT*>;
 		SetDebugUtilsObjectNameT setDebugUtilsObjectName;

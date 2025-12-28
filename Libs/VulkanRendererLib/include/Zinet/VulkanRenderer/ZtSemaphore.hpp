@@ -17,7 +17,7 @@ namespace zt::vulkan_renderer
 
 	public:
 
-		Semaphore(HandleType newObjectHandle)
+		Semaphore(HandleType newObjectHandle) noexcept
 			: VulkanObject(newObjectHandle) {}
 
 		Semaphore() noexcept = delete;
