@@ -55,6 +55,12 @@ namespace zt::gameplay::system
 			return;
 		}
 
+		if (!resourceStorageRes)
+		{
+			worldCommands.addResource(ExitReason{ "Expected resource storage res" });
+			return;
+		}
+
 		if (!rendererRes->nextImage())
 		{
 			worldCommands.addResource(ExitReason{ "Renderer couldn't switch to next image" });
@@ -102,11 +108,10 @@ namespace zt::gameplay::system
 		ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes,
 		ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes)
 	{
-		if (!rendererRes)
-			return;
+		if (resourceStorageRes)
+			resourceStorageRes->clear(rendererRes->getRendererContext());
 
-		resourceStorageRes->clear(rendererRes->getRendererContext());
-
-		rendererRes->deinit();
+		if (rendererRes)
+			rendererRes->deinit();
 	}
 }

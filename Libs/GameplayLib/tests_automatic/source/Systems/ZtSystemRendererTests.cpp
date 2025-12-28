@@ -22,18 +22,19 @@ namespace zt::gameplay::system::tests
 
 		void SetUp() override
 		{
+			world.addResource(vulkan_renderer::ResourceStorage{});
 		}
 
 		void TearDown() override
 		{
 		}
+
+		ecs::World world;
+		ecs::Schedule schedule;
 	};
 
 	TEST_F(RendererTests, Test)
 	{
-		ecs::World world;
-		ecs::Schedule schedule;
-
 		{ // Init
 			schedule.addSystem(Window{}, Window::Init, ecs::MainThread{});
 			schedule.addSystem(Renderer{}, Renderer::Init, ecs::After{ Window{} }, ecs::MainThread{});
