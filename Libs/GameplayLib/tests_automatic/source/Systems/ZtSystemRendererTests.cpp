@@ -1,50 +1,83 @@
 #pragma once
 
-#include "Zinet/Gameplay/ZtEngineContext.hpp"
-#include "Zinet/Gameplay/Nodes/ZtNodeCamera.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
+#include "Zinet/Gameplay/ZtRenderCommand.hpp"
+
 #include <gtest/gtest.h>
 
-namespace zt::gameplay::tests
+#include "Zinet/Core/ECS/ZtWorld.hpp"
+#include "Zinet/Core/ECS/ZtSchedule.hpp"
+
+#include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
+
+using namespace zt::core;
+
+namespace zt::gameplay::system::tests
 {
-	class SystemRendererTests : public ::testing::Test
+	class RendererTests : public ::testing::Test
 	{
 	protected:
 
 		void SetUp() override
 		{
-			SystemRenderer::SetUseImGui(false);
-			engineContext.addSystem<SystemWindow>("SystemWindow");
-			engineContext.addSystem<SystemRenderer>("SystemRenderer");
-
-			ASSERT_TRUE(engineContext.init());
 		}
 
 		void TearDown() override
 		{
-			engineContext.deinit();
-			SystemRenderer::SetUseImGui(true);
 		}
-
-		EngineContext engineContext;
 	};
 
-	TEST_F(SystemRendererTests, PassTest)
+	TEST_F(RendererTests, Test)
 	{
-		auto system = engineContext.getSystem<SystemRenderer>();
-		ASSERT_TRUE(system);
-		auto node2D = CreateObject<Node2D>("node2d");
-		//systemRenderer.addNode(node);
+		ecs::World world;
+		ecs::Schedule schedule;
 
-		auto cameraNode = CreateObject<NodeCamera>("Camera");
-		system->setCameraNode(cameraNode);
-		ASSERT_EQ(cameraNode.get(), system->getCameraNode().get());
+		{ // Init
+			schedule.addSystem(Window{}, Window::Init, ecs::MainThread{});
+			schedule.addSystem(Renderer{}, Renderer::Init, ecs::After{ Window{} }, ecs::MainThread{});
 
-		system->update();
+			schedule.buildGraph();
+			schedule.resolveGraph();
+			schedule.runOnce(world);
 
-		node2D.destroy();
-		cameraNode.destroy();
+			auto vulkanRendererRes = world.getResource<vulkan_renderer::VulkanRenderer>();
+			ASSERT_TRUE(vulkanRendererRes);
+			ASSERT_TRUE(vulkanRendererRes->isInitialized());
+
+			schedule.clear();
+		}
+
+		{ // Update
+			schedule.addSystem(Window{}, Window::Update, ecs::MainThread{});
+			schedule.addSystem(Renderer{}, Renderer::Update, ecs::After{ Window{} }, ecs::MainThread{});
+
+			bool commandInvoked = false;
+			auto command = [&commandInvoked = commandInvoked]
+			(vulkan_renderer::CommandBuffer&, const vulkan_renderer::RendererContext&)
+			{
+				commandInvoked = true;
+			};
+			RenderCommand renderDrawData{ .shouldDraw = true, .command = command };
+			world.spawn(renderDrawData);
+
+			schedule.buildGraph();
+			schedule.resolveGraph();
+			schedule.runOnce(world);
+
+			EXPECT_TRUE(commandInvoked);
+
+			schedule.clear();
+		}
+
+		{ // Deinit
+			schedule.addSystem(Window{}, Window::Deinit, ecs::MainThread{});
+			schedule.addSystem(Renderer{}, Renderer::Deinit, ecs::Before{ Window{} }, ecs::MainThread{});
+
+			schedule.buildGraph();
+			schedule.resolveGraph();
+			schedule.runOnce(world);
+		}
 	}
 }

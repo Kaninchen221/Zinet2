@@ -7,43 +7,43 @@
 
 #include "Zinet/VulkanRenderer/ZtSampler.hpp"
 
-namespace
+namespace zt::vulkan_renderer
 {
-	using Asset = zt::core::Asset;
+	class RendererContext;
 }
 
-namespace zt::gameplay
+namespace zt::gameplay::asset
 {
-	class  AssetSampler : public Asset
+	class ZINET_GAMEPLAY_API Sampler : public core::Asset
 	{
 	public:
-		using Sampler = vulkan_renderer::Sampler;
+		using ResourceOptT = std::optional<vulkan_renderer::Sampler>;
 
-		AssetSampler(const Extensions& extensions = { "sampler" }) : Asset{ extensions } {}
-		AssetSampler(const AssetSampler& other) : Asset(other) {}
-		AssetSampler(AssetSampler&& other) noexcept = default;
-		~AssetSampler() noexcept = default;
+		Sampler(const Extensions& extensions = { "sampler" }) : Asset{ extensions } {}
+		Sampler(const Sampler& other) : Asset(other) {}
+		Sampler(Sampler&& other) noexcept = default;
+		~Sampler() noexcept = default;
 
-		AssetSampler& operator = (const AssetSampler& other) { typeStr = other.typeStr; return *this; }
-		AssetSampler& operator = (AssetSampler&& other) noexcept = default;
+		Sampler& operator = (const Sampler& other) { typeStr = other.typeStr; return *this; }
+		Sampler& operator = (Sampler&& other) noexcept = default;
 
-		const std::string_view getClassName() const override { return "zt::gameplay::AssetSampler"; }
+		const std::string_view getClassName() const override { return "zt::gameplay::Sampler"; }
+
+		bool load(const core::Path& rootPath);
+
+		void unload();
 
 		ObjectPtr createCopy() const override 
 		{ 
-			auto copy = std::make_unique<AssetSampler>(*this);
+			auto copy = std::make_unique<Sampler>(*this);
 			copy->autoLoad = true;
 			return copy;
 		}
 
-		bool load(const core::Path& rootPath) override;
+		auto& getTypeString() const { return typeStr; }
 
-		void unload() override;
-
-		void show() override;
-
-		// TODO: Add getter
-		Sampler sampler{ nullptr };
+		// TODO: Test it
+		ResourceOptT createResource(vulkan_renderer::RendererContext& rendererContext);
 
 	protected:
 

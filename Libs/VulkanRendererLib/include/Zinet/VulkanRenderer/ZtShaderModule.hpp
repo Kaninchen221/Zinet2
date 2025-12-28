@@ -11,6 +11,7 @@
 namespace zt::vulkan_renderer
 {
 	class Device;
+	class RendererContext;
 
 	class ShaderModule : public VulkanObject<VkShaderModule>
 	{
@@ -37,6 +38,8 @@ namespace zt::vulkan_renderer
 		VkPipelineShaderStageCreateInfo createPipelineShaderStageCreateInfo(const ShaderType shaderType) const;
 
 		void destroy(const Device& device) noexcept;
+
+		void destroy(const RendererContext& rendererContext) noexcept;
 
 	};
 }

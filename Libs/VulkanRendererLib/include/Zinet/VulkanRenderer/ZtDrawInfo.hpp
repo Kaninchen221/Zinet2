@@ -22,14 +22,11 @@ namespace zt::vulkan_renderer
 	struct DrawInfo
 	{
 		using Vertices = std::vector<Vertex>;
-		using Indices = std::vector<std::uint16_t>;
+		using Indices = std::vector<std::uint32_t>;
 
 		Buffer* vertexBuffer{};
 		Buffer* indexBuffer{};
 		uint32_t indexCount{};
 		uint32_t instances = 1;
-
-		using AdditionalCommands = std::vector<core::Function<void, const CommandBuffer&>>;
-		AdditionalCommands additionalCommands;
 	};
 }

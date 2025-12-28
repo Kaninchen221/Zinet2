@@ -1,19 +1,14 @@
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
-#include "Zinet/Gameplay/ZtEngineContext.hpp"
-
-#include <Zinet/VulkanRenderer/ZtShadersCompiler.hpp>
-#include <Zinet/VulkanRenderer/ZtShaderModule.hpp>
 
 #include "Zinet/Core/ZtImgui.hpp"
 
-namespace zt::gameplay
+namespace zt::gameplay::asset
 {
 	using namespace vulkan_renderer;
 
-	bool AssetShader::load(const core::Path& rootPath)
+	bool Shader::load(const core::Path& rootPath)
 	{
-		if (!AssetText::load(rootPath))
+		if (!Text::load(rootPath))
 			return false;
 		loaded = false;
 
@@ -28,25 +23,10 @@ namespace zt::gameplay
 		}
 
 		const auto fileName = metaData.value("fileName", "fileName");
-		const auto compileResult = shadersCompiler.compileFromString(text, shaderType, fileName);
-		if (compileResult.empty())
+		result = shadersCompiler.compileFromString(text, shaderType, fileName);
+		if (result.empty())
 		{
 			Logger->error("Couldn't compile shader: {}", metaData.value("fileNameExt", "fileNameExt"));
-			return false;
-		}
-
-		auto& engineContext = EngineContext::Get();
-		auto systemRenderer = engineContext.getSystem<SystemRenderer>();
-		if (!systemRenderer)
-		{
-			Logger->error("Invalid system renderer");
-			return false;
-		}
-
-		const auto& device = systemRenderer->getRenderer().getRendererContext().getDevice();
-		if (!shaderModule.create(device, compileResult))
-		{
-			Logger->error("ShaderModule create returned false");
 			return false;
 		}
 
@@ -54,23 +34,14 @@ namespace zt::gameplay
 		return true;
 	}
 
-	void AssetShader::unload()
+	void Shader::unload()
 	{
-		AssetText::unload();
+		Text::unload();
 
-		auto& engineContext = EngineContext::Get();
-		auto systemRenderer = engineContext.getSystem<SystemRenderer>();
-		if (!systemRenderer)
-		{
-			Logger->error("Invalid system renderer");
-			return;
-		}
-
-		const auto& device = systemRenderer->getRenderer().getRendererContext().getDevice();
-		shaderModule.destroy(device);
+		result.clear();
 	}
 
-	void AssetShader::show()
+	void Shader::show()
 	{
 		Asset::show();
 		if (!isLoaded())
@@ -81,12 +52,15 @@ namespace zt::gameplay
 		ImGui::Text(text);
 	}
 
-	const ShaderModule* AssetShader::getShaderModule() const
+	Shader::ResourceOptT Shader::createResource(vulkan_renderer::RendererContext& rendererContext)
 	{
-		if (!isLoaded())
-			return nullptr;
+		auto& device = rendererContext.getDevice();
 
-		return &shaderModule;
+		vulkan_renderer::ShaderModule shaderModule{ nullptr };
+		if (!shaderModule.create(device, result))
+			return {};
+
+		return shaderModule;
 	}
 
 }

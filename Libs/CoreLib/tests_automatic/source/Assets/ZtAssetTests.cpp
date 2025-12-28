@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Zinet/Core/Assets/ZtAsset.hpp"
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
 #include <gtest/gtest.h>
 

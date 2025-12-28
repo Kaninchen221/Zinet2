@@ -35,6 +35,7 @@ namespace zt::core
 
 		bool isLoaded() const noexcept { return loaded; }
 
+		// TODO: If we have an asset then the load function shouldn't need any info about the path
 		virtual bool load([[maybe_unused]] const Path& rootPath) { return false; }
 
 		virtual void unload() {}

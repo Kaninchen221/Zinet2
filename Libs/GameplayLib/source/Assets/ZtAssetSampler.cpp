@@ -1,13 +1,12 @@
 #include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
-#include "Zinet/Gameplay/ZtEngineContext.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
+
+#include "Zinet/VulkanRenderer/ZtRendererContext.hpp"
 
 #include "Zinet/Core/ZtFile.hpp"
-#include "Zinet/Core/ZtImGui.hpp"
 
-namespace zt::gameplay
+namespace zt::gameplay::asset
 {
-	bool AssetSampler::load(const core::Path& rootPath)
+	bool Sampler::load(const core::Path& rootPath)
 	{
 		if (isLoaded())
 			return true;
@@ -33,57 +32,30 @@ namespace zt::gameplay
 		using Json = nlohmann::json;
 		Json json = Json::parse(text);
 		typeStr = json.value("type", "linear");
-		const auto samplerType = vulkan_renderer::SamplerTypeFromString(typeStr);
-		
-		auto createInfo = Sampler::GetDefaultCreateInfo();
-		createInfo.magFilter = samplerType;
-		createInfo.minFilter = samplerType;
-
-		auto& engineContext = EngineContext::Get();
-		auto systemRenderer = engineContext.getSystem<SystemRenderer>();
-		if (!systemRenderer)
-		{
-			Logger->error("Can't create asset sampler because system renderer is invalid");
-			return false;
-		}
-		auto& device = systemRenderer->getRenderer().getRendererContext().getDevice();
-
-		const bool samplerCreated = sampler.create(device, createInfo);
-		if (!samplerCreated)
-			return false;
 
 		loaded = true;
 		return true;
 	}
 
-	void AssetSampler::unload()
+	void Sampler::unload()
 	{
-		if (!isLoaded())
-			return;
-
-		auto& engineContext = EngineContext::Get();
-		auto systemRenderer = engineContext.getSystem<SystemRenderer>();
-		if (!systemRenderer)
-		{
-			Logger->error("Can't unload asset sampler because system renderer is invalid");
-			return;
-		}
-		auto& device = systemRenderer->getRenderer().getRendererContext().getDevice();
-		sampler.destroy(device);
-
+		typeStr.clear();
 		loaded = false;
 	}
 
-	void AssetSampler::show()
+	Sampler::ResourceOptT Sampler::createResource(vulkan_renderer::RendererContext& rendererContext)
 	{
-		Asset::show();
-		if (!isLoaded())
-			return;
-		
-		ImGui::Text("Sampler type:");
-		ImGui::SameLine();
-		ImGui::Text(typeStr);
-	}
+		vulkan_renderer::Sampler sampler{ nullptr };
+		auto createInfo = vulkan_renderer::Sampler::GetDefaultCreateInfo();
 
+		auto filter = vulkan_renderer::SamplerTypeFromString(typeStr);
+		createInfo.magFilter = filter;
+		createInfo.minFilter = filter;
+
+		if (!sampler.create(rendererContext.getDevice(), createInfo))
+			return { nullptr };
+
+		return sampler;
+	}
 }
 

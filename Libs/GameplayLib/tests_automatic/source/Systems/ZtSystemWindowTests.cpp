@@ -1,32 +1,71 @@
-#include "Zinet/Gameplay/ZtEngineContext.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
 #include <gtest/gtest.h>
 
-namespace zt::gameplay::tests
+#include "Zinet/Core/ECS/ZtWorld.hpp"
+#include "Zinet/Core/ECS/ZtSchedule.hpp"
+
+#include "Zinet/Window/ZtWindow.hpp"
+
+namespace zt::gameplay::system::tests
 {
-	class SystemWindowTests : public ::testing::Test
+	using namespace zt::core;
+
+	class WindowTests : public ::testing::Test
 	{
 	protected:
 
 		void SetUp() override
 		{
-			engineContext.addSystem<SystemWindow>("SystemWindow");
-
-			ASSERT_TRUE(engineContext.init());
 		}
 
 		void TearDown() override
 		{
-			engineContext.deinit();
 		}
-
-		EngineContext engineContext;
 	};
 
-	TEST_F(SystemWindowTests, PassTest)
+	TEST_F(WindowTests, Test)
 	{
-		auto system = engineContext.getSystem<SystemWindow>();
-		ASSERT_TRUE(system);
+		ecs::World world;
+		ecs::Schedule schedule;
+
+		{ // Init
+			schedule.addSystem(Window{}, Window::Init);
+
+			schedule.buildGraph();
+			schedule.resolveGraph();
+			schedule.runOnce(world);
+
+			auto windowRes = world.getResource<wd::Window>();
+			ASSERT_TRUE(windowRes);
+			ASSERT_TRUE(windowRes->isOpen());
+
+			auto windowEventsRes = world.getResource<wd::WindowEvents>();
+			ASSERT_TRUE(windowEventsRes);
+
+			schedule.clear();
+		}
+
+		{ // Update
+			schedule.addSystem(Window{}, Window::Update);
+
+			schedule.buildGraph();
+			schedule.resolveGraph();
+			schedule.runOnce(world);
+
+			schedule.clear();
+		}
+
+		{ // Deinit
+			schedule.addSystem(Window{}, Window::Deinit);
+
+			schedule.buildGraph();
+			schedule.resolveGraph();
+			schedule.runOnce(world);
+
+			auto windowRes = world.getResource<wd::Window>();
+			ASSERT_TRUE(windowRes);
+			ASSERT_FALSE(windowRes->getInternal());
+		}
 	}
 }

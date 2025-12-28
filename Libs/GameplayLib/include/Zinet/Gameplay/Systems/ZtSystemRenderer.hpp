@@ -1,110 +1,51 @@
 #pragma once
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
-#include "Zinet/Gameplay/Nodes/ZtNode2D.hpp"
-#include "Zinet/Gameplay/Nodes/ZtNodeCamera.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystem.hpp"
-#include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
-#include "Zinet/Gameplay/Assets/ZtAssetProperty.hpp"
+
+#include "Zinet/Gameplay/ZtRenderCommand.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
-#include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
-#include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
-#include "Zinet/VulkanRenderer/ZtBuffer.hpp"
-#include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
-#include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
-#include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
-#include "Zinet/VulkanRenderer/ZtGraphicsPipelineCreateInfo.hpp"
+#include "Zinet/Core/ECS/ZtWorldCommands.hpp"
+#include "Zinet/Core/ECS/ZtResource.hpp"
+#include "Zinet/Core/ECS/ZtQuery.hpp"
 
-#include "Zinet/Window/ZtWindow.hpp"
+#include "Zinet/VulkanRenderer/ZtResourceStorage.hpp"
 
-namespace zt::gameplay
+namespace zt::wd
 {
-	// TODO: More graphics pipelines
-	// Now we have a logic for multiple sprites with dynamic UBOs
-	// We need:
-	//		- logic for using multiple graphics pipelines
-	//		- GP for basic shapes
-	//		- GP for multiple sprites with static UBOs (maybe some logic like static/dynamic sprite?)
-	//		- Push constants
-	class SystemRenderer : public System
+	class Window;
+}
+
+namespace zt::vulkan_renderer
+{
+	class VulkanRenderer;
+}
+
+namespace zt::gameplay::system
+{
+	class ZINET_GAMEPLAY_API Renderer
 	{
-	private:
-
-		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::SystemRenderer");
-
-		inline static bool UseImGui = true;
-
+		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::system::Renderer");
+	
 	public:
 
-		SystemRenderer() = default;
-		SystemRenderer(const SystemRenderer& other) = default;
-		SystemRenderer(SystemRenderer&& other) = default;
-		~SystemRenderer() = default;
+		using DrawDataQuery = core::ecs::ConstQuery<
+			vulkan_renderer::GraphicsPipeline, vulkan_renderer::DrawInfo>;
 
-		SystemRenderer& operator = (const SystemRenderer& other) = default;
-		SystemRenderer& operator = (SystemRenderer&& other) = default;
+		static void Init(core::ecs::WorldCommands worldCommands, core::ecs::Resource<wd::Window> windowRes);
 
-		static void SetUseImGui(bool use) noexcept { UseImGui = use; }
-		static bool GetUseImGui() noexcept { return UseImGui; }
+		static void Update(
+			core::ecs::WorldCommands worldCommands, 
+			core::ecs::ConstResource<wd::Window> windowRes,
+			core::ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes,
+			core::ecs::ConstQuery<RenderCommand> drawCommandQuery,
+			DrawDataQuery drawDataQuery,
+			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes);
 
-		bool init() override;
-
-		void waitCompleteJobs() override { renderer.getRendererContext().getDevice().waitIdle(); }
-
-		bool deinit() override;
-
-		void addNode(const ObjectWeakHandle<Node>& node) override;
-
-		void update() override;
-
-		void show() override;
-
-		auto& getRenderer() noexcept { return renderer; }
-		const auto& getRenderer() const noexcept { return renderer; }
-
-		void setCameraNode(ObjectHandle<NodeCamera> newCamera) noexcept;
-		auto getCameraNode() const noexcept { return camera; }
-
-		AssetProperty<AssetShader> vertexShader{ "Vertex Shader" };
-		AssetProperty<AssetShader> fragmentShader{ "Fragment Shader" };
-
-	protected:
-
-		vulkan_renderer::ImGuiIntegration imGuiIntegration;
-		vulkan_renderer::VulkanRenderer renderer;
-		vulkan_renderer::GraphicsPipeline graphicsPipeline;
-
-		ObjectHandle<NodeCamera> camera;
-
-		vulkan_renderer::Buffer vertexBuffer{ nullptr };
-		vulkan_renderer::Buffer indexBuffer{ nullptr };
-		vulkan_renderer::DrawInfo drawInfo
-		{
-			.vertexBuffer = &vertexBuffer,
-			.indexBuffer = &indexBuffer,
-			.indexCount = static_cast<uint32_t>(6),
-			.instances = 0
-		};
-
-		vulkan_renderer::
-		GraphicsPipelineCreateInfo graphicsPipelineCreateInfo
-		{
-			.rendererContext = renderer.getRendererContext(),
-			.shaderModules =
-			{
-				// Set after the assets are ready to use
-				// { vulkan_renderer::ShaderType::Vertex, nullptr },
-				// { vulkan_renderer::ShaderType::Fragment, nullptr }
-			},
-			.descriptorInfos =
-			{
-				// [0] Pipeline descriptor set info
-				// [1] Object descriptor set info
-			},
-			// .descriptorSetsCount = Set after init renderer
-		};
+		static void Deinit(
+			core::ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes,
+			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes);
 	};
 
 }

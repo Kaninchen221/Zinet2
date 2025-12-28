@@ -2,50 +2,25 @@
 
 #include "Zinet/Gameplay/Systems/ZtSystemTickable.hpp"
 
-#include "Zinet/Core/ZtObjectsStorage.hpp"
-
 #include <gtest/gtest.h>
 
-namespace zt::gameplay::tests
+namespace zt::gameplay::system::tests
 {
-	class SystemTickableTests : public ::testing::Test
+	class TickableTests : public ::testing::Test
 	{
 	protected:
 
 		void SetUp() override
 		{
-			ASSERT_TRUE(system.init());
 		}
 
 		void TearDown() override
 		{
-			system.deinit();
 		}
 
-		class TestNode : public Node
-		{
-		public:
-
-			void update(float deltaTime) override
-			{
-				updated = true;
-				timeElapsed += deltaTime;
-			}
-			bool updated{ false };
-			float timeElapsed = 0.f;
-		};
-
-		core::ObjectsStorage objectsStorage;
-		SystemTickable system;
 	};
 
-	TEST_F(SystemTickableTests, PassTest)
+	TEST_F(TickableTests, PassTest)
 	{
-		auto node = objectsStorage.createObject<TestNode>("node");
-		system.addNode(node);
-
-		system.update();
-		EXPECT_TRUE(node->updated);
-		EXPECT_TRUE(node->timeElapsed > 0.f);
 	}
 }

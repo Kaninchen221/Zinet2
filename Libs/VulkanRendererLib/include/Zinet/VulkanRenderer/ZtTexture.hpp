@@ -4,6 +4,7 @@
 #include "Zinet/VulkanRenderer/ZtVulkanObject.hpp"
 #include "Zinet/VulkanRenderer/ZtImage.hpp"
 #include "Zinet/VulkanRenderer/ZtImageView.hpp"
+#include "Zinet/VulkanRenderer/ZtBuffer.hpp"
 
 #include "Zinet/Math/ZtVecTypes.hpp"
 
@@ -19,10 +20,11 @@ namespace zt::vulkan_renderer
 	class VMA;
 	class Buffer;
 	class CommandBuffer;
+	class RendererContext;
 
 	struct FillWithImageBufferInput
 	{
-		const Buffer& buffer;
+		Buffer&& buffer;
 		const CommandBuffer& commandBuffer;
 		const Vector2ui imageExtent;
 		const Vector3i imageOffset = { 0u, 0u, 0u };
@@ -48,17 +50,20 @@ namespace zt::vulkan_renderer
 
 		void destroy(const Device& device, const VMA& vma) noexcept;
 
+		void destroy(const RendererContext& rendererContext) noexcept;
+
 		bool isValid() const noexcept;
 
 		const auto& getImage() const noexcept { return image; }
 		const auto& getImageView() const noexcept { return imageView; }
 
-		void fillWithImageBuffer(const FillWithImageBufferInput& input) const noexcept;
+		void fillWithImageBuffer(const FillWithImageBufferInput& input) noexcept;
 
 	protected:
 
 		Image image{ nullptr };
 		ImageView imageView{ nullptr };
-
+		// TODO: I put the buffer with image data here temporarily, because resource storage need this to fill the image
+		Buffer buffer{ nullptr };
 	};
 }

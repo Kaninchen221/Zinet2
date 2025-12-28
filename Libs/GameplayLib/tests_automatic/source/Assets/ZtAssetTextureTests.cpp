@@ -1,53 +1,86 @@
 #pragma once
 
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
 #include <Zinet/Gameplay/Assets/ZtAssetTexture.hpp>
-#include <Zinet/Gameplay/ZtEngineContext.hpp>
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
 #include <gtest/gtest.h>
 
-namespace zt::gameplay::tests
+namespace zt::gameplay::asset::tests
 {
 
-	class AssetTextureTests : public ::testing::Test
+	class TextureTests : public ::testing::Test
 	{
 	protected:
 
 		void SetUp() override
 		{
+			assetStorage.registerAssetClass<Texture>();
+			bool result = assetStorage.storeAssets();
+			ASSERT_TRUE(result);
 		}
 
 		void TearDown() override
 		{
 		}
 
+		core::AssetHandle<asset::Texture> getShaderAssetHandle()
+		{
+			auto asset = assetStorage.getAs<Texture>("Content/Textures/default_texture.png");
+			if (!asset)
+				return {};
+
+			return asset;
+		}
+
+		core::AssetStorage assetStorage;
 	};
 
-	TEST_F(AssetTextureTests, Test)
+	TEST_F(TextureTests, Test)
 	{
-		EngineContext engineContext;
-		auto& assetsStorage = engineContext.getAssetsStorage();
-		assetsStorage.registerAssetClass<AssetTexture>();
+		auto assetHandle = getShaderAssetHandle();
+		ASSERT_TRUE(assetHandle);
 
-		engineContext.addSystem<SystemWindow>("SystemWindow");
-		engineContext.addSystem<SystemRenderer>("SystemRenderer");
+		ASSERT_TRUE(assetHandle->load(core::Paths::RootPath()));
+		ASSERT_TRUE(assetHandle->isLoaded());
 
-		SystemRenderer::SetUseImGui(false);
-		ASSERT_TRUE(engineContext.init());
+		ASSERT_TRUE(assetHandle->getImage().getData());
 
-		auto asset = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
-		ASSERT_TRUE(asset);
+		assetHandle->unload();
+		ASSERT_FALSE(assetHandle->isLoaded());
+	}
 
-		ASSERT_TRUE(asset->load(assetsStorage.getAssetsFinder().getRootPath()));
-		ASSERT_TRUE(asset->isLoaded());
+	TEST_F(TextureTests, CreateResourceTest)
+	{
+		auto assetHandle = getShaderAssetHandle();
+		ASSERT_TRUE(assetHandle);
+		ASSERT_TRUE(assetHandle->load(core::Paths::RootPath()));
 
-		asset->unload();
-		ASSERT_FALSE(asset->isLoaded());
+		wd::GLFW::Init();
 
-		engineContext.deinit();
-		SystemRenderer::SetUseImGui(true);
+		wd::Window window;
+		ASSERT_TRUE(window.create(2, 2));
+
+		vulkan_renderer::RendererContext rendererContext;
+		ASSERT_TRUE(rendererContext.create(window));
+		
+		std::optional<vulkan_renderer::Texture> texture = assetHandle->createResource(rendererContext);
+		EXPECT_TRUE(texture);
+
+		if (texture)
+		{
+			auto& device = rendererContext.getDevice();
+			auto& vma = rendererContext.getVMA();
+
+			texture->destroy(device, vma);
+		}
+
+		rendererContext.destroy();
+
+		window.destroyWindow();
+
+		wd::GLFW::Deinit();
 	}
 }

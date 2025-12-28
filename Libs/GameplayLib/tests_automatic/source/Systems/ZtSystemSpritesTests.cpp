@@ -1,192 +1,175 @@
-#pragma once
-
 #include "Zinet/Gameplay/Systems/ZtSystemSprites.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystemTickable.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
-#include "Zinet/Gameplay/Nodes/ZtNodeInstancedSprite.hpp"
-#include "Zinet/Gameplay/Nodes/ZtNodeEditor.hpp"
-#include "Zinet/Gameplay/ZtEngineContext.hpp"
 
-#include "Zinet/Core/ZtObjectsStorage.hpp"
-#include "Zinet/Core/ZtRandom.hpp"
+#include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
+#include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
+#include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 
 #include <gtest/gtest.h>
 
-#include <thread>
+#include "Zinet/Core/ECS/ZtWorld.hpp"
+#include "Zinet/Core/ECS/ZtSchedule.hpp"
+#include "Zinet/Core/ECS/ZtQuery.hpp"
 
-namespace zt::gameplay::tests
+#include "Zinet/Core/ZtExitReason.hpp"
+#include "Zinet/Core/ZtTimeLog.hpp"
+
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
+
+#include "Zinet/VulkanRenderer/ZtResourceStorage.hpp"
+
+namespace zt::gameplay::system::tests
 {
-	class SystemSpritesTests : public ::testing::Test
+	using namespace zt::core;
+	using namespace zt::vulkan_renderer;
+
+	class SpritesTests : public ::testing::Test
 	{
 	protected:
 
 		void SetUp() override
 		{
-			//SystemRenderer::SetUseImGui(false);
+			ASSERT_TRUE(window.create(200, 200));
 
-			auto& assetsStorage = engineContext.getAssetsStorage();
-			assetsStorage.registerAssetClass<gameplay::AssetShader>();
-			assetsStorage.registerAssetClass<gameplay::AssetSampler>();
-			assetsStorage.registerAssetClass<gameplay::AssetTexture>();
+			auto rendererRes = world.addResource(VulkanRenderer{});
+			ASSERT_TRUE(rendererRes);
+			ASSERT_TRUE(rendererRes->init(window));
 
-			systemWindow = engineContext.addSystem<SystemWindow>("window");
-			systemImGui = engineContext.addSystem<SystemImGui>("imgui");
-			systemRenderer = engineContext.addSystem<SystemRenderer>("renderer");
-			systemTickable = engineContext.addSystem<SystemTickable>("tickable");
-			systemSprites = engineContext.addSystem<SystemSprites>("sprites", UpdatePhase::Pre);
+			auto resourceStorageRes = world.addResource(ResourceStorage{});
+			ASSERT_TRUE(resourceStorageRes);
 
-			ASSERT_TRUE(engineContext.init());
+			auto cameraManagerRes = world.addResource(CameraManager{});
+			ASSERT_TRUE(cameraManagerRes);
 
-			auto nodeEditor = CreateObject<NodeEditor>("Editor");
-			engineContext.getRootNode()->addChild(nodeEditor);
-			systemImGui->addNode(nodeEditor);
-
-			auto nodeCamera = CreateObject<NodeCamera>("Camera");
-			auto& camera = nodeCamera->getCamera();
-			camera.setPosition(Vector3f(100, 100, 1000));
-			camera.setLookingAt(Vector3f(100, 100, 0.0f));
-			camera.setUpVector(Vector3f(0, 1, 0));
-
-			auto& window = systemWindow->getWindow();
-			auto windowSize = window.getSize();
-			camera.setFieldOfView(45.f);
-			camera.setAspectRatio(windowSize.x / static_cast<float>(windowSize.y));
-			camera.setClipping(Vector2f{ 0.0000001f, 10000000.0f });
-
-			systemRenderer->setCameraNode(nodeCamera);
-			systemTickable->addNode(nodeCamera);
-			engineContext.getRootNode()->addChild(nodeCamera);
-
-			auto texture = assetsStorage.getAs<AssetTexture>("Content/Textures/image.png");
-			ASSERT_TRUE(texture->load(core::Paths::RootPath()));
-			systemSprites->setAssetTexture(texture);
-
-			auto shaderVert = assetsStorage.getAs<AssetShader>("Content/Shaders/shader_sprites.vert");
-			ASSERT_TRUE(shaderVert);
-			ASSERT_TRUE(shaderVert->load(core::Paths::RootPath()));
-			systemRenderer->vertexShader = shaderVert;
-
-			auto shaderFrag = assetsStorage.getAs<AssetShader>("Content/Shaders/shader_sprites.frag");
-			ASSERT_TRUE(shaderFrag);
-			ASSERT_TRUE(shaderFrag->load(core::Paths::RootPath()));
-			systemRenderer->fragmentShader = shaderFrag;
+			auto& assetStorage = *world.addResource(AssetStorage{});
+			assetStorage.registerAssetClass<asset::Texture>();
+			assetStorage.registerAssetClass<asset::Shader>();
+			assetStorage.registerAssetClass<asset::Sampler>();
+			assetStorage.storeAssets();
 		}
 
 		void TearDown() override
 		{
-			engineContext.deinit();
-		}
+			auto rendererRes = world.getResource<VulkanRenderer>();
+			auto& rendererContext = rendererRes->getRendererContext();
+			auto& vma = rendererContext.getVMA();
 
-		EngineContext engineContext;
-		ObjectHandle<SystemTickable> systemTickable;
-		ObjectHandle<SystemWindow> systemWindow;
-		ObjectHandle<SystemSprites> systemSprites;
-		ObjectHandle<SystemRenderer> systemRenderer;
-		ObjectHandle<SystemImGui> systemImGui;
-		std::vector<ObjectHandle<NodeInstancedSprite>> sprites;
-
-		ObjectHandle<NodeInstancedSprite> AddSpriteTest(
-			[[maybe_unused]] const auto x,
-			[[maybe_unused]] const auto y, 
-			[[maybe_unused]] const auto width, 
-			[[maybe_unused]] const auto height)
-		{
-			auto& transforms = systemSprites->getTransforms();
-		
-			ObjectHandle<NodeInstancedSprite> sprite = CreateObject<NodeInstancedSprite>("Sprite");
-			sprites.push_back(sprite);
-
-			systemSprites->addNode(sprite);
-			EXPECT_EQ(sprite->getID(), sprites.size() - 1);
-			EXPECT_EQ(&sprite->getTransform(), &transforms[sprite->getID()]);
-		
-			EXPECT_EQ(transforms.size(), sprites.size());
-
-			const Vector3f position =
+			for ([[maybe_unused]] auto [label, graphicsPipeline, drawInfo, shaderAssetsPack, textureAsset, samplerAsset, buffers] : Sprites::SystemComponentsQuery{ world })
 			{
-				x,
-				y,
-				50
-			};
+				buffers->destroy(vma);
 
-			const float scale = 1;
-
-			const float rotation = 0;
-
-			auto& transform = sprite->getTransform();
-			transform.setScale(Vector3f(scale, scale, 1.0f));
-			transform.setPosition(position);
-			transform.setRotation(rotation);
-
-			return sprite;
-		}
-
-		// TODO
-		// A fake sprite class just to pass the descriptor info from the SystemSprites to the renderer
-		// Perhaps the SystemSprites should communicate with the renderer system directly instead of using a fake node
-		class FakeSprite : public Node2D
-		{
-		private:
-
-		public:
-
-			FakeSprite() = default;
-			FakeSprite(const FakeSprite& other) = default;
-			FakeSprite(FakeSprite&& other) noexcept = default;
-			~FakeSprite() noexcept = default;
-
-			FakeSprite& operator = (const FakeSprite& other) = default;
-			FakeSprite& operator = (FakeSprite&& other) noexcept = default;
-
-			vulkan_renderer::DescriptorInfo getDescriptorInfo() override
-			{
-				auto& engContext = EngineContext::Get();
-				auto sysSprites = engContext.getSystem<SystemSprites>();
-				if (!Ensure(sysSprites))
-					return {};
-
-				return sysSprites->getDescriptorInfo();
+				graphicsPipeline->destroy(rendererContext);
 			}
 
-			uint32_t instancesCount = 1;
-			uint32_t getInstancesCount() const noexcept override { return instancesCount; }
+			auto resourceStorageRes = world.getResource<vulkan_renderer::ResourceStorage>();
+			resourceStorageRes->clear(rendererContext);
 
-		};
+			ASSERT_TRUE(rendererRes);
+			rendererRes->deinit();
+
+			window.destroyWindow();
+		}
+
+		wd::GLFW glfw;
+		wd::Window window;
+		ecs::World world;
+		ecs::Schedule schedule;
 	};
 
-	TEST_F(SystemSpritesTests, PassTest)
+	TEST_F(SpritesTests, Test)
 	{
-		const size_t width = 100;
-		const size_t height = 100;
-		for (size_t x = 0; x < width; ++x)
-			for (size_t y = 0; y < height; ++y)
-				AddSpriteTest(x, y, width, height);
-
-		auto& camera = systemRenderer->getCameraNode()->getCamera();
-		camera.setPosition(Vector3f(width / 2.f, height / 2.f, 300));
-		camera.setLookingAt(Vector3f(width / 2.f, height / 2.f, 0));
-
-		systemSprites->update();
-
-		auto fakeSprite = CreateObject<FakeSprite>("Fake Sprite");
-		fakeSprite->instancesCount = static_cast<uint32_t>(sprites.size());
-		engineContext.getRootNode()->addChild(fakeSprite);
-		systemRenderer->addNode(fakeSprite);
-
-		std::jthread exitThread(
-			[&engineContext = engineContext]()
+		// Spawn Sprites
+		const size_t spritesCount = 10;
+		for (size_t index = 0; index < spritesCount; ++index)
 		{
-			while (!engineContext.isLooping())
+			world.spawn(Sprite{}, zt::Position{ { 0, 0, 0 } }, zt::Rotation{ 0 }, zt::Scale{ { 1, 1, 1 } });
+			// TODO: Apply a random: position, scale and rotation
+			// TODO: Maybe add some way to define Entity to reduce redundancy of defining Entity types
+		}
+
+		{ // Init
+			schedule.runOneSystemOnce(Sprites{}, Sprites::Init, world);
+
+			if (auto exitReason = world.getResource<ExitReason>())
+				FAIL() << exitReason->reason;
+		}
+
+		{ // Update
+			// TODO: Sprites
+			// 1.
+			// Sort sprites using their components to create graphics pipelines only once per unique combination?
+			// Or handle only one combination for now <-- for now we have only one combination
+			// 
+			// 2. Create descriptors <-- Done
+			// 3. Create graphics pipelines <-- Done
+			// 4. Expect a valid GraphicsPipeline in test <-- Done
+			// 5. Vertex and indices buffers <-- Done
+			// 6. Create and expect render draw data <-- Done
+			// 7. Use RenderCommand? <-- Now this
+			// 8. Update transform buffers
+
+			// We need to run the update method at least two times because the system is requesting renderer resources
+			for (size_t i = 0; i < 4; i++)
 			{
+				ZT_TIME_LOG(schedule.runOneSystemOnce(Sprites{}, Sprites::Update, world));
+
+				auto rendererRes = world.getResource<VulkanRenderer>();
+				auto resourceStorageRes = world.getResource<ResourceStorage>();
+				resourceStorageRes->createResources(rendererRes->getRendererContext());
+			}
+			
+			system::Sprites::SystemComponentsQuery query{ world };
+			ASSERT_EQ(query.getComponentsCount(), 7); // Sanity check
+			for ([[maybe_unused]] auto [label, graphicsPipeline, drawInfo, shaderAssetsPack, textureAsset, samplerAsset, buffers] : query)
+			{
+				ASSERT_TRUE(buffers->index);
+				ASSERT_TRUE(buffers->vertex);
+				ASSERT_TRUE(buffers->camera);
+				ASSERT_TRUE(buffers->position);
+				ASSERT_TRUE(buffers->scale);
+				ASSERT_TRUE(buffers->rotation);
+
+				ASSERT_TRUE(graphicsPipeline);
+				EXPECT_TRUE(graphicsPipeline->isValid());
+
+				{
+					ASSERT_TRUE(drawInfo->indexBuffer);
+					ASSERT_TRUE(drawInfo->vertexBuffer);
+					ASSERT_NE(drawInfo->indexCount, 0);
+					ASSERT_NE(drawInfo->instances, 0);
+
+					auto rendererRes = world.getResource<VulkanRenderer>();
+					auto& renderer = *rendererRes;
+
+					ASSERT_TRUE(renderer.nextImage());
+
+					renderer.startRecordingDrawCommands();
+
+					renderer.beginRenderPass(renderer.getRendererContext().getRenderPass());
+
+					renderer.draw(*graphicsPipeline, *drawInfo);
+
+					renderer.endRenderPass();
+
+					renderer.endRecordingDrawCommands();
+
+					ASSERT_TRUE(renderer.submitCurrentDisplayImage());
+
+					ASSERT_TRUE(renderer.displayCurrentImage());
+				}
 			}
 
-			using namespace std::chrono_literals;
-			std::this_thread::sleep_for(100ms);
-			engineContext.stopLooping();
-		});
+			if (auto exitReason = world.getResource<ExitReason>())
+				FAIL() << exitReason->reason;
+		}
 
-		engineContext.loop();
+		auto rendererRes = world.getResource<VulkanRenderer>();
+		rendererRes->waitForCompleteDrawing();
+
+		{ // Deinit
+			schedule.runOneSystemOnce(Sprites{}, Sprites::Deinit, world);
+
+			if (auto exitReason = world.getResource<ExitReason>())
+				FAIL() << exitReason->reason;
+		}
 	}
 }

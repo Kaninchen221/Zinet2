@@ -9,6 +9,8 @@
 
 namespace zt::core::ecs::tests
 {
+	using namespace zt::core::tests;
+
 	class ECSWorldTests : public ::testing::Test
 	{
 	protected:
@@ -111,6 +113,18 @@ namespace zt::core::ecs::tests
 		ASSERT_TRUE(world.getComponent<Velocity>(entitySprite));
 	}
 
+	TEST_F(ECSWorldTests, HasEntityTest)
+	{
+		Entity entity{ {}, {} };
+		ASSERT_FALSE(world.hasEntity(entity));
+
+		entity = world.spawn(Position{});
+		ASSERT_TRUE(world.hasEntity(entity));
+
+		EXPECT_TRUE(world.remove(entity));
+		ASSERT_FALSE(world.hasEntity(entity));
+	}
+
 	TEST_F(ECSWorldTests, RemoveTest)
 	{
 		const auto entity = world.spawn(Position{}, Sprite{});
@@ -197,5 +211,28 @@ namespace zt::core::ecs::tests
 		ASSERT_TRUE(resource);
 
 		ASSERT_EQ(*resource, ResourceTime{ expectedTime });
+	}
+
+	TEST_F(ECSWorldTests, GetArchetypesWithTest)
+	{
+		world.spawn(Sprite{});
+		world.spawn(Sprite{});
+		world.spawn(Sprite{}, Position{});
+		world.spawn(Sprite{}, Position{});
+		world.spawn(Sprite{}, Position{}, Velocity{});
+		world.spawn(Sprite{}, Position{}, Velocity{});
+		world.spawn(Sprite{}, Position{}, Velocity{});
+
+		std::vector<Archetype*> archetypes = world.getArchetypesWith<Position, Sprite>();
+		ASSERT_EQ(archetypes.size(), 2);
+
+		archetypes = world.getArchetypesWith<Sprite>();
+		ASSERT_EQ(archetypes.size(), 3);
+
+		archetypes = world.getArchetypesWith<Velocity>();
+		ASSERT_EQ(archetypes.size(), 1);
+
+		archetypes = world.getArchetypesWith<Velocity, Sprite, Position>();
+		ASSERT_EQ(archetypes.size(), 1);
 	}
 }

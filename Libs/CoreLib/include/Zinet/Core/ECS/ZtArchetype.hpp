@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
+#include "Zinet/Core/ZtTypes.hpp"
+#include "Zinet/Core/ZtTypeLessVector.hpp"
 
 #include "Zinet/Core/ECS/ZtEntity.hpp"
-#include "Zinet/Core/ECS/ZtTypes.hpp"
-#include "Zinet/Core/ECS/ZtTypeLessVector.hpp"
 
 #include <algorithm>
 #include <ranges>
@@ -29,12 +29,12 @@ namespace zt::core::ecs
 		bool remove(const Entity& entity);
 
 		bool hasEntity(const Entity& entity) const;
+		
+		template<class Component>
+		auto* getComponentOfType(this auto& self, size_t index) noexcept;
 
 		template<class Component>
-		Component* getComponentOfType(size_t index) noexcept;
-
-		template<class Component>
-		TypeLessVector* getComponentsOfType() noexcept;
+		auto* getComponentsOfType(this auto& self) noexcept;
 
 		template<class... Components>
 		constexpr bool hasTypes() const noexcept;
@@ -45,6 +45,8 @@ namespace zt::core::ecs
 		size_t getEntitiesCount() const noexcept { return entities.size(); }
 
 		size_t getComponentsCount() const noexcept;
+
+		auto& getEntities() const noexcept { return entities; }
 
 	private:
 
@@ -63,7 +65,7 @@ namespace zt::core::ecs
 		size_t addSingleComponent(Component&& component)
 		{
 			auto components = getComponentsOfType<Component>();
-			return components->add(component);
+			return components->add(std::forward<Component>(component));
 		}
 	};
 
@@ -85,37 +87,41 @@ namespace zt::core::ecs
 			return InvalidIndex;
 
 		size_t index = InvalidIndex;
-		((index = addSingleComponent(components)), ...);
+		((index = addSingleComponent(std::forward<Components>(components))), ...);
 
 		if (index != InvalidIndex)
-			entities.emplace_back(entity);
+			entities.emplace_back(entity.getID(), index);
 
 		return index;
 	}
 
 	template<class Component>
-	Component* Archetype::getComponentOfType(size_t index) noexcept
+	auto* Archetype::getComponentOfType(this auto& self, size_t index) noexcept
 	{
-		auto components = getComponentsOfType<Component>();
+		using ReturnT = std::conditional_t<IsSelfConst<decltype(self)>(), const Component, Component>;
+
+		auto components = self.getComponentsOfType<Component>();
 		if (!components)
-			return nullptr;
+			return static_cast<ReturnT*>(nullptr);
 
 		if (index >= components->getObjectsCount())
-			return nullptr;
+			return static_cast<ReturnT*>(nullptr);
 
-		return components->get<Component>(index);
+		return components->get<ReturnT>(index);
 	}
 
 	template<class Component>
-	TypeLessVector* Archetype::getComponentsOfType() noexcept
+	auto* Archetype::getComponentsOfType(this auto& self) noexcept
 	{
-		for (auto& components : componentsPack)
+		using ReturnT = std::conditional_t<IsSelfConst<decltype(self)>(), const TypeLessVector, TypeLessVector>;
+
+		for (auto& components : self.componentsPack)
 		{
 			if (components.hasType<Component>())
 				return &components;
 		}
 
-		return nullptr;
+		return static_cast<ReturnT*>(nullptr);
 	}
 
 	template<class... Components>

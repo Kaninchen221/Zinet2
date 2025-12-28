@@ -2,16 +2,18 @@
 
 #include "Zinet/Gameplay/Assets/ZtAssetProperty.hpp"
 
+#include "Zinet/Core/Assets/ZtAsset.hpp"
+
 #include <gtest/gtest.h>
 
-namespace zt::gameplay::tests
+namespace zt::gameplay::asset::tests
 {
 
 	class AssetPropertyTests : public ::testing::Test
 	{
 	protected:
 
-		AssetProperty<core::Asset> assetProperty{ "Property Name" };
+		Property<core::Asset> assetProperty{ "Property Name" };
 	};
 
 	TEST_F(AssetPropertyTests, Test)

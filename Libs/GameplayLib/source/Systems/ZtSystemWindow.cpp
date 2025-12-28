@@ -1,7 +1,6 @@
 ﻿#include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
-#include "Zinet/Gameplay/ZtEngineContext.hpp"
 
-#include "Zinet/Core/Components/ZtExitReason.hpp"
+#include "Zinet/Core/ZtExitReason.hpp"
 
 namespace zt::gameplay
 {
@@ -9,119 +8,59 @@ namespace zt::gameplay
 	{
 		using namespace core;
 
-		void Window::Init(ecs::World& world)
+		void Window::Init(ecs::WorldCommands worldCommands)
 		{
 			wd::GLFW::Init(false);
 
-			auto window = world.getResource<wd::Window>();
-			if (!window)
+			wd::Window windowRes;
+
+			if (!windowRes.create(800, 800))
 			{
-				Logger->error("Couldn't find a window resource");
-				return;
+				worldCommands.addResource(ExitReason{ "Couldn't create window" });
 			}
 
-			if (!window->create(800, 800))
-			{
-				Logger->error("Couldn't create window");
-				return;
-			}
+			worldCommands.addResource(wd::WindowEvents{ windowRes });
+ 			worldCommands.addResource(windowRes);
 		}
 
-		void Window::Update(ecs::World& world)
+		void Window::Update(
+			ecs::Resource<wd::Window> windowRes, 
+			ecs::Resource<wd::WindowEvents> windowEventsRes, 
+			ecs::WorldCommands worldCommands)
 		{
-			auto window = world.getResource<wd::Window>();
-			if (!window)
+			if (!windowRes)
 			{
-				Logger->error("Couldn't find a window resource");
+				worldCommands.addResource(ExitReason{ "Couldn't find a window resource" });
 				return;
 			}
 
-			auto windowEvents = world.getResource<wd::WindowEvents>();
-			if (!windowEvents)
+			if (!windowEventsRes)
 			{
-				Logger->error("Couldn't find a window events resource");
+				worldCommands.addResource(ExitReason{ "Couldn't find a window events resource" });
 				return;
 			}
-
-			if (window->isOpen())
+			
+			if (windowRes->isOpen())
 			{
-				windowEvents->pollEvents();
+				windowEventsRes->pollEvents();
 			}
 			else
 			{
-				window->destroyWindow();
-
-				auto exitReason = world.getResource<components::ExitReason>();
-				if (exitReason)
-				{
-					exitReason->exit = true;
-					exitReason->reason = "Window closed";
-				}
-				else
-				{
-					Logger->error("Couldn't find an exit reason resource");
-				}
+				windowRes->requestCloseWindow();
+				windowRes->destroyWindow();
+				worldCommands.addResource(ExitReason{ "Window closed", ExitReason::Info });
 			}
 		}
 
-		void Window::Deinit(ecs::World& world)
+		void Window::Deinit(ecs::Resource<wd::Window> windowRes)
 		{
-			auto window = world.getResource<wd::Window>();
-			if (!window)
-			{
-				Logger->error("Couldn't find a window resource");
+			if (!windowRes)
 				return;
-			}
 
-			if (window->isOpen())
-				window->destroyWindow();
+			if (windowRes->isOpen())
+				windowRes->destroyWindow();
 
 			wd::GLFW::Deinit();
 		}
 	}
-
-	bool SystemWindow::init()
-	{
-		System::init();
-
-		wd::GLFW::Init(false);
-
-		if (!window.create())
-			return false;
-
-		return true;
-	}
-
-	void SystemWindow::update()
-	{
-		System::update();
-
-		windowEvents.pollEvents();
-
-		// Handle window close
-		// One of the situations is when user clicks the "X" button on the window
-		if (window.shouldBeClosed())
-		{
-			window.requestCloseWindow();
-
-			auto& engineContext = EngineContext::Get();
-			engineContext.stopLooping();
-		}
-	}
-
-	bool SystemWindow::deinit()
-	{
-		window.requestCloseWindow();
-
-		// Wait until the window is closed
-		while (window.isOpen()) {}
-
-		window.destroyWindow();
-
-		wd::GLFW::Deinit();
-
-		initialized = false;
-		return true;
-	}
-
 }

@@ -6,14 +6,14 @@
 #include "Zinet/Core/Assets/ZtAsset.hpp"
 #include "Zinet/Core/ZtConstants.hpp"
 
-#include "Zinet/Gameplay/ZtEngineContext.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
 #include <concepts>
 
-namespace zt::gameplay
+namespace zt::gameplay::asset
 {
 	template<std::derived_from<core::Asset> AssetT, class Static = core::Static::No>
-	class AssetProperty
+	class Property
 	{
 	public:
 
@@ -21,25 +21,25 @@ namespace zt::gameplay
 
 		using IsStatic = Static;
 
-		AssetProperty() = default;
-		AssetProperty(const std::string_view name)
+		Property() = default;
+		Property(const std::string_view name)
 			: propertyName(name) {
 		}
-		AssetProperty(const AssetProperty& other) = default;
-		AssetProperty(AssetProperty&& other) noexcept = default;
-		~AssetProperty() noexcept 
+		Property(const Property& other) = default;
+		Property(Property&& other) noexcept = default;
+		~Property() noexcept 
 		{
 			// Static asset properties should not release their asset handle on destruction because it's already destroyed by the assets storage
 			if constexpr (IsStatic{})
 				assetHandle.release();
 		}
 
-		AssetProperty& operator = (const AssetProperty& other) = default;
-		AssetProperty& operator = (AssetProperty&& other) noexcept = default;
+		Property& operator = (const Property& other) = default;
+		Property& operator = (Property&& other) noexcept = default;
 
-		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::AssetProperty");
+		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::Property");
 
-		AssetProperty& operator = (AssetHandleT otherAssetHandle) noexcept { assetHandle = otherAssetHandle; return *this; }
+		Property& operator = (AssetHandleT otherAssetHandle) noexcept { assetHandle = otherAssetHandle; return *this; }
 
 		AssetT* operator->() noexcept 
 		{ 
@@ -60,10 +60,6 @@ namespace zt::gameplay
 
 		operator bool() const noexcept { return isValid(); }
 
-		bool serialize(core::JsonArchive& archive);
-
-		bool deserialize(core::JsonArchive& archive);
-
 		void show();
 	
 		void setPropertyName(const std::string_view newPropertyName) { propertyName = newPropertyName; }
@@ -81,30 +77,7 @@ namespace zt::gameplay
 	};
 
 	template<std::derived_from<core::Asset> AssetT, class Static>
-	bool AssetProperty<AssetT, Static>::serialize(core::JsonArchive& archive)
-	{
-		if (assetHandle)
-			archive.serialize(propertyName, assetHandle->getMetaData().value("fileRelativePath", "invalid relative path"));
-
-		return true;
-	}
-
-	template<std::derived_from<core::Asset> AssetT, class Static>
-	bool AssetProperty<AssetT, Static>::deserialize(core::JsonArchive& archive)
-	{
-		std::string assetKey;
-		archive.deserialize(propertyName, assetKey);
-		if (!assetKey.empty())
-		{
-			auto& engineContext = EngineContext::Get();
-			assetHandle = engineContext.getAssetsStorage().getAs<AssetT>(assetKey);
-		}
-
-		return true;
-	}
-
-	template<std::derived_from<core::Asset> AssetT, class Static>
-	void AssetProperty<AssetT, Static>::show()
+	void Property<AssetT, Static>::show()
 	{
 		ImGui::PushID(this);
 

@@ -8,31 +8,50 @@
 #include "Zinet/Core/ECS/ZtWorld.hpp"
 #include "Zinet/Core/ECS/ZtSchedule.hpp"
 
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 #include "Zinet/Core/Assets/ZtAssetText.hpp"
 
-#include "Zinet/Core/Components/ZtExitReason.hpp"
+#include "Zinet/Core/ZtExitReason.hpp"
+#include "Zinet/Core/ZtRandom.hpp"
 
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
 #include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
 
+#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemImGui.hpp"
+#include "Zinet/Gameplay/Systems/ZtSystemSprites.hpp"
+
+#include "Zinet/Gameplay/Editor/ZtEditor.hpp"
+
+#include "Zinet/VulkanRenderer/ZtGraphicsPipeline.hpp"
+#include "Zinet/VulkanRenderer/ZtImGuiIntegration.hpp"
+#include "Zinet/VulkanRenderer/ZtResourceStorage.hpp"
+
+using namespace zt::gameplay::system;
 
 namespace zt::gameplay::tests
 {
 	using namespace zt::core;
 
+	// TODO:
+	// - Draw ImGui
+	//	- Write Editor System
+	// - Draw Sprites
+	// - Draw Flipbooks
+	// 
+	// - Remove nodes
+	// - Remove old systems
+	// - Refactor
+	
 	class EngineTests : public ::testing::Test
 	{
 	protected:
 
 		inline static auto Logger = ConsoleLogger::Create("zt::gameplay::tests::EngineTests");
 
-		EngineTests() 
-			: scheduleInit{ ecs::Schedule::Create(MainThread, RenderThread) },
-			scheduleUpdate{ ecs::Schedule::Create(MainThread, RenderThread) },
-			scheduleDeinit{ ecs::Schedule::Create(MainThread, RenderThread) }
+		EngineTests()
 		{
 		}
 
@@ -49,32 +68,44 @@ namespace zt::gameplay::tests
 
 		void addResources()
 		{
-			AssetsStorage assetsStorage;
-			assetsStorage.registerAssetClass<AssetText>();
-			// TODO: Uncomment after adding system renderer
-			//assetsStorage.registerAssetClass<AssetTexture>();
-			//assetsStorage.registerAssetClass<AssetShader>();
-			//assetsStorage.registerAssetClass<AssetSampler>();
+			AssetStorage assetStorage;
+			assetStorage.registerAssetClass<core::asset::Text>();
+			assetStorage.registerAssetClass<asset::Texture>();
+			assetStorage.registerAssetClass<asset::Shader>();
+			assetStorage.registerAssetClass<asset::Sampler>();
+			ZT_TIME_LOG(assetStorage.storeAssets());
 
-			world.addResource(assetsStorage);
+			world.addResource(assetStorage);
 
-			auto window = world.addResource(wd::Window{});
-			world.addResource(wd::WindowEvents{ *window });
+			world.addResource(vulkan_renderer::ResourceStorage{});
 
-			world.addResource(components::ExitReason{});
+			world.addResource(CameraManager{});
 		}
 
 		void init()
 		{
-			scheduleInit.addSystem(system::Window{}, system::Window::Init, MainThread);
+			scheduleInit.addSystem(Window{}, Window::Init, ecs::MainThread{});
+			scheduleInit.addSystem(Renderer{}, Renderer::Init, ecs::After{ Window{} }, ecs::MainThread{});
+			scheduleInit.addSystem(ImGui{}, ImGui::Init, ecs::After{ Window{}, Renderer{} }, ecs::MainThread{});
+			scheduleInit.addSystem(Sprites{}, Sprites::Init, ecs::After{ Renderer{} });
 
-			scheduleInit.requestStop();
-			scheduleInit.run(world, MainThread);
-			scheduleInit.waitForStop();
+			scheduleInit.buildGraph();
+			scheduleInit.resolveGraph();
+			scheduleInit.runOnce(world);
 
-			auto assetsStorage = world.getResource<AssetsStorage>();
-			assetsStorage->storeAssets();
+			// Spawn Sprites
+			core::Random random;
+			const size_t spritesCount = 4;
+			for (size_t index = 0; index < spritesCount; ++index)
+			{
+				auto position = zt::Position{ { random.real<float>(-20, 20), random.real<float>(-20, 20), 100} };
+				world.spawn(Sprite{}, position, zt::Rotation{glm::radians(0.f)}, zt::Scale{{4, 4, 1}});
+				// TODO: Apply a random: position, scale and rotation
+				// TODO: Maybe add some way to define Entity to reduce redundancy of defining Entity types
+			}
 		}
+
+		void update();
 
 		void TearDown() override
 		{
@@ -83,18 +114,15 @@ namespace zt::gameplay::tests
 
 		void deinit()
 		{
-			scheduleDeinit.addSystem(system::Window{}, system::Window::Deinit, MainThread);
+			scheduleDeinit.addSystem(Window{}, Window::Deinit, ecs::MainThread{});
+			scheduleDeinit.addSystem(Renderer{}, Renderer::Deinit, ecs::Before{ Window{} }, ecs::MainThread{});
+			scheduleDeinit.addSystem(ImGui{}, ImGui::Deinit, ecs::Before{ Window{}, Renderer{} }, ecs::MainThread{});
+			scheduleDeinit.addSystem(Sprites{}, Sprites::Deinit, ecs::Before{ Renderer{} }, ecs::MainThread{});
 
-			scheduleDeinit.requestStop();
-			scheduleDeinit.run(world, MainThread);
-			scheduleDeinit.waitForStop();
+			scheduleDeinit.buildGraph();
+			scheduleDeinit.resolveGraph();
+			scheduleDeinit.runOnce(world);
 		}
-
-		enum Threads : ecs::ThreadID
-		{
-			MainThread,
-			RenderThread,
-		};;
 
 		ecs::World world;
 
@@ -105,23 +133,48 @@ namespace zt::gameplay::tests
 
 	TEST_F(EngineTests, Test)
 	{
-		scheduleUpdate.addSystem(system::Window{}, system::Window::Update, MainThread);
+		ZT_TIME_LOG(update());
+	}
 
-		auto exitReason = world.getResource<components::ExitReason>();
-		if (!exitReason)
-		{
-			Logger->error("Couldn't find an exit reason resource");
-			return;
-		}
+	void EngineTests::update()
+	{
+		scheduleUpdate.addSystem(Window{}, Window::Update, ecs::MainThread{});
+		scheduleUpdate.addSystem(Renderer{}, Renderer::Update, ecs::After{ Window{} }, ecs::MainThread{});
+		scheduleUpdate.addSystem(ImGui::Pre{}, ImGui::PreUpdate, ecs::Before{ Renderer{} }, ecs::After{ Window{} }, ecs::MainThread{});
+		scheduleUpdate.addSystem(ImGui::Post{}, ImGui::PostUpdate, ecs::Before{ Renderer{} }, ecs::After{ ImGui::Pre{} }, ecs::MainThread{});
 
-		while (!exitReason->exit)
+		scheduleUpdate.addSystem(Editor{}, Editor::EntryPoint, ecs::After{ ImGui::Pre{} }, ecs::Before{ ImGui::Post{} }, ecs::MainThread{});
+
+		scheduleUpdate.addSystem(Sprites{}, Sprites::Update, ecs::Before{ Renderer{}, Editor{} });
+
+		scheduleUpdate.buildGraph();
+		scheduleUpdate.resolveGraph();
+
+		// Add a ptr to the graph as a resource so we can access it from systems
+		const auto* graph = &scheduleUpdate.getGraph();
+		world.addResource(graph);
+
+		while (true)
 		{
-			if (!IsDebuggerAttached())
+			auto exitReason = world.getResource<ExitReason>();
+			if (exitReason)
+			{
+				switch (exitReason->level)
+				{
+				case ExitReason::Info:
+					Logger->info("Exit because: {}", exitReason->reason);
+					break;
+				case ExitReason::Error:
+					Logger->error("Exit because: {}", exitReason->reason);
+					break;
+				case ExitReason::Critical:
+					Logger->critical("Exit because: {}", exitReason->reason);
+					break;
+				}
 				break;
+			}
 
-			scheduleUpdate.run(world, MainThread);
+			scheduleUpdate.runOnce(world);
 		}
-		scheduleUpdate.requestStop();
-		scheduleUpdate.waitForStop();
 	}
 }

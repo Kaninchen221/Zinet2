@@ -28,6 +28,8 @@ namespace zt::wd::tests
 		}
 	};
 
+	// TODO: Test move ctor and assign operator
+
 	TEST_F(WindowTests, Create)
 	{
 		ASSERT_TRUE(window.create());
@@ -76,15 +78,15 @@ namespace zt::wd::tests
 		[[maybe_unused]] WindowEvents& windowEvents = window.getWindowEvents();
 	}
 
-	TEST_F(WindowTests, GetWindowResizedCallback)
+	TEST_F(WindowTests, GetWindowResizedCallbackTest)
 	{
-		auto callback = window.getWindowResizedCallback();
+		auto callback = wd::Window::GetWindowResizedCallback();
 		EXPECT_FALSE(callback.isValid());
 	}
 
 	TEST_F(WindowTests, GetWindowResizedCallbackUserPointer)
 	{
-		void* userPointer = window.getWindowResizedCallbackUserPointer();
+		void* userPointer = wd::Window::GetWindowResizedCallbackUserPointer();
 		EXPECT_EQ(userPointer, nullptr);
 	}
 
@@ -92,12 +94,12 @@ namespace zt::wd::tests
 	{
 		struct S { static void Callback(void* userPointer, const Vector2i&) { if (!userPointer) FAIL() << "userPointer must be not nullptr"; } };
 		S s;
-		window.setWindowResizedCallback(&s, &S::Callback);
+		wd::Window::SetWindowResizedCallback(&s, &S::Callback);
 
-		auto callback = window.getWindowResizedCallback();
+		auto callback = wd::Window::GetWindowResizedCallback();
 		EXPECT_TRUE(callback);
 
-		void* userPointer = window.getWindowResizedCallbackUserPointer();
+		void* userPointer = wd::Window::GetWindowResizedCallbackUserPointer();
 		EXPECT_EQ(userPointer, &s);
 	}
 

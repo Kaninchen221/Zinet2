@@ -11,6 +11,12 @@
 namespace zt
 {
 	using Matrix = glm::mat4;
+
+	// TODO: Refactor it
+	// Constructor, assign operator, operator int
+	struct Position { Vector3f value; };
+	struct Rotation { float value; };
+	struct Scale { Vector3f value; };
 }
 
 namespace zt::math

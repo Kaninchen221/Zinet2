@@ -126,13 +126,16 @@ namespace zt::vulkan_renderer::tests
 		ASSERT_TRUE(texture.create(device, vma, { sourceImage.getWidth(), sourceImage.getHeight() }));
 		ASSERT_TRUE(texture.isValid());
 
-		const auto commands = [&texture = texture, &sourceImage = sourceImage, &buffer = buffer](const CommandBuffer& commandBuffer)
+		// TODO: Not the best way to give the texture a buffer with image data
+		const Vector2ui size{ static_cast<uint32_t>(sourceImage.getWidth()), static_cast<uint32_t>(sourceImage.getHeight()) };
+		auto commands = [&texture = texture, size = size, buffer = std::make_shared<Buffer>(std::move(buffer))]
+		(const CommandBuffer& commandBuffer) mutable -> void
 		{
 			FillWithImageBufferInput input
 			{
-				.buffer = buffer,
+				.buffer = std::move(*buffer),
 				.commandBuffer = commandBuffer,
-				.imageExtent = { sourceImage.getWidth(), sourceImage.getHeight() }
+				.imageExtent = size
 			};
 			texture.fillWithImageBuffer(input);
 		};

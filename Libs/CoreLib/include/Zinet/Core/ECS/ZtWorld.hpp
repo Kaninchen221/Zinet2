@@ -2,11 +2,11 @@
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtTypes.hpp"
+#include "Zinet/Core/ZtDebug.hpp"
 
 #include "Zinet/Core/ECS/ZtEntity.hpp"
-#include "Zinet/Core/ECS/ZtTypes.hpp"
 #include "Zinet/Core/ECS/ZtArchetype.hpp"
-#include "Zinet/Core/ZtDebug.hpp"
 
 #include <utility>
 
@@ -18,17 +18,31 @@ namespace zt::core::ecs
 
 	public:
 
+		using Command = std::function<void(World&)>;
+		using Commands = std::vector<Command>;
+
 		World() noexcept = default;
 		World(const World& other) noexcept = default;
 		World(World&& other) noexcept = default;
-		~World() noexcept = default;
+		~World() noexcept
+		{
+			archetypes.clear();
+			resources.clear();
+		}
 
 		World& operator = (const World& other) noexcept = default;
 		World& operator = (World&& other) noexcept = default;
 
+		// TODO: Write optimized methods that will allow to spawn enormous amount of entities at once
+
+		// TODO: Add check that will block adding more than one component of the same type in one entity OR
+		// Handle this situation but this is not easy and easier way is just making an another struct that will pack doubled components
+		// into one structure
 		/// Entities & Components
 		template<class... Components>
 		Entity spawn(Components&&... components);
+
+		bool hasEntity(const Entity& entity) noexcept;
 
 		bool remove(const Entity& entity);
 
@@ -36,7 +50,7 @@ namespace zt::core::ecs
 		Component* getComponent(const Entity& entity);
 
 		template<class Component>
-		QueryTypes::ComponentsPack getComponentsOfType() noexcept;
+		std::vector<TypeLessVector*> getComponentsOfType() noexcept;
 
 		size_t getComponentsCount() const noexcept;
 
@@ -44,12 +58,41 @@ namespace zt::core::ecs
 
 		size_t getEntitiesCount() const noexcept;
 
-		/// Resources
-		template<class ResourceT>
-		std::decay_t<ResourceT>* addResource(ResourceT&& newResource);
+		template<class... Components>
+		auto getArchetypesWith(this auto& self);
 
-		template<class Resource>
-		Resource* getResource();
+		/// Resources
+		// Resources are unique by type
+		// User can't remove resources
+
+		template<class ResourceT>
+		auto* addResource(ResourceT&& newResource);
+
+		template<class ResourceT>
+		auto* getResource(this auto& self);
+
+		/// Commands
+		// Would be nice to completly omit mutexes
+		void addCommands(const Commands& newCommands) 
+		{ 
+			std::lock_guard guard{ addCommandsMutex };
+
+			commands.insert(
+				commands.end(),
+				std::make_move_iterator(newCommands.begin()),
+				std::make_move_iterator(newCommands.end())
+			);
+		}
+
+		void executeCommands()
+		{
+			for (auto& command : commands)
+			{
+				command(*this);
+			}
+		}
+
+		void clearCommands() { commands.clear(); }
 
 	private:
 
@@ -61,9 +104,12 @@ namespace zt::core::ecs
 
 		std::vector<Archetype> archetypes;
 
-		// Resources
+		/// Resources
 		std::vector<TypeLessVector> resources;
 
+		/// Commands
+		Commands commands;
+		std::mutex addCommandsMutex;
 	};
 
 #pragma warning(push)
@@ -102,9 +148,9 @@ namespace zt::core::ecs
 	}
 
 	template<class Component>
-	QueryTypes::ComponentsPack World::getComponentsOfType() noexcept
+	std::vector<TypeLessVector*> World::getComponentsOfType() noexcept
 	{
-		typename QueryTypes::ComponentsPack componentsPack;
+		std::vector<TypeLessVector*> componentsPack;
 
 		for (auto& archetype : archetypes)
 		{
@@ -122,22 +168,24 @@ namespace zt::core::ecs
 		for (auto& archetype : archetypes)
 		{
 			if (archetype.typesEqual<Components...>())
-				return archetype.add(entity, components...);
+				return archetype.add(entity, std::forward<Components>(components)...);
 		}
 
 		auto& archetype = archetypes.emplace_back(Archetype::Create<Components...>());
-		return archetype.add(entity, components...);
+		return archetype.add(entity, std::forward<Components>(components)...);
 	}
 
 	template<class ResourceT>
-	std::decay_t<ResourceT>* World::addResource(ResourceT&& newResource)
+	auto* World::addResource(ResourceT&& newResource)
 	{
-		using Resource = std::decay_t<ResourceT>;
+		using Resource = std::remove_cvref_t<ResourceT>;
 
 		for (auto& resource : resources)
 		{
+			// Don't return a valid pointer if the resource already exists
+			// Because functions should be explicit about what they are doing
 			if (resource.hasType<Resource>())
-				return {};
+				return static_cast<Resource*>(nullptr);
 		}
 
 		auto& typeLessVector = resources.emplace_back(TypeLessVector::Create<Resource>());
@@ -146,15 +194,36 @@ namespace zt::core::ecs
 		return typeLessVector.get<Resource>(0);
 	}
 
-	template<class Resource>
-	Resource* World::getResource()
+	template<class ResourceT>
+	auto* World::getResource(this auto& self)
 	{
-		for (auto& resource : resources)
+		using Resource = std::remove_cvref_t<ResourceT>;
+
+		using ResultT = std::conditional_t<IsSelfConst<decltype(self)>(),
+			const Resource*, Resource*>;
+
+		for (auto& resource : self.resources)
 		{
 			if (resource.hasType<Resource>())
-				return resource.get<Resource>(0);
+				return static_cast<ResultT>(resource.get<Resource>(0));
 		}
 
-		return {};
+		return static_cast<ResultT>(nullptr);
+	}
+
+	template<class... Components>
+	auto World::getArchetypesWith(this auto& self)
+	{
+		using ResultT = std::conditional_t<IsSelfConst<decltype(self)>(),
+			std::vector<const Archetype*>, std::vector<Archetype*>>;
+
+		ResultT result;
+		for (auto& archetype : self.archetypes)
+		{
+			if (archetype.hasTypes<Components...>())
+				result.push_back(&archetype);
+		}
+
+		return result;
 	}
 }

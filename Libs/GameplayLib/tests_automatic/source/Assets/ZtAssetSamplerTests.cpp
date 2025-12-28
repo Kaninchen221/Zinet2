@@ -1,16 +1,16 @@
 #pragma once
 
+#include <Zinet/Core/Assets/ZtAssetStorage.hpp>
+
 #include <Zinet/Gameplay/Assets/ZtAssetSampler.hpp>
-#include <Zinet/Gameplay/ZtEngineContext.hpp>
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
 #include <gtest/gtest.h>
 
-namespace zt::gameplay::tests
+namespace zt::gameplay::asset::tests
 {
-
-	class AssetSamplerTests : public ::testing::Test
+	class SamplerTests : public ::testing::Test
 	{
 	protected:
 
@@ -24,28 +24,23 @@ namespace zt::gameplay::tests
 
 	};
 
-	TEST_F(AssetSamplerTests, Test)
+	TEST_F(SamplerTests, Test)
 	{
-		EngineContext engineContext;
-		auto& assetsStorage = engineContext.getAssetsStorage();
-		assetsStorage.registerAssetClass<AssetSampler>();
+		core::AssetStorage assetStorage;
+		assetStorage.registerAssetClass<Sampler>();
 
-		engineContext.addSystem<SystemWindow>("SystemWindow");
-		engineContext.addSystem<SystemRenderer>("SystemRenderer");
+		bool result = assetStorage.storeAssets();
+		ASSERT_TRUE(result);
 
-		SystemRenderer::SetUseImGui(false);
-		ASSERT_TRUE(engineContext.init());
-
-		auto asset = assetsStorage.getAs<AssetSampler>("Content/Samplers/linear.sampler");
+		auto asset = assetStorage.getAs<Sampler>("Content/Samplers/linear.sampler");
 		ASSERT_TRUE(asset);
 
-		// Sampler should be auto loaded
+		ASSERT_TRUE(asset->load(assetStorage.getAssetsFinder().getRootPath()));
 		ASSERT_TRUE(asset->isLoaded());
+		ASSERT_FALSE(asset->getTypeString().empty());
 
 		asset->unload();
 		ASSERT_FALSE(asset->isLoaded());
-
-		engineContext.deinit();
-		SystemRenderer::SetUseImGui(true);
+		ASSERT_TRUE(asset->getTypeString().empty());
 	}
 }

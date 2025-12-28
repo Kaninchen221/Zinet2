@@ -9,6 +9,8 @@
 
 #include "Zinet/Math/ZtVecTypes.hpp"
 
+#include "Zinet/Window/ZtWindow.hpp"
+
 namespace zt::wd
 {
 	class Window;
@@ -24,21 +26,47 @@ namespace zt::vulkan_renderer
 
 	public:
 
+		// TODO: Rename to DrawCommands
+		using Command = std::function<void(CommandBuffer&, const RendererContext&)>;
+
 		VulkanRenderer() = default;
 		VulkanRenderer(const VulkanRenderer& other) = default;
-		VulkanRenderer(VulkanRenderer&& other) = default;
+		VulkanRenderer(VulkanRenderer&& other) 
+		{  
+			*this = std::move(other);
+		};
 		~VulkanRenderer() noexcept = default;
 
 		VulkanRenderer& operator = (const VulkanRenderer& other) noexcept = default;
-		VulkanRenderer& operator = (VulkanRenderer&& other) noexcept = default;
+		VulkanRenderer& operator = (VulkanRenderer&& other) noexcept
+		{
+			rendererContext = std::move(other.rendererContext);
+			initialized = other.initialized;
+
+			other.initialized = false;
+
+			wd::Window::SetWindowResizedCallback(this, WindowResizedCallback);
+
+			return *this;
+		}
 
 		bool init(wd::Window& window);
 
 		void deinit();
 
 		bool nextImage();
-		
-		void draw(GraphicsPipeline& graphicsPipeline, const DrawInfo& drawInfo);
+
+		void startRecordingDrawCommands();
+
+		void beginRenderPass(RenderPass& renderPass);
+
+		void draw(const GraphicsPipeline& graphicsPipeline, const DrawInfo& drawInfo);
+
+		void draw(const Command& command);
+
+		void endRenderPass();
+
+		void endRecordingDrawCommands();
 
 		bool submitCurrentDisplayImage();
 
@@ -49,9 +77,15 @@ namespace zt::vulkan_renderer
 
 		bool shouldBePaused() const noexcept { return rendererContext.invalidWindowSizeForPresent; }
 
+		bool isInitialized() const noexcept { return initialized; }
+
+		void waitForCompleteDrawing() { rendererContext.queue.waitIdle(); }
+
 	protected:
 
 		RendererContext rendererContext;
+
+		bool initialized = false;
 
 		static void WindowResizedCallback(void* userPointer, const Vector2i& size);
 

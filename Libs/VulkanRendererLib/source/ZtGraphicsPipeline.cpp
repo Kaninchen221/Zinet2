@@ -62,7 +62,7 @@ namespace zt::vulkan_renderer
 	}
 
 	void GraphicsPipeline::draw(
-		[[maybe_unused]] RendererContext& rendererContext, const DrawInfo& drawInfo, CommandBuffer& commandBuffer)
+		const RendererContext& rendererContext, const DrawInfo& drawInfo, CommandBuffer& commandBuffer) const
 	{
 		vkDescriptorSets =
 		{
@@ -90,7 +90,7 @@ namespace zt::vulkan_renderer
 		// Draw with Index Buffer
 		if (drawInfo.indexBuffer->isValid())
 		{
-			vkCmdBindIndexBuffer(commandBuffer.get(), drawInfo.indexBuffer->get(), 0, VK_INDEX_TYPE_UINT16);
+			vkCmdBindIndexBuffer(commandBuffer.get(), drawInfo.indexBuffer->get(), 0, VK_INDEX_TYPE_UINT32);
 			vkCmdDrawIndexed(commandBuffer.get(), drawInfo.indexCount, drawInfo.instances, 0, 0, 0);
 		}
 		else

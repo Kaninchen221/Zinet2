@@ -2,9 +2,9 @@
 
 #include "Zinet/Core/ZtImgui.hpp"
 
-namespace zt::core
+namespace zt::core::asset
 {
-	bool AssetText::load(const Path& rootPath)
+	bool Text::load(const Path& rootPath)
 	{
 		File file;
 		const auto filePath = rootPath / metaData.value("fileRelativePath", "");
@@ -22,13 +22,13 @@ namespace zt::core
 		return true;
 	}
 
-	void AssetText::unload()
+	void Text::unload()
 	{ 
 		text.clear(); 
 		loaded = false; 
 	}
 
-	void AssetText::show()
+	void Text::show()
 	{
 		Asset::show();
 		if (!isLoaded())

@@ -8,6 +8,8 @@
 
 namespace zt::core::ecs::tests
 {
+	using namespace zt::core::tests;
+
 	class ECSArchetypeTests : public ::testing::Test
 	{
 	protected:
@@ -126,6 +128,11 @@ namespace zt::core::ecs::tests
 
 		{ // Typical test
 			const bool result = archetype.hasTypes<Position, Sprite>();
+			ASSERT_TRUE(result);
+		}
+
+		{ // One component type test
+			const bool result = archetype.hasTypes<Position>();
 			ASSERT_TRUE(result);
 		}
 

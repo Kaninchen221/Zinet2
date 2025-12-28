@@ -34,14 +34,6 @@ namespace zt::vulkan_renderer::tests
 	{
 	protected:
 
-		VulkanRendererTests()
-		{
-		}
-
-		~VulkanRendererTests() override
-		{
-		}
-
 		void SetUp() override
 		{
 			wd::GLFW::Init(false);
@@ -53,7 +45,8 @@ namespace zt::vulkan_renderer::tests
 			renderer.init(window);
 			auto& rendererContext = renderer.getRendererContext();
 
-			imGuiIntegration.init(renderer.getRendererContext(), window);
+			constexpr bool multiViewport = false;
+			imGuiIntegration.init(renderer.getRendererContext(), window, multiViewport);
 
 			vertexShaderModule = CreateShaderModule("shader.vert", ShaderType::Vertex, rendererContext.getDevice());
 			ASSERT_TRUE(vertexShaderModule.isValid());
@@ -217,8 +210,7 @@ namespace zt::vulkan_renderer::tests
 			.vertexBuffer = &vertexBuffer,
 			.indexBuffer = &indexBuffer,
 			.indexCount = static_cast<std::uint32_t>(indices.size()),
-			.instances = 2u,
-			.additionalCommands = { ImGuiIntegration::DrawCommand }
+			.instances = 2u
 		};
 
 		{ // Create Graphics Pipeline
@@ -320,6 +312,13 @@ namespace zt::vulkan_renderer::tests
 
 				ImGui::EndFrame();
 
+				auto& io = ImGui::GetIO();
+				if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+				{
+					ImGui::UpdatePlatformWindows();
+					//ImGui::RenderPlatformWindowsDefault(); // It's called outside the main loop
+				}
+
 				imGuiIntegration.prepareRenderData();
 			}
 
@@ -327,7 +326,16 @@ namespace zt::vulkan_renderer::tests
 			{
 				ASSERT_TRUE(renderer.nextImage());
 
+				renderer.startRecordingDrawCommands();
+
+				renderer.beginRenderPass(renderer.getRendererContext().getRenderPass());
+
 				renderer.draw(graphicsPipeline, drawInfo);
+				renderer.draw(ImGuiIntegration::DrawCommand);
+
+				renderer.endRenderPass();
+
+				renderer.endRecordingDrawCommands();
 
 				ASSERT_TRUE(renderer.submitCurrentDisplayImage());
 

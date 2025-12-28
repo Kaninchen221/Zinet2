@@ -8,19 +8,24 @@ namespace zt::vulkan_renderer
 
 	bool VulkanRenderer::init(wd::Window& window)
 	{
-		window.setWindowResizedCallback(this, WindowResizedCallback);
+		wd::Window::SetWindowResizedCallback(this, WindowResizedCallback);
 
 		if (!rendererContext.create(window))
 			return false;
 
+		initialized = true;
 		return true;
 	}
 
 	void VulkanRenderer::deinit()
 	{
-		rendererContext.device.waitIdle();
+		if (isInitialized())
+		{
+			rendererContext.device.waitIdle();
 
-		rendererContext.destroy();
+			rendererContext.destroy();
+			initialized = false;
+		}
 	}
 
 	bool VulkanRenderer::nextImage()
@@ -50,25 +55,18 @@ namespace zt::vulkan_renderer
 		Logger->debug("Current display image index: {}", currentDisplayImageIndex);
 		Logger->debug("Next display image index: {}", nextDisplayImageIndex);
 
-
 		return true;
 	}
 
-	void VulkanRenderer::draw(GraphicsPipeline& graphicsPipeline, const DrawInfo& drawInfo)
+	void VulkanRenderer::startRecordingDrawCommands()
 	{
 		auto& swapChain = rendererContext.swapChain;
-		auto& renderPass = rendererContext.renderPass;
 		auto& displayImage = rendererContext.getCurrentDisplayImage();
 		auto& commandBuffer = displayImage.commandBuffer;
 
-		//Logger->debug("Drawing on image with index: {}", rendererContext.currentDisplayImageIndex);
-
-		// Begin draw start
 		commandBuffer.reset();
 
 		commandBuffer.begin();
-		const auto extent = swapChain.getExtent();
-		commandBuffer.beginRenderPass(renderPass, displayImage.framebuffer, extent);
 
 		// Viewport settings
 		const VkViewport viewport
@@ -88,20 +86,56 @@ namespace zt::vulkan_renderer
 			.extent = swapChain.getExtent()
 		};
 		commandBuffer.setScissor(scissor);
+	}
+
+	void VulkanRenderer::beginRenderPass(RenderPass& renderPass)
+	{
+		auto& swapChain = rendererContext.swapChain;
+		auto& displayImage = rendererContext.getCurrentDisplayImage();
+		auto& commandBuffer = displayImage.commandBuffer;
+
+		const auto extent = swapChain.getExtent();
+		commandBuffer.beginRenderPass(renderPass, displayImage.framebuffer, extent);
+	}
+
+	void VulkanRenderer::draw(const GraphicsPipeline& graphicsPipeline, const DrawInfo& drawInfo)
+	{
+		auto& displayImage = rendererContext.getCurrentDisplayImage();
+		auto& commandBuffer = displayImage.commandBuffer;
 
 		commandBuffer.bindPipeline(graphicsPipeline.getPipeline());
-
-		// TODO: Support more than one pipeline
 		graphicsPipeline.draw(rendererContext, drawInfo, commandBuffer);
+	}
 
-		// TODO: After adding support of multiple pipelines, additional commands should describe which pipeline to use
-		for (const auto& additionalCommand : drawInfo.additionalCommands)
+	void VulkanRenderer::draw(const Command& command)
+	{
+		auto& displayImage = rendererContext.getCurrentDisplayImage();
+		auto& commandBuffer = displayImage.commandBuffer;
+
+#	if ZINET_SANITY_CHECK
+		if (!command)
 		{
-			if (additionalCommand)
-				additionalCommand.invoke(commandBuffer);
+			Logger->error("Command is invalid");
+			return;
 		}
+#	endif
+
+		command(commandBuffer, rendererContext);
+	}
+
+	void VulkanRenderer::endRenderPass()
+	{
+		auto& displayImage = rendererContext.getCurrentDisplayImage();
+		auto& commandBuffer = displayImage.commandBuffer;
 
 		commandBuffer.endRenderPass();
+	}
+
+	void VulkanRenderer::endRecordingDrawCommands()
+	{
+		auto& displayImage = rendererContext.getCurrentDisplayImage();
+		auto& commandBuffer = displayImage.commandBuffer;
+
 		commandBuffer.end();
 	}
 

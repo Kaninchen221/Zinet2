@@ -16,23 +16,37 @@ namespace zt::wd
 	{
 	public:
 
-		using WindowResizedCallback = core::Function<void, void*, const Vector2i&>;
+		using WindowResizedCallbackT = core::Function<void, void*, const Vector2i&>;
 
 	private:
 
 		inline static core::ConsoleLogger Logger = core::ConsoleLogger::Create("Window");
 
-		WindowResizedCallback windowResizedCallback;
-		void* windowResizedCallbackUserPointer = nullptr;
+		inline static WindowResizedCallbackT WindowResizedCallback{};
+		inline static void* WindowResizedCallbackUserPointer = nullptr;
 
 	public:
 
 		Window() noexcept = default;
-		Window(const Window& other) noexcept = default;
-		Window(Window&& other) noexcept = default;
+		Window(const Window& other) noexcept = delete;
+		Window(Window&& other) noexcept
+		{
+			*this = std::move(other);
+		}
 
-		Window& operator = (const Window& other) noexcept = default;
-		Window& operator = (Window&& other) noexcept = default;
+		Window& operator = (const Window& other) noexcept = delete;
+		Window& operator = (Window&& other) noexcept
+		{
+			internalWindow = other.internalWindow;
+			windowEvents = other.windowEvents;
+
+			other.internalWindow = nullptr;
+			other.windowEvents = nullptr;
+
+			glfwSetWindowUserPointer(internalWindow, this);
+
+			return *this;
+		}
 
 		~Window() noexcept;
 
@@ -56,11 +70,11 @@ namespace zt::wd
 
 		void requestCloseWindow();
 
-		void setWindowResizedCallback(void* userPointer, WindowResizedCallback callback);
+		static void SetWindowResizedCallback(void* userPointer, WindowResizedCallbackT callback);
 
-		WindowResizedCallback getWindowResizedCallback() const noexcept { return windowResizedCallback; }
+		static auto GetWindowResizedCallback() noexcept { return WindowResizedCallback; }
 
-		void* getWindowResizedCallbackUserPointer() noexcept { return windowResizedCallbackUserPointer; }
+		static void* GetWindowResizedCallbackUserPointer() noexcept { return WindowResizedCallbackUserPointer; }
 
 		void swapBuffers();
 
@@ -132,18 +146,5 @@ namespace zt::wd
 		Vector2i size;
 		glfwGetWindowSize(internalWindow, &size.x, &size.y);
 		return size;
-	}
-
-	inline void Window::setWindowResizedCallback(void* userPointer, WindowResizedCallback callback)
-	{
-		if (userPointer && callback)
-		{
-			windowResizedCallback = callback;
-			windowResizedCallbackUserPointer = userPointer;
-		}
-		else
-		{
-			Logger->error("Can't bind user pointer: {} : Is callback valid: {}", userPointer, static_cast<bool>(callback));
-		}
 	}
 }

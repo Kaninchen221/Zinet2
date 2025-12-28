@@ -3,73 +3,314 @@
 #include <gtest/gtest.h>
 
 #include "Zinet/Core/ECS/ZtSchedule.hpp"
-#include "Zinet/Core/ECS/ZtTypes.hpp"
 #include "Zinet/Core/ECS/ZtQuery.hpp"
 
 #include "Zinet/Core/Tests/ZtTestTypes.hpp"
 
+#include "Zinet/Core/ZtTypes.hpp"
+#include "Zinet/Core/ZtExitReason.hpp"
+
 namespace zt::core::ecs::tests
 {
+	using namespace zt::core::tests;
+
 	class ECSScheduleTests : public ::testing::Test
 	{
-	protected:
-
-		enum Threads : uint8_t
-		{
-			MainThread,
-			RenderThread
-		};
 
 	};
 
-	TEST_F(ECSScheduleTests, CreateScheduleTest)
+	TEST_F(ECSScheduleTests, BeforeAndAfterDependenciesTest)
 	{
-		Schedule schedule = Schedule::Create(Threads::MainThread, Threads::RenderThread);
-		const auto& threads = schedule.getThreads();
-		ASSERT_EQ(threads.size(), 2);
+		Schedule schedule;
 
-		ASSERT_EQ(threads[0].getID(), Threads::MainThread);
-		ASSERT_EQ(threads[1].getID(), Threads::RenderThread);
-	}
+		schedule.addSystem(SystemTest_1{}, EmptySystemTest::EntryPoint);
+		schedule.addSystem(SystemTest_2{}, EmptySystemTest::EntryPoint, Before{ SystemTest_1{} }, After{ SystemTest_3{} });
+		schedule.addSystem(SystemTest_3{}, EmptySystemTest::EntryPoint);
+		schedule.addSystem(SystemTest_4{}, EmptySystemTest::EntryPoint);
 
-	TEST_F(ECSScheduleTests, AddSystemTest)
-	{
-		Schedule schedule = Schedule::Create(Threads::MainThread, Threads::RenderThread);
+		{
+			auto& systems = schedule.getSystems();
+			ASSERT_EQ(systems.size(), 4);
 
-		schedule.addSystem(TestSystem::Label{}, TestSystem::entryPoint, Threads::MainThread);
+			{ // Test build graph nodes that will be used to create the final graph
+				schedule.buildGraph();
+				const Graph& graph = schedule.getGraph();
 
-		struct LambdaLabel {};
-		auto lambda = []([[maybe_unused]] World& world) { TestSystem::doSomething(); };
+				{ // Nodes
+					auto& nodes = graph.nodes;
+					ASSERT_EQ(nodes.size(), systems.size());
 
-		schedule.addSystem(LambdaLabel{}, lambda, Threads::RenderThread);
+					EXPECT_EQ(nodes[0].typeID, GetTypeID<SystemTest_1>());
+					ASSERT_EQ(nodes[0].after.size(), 1);
+					EXPECT_EQ(nodes[0].after[0], GetTypeID<SystemTest_2>());
+					EXPECT_EQ(nodes[0].before.size(), 0);
 
-		const auto& threads = schedule.getThreads();
+					EXPECT_EQ(nodes[1].typeID, GetTypeID<SystemTest_2>());
+					ASSERT_EQ(nodes[1].after.size(), 1);
+					EXPECT_EQ(nodes[1].after[0], GetTypeID<SystemTest_3>());
+					EXPECT_EQ(nodes[1].before.size(), 1);
+					EXPECT_EQ(nodes[1].before[0], GetTypeID<SystemTest_1>());
 
-		ASSERT_TRUE(threads[Threads::MainThread].getSystems()[0].isEqual(TestSystem::Label{}));
-		ASSERT_TRUE(threads[Threads::RenderThread].getSystems()[0].isEqual(LambdaLabel{}));
-	}
+					EXPECT_EQ(nodes[2].typeID, GetTypeID<SystemTest_3>());
+					EXPECT_EQ(nodes[2].after.size(), 0);
+					EXPECT_EQ(nodes[2].before.size(), 1);
+					EXPECT_EQ(nodes[2].before[0], GetTypeID<SystemTest_2>());
 
-	TEST_F(ECSScheduleTests, RunTest)
-	{
-		Schedule schedule = Schedule::Create(Threads::MainThread, Threads::RenderThread);
+					EXPECT_EQ(nodes[3].typeID, GetTypeID<SystemTest_4>());
+					EXPECT_EQ(nodes[3].after.size(), 0);
+					EXPECT_EQ(nodes[3].before.size(), 0);
+				}
 
-		schedule.addSystem(TestSystemIncrementar::Label{}, TestSystemIncrementar::entryPoint, Threads::MainThread);
+				{ // Edges
+					auto& edges = graph.edges;
+					ASSERT_EQ(edges.size(), 2);
+
+					EXPECT_TRUE(std::ranges::contains(edges, GraphEdge{ .from = GetTypeID<SystemTest_2>(), .to = GetTypeID<SystemTest_1>() }));
+					EXPECT_TRUE(std::ranges::contains(edges, GraphEdge{ .from = GetTypeID<SystemTest_3>(), .to = GetTypeID<SystemTest_2>() }));
+				}
+			}
+
+			// Test build a graph from the nodes
+			{
+ 				schedule.resolveGraph();
+ 
+				const Graph& graph = schedule.getGraph();
+				auto& nodes = graph.nodes;
+				auto& edges = graph.edges;
+
+				// If the graph is successfully resolved then it doesn't contain any nodes and edges
+				ASSERT_TRUE(nodes.empty());
+				ASSERT_TRUE(edges.empty());
+			}
+
+			{ // Test layers -> We need layers to run systems parallel
+				const Graph& graph = schedule.getGraph();
+				const std::vector<GraphLayer>& layers = graph.layers;
+				ASSERT_EQ(layers.size(), 3);
+
+				// Don't test sequence in the first layer
+				ASSERT_EQ(layers[0].nodes.size(), 2);
+
+				ASSERT_EQ(layers[1].nodes.size(), 1);
+				EXPECT_EQ(layers[1].nodes[0].typeID, GetTypeID<SystemTest_2>());
+
+				ASSERT_EQ(layers[2].nodes.size(), 1);
+				EXPECT_EQ(layers[2].nodes[0].typeID, GetTypeID<SystemTest_1>());
+			}
+		}
 
 		World world;
-		for (size_t i = 0; i < 100; i++)
+		world.spawn(Position{ 0, 0 }, Sprite{ 0 }, Velocity{ 0, 0 });
+		world.spawn(Position{ 0, 0 }, Sprite{ 0 }, Velocity{ 0, 0 });
+
+		schedule.runOnce(world);
+	}
+
+	TEST_F(ECSScheduleTests, GraphMainThreadDependencyTest)
+	{
+		Schedule schedule;
+
+		schedule.addSystem(SystemTest_2{}, EmptySystemTest::EntryPoint, MainThread{});
+		schedule.addSystem(SystemTest_3{}, EmptySystemTest::EntryPoint, MainThread{});
+		schedule.addSystem(SystemTest_1{}, EmptySystemTest::EntryPoint);
+
+		// If you have more than one system in the same layer and both of them must be run on the main thread then just run them in sync and don't generate additional edges
+
 		{
-			world.spawn(Sprite{}, Position{}, Velocity{}, Counter{});
-			world.spawn(Sprite{}, Position{}, Counter{});
-			world.spawn(Counter{});
+			auto& systems = schedule.getSystems();
+			ASSERT_EQ(systems.size(), 3);
+
+			{
+				auto& systemInfo = systems[0];
+				EXPECT_EQ(systemInfo.label, GetTypeID<SystemTest_2>());
+				EXPECT_TRUE(systemInfo.systemAdapter);
+				EXPECT_EQ(systemInfo.mainThread, true);
+			}
+
+			{
+				auto& systemInfo = systems[1];
+				EXPECT_EQ(systemInfo.label, GetTypeID<SystemTest_3>());
+				EXPECT_TRUE(systemInfo.systemAdapter);
+				EXPECT_EQ(systemInfo.mainThread, true);
+			}
+
+			{
+				auto& systemInfo = systems[2];
+				ASSERT_EQ(systemInfo.label, GetTypeID<SystemTest_1>());
+				EXPECT_TRUE(systemInfo.systemAdapter);
+				EXPECT_EQ(systemInfo.mainThread, false);
+			}
 		}
 
-		schedule.run(world, Threads::MainThread);
-		schedule.requestStop();
-		schedule.waitForStop();
+		schedule.buildGraph();
+		schedule.resolveGraph();
 
-		for (const auto& counter : Query<Counter>(world))
+		auto& graph = schedule.getGraph();
+		auto& layers = graph.layers;
+
+		ASSERT_EQ(layers.size(), 1);
+
+		auto& nodes = layers.front().nodes;
+		ASSERT_EQ(nodes.size(), 3);
+		EXPECT_EQ(nodes[0].typeID, GetTypeID<SystemTest_1>());
+		EXPECT_TRUE(nodes[1].typeID == GetTypeID<SystemTest_2>() ||
+					nodes[1].typeID == GetTypeID<SystemTest_3>());
+	}
+
+	TEST_F(ECSScheduleTests, ResourcesDependenciesTest)
+	{
+		Schedule schedule;
+
+		schedule.addSystem(SystemTest_3{}, ReadOnlyPositionResSystemTest::EntryPoint);
+
+		schedule.addSystem(SystemTest_1{}, ReadWritePositionResSystemTest::EntryPoint);
+		schedule.addSystem(SystemTest_2{}, ReadWritePositionResSystemTest::EntryPoint);
+
+		schedule.buildGraph();
+		schedule.resolveGraph();
+
+		auto& graph = schedule.getGraph();
+
+		// Graph must be resolved
+		ASSERT_TRUE(graph.edges.empty());
+
+		auto& layers = graph.layers;
+
+		ASSERT_EQ(layers.size(), 3);
+
+		ASSERT_EQ(layers[0].nodes.size(), 1);
+		ASSERT_EQ(layers[1].nodes.size(), 1);
+		ASSERT_EQ(layers[2].nodes.size(), 1);
+
+		// Systems added first have higher priority
+		EXPECT_EQ(layers[0].nodes[0].typeID, GetTypeID<SystemTest_1>());
+		EXPECT_EQ(layers[1].nodes[0].typeID, GetTypeID<SystemTest_2>());
+		EXPECT_EQ(layers[2].nodes[0].typeID, GetTypeID<SystemTest_3>());
+	}
+
+	TEST_F(ECSScheduleTests, QueriesDependenciesTest)
+	{
+		Schedule schedule;
+
+		schedule.addSystem(SystemTest_3{}, ReadOnlyPositionVelocitySpriteComponentsSystemTest::EntryPoint);
+		schedule.addSystem(SystemTest_4{}, ReadOnlyPositionVelocitySpriteComponentsSystemTest::EntryPoint);
+
+		schedule.addSystem(SystemTest_1{}, ReadWritePositionVelocitySpriteComponentsSystemTest::EntryPoint);
+		schedule.addSystem(SystemTest_2{}, ReadWritePositionVelocitySpriteComponentsSystemTest::EntryPoint);
+
+		schedule.buildGraph();
+		schedule.resolveGraph();
+
+		auto& graph = schedule.getGraph();
+
+		// Graph must be resolved
+		ASSERT_TRUE(graph.edges.empty());
+
+		auto& layers = graph.layers;
+
+		ASSERT_EQ(layers.size(), 3);
+
+		ASSERT_EQ(layers[0].nodes.size(), 1);
+		ASSERT_EQ(layers[1].nodes.size(), 1);
+		ASSERT_EQ(layers[2].nodes.size(), 2);
+
+		// Systems added first have higher priority
+		EXPECT_EQ(layers[0].nodes[0].typeID, GetTypeID<SystemTest_1>());
+		EXPECT_EQ(layers[1].nodes[0].typeID, GetTypeID<SystemTest_2>());
+		EXPECT_EQ(layers[2].nodes[0].typeID, GetTypeID<SystemTest_3>());
+	}
+
+	TEST_F(ECSScheduleTests, AddResourceExpectResourceTest)
+	{
+		Schedule schedule;
+
+		schedule.addSystem(SystemTest_1{}, AddResourceSystemTest::AddPosition, Before{ SystemTest_2{} });
+		schedule.addSystem(SystemTest_2{}, ExpectResourceSystemTest::ExpectPosition);
+
+		schedule.buildGraph();
+		schedule.resolveGraph();
+
+		const auto& graph = schedule.getGraph();
+		// We expect that both systems are in different layers
+		ASSERT_EQ(graph.layers.size(), 2);
+
+		World world;
+
+		schedule.runOnce(world);
+
+		auto exitReasonRes = world.getResource<ExitReason>();
+		ASSERT_TRUE(exitReasonRes);
+	}
+
+	TEST_F(ECSScheduleTests, TypeInfoTest)
+	{
+		Schedule schedule;
+
+		schedule.addSystem(EmptySystemTest{}, EmptySystemTest::EntryPoint);
+
+		schedule.buildGraph();
+		schedule.resolveGraph();
+
+		auto& graph = schedule.getGraph();
+		ASSERT_EQ(graph.layers.size(), 1);
+
+		auto& layer = graph.layers.front();
+		ASSERT_EQ(layer.nodes.size(), 1);
+
+		auto& node = layer.nodes.front();
+		ASSERT_EQ(node.typeInfo, &typeid(EmptySystemTest));
+	}
+
+	TEST_F(ECSScheduleTests, TypeExecuteTimeTest)
+	{
+		Schedule schedule;
+
+		schedule.addSystem(SystemTest_1{}, SleepSystemTest::Sleep1ms);
+		schedule.addSystem(SystemTest_2{}, SleepSystemTest::Sleep1ms, MainThread{});
+
+		schedule.buildGraph();
+		schedule.resolveGraph();
+
+		World world;
+		schedule.runOnce(world);
+
+		auto& graph = schedule.getGraph();
+		ASSERT_EQ(graph.layers.size(), 1);
+
+		auto& layer = graph.layers.front();
+		ASSERT_EQ(layer.nodes.size(), 2);
+
+		for (auto& node : layer.nodes)
 		{
-			ASSERT_NE(counter.value, 0);
+#	if ZINET_TIME_TRACE
+			ASSERT_NE(node.executeTime, 0);
+#	else
+			ASSERT_EQ(node.executeTime, 0); // Don't measure the execute time if ZINET_TIME_TRACE is false
+#	endif
 		}
 	}
+
+	TEST_F(ECSScheduleTests, RunOneSystemOnceTest)
+	{
+		Schedule schedule;
+		World world;
+
+		world.spawn(Counter{});
+		world.spawn(Counter{});
+
+		schedule.runOneSystemOnce(TestSystemIncrementer::Label{}, TestSystemIncrementer::entryPoint, world);
+
+		Query<Counter> query{ world };
+		for (auto [counter] : query)
+		{
+			ASSERT_TRUE(counter);
+			ASSERT_EQ(counter->value, 1);
+		}
+	}
+
+	// TODO: Test a situation when we have a lot of systems that can be run at the same time
+	// In test: The number of systems must exceeds the number of threads pool size
+	// What needs to be done: The systems can't be in one layer but must be distributed along all layers
+	// Note: It's not a problem for Windows but it's still an invalid situation
+
 }

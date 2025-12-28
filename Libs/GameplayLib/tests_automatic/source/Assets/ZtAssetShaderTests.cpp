@@ -1,59 +1,83 @@
 #pragma once
 
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
-#include "Zinet/Gameplay/ZtEngineContext.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
 #include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
 
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
 #include <gtest/gtest.h>
 
-namespace zt::gameplay::tests
+namespace zt::gameplay::asset::tests
 {
 
-	class AssetShaderTests : public ::testing::Test
+	class ShaderTests : public ::testing::Test
 	{
 	protected:
 
 		void SetUp() override
 		{
+			assetStorage.registerAssetClass<Shader>();
+			bool result = assetStorage.storeAssets();
+			ASSERT_TRUE(result);
 		}
 
 		void TearDown() override
 		{
 		}
 
+		core::AssetHandle<asset::Shader> getShaderAssetHandle()
+		{
+			auto asset = assetStorage.getAs<Shader>("Content/Shaders/shader.vert");
+			if (!asset)
+				return {};
+
+			return asset;
+		}
+
+		core::AssetStorage assetStorage;
 	};
 
-	TEST_F(AssetShaderTests, Test)
+	TEST_F(ShaderTests, Test)
 	{
-		SystemRenderer::SetUseImGui(false);
+		auto assetHandle = getShaderAssetHandle();
+		ASSERT_TRUE(assetHandle);
 
-		core::AssetsStorage assetsStorage;
-		assetsStorage.registerAssetClass<AssetShader>();
+		ASSERT_TRUE(assetHandle->load(core::Paths::RootPath()));
+		ASSERT_TRUE(assetHandle->isLoaded());
+		ASSERT_FALSE(assetHandle->getText().empty());
+		ASSERT_FALSE(assetHandle->getCompileResult().empty());
 
-		EngineContext engineContext;
-		engineContext.addSystem<SystemWindow>("SystemWindow");
-		engineContext.addSystem<SystemRenderer>("SystemRenderer");
+		assetHandle->unload();
+		ASSERT_FALSE(assetHandle->isLoaded());
+		ASSERT_TRUE(assetHandle->getText().empty());
+		ASSERT_TRUE(assetHandle->getCompileResult().empty());
+	}
 
-		engineContext.init();
+	TEST_F(ShaderTests, CreateResourceTest)
+	{
+		auto assetHandle = getShaderAssetHandle();
+		ASSERT_TRUE(assetHandle);
+		ASSERT_TRUE(assetHandle->load(core::Paths::RootPath()));
 
-		bool result = assetsStorage.storeAssets();
-		ASSERT_TRUE(result);
+		wd::GLFW::Init();
 
-		auto asset = assetsStorage.getAs<AssetShader>("Content/Shaders/shader.vert");
-		ASSERT_TRUE(asset);
+		wd::Window window;
+		ASSERT_TRUE(window.create(2, 2));
 
-		ASSERT_TRUE(asset->load(assetsStorage.getAssetsFinder().getRootPath()));
-		ASSERT_TRUE(asset->isLoaded());
-		ASSERT_FALSE(asset->getText().empty());
+		vulkan_renderer::RendererContext rendererContext;
+		ASSERT_TRUE(rendererContext.create(window));
 
-		asset->unload();
-		ASSERT_FALSE(asset->isLoaded());
-		ASSERT_TRUE(asset->getText().empty());
+		std::optional<vulkan_renderer::ShaderModule> shaderModule = assetHandle->createResource(rendererContext);
+		EXPECT_TRUE(shaderModule);
 
-		engineContext.deinit();
-		SystemRenderer::SetUseImGui(true);
+		if (shaderModule)
+			shaderModule->destroy(rendererContext.getDevice());
+		
+		rendererContext.destroy();
+
+		window.destroyWindow();
+
+		wd::GLFW::Deinit();
 	}
 }

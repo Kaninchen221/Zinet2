@@ -15,6 +15,7 @@ namespace
 namespace zt::vulkan_renderer
 {
 	class Device;
+	class RendererContext;
 
 	inline VkFilter SamplerTypeFromString(std::string_view str)
 	{
@@ -55,5 +56,6 @@ namespace zt::vulkan_renderer
 
 		void destroy(const Device& device) noexcept;
 
+		void destroy(const RendererContext& rendererContext) noexcept;
 	};
 }

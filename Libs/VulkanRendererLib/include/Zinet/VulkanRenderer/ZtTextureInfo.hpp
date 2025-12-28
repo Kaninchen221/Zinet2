@@ -10,8 +10,8 @@ namespace zt::vulkan_renderer
 
 	struct  TextureInfo
 	{
-		Texture* texture{};
-		Sampler* sampler{};
+		const Texture* texture{};
+		const Sampler* sampler{};
 		ShaderType shaderType = ShaderType::Invalid;
 	};
 }

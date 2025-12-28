@@ -16,7 +16,7 @@
 
 namespace zt::vulkan_renderer
 {
-	bool ImGuiIntegration::init(const RendererContext& rendererContext, wd::Window& window)
+	bool ImGuiIntegration::init(const RendererContext& rendererContext, wd::Window& window, bool multiViewport)
 	{
 		{
 			// Copied from imgui demo
@@ -49,6 +49,15 @@ namespace zt::vulkan_renderer
 
 		ImGui::CreateContext();
 
+		ImGuiIO& io = ImGui::GetIO();// (void)io;
+		io.ConfigFlags = ImGuiConfigFlags_None;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+
+		if (multiViewport)
+			io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+		
 		if (!ImGui_ImplGlfw_InitForVulkan(window.getInternal(), true))
 		{
 			Logger->error("ImGui_ImplGlfw_InitForVulkan returned false");
@@ -63,9 +72,19 @@ namespace zt::vulkan_renderer
 		init_info.DescriptorPool = descriptorPool.get();
 		init_info.MinImageCount = 3;
 		init_info.ImageCount = 3;
-		init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
-		init_info.RenderPass = rendererContext.getRenderPass().get();
-		
+
+		init_info.PipelineInfoMain.RenderPass = rendererContext.getRenderPass().get();
+		init_info.PipelineInfoMain.Subpass = 0;
+		init_info.PipelineInfoMain.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+		init_info.CheckVkResultFn = [](VkResult err) 
+		{  
+			if (err == VK_SUCCESS)
+				return;
+
+			static auto Logger = core::ConsoleLogger::Create("ImGui CheckVkResultFn");
+			Logger->error("{}", static_cast<int32_t>(err));
+		};
+
 		if (!ImGui_ImplVulkan_Init(&init_info))
 		{
 			Logger->error("ImGui_ImplVulkan_Init returned false");
@@ -74,6 +93,7 @@ namespace zt::vulkan_renderer
 
 		ImPlot::CreateContext();
 
+		initialized = true;
 		return true;
 	}
 
@@ -87,6 +107,8 @@ namespace zt::vulkan_renderer
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 		descriptorPool.destroy(rendererContext.getDevice());
+
+		initialized = false;
 	}
 
 	void ImGuiIntegration::prepareRenderData() const
@@ -102,8 +124,15 @@ namespace zt::vulkan_renderer
 		ImGui_ImplGlfw_NewFrame();
 	}
 
-	void ImGuiIntegration::DrawCommand(const CommandBuffer& commandBuffer)
+	void ImGuiIntegration::DrawCommand(CommandBuffer& commandBuffer, const RendererContext&)
 	{
+		// Render additional Platform Windows
+		auto& io = ImGui::GetIO();
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			ImGui::RenderPlatformWindowsDefault();
+		}
+
 		auto drawData = ImGui::GetDrawData();
 		if (drawData)
 			ImGui_ImplVulkan_RenderDrawData(drawData, commandBuffer.get());

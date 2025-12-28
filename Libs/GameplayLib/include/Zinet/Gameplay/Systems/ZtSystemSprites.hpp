@@ -1,66 +1,237 @@
 #pragma once
 
-#include "Zinet/Gameplay/Systems/ZtSystem.hpp"
+#include "Zinet/Gameplay/ZtGameplayConfig.hpp"
+#include "Zinet/Gameplay/ZtCameraManager.hpp"
+
 #include "Zinet/Gameplay/Assets/ZtAssetTexture.hpp"
+#include "Zinet/Gameplay/Assets/ZtAssetSampler.hpp"
+#include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
-#include "Zinet/Core/ZtClock.hpp"
+#include "Zinet/Core/ZtExitReason.hpp"
+#include "Zinet/Core/ZtPaths.hpp"
 
-#include "Zinet/Math/ZtMVP.hpp"
+#include "Zinet/Core/ECS/ZtWorldCommands.hpp"
+#include "Zinet/Core/ECS/ZtResource.hpp"
+#include "Zinet/Core/ECS/ZtQuery.hpp"
 
-#include "Zinet/VulkanRenderer/ZtTransform.hpp"
-#include "Zinet/VulkanRenderer/ZtDrawInfo.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
+
+#include "Zinet/Window/ZtWindow.hpp"
+#include "Zinet/Window/ZtWindowEvents.hpp"
+
+#include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
+#include "Zinet/VulkanRenderer/ZtShaderModule.hpp"
 #include "Zinet/VulkanRenderer/ZtBuffer.hpp"
+#include "Zinet/VulkanRenderer/ZtTransform.hpp"
+
+#include <string>
+
+namespace zt::vulkan_renderer
+{
+	class VulkanRenderer;
+	class ResourceStorage;
+}
 
 namespace zt::gameplay
 {
-	class  SystemSprites : public System
-	{
-	protected:
+	struct Sprite {};
+}
 
-		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::SystemSprites");
+namespace zt::gameplay::system
+{
+	// TODO: Refactor it
+	// I created it because we can't have two components in the same type in one query
+	struct ZINET_GAMEPLAY_API ShaderAssetsPack
+	{
+		core::ConstAssetHandle<asset::Shader> vertexShaderAsset;
+		core::ConstAssetHandle<asset::Shader> fragmentShaderAsset;
+	};
+
+	struct ZINET_GAMEPLAY_API SpritesBuffers
+	{
+		vulkan_renderer::Buffer vertex{ nullptr };
+		vulkan_renderer::Buffer index{ nullptr };
+		vulkan_renderer::Buffer position{ nullptr };
+		vulkan_renderer::Buffer rotation{ nullptr };
+		vulkan_renderer::Buffer scale{ nullptr };
+		vulkan_renderer::Buffer camera{ nullptr };
+
+		void destroy(const vulkan_renderer::VMA& vma) noexcept
+		{
+			vertex.destroy(vma);
+			index.destroy(vma);
+			position.destroy(vma);
+			rotation.destroy(vma);
+			scale.destroy(vma);
+			camera.destroy(vma);
+		}
+	};
+
+	class ZINET_GAMEPLAY_API Sprites
+	{
+		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::system::Sprites");
 
 	public:
 
-		SystemSprites() = default;
-		SystemSprites(const SystemSprites& other) = default;
-		SystemSprites(SystemSprites&& other) noexcept = default;
-		~SystemSprites() noexcept = default;
+		using SpriteQuery = core::ecs::ConstQuery<
+			Sprite,
+			Position,
+			Rotation,
+			Scale
+			// Texture region
+		>;
 
-		SystemSprites& operator = (const SystemSprites& other) = default;
-		SystemSprites& operator = (SystemSprites&& other) noexcept = default;
+		using SystemComponentsQuery = core::ecs::Query<
+			Sprites,
+			vulkan_renderer::GraphicsPipeline,
+			vulkan_renderer::DrawInfo,
+			ShaderAssetsPack,
+			core::ConstAssetHandle<asset::Texture>, // Atlas texture
+			core::ConstAssetHandle<asset::Sampler>,
+			SpritesBuffers
+		>;
 
-		bool deinit() override;
+		static void Init(
+			core::ecs::WorldCommands worldCommands,
+			core::ecs::ConstResource<core::AssetStorage> assetStorageRes);
 
-		void update() override;
+		static void Update(
+			core::ecs::WorldCommands worldCommands,
+			SpriteQuery sprites,
+			SystemComponentsQuery systemComponents,
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			core::ecs::ConstResource<CameraManager> cameraManagerRes,
+			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes);
 
-		void addNode(const ObjectWeakHandle<Node>& node) override;
+		static void Deinit(
+			core::ecs::WorldCommands worldCommands,
+			SystemComponentsQuery systemComponents,
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes
+		);
 
-		auto& getTransforms() const noexcept { return transforms; }
-		auto& getTransforms() noexcept { return transforms; }
+	private:
 
-		auto& getTransformsMatrices() const noexcept { return transformsMatrices; }
-		auto& getTransformsMatrices() noexcept { return transformsMatrices; }
+		static bool CreateVertexBuffer(
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			vulkan_renderer::Buffer& buffer
+		);
 
-		vulkan_renderer::DescriptorInfo getDescriptorInfo();
+		static bool CreateIndexBuffer(
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			vulkan_renderer::Buffer& buffer
+		);
 
-		void setAssetTexture(const ObjectHandle<AssetTexture>& newAssetTexture) { assetTexture = newAssetTexture; }
-		const AssetProperty<AssetTexture>& getAssetTexture() const { return assetTexture; }
+		static bool CreateComponentBuffer(
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			const auto& componentsPack,
+			vulkan_renderer::Buffer& buffer,
+			std::optional<std::string> debugName = {}
+		);
 
-	protected:
+		static bool UpdateComponentBuffer(
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			const auto& componentsPack,
+			vulkan_renderer::Buffer& buffer
+		);
 
-		bool isDirty = true;
+		static bool CreateCameraBuffer(
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			vulkan_renderer::Buffer& buffer
+		);
 
-		std::vector<uint32_t> ids;
-
-		std::vector<vulkan_renderer::Transform> transforms;
-		std::vector<vulkan_renderer::Transform::MatrixT> transformsMatrices;
-		vulkan_renderer::Buffer transformsMatricesBuffer{ nullptr };
-		void recreateTransformsBuffer();
-		void updateTransformsBufferData();
-
-		AssetProperty<AssetTexture> assetTexture{ "Texture" };
-
+		static bool UpdateCameraBuffer(
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			core::ecs::ConstResource<CameraManager> cameraManagerRes,
+			vulkan_renderer::Buffer& buffer
+		);
 	};
 
+	bool Sprites::CreateComponentBuffer(
+		core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, 
+		const auto& componentsPack, 
+		vulkan_renderer::Buffer& buffer,
+		std::optional<std::string> debugName)
+	{
+		using namespace core;
+		using namespace vulkan_renderer;
+
+		auto& rendererContext = rendererRes->getRendererContext();
+		auto& vma = rendererContext.getVMA();
+		auto& device = rendererContext.getDevice();
+
+		if (buffer)
+		{
+			Logger->warn("Passed a valid buffer");
+			return false;
+		}
+
+		VkDeviceSize bufferSize{};
+		for (auto components : componentsPack)
+		{
+			if (!components)
+			{
+				Logger->error("Components is null");
+				return false;
+			}
+
+			bufferSize += components->getObjectsCount();
+		}
+		if (bufferSize <= 0)
+			return false;
+
+		bufferSize *= componentsPack.front()->getTypeSize();
+
+		VkBufferCreateInfo createInfo
+		{
+			.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+			.size = bufferSize,
+			.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			.sharingMode = VK_SHARING_MODE_EXCLUSIVE
+		};
+
+		if (!buffer.create(vma, createInfo))
+		{
+			Logger->error("Couldn't create a component buffer");
+			return false;
+		}
+
+		if (debugName)
+			device.setDebugName(buffer, debugName->c_str(), VK_OBJECT_TYPE_BUFFER);
+
+		return buffer;
+	}
+
+	bool Sprites::UpdateComponentBuffer(core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes, const auto& componentsPack, vulkan_renderer::Buffer& buffer)
+	{
+		using namespace vulkan_renderer;
+
+		const auto& rendererContext = rendererRes->getRendererContext();
+		const auto& vma = rendererContext.getVMA();
+
+		if (!buffer)
+		{
+			Logger->error("Buffer is invalid");
+			return false;
+		}
+
+		size_t offset = 0;
+		for (auto components : componentsPack)
+		{
+			if (!components)
+			{
+				Logger->error("Components is null");
+				return false;
+			}
+
+			const auto data = components->data();
+			// TODO: Handle situations when we remove entities (so some components are invalid, perhaps additional buffer for discarding?)
+			const size_t bufferSize = components->getObjectsCount() * components->getTypeSize();
+			buffer.fillWithData(vma, data, bufferSize, offset);
+
+			offset += bufferSize;
+		}
+
+		return true;
+	}
 }

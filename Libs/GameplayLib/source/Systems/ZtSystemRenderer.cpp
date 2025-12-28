@@ -1,186 +1,112 @@
 ﻿#include "Zinet/Gameplay/Systems/ZtSystemRenderer.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystemWindow.hpp"
-#include "Zinet/Gameplay/ZtEngineContext.hpp"
 
-#include <imgui.h>
+#include "Zinet/Gameplay/ZtRenderCommand.hpp"
 
-#include "Zinet/Core/ZtPaths.hpp"
-#include "Zinet/Core/ZtTimeLog.hpp"
+#include "Zinet/Core/ECS/ZtWorld.hpp"
+#include "Zinet/Core/ECS/ZtQuery.hpp"
+#include "Zinet/Core/ZtExitReason.hpp"
 
-namespace zt::gameplay
+#include "Zinet/Window/ZtWindow.hpp"
+
+#include "Zinet/VulkanRenderer/ZtVulkanRenderer.hpp"
+
+using namespace zt::core;
+
+namespace zt::gameplay::system
 {
-	using namespace zt::vulkan_renderer;
-
-	bool SystemRenderer::init()
+	void Renderer::Init(ecs::WorldCommands worldCommands, ecs::Resource<wd::Window> windowRes)
 	{
-		auto& engineContext = EngineContext::Get();
-		auto& rendererContext = renderer.getRendererContext();
-		auto& instance = rendererContext.getInstance();
-		auto& vma = rendererContext.getVMA();
-
-		auto systemWindow = engineContext.getSystem<SystemWindow>();
-		if (!systemWindow)
+		if (!windowRes)
 		{
-			Logger->error("SystemWindow not found");
-			return Ensure(false);
+			worldCommands.addResource(ExitReason{ "Couldn't find a window resource" });
+			return;
 		}
 
-		if (!systemWindow->isInitialized())
+		vulkan_renderer::VulkanRenderer vulkanRenderer;
+		if (!vulkanRenderer.init(*windowRes))
 		{
-			Logger->error("SystemWindow must be initialized before system renderer");
-			return Ensure(false);
+			worldCommands.addResource(ExitReason{ "Couldn't init renderer" });
+			return;
 		}
 
-		auto& window = systemWindow->getWindow();
-		if (!window.isOpen())
-		{
-			Logger->error("Window is not open");
-			return Ensure(false);
-		}
-
-		instance.setEnableValidationLayers(ZINET_DEBUG);
-		if (!renderer.init(window))
-			return false;
-
-		if (UseImGui)
-		{
-			if (!imGuiIntegration.init(rendererContext, window))
-				return false;
-
-			drawInfo.additionalCommands = { ImGuiIntegration::DrawCommand };
-		}
-
-		const DrawInfo::Vertices vertices = {
-			{{-0.5f, 0.5f, 1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {0.f, 0.f}},
-			{{0.5f,  0.5f, 1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {1.f, 0.f}},
-			{{0.5f,  -0.5f,  1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {1.f, 1.f}},
-			{{-0.5f, -0.5f,  1.f}, {1.0f, 1.0f, 1.0f, 1.f}, {0.f, 1.f}}
-		};
-
-		const auto vertexBufferCreateInfo = Buffer::GetVertexBufferCreateInfo(vertices);
-		vertexBuffer.create(vma, vertexBufferCreateInfo);
-		vertexBuffer.fillWithSTDContainer(vma, vertices);
-
-		const DrawInfo::Indices indices =
-		{
-			0, 1, 2,
-			2, 3, 0
-		};
-
-		const auto indexBufferCreateInfo = Buffer::GetIndexBufferCreateInfo(indices);
-		indexBuffer.create(vma, indexBufferCreateInfo);
-		indexBuffer.fillWithSTDContainer(vma, indices);
-
-		graphicsPipelineCreateInfo.descriptorSetsCount = rendererContext.getDisplayImagesCount();
-
-		initialized = true;
-		return true;
+		worldCommands.addResource(vulkanRenderer);
 	}
 
-	bool SystemRenderer::deinit()
+	void Renderer::Update(
+		ecs::WorldCommands worldCommands,
+		ecs::ConstResource<wd::Window> windowRes,
+		ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes,
+		ecs::ConstQuery<RenderCommand> drawCommandQuery,
+		DrawDataQuery drawDataQuery,
+		ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes)
 	{
-		if (!System::deinit())
-			return false;
-
-		auto& rendererContext = renderer.getRendererContext();
-		auto& device = rendererContext.getDevice();
-		auto& vma = rendererContext.getVMA();
-
-		device.waitIdle();
-
-		vertexBuffer.destroy(vma);
-		indexBuffer.destroy(vma);
-
-		if (UseImGui)
-		{
-			imGuiIntegration.deinit(rendererContext);
-		}
-
-		graphicsPipeline.destroy(rendererContext);
-
-		renderer.deinit();
-
-		return true;
-	}
-
-	void SystemRenderer::addNode(const ObjectWeakHandle<Node>& node)
-	{
-		if (!node)
+		if (!windowRes)
 			return;
 
-		System::addNode(node);
-
-		auto node2D = dynamic_cast<Node2D*>(node.get());
-		if (!node2D)
-			return;
-
-		// Add descriptor info to the object descriptor
-		graphicsPipelineCreateInfo.descriptorInfos[1] += node2D->getDescriptorInfo();
-		drawInfo.instances += node2D->getInstancesCount();
-	}
-
-	void SystemRenderer::update()
-	{
-		System::update();
-
-		if (renderer.shouldBePaused())
-			return;
-
-		if (nodes.size() == 0 && drawInfo.additionalCommands.empty())
-			return;
-
-		if (!graphicsPipeline.isValid())
+		if (windowRes->isMinimized())
 		{
-			if (vertexShader)
-				graphicsPipelineCreateInfo.shaderModules[ShaderType::Vertex] = vertexShader->getShaderModule();
-
-			if (fragmentShader)
-				graphicsPipelineCreateInfo.shaderModules[ShaderType::Fragment] = fragmentShader->getShaderModule();
-
-			graphicsPipeline.create(graphicsPipelineCreateInfo);
+			Logger->trace("Window is minimized so skip rendering");
+			return;
 		}
 
-		ZT_TIME_LOG(
-			renderer.nextImage();
-		);
-
-		if (GetUseImGui())
-			imGuiIntegration.prepareRenderData();
-
-		ZT_TIME_LOG(
-			renderer.draw(graphicsPipeline, drawInfo);
-		);
-
-		ZT_TIME_LOG(
-			renderer.submitCurrentDisplayImage();
-		);
-
-		ZT_TIME_LOG(
-			renderer.displayCurrentImage();
-		);
-	}
-
-	void SystemRenderer::show()
-	{
-		System::show();
-
-		vertexShader.show();
-		fragmentShader.show();
-		if (camera)
-			camera->show();
-	}
-
-	void SystemRenderer::setCameraNode(ObjectHandle<NodeCamera> newCamera) noexcept
-	{
-		if (newCamera)
+		if (!rendererRes)
 		{
-			camera = newCamera;
-			graphicsPipelineCreateInfo.descriptorInfos[0] = camera->getDescriptorInfo();
+			worldCommands.addResource(ExitReason{ "Expected renderer res" });
+			return;
 		}
-		else
+
+		if (!rendererRes->nextImage())
 		{
-			Logger->error("You passed an invalid node camera to the system renderer");
+			worldCommands.addResource(ExitReason{ "Renderer couldn't switch to next image" });
+			return;
 		}
+
+		rendererRes->startRecordingDrawCommands();
+
+		rendererRes->beginRenderPass(rendererRes->getRendererContext().getRenderPass());
+
+		for (auto [graphicsPipeline, drawInfo] : drawDataQuery)
+		{
+			if (graphicsPipeline->isValid())
+				rendererRes->draw(*graphicsPipeline, *drawInfo);
+		}
+
+		for (auto [drawCommand] : drawCommandQuery)
+		{
+			if (drawCommand->shouldDraw)
+				rendererRes->draw(drawCommand->command);
+		}
+
+		rendererRes->endRenderPass();
+
+		rendererRes->endRecordingDrawCommands();
+
+		if (!rendererRes->submitCurrentDisplayImage())
+		{
+			worldCommands.addResource(ExitReason{ "Renderer couldn't submit draw commands" });
+			return;
+		}
+
+		if (!rendererRes->displayCurrentImage())
+		{
+			worldCommands.addResource(ExitReason{ "Renderer couldn't display current image" });
+			return;
+		}
+
+		// Create requested resources
+		// TODO: Maybe move it to another system?
+		resourceStorageRes->createResources(rendererRes->getRendererContext());
 	}
 
+	void Renderer::Deinit(
+		ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes,
+		ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes)
+	{
+		if (!rendererRes)
+			return;
+
+		resourceStorageRes->clear(rendererRes->getRendererContext());
+
+		rendererRes->deinit();
+	}
 }

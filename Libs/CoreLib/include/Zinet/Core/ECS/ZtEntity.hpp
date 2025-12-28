@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
-
-#include "Zinet/Core/ECS/ZtTypes.hpp"
+#include "Zinet/Core/ZtTypes.hpp"
 
 namespace zt::core::ecs
 {
@@ -11,8 +10,8 @@ namespace zt::core::ecs
 	public:
 
 		Entity() noexcept = delete;
-		Entity(ID newID, size_t newComponentsIndex) 
-			: id{ newID }, componentsIndex{ newComponentsIndex } 
+		Entity(ID id, size_t componentsIndex)
+			: id{ id }, componentsIndex{ componentsIndex }
 		{}
 		Entity(const Entity& other) noexcept = default;
 		Entity(Entity&& other) noexcept = default;

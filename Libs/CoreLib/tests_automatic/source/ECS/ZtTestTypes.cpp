@@ -3,15 +3,15 @@
 #include "Zinet/Core/ECS/ZtQuery.hpp"
 #include "Zinet/Core/ECS/ZtWorld.hpp"
 
-namespace zt::core::ecs::tests
+namespace zt::core::tests
 {
-	namespace TestSystemIncrementar
+	namespace TestSystemIncrementer
 	{
-		void entryPoint(World& world)
+		void entryPoint(ecs::Query<Counter> counters)
 		{
-			for (Counter& counter : Query<Counter>(world))
+			for (auto [counter] : counters)
 			{
-				counter.value++;
+				counter->value++;
 			}
 		}
 	}

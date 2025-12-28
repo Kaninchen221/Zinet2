@@ -32,21 +32,25 @@ namespace zt::vulkan_renderer
 		ImGuiIntegration& operator = (const ImGuiIntegration& other) noexcept = delete;
 		ImGuiIntegration& operator = (ImGuiIntegration&& other) noexcept = default;
 
-		bool init(const RendererContext& rendererContext, wd::Window& window);
+		bool init(const RendererContext& rendererContext, wd::Window& window, bool multiViewport = true);
 
 		void deinit(const RendererContext& rendererContext);
+
+		bool isInitialized() const noexcept { return initialized; }
 
 		static void ImplSpecificNewFrame();
 
 		void prepareRenderData() const;
 
-		static void DrawCommand(const CommandBuffer& commandBuffer);
+		static void DrawCommand(CommandBuffer& commandBuffer, const RendererContext&);
 
 		static void SetStyle_Dark();
 
 	protected:
 
 		DescriptorPool descriptorPool{ nullptr };
+
+		bool initialized = false;
 
 	};
 }

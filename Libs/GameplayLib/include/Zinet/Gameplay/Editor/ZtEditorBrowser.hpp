@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
-#include "Zinet/Gameplay/Nodes/ZtNode.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystem.hpp"
 #include "Zinet/Gameplay/Editor/ZtEditorSearchBar.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
@@ -10,7 +8,7 @@
 #include "Zinet/Core/ZtConcepts.hpp"
 #include "Zinet/Core/ZtImgui.hpp"
 
-#include "Zinet/Core/Assets/ZtAssetsStorage.hpp"
+#include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
 namespace zt::gameplay
 {
@@ -40,8 +38,6 @@ namespace zt::gameplay
 
 	template<class ObjectHandleLikeT>
 	void CreateObjectBrowserListElement(ObjectHandleLikeT& object, EditorBrowserList& list);
-
-	void CreateNodeBrowserListElement(ObjectHandle<Node>& node, EditorBrowserList& list);
 
 	template<class ObjectHandleT>
 	void CreateDragDropSourceSection(ObjectHandleT& object);

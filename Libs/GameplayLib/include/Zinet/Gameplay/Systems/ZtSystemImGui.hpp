@@ -1,35 +1,63 @@
 #pragma once
 
 #include "Zinet/Gameplay/ZtGameplayConfig.hpp"
-#include "Zinet/Gameplay/Nodes/ZtNode.hpp"
-#include "Zinet/Gameplay/Systems/ZtSystem.hpp"
+
+#include "Zinet/Gameplay/ZtRenderCommand.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
 
+#include "Zinet/Core/ECS/ZtWorldCommands.hpp"
+#include "Zinet/Core/ECS/ZtResource.hpp"
+#include "Zinet/Core/ECS/ZtQuery.hpp"
+
+namespace zt::wd
+{
+	class Window;
+}
+
+namespace zt::vulkan_renderer
+{
+	class VulkanRenderer;
+	class ImGuiIntegration;
+}
+
 namespace zt::gameplay
 {
-	class  SystemImGui : public System
+	struct ZINET_GAMEPLAY_API ImGuiData
 	{
-	protected:
+		bool skipImGui = false;
+	};
+}
 
-		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::SystemImGui");
+namespace zt::gameplay::system
+{
+	class ZINET_GAMEPLAY_API ImGui
+	{
+		inline static auto Logger = core::ConsoleLogger::Create("zt::gameplay::system::ImGui");
 
 	public:
 
-		SystemImGui() = default;
-		SystemImGui(const SystemImGui& other) = default;
-		SystemImGui(SystemImGui&& other) noexcept = default;
-		~SystemImGui() noexcept = default;
+		struct Pre{};
+		struct Post{};
 
-		SystemImGui& operator = (const SystemImGui& other) = default;
-		SystemImGui& operator = (SystemImGui&& other) noexcept = default;
+		static void Init(
+			core::ecs::WorldCommands worldCommands,
+			core::ecs::Resource<wd::Window> windowRes,
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes);
 
-		bool init() override;
+		static void PreUpdate(
+			core::ecs::Resource<ImGuiData> imGuiData,
+			core::ecs::Query<RenderCommand, ImGui> imGuiRenderDrawDataQuery,
+			core::ecs::ConstResource<wd::Window> windowRes);
 
-		bool deinit() override;
+		static void PostUpdate(
+			core::ecs::WorldCommands worldCommands,
+			core::ecs::ConstResource<wd::Window> windowRes,
+			core::ecs::ConstResource<vulkan_renderer::ImGuiIntegration> imGuiIntegrationRes);
 
-		void update() override;
-
+		static void Deinit(
+			core::ecs::WorldCommands worldCommands,
+			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
+			core::ecs::Resource<vulkan_renderer::ImGuiIntegration> imGuiIntegrationRes);
 	};
-
 }

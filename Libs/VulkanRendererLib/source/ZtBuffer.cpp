@@ -40,12 +40,30 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	bool Buffer::fillWithImage(const VMA& vma, const core::Image& image, size_t bytesOffset)
+	bool Buffer::fillWithImage(const VMA& vma, const core::Image& image, size_t bytesDstOffset)
 	{
 		if (!isValid())
 			return false;
 
-		const auto result = fillWithData(vma, image.getData(), image.getSize(), bytesOffset);
+		const auto result = fillWithDataInternal(vma, image.getData(), image.getSize(), bytesDstOffset);
+
+		if (result == VK_SUCCESS)
+		{
+			return true;
+		}
+		else
+		{
+			Logger->error("Couldn't fill buffer, result: {}", static_cast<std::int32_t>(result));
+			return false;
+		}
+	}
+
+	bool Buffer::fillWithData(const VMA& vma, const void* src, size_t srcSize, size_t bytesDstOffset)
+	{
+		if (!isValid())
+			return false;
+
+		const auto result = fillWithDataInternal(vma, src, srcSize, bytesDstOffset);
 
 		if (result == VK_SUCCESS)
 		{
@@ -69,7 +87,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	VkResult Buffer::fillWithData(const VMA& vma, const void* src, size_t srcSize, size_t bytesDstOffset) const
+	VkResult Buffer::fillWithDataInternal(const VMA& vma, const void* src, size_t srcSize, size_t bytesDstOffset) const
 	{
 		if (srcSize + bytesDstOffset > size)
 		{

@@ -110,11 +110,16 @@ namespace zt::vulkan_renderer
 		if (!globalDescriptorSets.create(device, allocateInfo))
 			return false;
 
+		if (!transferCommandBuffer.create(device, commandPool))
+			return false;
+
 		return true;
 	}
 
 	void RendererContext::destroy()
 	{
+		transferCommandBuffer.destroy(device, commandPool);
+
 		globalDescriptorSetLayout.destroy(device);
 		// Only invalidate because descriptor sets will be destroyed with descriptor pool
 		globalDescriptorSets.invalidate();

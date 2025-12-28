@@ -25,7 +25,7 @@ namespace zt::core
 		using ObjectT = ObjectType;
 
 		ObjectHandle() noexcept = default;
-		ObjectHandle(ObjectRefCounter* newObjectRefCounter) noexcept
+		ObjectHandle(ObjectRefCounterT* newObjectRefCounter) noexcept
 		{
 			objectRefCounter = newObjectRefCounter;
 			increment();
@@ -98,7 +98,7 @@ namespace zt::core
 			return getRefCounter() == other.getRefCounter();
 		}
 
-		ObjectRefCounter* getRefCounter() const noexcept 
+		auto getRefCounter() const noexcept 
 		{
 			return objectRefCounter; 
 		}
@@ -149,9 +149,11 @@ namespace zt::core
 
 	protected:
 
+		using CanChangeCounter = std::bool_constant<StrongRef && std::is_same_v<ObjectRefCounterT, ObjectRefCounter>>;
+
 		inline void increment() noexcept
 		{
-			if constexpr (StrongRef)
+			if constexpr (CanChangeCounter{})
 			{
 				if (isValid())
 					objectRefCounter->increment();
@@ -160,7 +162,7 @@ namespace zt::core
 
 		inline void decrement() noexcept
 		{
-			if constexpr (StrongRef)
+			if constexpr (CanChangeCounter{})
 			{
 				if (isValid())
 					objectRefCounter->decrement();
@@ -176,10 +178,10 @@ namespace zt::core
 namespace zt
 {
 	/// Increment/Decrement ref count
-	template<class ObjectT = core::Object>
-	using ObjectHandle = core::ObjectHandle<ObjectT, true>;
+	template<class ObjectT = core::Object, class ObjectRefCounterT = core::ObjectRefCounter>
+	using ObjectHandle = core::ObjectHandle<ObjectT, true, ObjectRefCounterT>;
 
 	/// Doesn't increment/decrement ref count
-	template<class ObjectT = core::Object>
-	using ObjectWeakHandle = core::ObjectHandle<ObjectT, false>;
+	template<class ObjectT = core::Object, class ObjectRefCounterT = core::ObjectRefCounter>
+	using ObjectWeakHandle = core::ObjectHandle<ObjectT, false, ObjectRefCounterT>;
 }
