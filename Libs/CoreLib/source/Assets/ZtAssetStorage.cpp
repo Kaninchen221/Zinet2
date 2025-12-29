@@ -68,7 +68,7 @@ namespace zt::core
 					asset.setDisplayName(keyValue);
 					if (asset.getAutoLoad())
 					{
-						if (asset.load(assetsFinder.getRootPath()))
+						if (asset.load())
 						{
 							Logger->info("Succesfull auto load asset with key: {}", keyValue);
 						}

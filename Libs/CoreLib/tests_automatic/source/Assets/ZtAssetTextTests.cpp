@@ -25,7 +25,7 @@ namespace zt::core::asset::tests
 		auto textAsset = assetStorage.getAs<Text>("Content/placeholder.txt");
 		ASSERT_TRUE(textAsset);
 
-		ASSERT_TRUE(textAsset->load(Paths::RootPath()));
+		ASSERT_TRUE(textAsset->load());
 		ASSERT_TRUE(textAsset->isLoaded());
 		ASSERT_FALSE(textAsset->getText().empty());
 

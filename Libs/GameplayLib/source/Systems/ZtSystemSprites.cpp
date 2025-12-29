@@ -26,7 +26,7 @@ namespace zt::gameplay
 				return;
 			}
 			
-			if (!samplerAsset->load(core::Paths::RootPath()))
+			if (!samplerAsset->load())
 			{
 				Logger->error("Couldn't load sampler asset");
 				return;
@@ -39,7 +39,7 @@ namespace zt::gameplay
 				return;
 			}
 			
-			if (!textureAsset->load(core::Paths::RootPath()))
+			if (!textureAsset->load())
 			{
 				Logger->error("Couldn't load texture asset");
 				return;
@@ -52,7 +52,7 @@ namespace zt::gameplay
 				return;
 			}
 			
-			if (!vertexShaderAsset->load(core::Paths::RootPath()))
+			if (!vertexShaderAsset->load())
 			{
 				Logger->error("Couldn't load vertex asset");
 				return;
@@ -65,7 +65,7 @@ namespace zt::gameplay
 				return;
 			}
 			
-			if (!fragmentShaderAsset->load(core::Paths::RootPath()))
+			if (!fragmentShaderAsset->load())
 			{
 				Logger->error("Couldn't load fragment asset");
 				return;

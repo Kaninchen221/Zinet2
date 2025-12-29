@@ -23,7 +23,7 @@ namespace zt::core::asset
 
 		ObjectPtr createCopy() const override { return std::make_unique<Text>(*this); }
 
-		bool load(const Path& rootPath) override;
+		bool load() override;
 
 		void unload() override;
 

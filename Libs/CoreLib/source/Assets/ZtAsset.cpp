@@ -8,7 +8,7 @@ namespace zt::core
 	{
 		ImGui::TextFMT("Is loaded: {}", isLoaded());
 
-		if (ImGui::Button("Load")) { load(core::Paths::RootPath()); }
+		if (ImGui::Button("Load")) { load(); }
 		ImGui::SameLine();
 		if (ImGui::Button("Unload")) { unload(); }
 		ImGui::Separator();

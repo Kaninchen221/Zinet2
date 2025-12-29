@@ -43,7 +43,7 @@ namespace zt::gameplay::asset::tests
 		auto assetHandle = getShaderAssetHandle();
 		ASSERT_TRUE(assetHandle);
 
-		ASSERT_TRUE(assetHandle->load(core::Paths::RootPath()));
+		ASSERT_TRUE(assetHandle->load());
 		ASSERT_TRUE(assetHandle->isLoaded());
 
 		ASSERT_TRUE(assetHandle->getImage().getData());
@@ -56,7 +56,7 @@ namespace zt::gameplay::asset::tests
 	{
 		auto assetHandle = getShaderAssetHandle();
 		ASSERT_TRUE(assetHandle);
-		ASSERT_TRUE(assetHandle->load(core::Paths::RootPath()));
+		ASSERT_TRUE(assetHandle->load());
 
 		wd::GLFW::Init();
 

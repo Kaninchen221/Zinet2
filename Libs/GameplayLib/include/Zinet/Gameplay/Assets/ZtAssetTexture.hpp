@@ -31,7 +31,7 @@ namespace zt::gameplay::asset
 
 		ObjectPtr createCopy() const override { return std::make_unique<Texture>(*this); }
 
-		bool load(const core::Path& rootPath) override;
+		bool load() override;
 
 		void unload() override;
 

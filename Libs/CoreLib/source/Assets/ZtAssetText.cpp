@@ -4,10 +4,10 @@
 
 namespace zt::core::asset
 {
-	bool Text::load(const Path& rootPath)
+	bool Text::load()
 	{
 		File file;
-		const auto filePath = rootPath / metaData.value("fileRelativePath", "");
+		const auto filePath = Paths::RootPath() / metaData.value("fileRelativePath", "");
 		file.open(filePath, FileOpenMode::Read);
 		if (!file.isOpen())
 		{

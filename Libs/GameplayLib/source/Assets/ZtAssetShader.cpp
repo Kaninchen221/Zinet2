@@ -1,15 +1,17 @@
 #include "Zinet/Gameplay/Assets/ZtAssetShader.hpp"
 
 #include "Zinet/Core/ZtImgui.hpp"
+#include "Zinet/Core/ZtPaths.hpp"
 
 namespace zt::gameplay::asset
 {
 	using namespace vulkan_renderer;
 
-	bool Shader::load(const core::Path& rootPath)
+	bool Shader::load()
 	{
-		if (!Text::load(rootPath))
+		if (!Text::load())
 			return false;
+
 		loaded = false;
 
 		ShadersCompiler shadersCompiler;

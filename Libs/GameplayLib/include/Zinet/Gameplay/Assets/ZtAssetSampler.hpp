@@ -29,7 +29,7 @@ namespace zt::gameplay::asset
 
 		const std::string_view getClassName() const override { return "zt::gameplay::Sampler"; }
 
-		bool load(const core::Path& rootPath);
+		bool load();
 
 		void unload();
 
