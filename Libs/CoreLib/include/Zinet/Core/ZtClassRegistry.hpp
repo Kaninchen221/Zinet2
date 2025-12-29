@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Zinet/Core/ZtCoreConfig.hpp"
-#include "Zinet/Core/ZtObject.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
 
 #include "Zinet/Core/Assets/ZtAssetsFinder.hpp"
@@ -10,11 +9,10 @@
 #include <unordered_map>
 #include <tuple>
 
-// TODO: Remove this class
 namespace zt::core
 {
 	template<std::derived_from<Object> BaseClassType>
-	class ClassRegistry : public Object
+	class ClassRegistry
 	{
 	protected:
 
