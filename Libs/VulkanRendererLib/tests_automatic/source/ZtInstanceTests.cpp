@@ -57,14 +57,14 @@ namespace zt::vulkan_renderer::tests
 	TEST_F(InstanceTests, GetRequiredExtensionsTest)
 	{
 		std::vector<const char*> requiredExtensions = instance.getRequiredExtensions();
-		ASSERT_TRUE(core::Contains(requiredExtensions, std::string_view(VK_KHR_SURFACE_EXTENSION_NAME)));
-		ASSERT_TRUE(core::Contains(requiredExtensions, std::string_view(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)));
+		ASSERT_TRUE(std::ranges::contains(requiredExtensions, std::string_view(VK_KHR_SURFACE_EXTENSION_NAME)));
+		ASSERT_TRUE(std::ranges::contains(requiredExtensions, std::string_view(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)));
 
 		instance.setEnableValidationLayers(false);
 		ASSERT_FALSE(instance.getEnableValidationLayers());
 
 		requiredExtensions = instance.getRequiredExtensions();
-		ASSERT_FALSE(core::Contains(requiredExtensions, std::string_view(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)));
+		ASSERT_FALSE(std::ranges::contains(requiredExtensions, std::string_view(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)));
 	}
 
 	TEST(Instance, GetGlfwRequiredInstanceExtensionsTest)
@@ -74,7 +74,7 @@ namespace zt::vulkan_renderer::tests
 		std::vector<const char*> extensions = Instance::GetGlfwRequiredInstanceExtensions();
 		const std::string_view khr_surface = VK_KHR_SURFACE_EXTENSION_NAME; // We need it for the VkSurface
 
-		core::Contains(extensions, khr_surface);
+		EXPECT_TRUE(std::ranges::contains(extensions, khr_surface));
 
 		wd::GLFW::Deinit();
 	}
@@ -88,7 +88,7 @@ namespace zt::vulkan_renderer::tests
 
 		instance.setEnableValidationLayers(true);
 		std::vector<const char*> enabledLayerNames = instance.getEnabledLayerNames();
-		ASSERT_TRUE(core::Contains(enabledLayerNames, std::string_view("VK_LAYER_KHRONOS_validation")));
+		ASSERT_TRUE(std::ranges::contains(enabledLayerNames, std::string_view("VK_LAYER_KHRONOS_validation")));
 
 		ASSERT_TRUE(instance.areEnabledLayersSupported());
 

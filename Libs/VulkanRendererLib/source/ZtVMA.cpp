@@ -33,7 +33,7 @@ namespace zt::vulkan_renderer
 			.pTypeExternalMemoryHandleTypes = {}
 		};
 
-		if (core::Contains(physicalDevice.GetRequiredExtensions(), std::string_view(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME)))
+		if (std::ranges::contains(physicalDevice.GetRequiredExtensions(), std::string_view(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME)))
 			allocatorCreateInfo.flags = VMA_ALLOCATOR_CREATE_EXT_MEMORY_BUDGET_BIT;
 		else
 			allocatorCreateInfo.flags = 0;

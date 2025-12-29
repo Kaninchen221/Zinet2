@@ -45,7 +45,7 @@ namespace zt::vulkan_renderer
 		}
 
 		// Present Mode
-		const bool supportsMailbox = core::Contains(presentModes, VK_PRESENT_MODE_MAILBOX_KHR);
+		const bool supportsMailbox = std::ranges::contains(presentModes, VK_PRESENT_MODE_MAILBOX_KHR);
 		const auto presentMode = supportsMailbox ? VK_PRESENT_MODE_MAILBOX_KHR : VK_PRESENT_MODE_FIFO_KHR;
 
 		// Extent
