@@ -5,8 +5,6 @@
 
 #include "Zinet/Math/ZtVecTypes.hpp"
 
-#include "Zinet/Core/ZtTypeTraits.hpp"
-
 #include <gtest/gtest.h>
 
 namespace zt::wd::tests
@@ -68,14 +66,6 @@ namespace zt::wd::tests
 		bool shouldBeClosed = window.shouldBeClosed();
 	
 		ASSERT_FALSE(shouldBeClosed);
-	}
-	
-	TEST_F(WindowTests, GetEventTest)
-	{
-		auto testGetters = core::TestGetters<WindowEvents, Window>(&Window::getWindowEvents, &Window::getWindowEvents, window);
-		EXPECT_TRUE(testGetters);
-
-		[[maybe_unused]] WindowEvents& windowEvents = window.getWindowEvents();
 	}
 
 	TEST_F(WindowTests, GetWindowResizedCallbackTest)

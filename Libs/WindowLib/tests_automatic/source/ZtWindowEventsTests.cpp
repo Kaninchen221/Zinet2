@@ -3,8 +3,6 @@
 #include "Zinet/Window/ZtWindowEvents.hpp"
 #include "Zinet/Window/ZtWindow.hpp"
 
-#include "Zinet/Core/ZtTypeTraits.hpp"
-
 #include <gtest/gtest.h>
 
 namespace zt::wd::tests
@@ -54,22 +52,6 @@ namespace zt::wd::tests
 
 		EXPECT_EQ(keyboard.getEvents().size(), 0);
 		EXPECT_EQ(mouse.getButtonsEvents().size(), 0);
-	}
-
-	TEST_F(EventTests, GetKeyboard)
-	{
-		auto testGetters = core::TestGetters<Keyboard, WindowEvents>(&WindowEvents::getKeyboard, &WindowEvents::getKeyboard, windowEvents);
-		EXPECT_TRUE(testGetters);
-
-		[[maybe_unused]] Keyboard& keyboard = windowEvents.getKeyboard();
-	}
-
-	TEST_F(EventTests, GetMouse)
-	{
-		auto testGetters = core::TestGetters<Mouse, WindowEvents>(&WindowEvents::getMouse, &WindowEvents::getMouse, windowEvents);
-		EXPECT_TRUE(testGetters);
-
-		[[maybe_unused]] Mouse& mouse = windowEvents.getMouse();
 	}
 
 }

@@ -2,8 +2,6 @@
 
 #include "Zinet/Math/ZtMath.hpp"
 
-#include "Zinet/Core/ZtTypeTraits.hpp"
-
 #include <gtest/gtest.h>
 
 namespace zt::math::tests
