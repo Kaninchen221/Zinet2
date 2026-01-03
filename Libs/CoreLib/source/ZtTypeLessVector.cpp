@@ -106,8 +106,7 @@ namespace zt::core
 
 	TypeLessVectorIterator TypeLessVector::begin() noexcept
 	{
-		// TODO: Write isEmpty method
-		if (getObjectsCount() == 0)
+		if (isEmpty())
 			return end();
 
 		return TypeLessVectorIterator{ this, getFirstValidIndex() };
