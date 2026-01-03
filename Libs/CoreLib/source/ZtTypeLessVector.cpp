@@ -35,19 +35,24 @@ namespace zt::core
 
 	void TypeLessVector::clear()
 	{
-		if (isTriviallyDestructible)
-			return;
-
-		for (size_t i = 0; i < objectsCount + removedObjects.size(); ++i)
+		if (!isTriviallyDestructible)
 		{
-			if (std::ranges::contains(removedObjects, i))
-				continue;
+			for (size_t i = 0; i < objectsCount + removedObjects.size(); ++i)
+			{
+				if (std::ranges::contains(removedObjects, i))
+					continue;
 
-			const size_t index = i * typeSize;
-			destructor.invoke(&buffer[index]);
+				const size_t index = i * typeSize;
+				destructor.invoke(&buffer[index]);
+			}
 		}
 
 		objectsCount = 0;
+		objectsCapacity = 0;
+		buffer.clear();
+		buffer.shrink_to_fit();
+		removedObjects.clear();
+		removedObjects.shrink_to_fit();
 	}
 
 	bool TypeLessVector::remove(size_t index)

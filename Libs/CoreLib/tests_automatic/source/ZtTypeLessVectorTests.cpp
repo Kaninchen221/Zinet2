@@ -30,6 +30,21 @@ namespace zt::core::tests
 		ASSERT_EQ(vector.getObjectsCount(), 0);
 	}
 
+	TEST_F(TypeLessVectorTests, ClearTest)
+	{
+		TypeLessVector vector = TypeLessVector::Create<Position>();
+		vector.add(Position{});
+		vector.add(Position{});
+		vector.add(Position{});
+
+		ASSERT_EQ(vector.getObjectsCount(), 3);
+
+		vector.clear();
+		EXPECT_EQ(vector.getObjectsCount(), 0);
+		EXPECT_EQ(vector.getObjectsCapacity(), 0);
+		EXPECT_TRUE(vector.isEmpty());
+	}
+
 	TEST_F(TypeLessVectorTests, GetFromInvalidIndexTest)
 	{
 		TypeLessVector vector = TypeLessVector::Create<Position>();
