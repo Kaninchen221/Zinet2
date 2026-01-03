@@ -12,7 +12,7 @@ namespace zt::core::tests
     protected:
 
         static_assert(STDContainer<std::vector<int>>);
-        static_assert(NotSTDContainer<int>);
+        static_assert(NonSTDContainer<int>);
 
 		static_assert(LikeSmartPointer<std::shared_ptr<int>>);
 		static_assert(NotLikeSmartPointer<int>);

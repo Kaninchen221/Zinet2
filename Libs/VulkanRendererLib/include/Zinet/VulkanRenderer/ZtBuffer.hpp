@@ -46,7 +46,7 @@ namespace zt::vulkan_renderer
 		template<core::STDContainer ContainerT>
 		static VkBufferCreateInfo GetIndexBufferCreateInfo(const ContainerT& indices) noexcept;
 
-		template<core::NotSTDContainer ObjectT>
+		template<core::NonSTDContainer ObjectT>
 		static VkBufferCreateInfo GetUniformBufferCreateInfo(const ObjectT& data) noexcept;
 
 		static VkBufferCreateInfo GetImageBufferCreateInfo(const core::Image& image) noexcept;
@@ -59,7 +59,7 @@ namespace zt::vulkan_renderer
 		template<core::STDContainer ContainerT>
 		bool fillWithSTDContainer(const VMA& vma, const ContainerT& contiguousContainer, size_t bytesDstOffset = 0);
 
-		template<core::NotSTDContainer ObjectT>
+		template<core::NonSTDContainer ObjectT>
 		bool fillWithObject(const VMA& vma, const ObjectT& object, size_t bytesDstOffset = 0);
 
 		bool fillWithImage(const VMA& vma, const core::Image& image, size_t bytesDstOffset = 0);
@@ -70,7 +70,7 @@ namespace zt::vulkan_renderer
 		template<core::STDContainer ContainerT>
 		bool getDataToSTDContainer(const VMA& vma, ContainerT& contiguousContainer, size_t bytesSrcOffset = 0) const;
 
-		template<core::NotSTDContainer ObjectT>
+		template<core::NonSTDContainer ObjectT>
 		bool getDataToObject(const VMA& vma, ObjectT& object, size_t bytesSrcOffset = 0) const;
 
 		void destroy(const VMA& vma) noexcept;
@@ -114,7 +114,7 @@ namespace zt::vulkan_renderer
 		};
 	}
 
-	template<core::NotSTDContainer ObjectT>
+	template<core::NonSTDContainer ObjectT>
 	VkBufferCreateInfo Buffer::GetUniformBufferCreateInfo([[maybe_unused]] const ObjectT& data) noexcept
 	{
 		return VkBufferCreateInfo
@@ -158,7 +158,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	template<core::NotSTDContainer ObjectT>
+	template<core::NonSTDContainer ObjectT>
 	bool Buffer::fillWithObject(const VMA& vma, const ObjectT& object, size_t bytesOffset)
 	{
 		if (!isValid())
@@ -197,7 +197,7 @@ namespace zt::vulkan_renderer
 		}
 	}
 
-	template<core::NotSTDContainer ObjectT>
+	template<core::NonSTDContainer ObjectT>
 	bool Buffer::getDataToObject(const VMA& vma, ObjectT& object, size_t bytesSrcOffset) const
 	{
 		if (!isValid())
