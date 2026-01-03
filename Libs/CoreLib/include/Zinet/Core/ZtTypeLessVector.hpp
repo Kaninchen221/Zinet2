@@ -91,10 +91,8 @@ namespace zt::core
 		template<class T>
 		auto get(this auto& self, size_t index);
 
-		// TODO: Test it
-		// Get pointer to the last element
 		// The returned pointer can point to removed element
-		auto getPtr(size_t index) noexcept { return buffer.data() + (index * typeSize); }
+		void* getPtr(size_t index) noexcept { return buffer.data() + (index * typeSize); }
 
 		bool isValidIndex(size_t index) const noexcept;
 
@@ -119,7 +117,7 @@ namespace zt::core
 		TypeLessVectorIterator begin() noexcept;
 		TypeLessVectorIterator end() noexcept;
 
-		const auto* data() const noexcept { return buffer.data(); }
+		const void* data() const noexcept { return buffer.data(); }
 
 	private:
 

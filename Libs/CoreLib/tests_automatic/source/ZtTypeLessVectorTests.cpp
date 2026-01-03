@@ -23,7 +23,6 @@ namespace zt::core::tests
 
 	TEST_F(TypeLessVectorTests, CreateTest)
 	{
-		const Position expectedPosition{ 1.0f, 2.0f };
 		TypeLessVector vector = TypeLessVector::Create<Position>();
 		
 		ASSERT_EQ(vector.getTypeID(), GetTypeID<Position>());
@@ -51,6 +50,23 @@ namespace zt::core::tests
 		auto sprite = vector.get<Sprite>(0);
 
 		ASSERT_FALSE(sprite);
+	}
+
+	TEST_F(TypeLessVectorTests, GetPtrTest)
+	{
+		const Position expectedPosition{ 1, 1 };
+
+		TypeLessVector vector = TypeLessVector::Create<Position>();
+		vector.add(Position{ 0, 0 });
+		vector.add(Position{ expectedPosition });
+		vector.add(Position{ 2, 2 });
+
+		ASSERT_EQ(vector.getObjectsCount(), 3);
+
+		EXPECT_EQ(vector.data(), vector.getPtr(0));
+
+		const auto secondObject = static_cast<Position*>(vector.getPtr(1));
+		EXPECT_EQ(expectedPosition, *secondObject);
 	}
 
 	TEST_F(TypeLessVectorTests, IsValidIndexTest)
