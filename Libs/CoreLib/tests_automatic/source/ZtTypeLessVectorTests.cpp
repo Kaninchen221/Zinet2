@@ -69,6 +69,21 @@ namespace zt::core::tests
 		EXPECT_EQ(expectedPosition, *secondObject);
 	}
 
+	TEST_F(TypeLessVectorTests, GetLastIndexTest)
+	{
+		TypeLessVector vector = TypeLessVector::Create<Position>();
+		vector.add(Position{});
+		vector.add(Position{});
+		vector.add(Position{});
+		vector.remove(2);
+
+		ASSERT_EQ(vector.getObjectsCount(), 2);
+
+		size_t expectedLastIndex = 2;
+		size_t actualLastIndex = vector.getLastIndex();
+		EXPECT_EQ(actualLastIndex, expectedLastIndex);
+	}
+
 	TEST_F(TypeLessVectorTests, IsValidIndexTest)
 	{
 		TypeLessVector vector = TypeLessVector::Create<Position>();

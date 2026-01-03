@@ -91,14 +91,14 @@ namespace zt::core
 		template<class T>
 		auto get(this auto& self, size_t index);
 
-		// The returned pointer can point to removed element
+		// The returned pointer can point to a removed object
 		void* getPtr(size_t index) noexcept { return buffer.data() + (index * typeSize); }
 
 		bool isValidIndex(size_t index) const noexcept;
 
 		size_t getFirstValidIndex() const noexcept;
 
-		// TODO: Test it
+		// The returned index could point to a removed object
 		size_t getLastIndex() const noexcept { return objectsCount + removedObjects.size() - 1; }
 
 		template<class T>
