@@ -42,7 +42,6 @@ namespace zt::gameplay::asset
 
 		auto& getTypeString() const { return typeStr; }
 
-		// TODO: Test it
 		ResourceOptT createResource(vulkan_renderer::RendererContext& rendererContext);
 
 	protected:

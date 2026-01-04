@@ -16,23 +16,30 @@ namespace zt::gameplay::asset::tests
 
 		void SetUp() override
 		{
+			assetStorage.registerAssetClass<Sampler>();
+			bool result = assetStorage.storeAssets();
+			ASSERT_TRUE(result);
 		}
 
 		void TearDown() override
 		{
 		}
 
+		core::AssetHandle<Sampler> getAssetHandle()
+		{
+			auto asset = assetStorage.getAs<Sampler>("Content/Samplers/linear.sampler");
+			if (!asset)
+				return {};
+
+			return asset;
+		}
+
+		core::AssetStorage assetStorage;
 	};
 
 	TEST_F(SamplerTests, Test)
 	{
-		core::AssetStorage assetStorage;
-		assetStorage.registerAssetClass<Sampler>();
-
-		bool result = assetStorage.storeAssets();
-		ASSERT_TRUE(result);
-
-		auto asset = assetStorage.getAs<Sampler>("Content/Samplers/linear.sampler");
+		auto asset = getAssetHandle();
 		ASSERT_TRUE(asset);
 
 		ASSERT_TRUE(asset->load());
@@ -42,5 +49,28 @@ namespace zt::gameplay::asset::tests
 		asset->unload();
 		ASSERT_FALSE(asset->isLoaded());
 		ASSERT_TRUE(asset->getTypeString().empty());
+	}
+
+	TEST_F(SamplerTests, CreateResourceTest)
+	{
+		auto asset = getAssetHandle();
+		ASSERT_TRUE(asset);
+		ASSERT_TRUE(asset->load());
+
+		wd::GLFW::Init();
+		vulkan_renderer::RendererContext rendererContext;
+		wd::Window window;
+		ASSERT_TRUE(window.create(2, 2));
+		ASSERT_TRUE(rendererContext.create(window));
+
+		std::optional<vulkan_renderer::Sampler> sampler = asset->createResource(rendererContext);
+		ASSERT_TRUE(sampler);
+		EXPECT_TRUE(sampler->isValid());
+
+		sampler->destroy(rendererContext);
+
+		rendererContext.destroy();
+		window.destroyWindow();
+		wd::GLFW::Deinit();
 	}
 }
