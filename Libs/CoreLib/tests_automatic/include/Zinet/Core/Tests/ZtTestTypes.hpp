@@ -14,6 +14,8 @@
 #include <cstdint>
 #include <thread>
 
+#include "gtest/gtest.h"
+
 namespace zt::core::ecs
 {
 	class World;
@@ -217,8 +219,14 @@ namespace zt::core::tests
 			{
 				worldCommands.addResource(ExitReason{});
 			}
+		}
+	};
 
-			
+	struct FailSystemTest
+	{
+		static void ExpectPositionAlwaysFailing(ecs::ConstResource<Position>)
+		{
+			EXPECT_FALSE(true);
 		}
 	};
 

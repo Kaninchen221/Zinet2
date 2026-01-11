@@ -18,6 +18,7 @@ namespace zt::core
 
 	private:
 		inline static CallbackT Callback;
+		inline static bool IgnoreLog = false;
 
 	public:
 
@@ -33,6 +34,10 @@ namespace zt::core
 		static const CallbackT& GetCallback() noexcept;
 
 		static void SetCallback(CallbackT newCallback) noexcept;
+
+		static bool GetIgnoreLog() noexcept;
+
+		static void SetIgnoreLog(bool value) noexcept;
 
 	protected:
 

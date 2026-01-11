@@ -98,26 +98,6 @@ namespace zt::gameplay
 			core::ecs::ConstResource<CameraManager> cameraManagerRes,
 			core::ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes)
 		{	
-			// TODO: Refactor validation of resources
-			// Put it in the world/schedule class?
-			if (!rendererRes)
-			{
-				Logger->error("Renderer res is invalid");
-				return;
-			}
-
-			if (!resourceStorageRes)
-			{
-				Logger->error("Resource Storage res is invalid");
-				return;
-			}
-
-			if (!cameraManagerRes)
-			{
-				Logger->error("CameraManager res is invalid");
-				return;
-			}
-
 			// Create graphics pipelines
 			if (!systemComponents.isEmpty())
 			{
@@ -271,17 +251,11 @@ namespace zt::gameplay
 		}
 
 		void Sprites::Deinit(
-			core::ecs::WorldCommands worldCommands,
+			core::ecs::WorldCommands,
 			SystemComponentsQuery systemComponents,
 			core::ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes
 		)
 		{
-			if (!rendererRes)
-			{
-				worldCommands.addResource(ExitReason{ "Expected rendererRes" });
-				return;
-			}
-
 			auto& rendererContext = rendererRes->getRendererContext();
 			auto& vma = rendererContext.getVMA();
 

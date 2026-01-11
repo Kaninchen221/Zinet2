@@ -10,6 +10,8 @@
 #include "Zinet/Core/ZtTypes.hpp"
 #include "Zinet/Core/ZtExitReason.hpp"
 
+#include "Zinet/TestUtils/ZtUtils.hpp"
+
 namespace zt::core::ecs::tests
 {
 	using namespace zt::core::tests;
@@ -157,7 +159,7 @@ namespace zt::core::ecs::tests
 					nodes[1].typeID == GetTypeID<SystemTest_3>());
 	}
 
-	TEST_F(ECSScheduleTests, ResourcesDependenciesTest)
+	TEST_F(ECSScheduleTests, ResourceDependenciesTest)
 	{
 		Schedule schedule;
 
@@ -188,7 +190,7 @@ namespace zt::core::ecs::tests
 		EXPECT_EQ(layers[2].nodes[0].typeID, GetTypeID<SystemTest_3>());
 	}
 
-	TEST_F(ECSScheduleTests, QueriesDependenciesTest)
+	TEST_F(ECSScheduleTests, QueryDependenciesTest)
 	{
 		Schedule schedule;
 
@@ -233,6 +235,16 @@ namespace zt::core::ecs::tests
 		const auto& graph = schedule.getGraph();
 		// We expect that both systems are in different layers
 		ASSERT_EQ(graph.layers.size(), 2);
+
+		{ // Test if the node has info about what resource his system needs
+			auto& secondLayer = graph.layers.at(1);
+			auto& nodes = secondLayer.nodes;
+			ASSERT_EQ(nodes.size(), 1);
+
+			auto& node = nodes.front();
+			auto& resources = node.resources;
+			EXPECT_FALSE(resources.empty());
+		}
 
 		World world;
 
@@ -306,6 +318,20 @@ namespace zt::core::ecs::tests
 			ASSERT_TRUE(counter);
 			ASSERT_EQ(counter->value, 1);
 		}
+	}
+
+	TEST_F(ECSScheduleTests, RunSystemThatExpectResourceWithEmptyWorldTest)
+	{
+		World world;
+		Schedule schedule;
+
+		// Ignore Logger 
+		core::SimpleCallbackSink::SetIgnoreLog(true);
+
+		// Schedule shouldn't run a system that expect a resource when the world doesn't have it
+		schedule.runOneSystemOnce(SystemTest_1{}, FailSystemTest::ExpectPositionAlwaysFailing, world);
+
+		core::SimpleCallbackSink::SetIgnoreLog(false);
 	}
 
 	// TODO: Test a situation when we have a lot of systems that can be run at the same time

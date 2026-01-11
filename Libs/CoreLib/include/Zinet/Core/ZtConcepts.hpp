@@ -13,9 +13,8 @@ namespace zt::core
 		t.end();
 	};
 
-	// TODO: Rename to NonSTDContainer
 	template<typename T>
-	concept NotSTDContainer = !STDContainer<T>;
+	concept NonSTDContainer = !STDContainer<T>;
 
 	template<class T>
 	concept LikeSmartPointer = requires(T & t) {

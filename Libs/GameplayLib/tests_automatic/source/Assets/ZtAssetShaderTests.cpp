@@ -26,7 +26,7 @@ namespace zt::gameplay::asset::tests
 		{
 		}
 
-		core::AssetHandle<asset::Shader> getShaderAssetHandle()
+		core::AssetHandle<Shader> getAssetHandle()
 		{
 			auto asset = assetStorage.getAs<Shader>("Content/Shaders/shader.vert");
 			if (!asset)
@@ -40,7 +40,7 @@ namespace zt::gameplay::asset::tests
 
 	TEST_F(ShaderTests, Test)
 	{
-		auto assetHandle = getShaderAssetHandle();
+		auto assetHandle = getAssetHandle();
 		ASSERT_TRUE(assetHandle);
 
 		ASSERT_TRUE(assetHandle->load());
@@ -56,7 +56,7 @@ namespace zt::gameplay::asset::tests
 
 	TEST_F(ShaderTests, CreateResourceTest)
 	{
-		auto assetHandle = getShaderAssetHandle();
+		auto assetHandle = getAssetHandle();
 		ASSERT_TRUE(assetHandle);
 		ASSERT_TRUE(assetHandle->load());
 
@@ -69,10 +69,10 @@ namespace zt::gameplay::asset::tests
 		ASSERT_TRUE(rendererContext.create(window));
 
 		std::optional<vulkan_renderer::ShaderModule> shaderModule = assetHandle->createResource(rendererContext);
-		EXPECT_TRUE(shaderModule);
+		ASSERT_TRUE(shaderModule);
+		EXPECT_TRUE(shaderModule->isValid());
 
-		if (shaderModule)
-			shaderModule->destroy(rendererContext.getDevice());
+		shaderModule->destroy(rendererContext.getDevice());
 		
 		rendererContext.destroy();
 

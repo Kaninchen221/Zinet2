@@ -2,11 +2,13 @@
 
 #include "Zinet/Core/ZtLogger.hpp"
 
+#include "Zinet/TestUtils/ZtUtils.hpp"
+
 int main(int argc, char* argv[]) 
 {
     auto callback = []() { FAIL() << "Some logger log error, warning or critical"; };
-    zt::core::SimpleCallbackSink::SetCallback(callback);
+    zt::core::SimpleCallbackSink::SetCallback(zt::test_utils::FailCallback);
 
-	::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }

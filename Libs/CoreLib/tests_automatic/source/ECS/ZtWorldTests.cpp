@@ -213,6 +213,15 @@ namespace zt::core::ecs::tests
 		ASSERT_EQ(*resource, ResourceTime{ expectedTime });
 	}
 
+	TEST_F(ECSWorldTests, HasResourceTest)
+	{
+		const TypeID typeID = GetTypeID<Position>();
+		ASSERT_FALSE(world.hasResource(typeID));
+
+		world.addResource(Position{});
+		ASSERT_TRUE(world.hasResource(typeID));
+	}
+
 	TEST_F(ECSWorldTests, GetArchetypesWithTest)
 	{
 		world.spawn(Sprite{});

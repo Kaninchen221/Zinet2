@@ -27,19 +27,7 @@ namespace zt::gameplay
 			ecs::Resource<wd::Window> windowRes, 
 			ecs::Resource<wd::WindowEvents> windowEventsRes, 
 			ecs::WorldCommands worldCommands)
-		{
-			if (!windowRes)
-			{
-				worldCommands.addResource(ExitReason{ "Couldn't find a window resource" });
-				return;
-			}
-
-			if (!windowEventsRes)
-			{
-				worldCommands.addResource(ExitReason{ "Couldn't find a window events resource" });
-				return;
-			}
-			
+		{	
 			if (windowRes->isOpen())
 			{
 				windowEventsRes->pollEvents();
@@ -54,9 +42,6 @@ namespace zt::gameplay
 
 		void Window::Deinit(ecs::Resource<wd::Window> windowRes)
 		{
-			if (!windowRes)
-				return;
-
 			if (windowRes->isOpen())
 				windowRes->destroyWindow();
 

@@ -80,7 +80,6 @@ namespace zt::core
 		template<class T>
 		static TypeLessVector Create();
 
-		// TODO: Test it
 		void clear();
 
 		// Return the index of added component
@@ -92,22 +91,22 @@ namespace zt::core
 		template<class T>
 		auto get(this auto& self, size_t index);
 
-		// TODO: Test it
-		// Get pointer to the last element
-		// The returned pointer can point to removed element
-		auto getPtr(size_t index) noexcept { return buffer.data() + (index * typeSize); }
+		// The returned pointer can point to a removed object
+		void* getPtr(size_t index) noexcept { return buffer.data() + (index * typeSize); }
 
 		bool isValidIndex(size_t index) const noexcept;
 
 		size_t getFirstValidIndex() const noexcept;
 
-		// TODO: Test it
+		// The returned index could point to a removed object
 		size_t getLastIndex() const noexcept { return objectsCount + removedObjects.size() - 1; }
 
 		template<class T>
 		bool hasType() const noexcept { return GetTypeID<T>() == typeID; }
 
 		size_t getObjectsCount() const noexcept { return objectsCount; }
+
+		bool isEmpty() const noexcept { return getObjectsCount() == 0; }
 
 		size_t getObjectsCapacity() const noexcept { return objectsCapacity; }
 
@@ -118,7 +117,7 @@ namespace zt::core
 		TypeLessVectorIterator begin() noexcept;
 		TypeLessVectorIterator end() noexcept;
 
-		const auto* data() const noexcept { return buffer.data(); }
+		const void* data() const noexcept { return buffer.data(); }
 
 	private:
 
@@ -152,18 +151,18 @@ namespace zt::core
 	template<class T>
 	TypeLessVector TypeLessVector::Create()
 	{
-		using Object = std::decay_t<T>;
+		using ObjectT = std::decay_t<T>;
 
 		// Lambda that invokes destructor
-		auto destructor = [](void* rawComponent) 
+		auto destructor = [](void* objectVoidPtr) 
 		{
-			Object* component = reinterpret_cast<Object*>(rawComponent);
-			std::destroy_at(component);
+			ObjectT* objectPtr = reinterpret_cast<ObjectT*>(objectVoidPtr);
+			std::destroy_at(objectPtr);
 		};
 
 		return TypeLessVector
 		(
-			GetTypeID<Object>(), destructor, sizeof(Object), std::is_trivially_constructible_v<Object>
+			GetTypeID<ObjectT>(), destructor, sizeof(ObjectT), std::is_trivially_constructible_v<ObjectT>
 		);
 	}
 

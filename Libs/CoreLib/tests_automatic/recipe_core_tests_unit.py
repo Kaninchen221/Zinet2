@@ -11,5 +11,6 @@ generator.includeDirectories = """
 generator.linkLibraries =  """
     ZinetCore
     gtest::gtest
+    ZinetTestUtils
     """
 project_generator.add_generator(generator)

@@ -16,12 +16,6 @@ namespace zt::gameplay::system
 {
 	void Renderer::Init(ecs::WorldCommands worldCommands, ecs::Resource<wd::Window> windowRes)
 	{
-		if (!windowRes)
-		{
-			worldCommands.addResource(ExitReason{ "Couldn't find a window resource" });
-			return;
-		}
-
 		vulkan_renderer::VulkanRenderer vulkanRenderer;
 		if (!vulkanRenderer.init(*windowRes))
 		{
@@ -40,24 +34,9 @@ namespace zt::gameplay::system
 		DrawDataQuery drawDataQuery,
 		ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes)
 	{
-		if (!windowRes)
-			return;
-
 		if (windowRes->isMinimized())
 		{
 			Logger->trace("Window is minimized so skip rendering");
-			return;
-		}
-
-		if (!rendererRes)
-		{
-			worldCommands.addResource(ExitReason{ "Expected renderer res" });
-			return;
-		}
-
-		if (!resourceStorageRes)
-		{
-			worldCommands.addResource(ExitReason{ "Expected resource storage res" });
 			return;
 		}
 
@@ -108,10 +87,8 @@ namespace zt::gameplay::system
 		ecs::Resource<vulkan_renderer::VulkanRenderer> rendererRes,
 		ecs::Resource<vulkan_renderer::ResourceStorage> resourceStorageRes)
 	{
-		if (resourceStorageRes)
-			resourceStorageRes->clear(rendererRes->getRendererContext());
+		resourceStorageRes->clear(rendererRes->getRendererContext());
 
-		if (rendererRes)
-			rendererRes->deinit();
+		rendererRes->deinit();
 	}
 }

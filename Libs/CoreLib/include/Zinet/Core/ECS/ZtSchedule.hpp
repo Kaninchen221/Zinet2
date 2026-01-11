@@ -73,6 +73,7 @@ namespace zt::core::ecs
 		std::vector<TypeID> before;
 		bool mainThread = false;
 		Time executeTime;
+		std::vector<ResourceInfo> resources;
 	};
 
 	struct ZINET_CORE_API GraphEdge
@@ -139,7 +140,6 @@ namespace zt::core::ecs
 
 		auto& getGraph() const noexcept { return graph; }
 
-		// TODO: When schedule found a system that needs resource of type T and a resource of type T doesn't exist in the world, then the Schedule should log about this and skip executing of that system
 		void runOnce(World& world);
 
 		template<class LabelT, class SystemT>
@@ -154,6 +154,8 @@ namespace zt::core::ecs
 		}
 
 	private:
+
+		bool shouldSkipNode(const GraphNode& node, const World& world) noexcept;
 
 		template<class Dependency>
 		constexpr static void ResolveDeps(SystemInfo& systemInfo, const Dependency& dependency)

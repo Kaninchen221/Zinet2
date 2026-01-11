@@ -4,7 +4,6 @@
 #include "Zinet/Core/ZtImGui.hpp"
 #include "Zinet/Core/ZtLogger.hpp"
 #include "Zinet/Core/Assets/ZtAsset.hpp"
-#include "Zinet/Core/ZtConstants.hpp"
 
 #include "Zinet/Core/Assets/ZtAssetStorage.hpp"
 
@@ -12,15 +11,12 @@
 
 namespace zt::gameplay::asset
 {
-	// TODO: Remove The "Static"
-	template<std::derived_from<core::Asset> AssetT, class Static = core::Static::No>
+	template<std::derived_from<core::Asset> AssetT>
 	class Property
 	{
 	public:
 
 		using AssetHandleT = typename core::AssetHandle<AssetT>;
-
-		using IsStatic = Static;
 
 		Property() = default;
 		Property(const std::string_view name)
@@ -30,9 +26,7 @@ namespace zt::gameplay::asset
 		Property(Property&& other) noexcept = default;
 		~Property() noexcept 
 		{
-			// Static asset properties should not release their asset handle on destruction because it's already destroyed by the assets storage
-			if constexpr (IsStatic{})
-				assetHandle.release();
+			assetHandle.release();
 		}
 
 		Property& operator = (const Property& other) = default;
@@ -77,8 +71,8 @@ namespace zt::gameplay::asset
 		core::AssetHandle<AssetT> assetHandle;
 	};
 
-	template<std::derived_from<core::Asset> AssetT, class Static>
-	void Property<AssetT, Static>::show()
+	template<std::derived_from<core::Asset> AssetT>
+	void Property<AssetT>::show()
 	{
 		ImGui::PushID(this);
 
