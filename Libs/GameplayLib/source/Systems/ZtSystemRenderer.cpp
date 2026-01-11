@@ -24,6 +24,8 @@ namespace zt::gameplay::system
 		}
 
 		worldCommands.addResource(vulkanRenderer);
+
+		worldCommands.addResource(vulkan_renderer::ResourceStorage{});
 	}
 
 	void Renderer::Update(
