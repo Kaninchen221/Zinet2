@@ -36,9 +36,9 @@ namespace zt::gameplay::tests
 	using namespace zt::core;
 
 	// TODO:
-	// - Draw ImGui
+	// - Draw ImGui (Done)
 	//	- Write Editor System
-	// - Draw Sprites
+	// - Draw Sprites (Done)
 	// - Draw Flipbooks
 	// 
 	// - Remove nodes
