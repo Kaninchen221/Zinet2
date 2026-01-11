@@ -21,7 +21,8 @@ namespace zt::core::ecs
 				.systemAdapter = system.systemAdapter,
 				.after = system.after,
 				.before = system.before,
-				.mainThread = system.mainThread
+				.mainThread = system.mainThread,
+				.resources = system.resources
 			};
 
 			for (const auto& otherSystem : systems)
@@ -245,7 +246,12 @@ namespace zt::core::ecs
 				std::vector<std::jthread> threads;
 				for (auto& node : layer.nodes)
 				{
-					auto& systemAdapter = node.systemAdapter;
+					if (shouldSkipNode(node, world))
+					{
+						Logger->warn("Skip node: {}", node.typeInfo->name());
+						continue;
+					}
+
 					if (!node.mainThread)
 					{
 						threads.push_back(
@@ -271,6 +277,7 @@ namespace zt::core::ecs
 						Clock clock;
 #					endif
 
+						auto& systemAdapter = node.systemAdapter;
 						if (systemAdapter)
 							systemAdapter(world);
 
@@ -284,5 +291,20 @@ namespace zt::core::ecs
 			world.executeCommands();
 			world.clearCommands();
 		}
+	}
+
+	bool Schedule::shouldSkipNode(const GraphNode& node, const World& world) noexcept
+	{
+		for (const auto& resource : node.resources)
+		{
+			if (!world.hasResource(resource.type))
+			{
+				Logger->info("Couldn't find a resource with the typeID: {} in the world", 
+					resource.type);
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

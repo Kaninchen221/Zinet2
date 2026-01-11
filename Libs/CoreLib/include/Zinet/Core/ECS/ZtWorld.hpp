@@ -71,6 +71,8 @@ namespace zt::core::ecs
 		template<class ResourceT>
 		auto* getResource(this auto& self);
 
+		bool hasResource(TypeID) const;
+
 		/// Commands
 		// Would be nice to completly omit mutexes
 		void addCommands(const Commands& newCommands) 

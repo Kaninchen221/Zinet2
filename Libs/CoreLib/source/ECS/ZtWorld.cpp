@@ -45,4 +45,15 @@ namespace zt::core::ecs
 		return count;
 	}
 
+	bool World::hasResource(TypeID typeID) const
+	{
+		for (const auto& resource : resources)
+		{
+			if (resource.getTypeID() == typeID)
+				return true;
+		}
+
+		return false;
+	}
+
 }

@@ -11,6 +11,7 @@ generator.includeDirectories = """
     """
 generator.linkLibraries =  """
     ZinetGameplay
+    ZinetTestUtils
     gtest::gtest
     """
 project_generator.add_generator(generator)
