@@ -139,6 +139,8 @@ namespace zt::gameplay::tests
 	void EngineTests::update()
 	{
 		scheduleUpdate.addSystem(Window{}, Window::Update, ecs::MainThread{});
+		// TODO: Renderer::Update
+		// Split this function to more than one so we could in one layer wait for next display image and process some logic like sprites
 		scheduleUpdate.addSystem(Renderer{}, Renderer::Update, ecs::After{ Window{} }, ecs::MainThread{});
 		scheduleUpdate.addSystem(ImGui::Pre{}, ImGui::PreUpdate, ecs::Before{ Renderer{} }, ecs::After{ Window{} }, ecs::MainThread{});
 		scheduleUpdate.addSystem(ImGui::Post{}, ImGui::PostUpdate, ecs::Before{ Renderer{} }, ecs::After{ ImGui::Pre{} }, ecs::MainThread{});

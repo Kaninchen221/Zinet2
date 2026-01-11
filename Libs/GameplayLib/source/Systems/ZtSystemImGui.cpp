@@ -25,18 +25,6 @@ namespace zt::gameplay::system
 		ecs::Resource<wd::Window> windowRes,
 		ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes)
 	{
-		if (!windowRes)
-		{
-			worldCommands.addResource(ExitReason{ "Invalid window res"});
-			return;
-		}
-
-		if (!rendererRes)
-		{
-			worldCommands.addResource(ExitReason{ "Invalid renderer res" });
-			return;
-		}
-
 		// TODO: Refactor this fix
 		// Fix github actions
 		int monitorsCount = 0;
@@ -123,22 +111,10 @@ namespace zt::gameplay::system
 	}
 
 	void ImGui::Deinit(
-		ecs::WorldCommands worldCommands,
+		ecs::WorldCommands,
 		ecs::ConstResource<vulkan_renderer::VulkanRenderer> rendererRes,
 		ecs::Resource<vulkan_renderer::ImGuiIntegration> imGuiIntegrationRes)
 	{
-		if (!rendererRes)
-		{
-			worldCommands.addResource(ExitReason{ "Renderer res is invalid" });
-			return;
-		}
-
-		if (!imGuiIntegrationRes)
-		{
-			worldCommands.addResource(ExitReason{ "imGuiIntegration res is invalid" });
-			return;
-		}
-
 		imGuiIntegrationRes->deinit(rendererRes->getRendererContext());
 	}
 
