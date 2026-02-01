@@ -73,6 +73,9 @@ namespace zt::core::ecs
 		// Resources are unique by type
 		// User can't remove resources
 
+		// TODO: Add param to define if the resource is open to public or it's private 
+		// - Public: Any system can edit it (default)
+		// - Private: Only the owner can edit it but everybody else can read it
 		template<class ResourceT>
 		void addResource(ResourceT&& resource)
 		{
