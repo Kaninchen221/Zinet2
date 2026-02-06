@@ -38,9 +38,7 @@ The purpose of this project is learning the C++ language, maintaining a big proj
 + `VMA` for allocating memory in the vulkan renderer
 
 ## Runners Info 
-I have two self hosted runners:  
 - Windows 10 with Visual Studio 
-- Linux Debian with GNU (Inactive)
 
 ## FAQ
   + If you have a strange problem with the "Conan Install" step, then try "conan remove --locks" command
