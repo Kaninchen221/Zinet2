@@ -7,7 +7,9 @@ namespace zt::software_renderer
 
 	class ZINET_SOFTWARE_RENDERER_API SoftwareRenderer
 	{
+	public:
 
+		static bool IsAvailable() noexcept;
 	};
 
 }

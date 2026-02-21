@@ -16,6 +16,6 @@ namespace zt::software_renderer::tests
 
 	TEST_F(SoftwareRendererTests, Pass)
 	{
-
+		ASSERT_TRUE(SoftwareRenderer::IsAvailable());
 	}
 }

@@ -11,7 +11,8 @@ generator.includeDirectories = """
     ${glm_INCLUDE_DIRS}
     """
 generator.linkLibraries = """
-    ZinetGameplay
+    ZinetCore
+    ZinetMath
     ${glm_LIBRARIES}
     """
 project_generator.add_generator(generator)
