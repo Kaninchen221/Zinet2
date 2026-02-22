@@ -1,21 +1,22 @@
 #include "Zinet/SoftwareRenderer/ZtSoftwareRenderer.hpp"
 
 #include "Zinet/SoftwareRenderer/ZtDirectXMathSingleHeader.hpp"
+#include "Zinet/SoftwareRenderer/ZtConstants.hpp"
+
 #include <algorithm>
 
 namespace zt::software_renderer
 {
-
 	bool SoftwareRenderer::IsAvailable() noexcept
 	{
 		const auto IsDirectXMathSupported = DirectX::XMVerifyCPUSupport();
 		return IsDirectXMathSupported;
 	}
 
-	void SoftwareRenderer::draw(const DrawData& drawData) noexcept
+	void SoftwareRenderer::draw(const DrawData& drawData)
 	{
 #	if ZINET_DEBUG
-		if (!drawData.IsValid()) [[unlikely]]
+		if (!drawData.IsValid()) ZINET_UNLIKELY
 		{
 			Logger->error("Invalid draw data provided to SoftwareRenderer::draw");
 			return;
@@ -29,7 +30,7 @@ namespace zt::software_renderer
 			break;
 
 		case DrawMode::Lines:
-			Logger->error("Draw Lines is not implemented");
+			drawLines(drawData);
 			break;
 
 		case DrawMode::Points:
@@ -40,11 +41,9 @@ namespace zt::software_renderer
 			Logger->warn("Unknown draw mode specified in DrawData");
 			break;
 		}
-
-
 	}
 
-	void SoftwareRenderer::drawPoints(const DrawData& drawData) noexcept
+	void SoftwareRenderer::drawPoints(const DrawData& drawData)
 	{
 		// Get unique indices to avoid drawing the same point multiple times
 		auto indices = *drawData.indices;
@@ -59,7 +58,7 @@ namespace zt::software_renderer
 		for (const auto index : indices)
 		{
 #		if ZINET_SANITY_CHECK
-			if (index >= vertices.size())
+			if (index >= vertices.size()) ZINET_UNLIKELY
 			{
 				Logger->warn("Index {} is out of bounds for vertices array", index);
 				continue;
@@ -69,20 +68,92 @@ namespace zt::software_renderer
  			const auto& vertex = vertices[index];
  			const auto& color = vertex.color;
 
- 			// Convert normalized device coordinates to render target pixel coordinates
- 			const auto x = static_cast<uint32_t>(vertex.position.x * renderTarget.getDimension().x);
-			const auto y = static_cast<uint32_t>(vertex.position.y * renderTarget.getDimension().y);
+			// Convert normalized coordinates to render target pixel coordinates
+			const auto position = normalizedToRenderTarget(vertex, renderTarget.getDimension());
+
+			renderTarget.setTexel({ position.x, position.y }, color);
+		}
+	}
+
+	void SoftwareRenderer::drawLines(const DrawData& drawData)
+	{
+		auto& indices = *drawData.indices;
+		auto& vertices = *drawData.vertices;
+		auto& renderTarget = *drawData.renderTarget;
+
+		for (size_t i = 0; i + 1 < indices.size(); i += 2)
+		{
+			const size_t index1 = indices[i];
+			const size_t index2 = indices[i + 1];
 
 #		if ZINET_SANITY_CHECK
- 			if (x >= renderTarget.getDimension().x || y >= renderTarget.getDimension().y)
- 			{
- 				Logger->warn("Vertex at index {} has position ({}, {}) which is out of render target bounds", index, vertex.position.x, vertex.position.y);
- 				continue;
+			if (index1 >= vertices.size() || index2 >= vertices.size()) ZINET_UNLIKELY
+			{
+				Logger->warn("Line indices {} and {} are out of bounds for vertices array", index1, index2);
+				continue;
 			}
 #		endif // ZINET_SANITY_CHECK
 
-			renderTarget.setTexel({ x, y }, color);
+			lineAlgorithm(
+				normalizedToRenderTarget(vertices[index1], renderTarget.getDimension()),
+				normalizedToRenderTarget(vertices[index2], renderTarget.getDimension()),
+				vertices[index1],
+				vertices[index2],
+				renderTarget);
 		}
+	}
+
+	void SoftwareRenderer::lineAlgorithm(const Vector2i& position1, const Vector2i& position2, const Vertex&, const Vertex&, RenderTarget& renderTarget) const noexcept
+	{
+		auto position = position1;
+
+		// Bresenham's line algorithm
+		const int32_t disX = glm::abs(position2.x - position1.x);
+		const int32_t disY = -glm::abs(position2.y - position1.y);
+
+		const int32_t signX = position1.x < position2.x ? 1 : -1;
+		const int32_t signY = position1.y < position2.y ? 1 : -1;
+
+		int32_t err = disX + disY;
+
+		while (true)
+		{
+			renderTarget.setTexel(position, BlackColor);
+
+			Logger->info("error: {}", err);
+
+			int32_t e2 = 2 * err;
+
+			// step x
+			if (e2 >= disY)
+			{
+				if (position.x == position2.x) break;
+
+				err += disY;
+				position.x += signX;
+			}
+
+			// step y
+			if (e2 <= disX)
+			{
+				if (position.y == position2.y) break;
+
+				err += disX;
+				position.y += signY;
+			}
+		}
+	}
+
+	Vector2i SoftwareRenderer::normalizedToRenderTarget(const Vertex& vertex, const Vector2i& renderTargetDimension) const noexcept
+	{
+		const auto x = static_cast<int32_t>(vertex.position.x * renderTargetDimension.x);
+		const auto y = static_cast<int32_t>(vertex.position.y * renderTargetDimension.y);
+
+		return Vector2i
+		{
+			glm::clamp(x, 0, renderTargetDimension.x - 1),
+			glm::clamp(y, 0, renderTargetDimension.y - 1)
+		};
 	}
 
 }

@@ -29,9 +29,9 @@ namespace zt::software_renderer
 
 		~RenderTarget() = default;
 
-		static RenderTarget Create(const Vector2ui& dimension);
+		static RenderTarget Create(const Vector2i& dimension);
 
-		static RenderTarget Create(const Vector2ui& dimension, const Texel& color);
+		static RenderTarget Create(const Vector2i& dimension, const Texel& color);
 
 		auto& getDimension() const noexcept { return dimension; }
 
@@ -39,21 +39,21 @@ namespace zt::software_renderer
 
 		auto& getTexels() const noexcept { return texels; }
 
-		Texel getTexel(const Vector2ui& coords) const noexcept;
+		Texel getTexel(const Vector2i& coords) const noexcept;
 
 		bool allTexelsAre(const Texel& texel) const noexcept;
 
-		size_t coordsToIndex(const Vector2ui& coords) const noexcept { return coords.y * dimension.x + coords.x; }
+		size_t coordsToIndex(const Vector2i& coords) const noexcept { return coords.y * dimension.x + coords.x; }
 
 		void clear(const Texel& clearColor) noexcept;
 
-		void setTexel(const Vector2ui& coords, const Texel& color) noexcept;
+		void setTexel(const Vector2i& coords, const Texel& color) noexcept;
 
 		bool saveToPNG(const core::Path& filePath) const noexcept;
 
 	private:
 
-		Vector2ui dimension{};
+		Vector2i dimension{};
 
 		std::vector<Texel> texels{};
 

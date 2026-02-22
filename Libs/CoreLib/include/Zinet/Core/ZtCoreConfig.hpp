@@ -74,6 +74,9 @@
 #	define ZINET_SANITY_CHECK 0
 #endif
 
+#define ZINET_LIKELY [[likely]]
+#define ZINET_UNLIKELY [[unlikely]]
+
 // ImGui payload types
 auto constexpr inline static ZinetImGuiPayloadType = "ASSET";
 

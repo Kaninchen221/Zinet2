@@ -7,8 +7,14 @@
 
 namespace zt::software_renderer
 {
-	RenderTarget RenderTarget::Create(const Vector2ui& dimension)
+	RenderTarget RenderTarget::Create(const Vector2i& dimension)
 	{
+		if (dimension.x < 1 || dimension.y < 1)
+		{
+			Logger->error("Invalid render target dimension: ({}, {})", dimension.x, dimension.y);
+			return {};
+		}
+
 		RenderTarget renderTarget;
 		renderTarget.dimension = dimension;
 
@@ -17,8 +23,14 @@ namespace zt::software_renderer
 		return renderTarget;
 	}
 
-	RenderTarget RenderTarget::Create(const Vector2ui& dimension, const Texel& color)
+	RenderTarget RenderTarget::Create(const Vector2i& dimension, const Texel& color)
 	{
+		if (dimension.x < 1 || dimension.y < 1)
+		{
+			Logger->error("Invalid render target dimension: ({}, {})", dimension.x, dimension.y);
+			return {};
+		}
+
 		RenderTarget renderTarget;
 		renderTarget.dimension = dimension;
 
@@ -27,12 +39,12 @@ namespace zt::software_renderer
 		return renderTarget;
 	}
 
-	Texel RenderTarget::getTexel(const Vector2ui& coords) const noexcept
+	Texel RenderTarget::getTexel(const Vector2i& coords) const noexcept
 	{
 		const auto index = coordsToIndex(coords);
 
 #	if ZINET_SANITY_CHECK
-		if (index >= texels.size())
+		if (index >= texels.size()) ZINET_UNLIKELY
 		{
 			Logger->error("Attempted to get texel at out-of-bounds coordinates: ({}, {})", coords.x, coords.y);
 			return {};
@@ -58,12 +70,12 @@ namespace zt::software_renderer
 		std::fill(texels.begin(), texels.end(), clearColor);
 	}
 
-	void RenderTarget::setTexel(const Vector2ui& coords, const Texel& color) noexcept
+	void RenderTarget::setTexel(const Vector2i& coords, const Texel& color) noexcept
 	{
 		const auto index = coordsToIndex(coords);
 
 #	if ZINET_SANITY_CHECK
-		if (index >= texels.size())
+		if (index >= texels.size()) ZINET_UNLIKELY
 		{
 			Logger->error("Attempted to set texel at out-of-bounds coordinates: ({}, {})", coords.x, coords.y);
 			return;

@@ -38,11 +38,17 @@ namespace zt::software_renderer
 
 		static bool IsAvailable() noexcept;
 
-		void draw(const DrawData& drawData) noexcept;
+		void draw(const DrawData& drawData);
 
 	private:
 
-		void drawPoints(const DrawData& drawData) noexcept;
+		void drawPoints(const DrawData& drawData);
+
+		void drawLines(const DrawData& drawData);
+
+		void lineAlgorithm(const Vector2i& position1, const Vector2i& position2, const Vertex& vertex1, const Vertex& vertex2, RenderTarget& renderTarget) const noexcept;
+
+		inline Vector2i normalizedToRenderTarget(const Vertex& vertex, const Vector2i& renderTargetDimension) const noexcept;
 
 	};
 

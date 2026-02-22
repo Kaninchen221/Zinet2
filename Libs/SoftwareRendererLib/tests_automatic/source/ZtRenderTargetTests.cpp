@@ -21,7 +21,7 @@ namespace zt::software_renderer::tests
 
 	TEST_F(RenderTargetTests, Create)
 	{
-		constexpr Vector2ui dimension(4, 4);
+		constexpr Vector2i dimension(4, 4);
 		const auto renderTarget = RenderTarget::Create(dimension);
 
 		const auto& actualDimension = renderTarget.getDimension();
@@ -57,7 +57,7 @@ namespace zt::software_renderer::tests
 	{
 		auto renderTarget = RenderTarget::Create(SmallDimension, BlackColor);
 
-		const auto coords = Vector2ui{ 50, 50 };
+		const auto coords = Vector2i{ 50, 50 };
 		const auto color = WhiteColor;
 		renderTarget.setTexel(coords, color);
 

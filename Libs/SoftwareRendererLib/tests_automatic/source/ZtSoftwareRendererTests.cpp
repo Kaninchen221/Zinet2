@@ -42,6 +42,11 @@ namespace zt::software_renderer::tests
 			resultFilePath = FolderPath / (std::string(testInfo->test_suite_name()) + "_" + testInfo->name() + PNGExt);
 		}
 
+		void TearDown() override
+		{
+			ASSERT_TRUE(renderTarget.saveToPNG(resultFilePath));
+		}
+
 		inline static auto FolderPath = core::Paths::CurrentProjectRootPath() / "results";
 		inline static auto PNGExt = std::string(".png");
 
@@ -58,8 +63,6 @@ namespace zt::software_renderer::tests
 	{
 		renderer.draw(drawData);
 
-		ASSERT_TRUE(renderTarget.saveToPNG(resultFilePath));
-
 		// Verify that the expected points were drawn with the correct colors
 		for (const auto index : indices)
 		{
@@ -73,6 +76,14 @@ namespace zt::software_renderer::tests
 			const auto actualColor = renderTarget.getTexel(coords);
 			EXPECT_EQ(expectedColor, actualColor);
 		}
+	}
+
+	TEST_F(SoftwareRendererTests, DrawLines)
+	{
+		indices = { 0, 1, 1, 2, 2, 3, 3, 0 };
+		drawData.drawMode = DrawMode::Lines;
+
+		renderer.draw(drawData);
 	}
 
 	TEST(SoftwareRendererTest, IsAvailable)
