@@ -66,15 +66,15 @@ namespace zt::software_renderer
 			}
 #		endif // ZINET_SANITY_CHECK
 
- 			const auto& vertex = (*drawData.vertices)[index];
+ 			const auto& vertex = vertices[index];
  			const auto& color = vertex.color;
 
  			// Convert normalized device coordinates to render target pixel coordinates
- 			const auto x = static_cast<uint32_t>(vertex.position.x * drawData.renderTarget->getDimension().x);
-			const auto y = static_cast<uint32_t>(vertex.position.y * drawData.renderTarget->getDimension().y);
+ 			const auto x = static_cast<uint32_t>(vertex.position.x * renderTarget.getDimension().x);
+			const auto y = static_cast<uint32_t>(vertex.position.y * renderTarget.getDimension().y);
 
 #		if ZINET_SANITY_CHECK
- 			if (x >= drawData.renderTarget->getDimension().x || y >= drawData.renderTarget->getDimension().y)
+ 			if (x >= renderTarget.getDimension().x || y >= renderTarget.getDimension().y)
  			{
  				Logger->warn("Vertex at index {} has position ({}, {}) which is out of render target bounds", index, vertex.position.x, vertex.position.y);
  				continue;
