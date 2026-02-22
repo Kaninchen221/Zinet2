@@ -7,6 +7,10 @@
 
 namespace zt::software_renderer::tests
 {
+	// TODO List:
+	// - Draw Lines
+	// - Draw Triangles
+	// - Blending modes
 	class SoftwareRendererTests : public ::testing::Test
 	{
 	protected:
@@ -16,9 +20,11 @@ namespace zt::software_renderer::tests
 			vertices.push_back(Vertex{ Vector3f{ 0.2f, 0.2f, 0.0f }, Vector2f{ 0.0f, 0.0f }, Texel{ 255, 0, 0, 255 } });
 			vertices.push_back(Vertex{ Vector3f{ 0.8f, 0.2f, 0.0f }, Vector2f{ 1.0f, 0.0f }, Texel{ 0, 255, 0, 255 } });
 			vertices.push_back(Vertex{ Vector3f{ 0.8f, 0.8f, 0.0f }, Vector2f{ 1.0f, 1.0f }, Texel{ 0, 0, 255, 255 } });
-			vertices.push_back(Vertex{ Vector3f{ 0.2f, 0.8f, 0.0f }, Vector2f{ 0.0f, 1.0f }, Texel{ 255, 255, 255, 255 } });
+			vertices.push_back(Vertex{ Vector3f{ 0.2f, 0.8f, 0.0f }, Vector2f{ 0.0f, 1.0f }, Texel{ 0, 0, 0, 255 } });
 		}
 
+		inline static auto FolderPath = core::Paths::CurrentProjectRootPath() / "results";
+		inline static auto PNGExt = std::string(".png");
 	};
 
 	TEST_F(SoftwareRendererTests, IsAvailable)
@@ -35,7 +41,7 @@ namespace zt::software_renderer::tests
 
 		const Indices indices{ 0, 1, 2, 0, 2, 3 };
 
-		auto renderTarget = RenderTarget::Create(TwoKDimension);
+		auto renderTarget = RenderTarget::Create(SmallDimension, WhiteColor);
 
 		const DrawData drawData
 		{
@@ -46,6 +52,9 @@ namespace zt::software_renderer::tests
 		};
 
 		renderer.draw(drawData);
+
+		const auto path = FolderPath / ("RenderTargetTests_DrawPoints" + PNGExt);
+		ASSERT_TRUE(renderTarget.saveToPNG(path));
 
 		// Verify that the expected points were drawn with the correct colors
 		for (const auto index : indices)

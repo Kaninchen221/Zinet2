@@ -13,8 +13,6 @@ namespace zt::software_renderer::tests
 
 		static_assert(sizeof(Texel) == sizeof(uint32_t), "Texel should be 4 bytes in size");
 
-		inline static auto BigDimension = Vector2ui(10, 1'000'000);
-		inline static auto SmallDimension = Vector2ui(100, 100);
 		inline static auto Color = Texel{ 255, 0, 0, 255 };
 
 		inline static auto FolderPath = core::Paths::CurrentProjectRootPath() / "results";
@@ -65,6 +63,9 @@ namespace zt::software_renderer::tests
 
 		const auto& texel = renderTarget.getTexel(coords);
 		EXPECT_EQ(color, texel);
+
+		const auto path = FolderPath / ("RenderTargetTests_SetGetTexel" + PNGExt);
+		ASSERT_TRUE(renderTarget.saveToPNG(path));
 	}
 
 	TEST_F(RenderTargetTests, SaveToPNG)
