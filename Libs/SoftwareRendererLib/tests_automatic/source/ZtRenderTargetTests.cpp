@@ -16,6 +16,9 @@ namespace zt::software_renderer::tests
 		inline static auto BigDimension = Vector2ui(10, 1'000'000);
 		inline static auto SmallDimension = Vector2ui(100, 100);
 		inline static auto Color = Texel{ 255, 0, 0, 255 };
+
+		inline static auto FolderPath = core::Paths::CurrentProjectRootPath() / "results";
+		inline static auto PNGExt = std::string(".png");
 	};
 
 	TEST_F(RenderTargetTests, Create)
@@ -62,5 +65,13 @@ namespace zt::software_renderer::tests
 
 		const auto& texel = renderTarget.getTexel(coords);
 		EXPECT_EQ(color, texel);
+	}
+
+	TEST_F(RenderTargetTests, SaveToPNG)
+	{
+		const auto renderTarget = RenderTarget::Create(TwoKDimension, Color);
+
+		const auto path = FolderPath / ("RenderTargetTests_SaveToFile" + PNGExt);
+		ASSERT_TRUE(renderTarget.saveToPNG(path));
 	}
 }

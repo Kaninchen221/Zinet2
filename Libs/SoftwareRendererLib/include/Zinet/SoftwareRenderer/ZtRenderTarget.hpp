@@ -6,6 +6,7 @@
 #include "Zinet/Math/ZtVecTypes.hpp"
 
 #include "Zinet/Core/ZtLogger.hpp"
+#include "Zinet/Core/ZtPaths.hpp"
 
 #include <cstdint>
 #include <vector>
@@ -48,7 +49,7 @@ namespace zt::software_renderer
 
 		void setTexel(const Vector2ui& coords, const Texel& color) noexcept;
 
-
+		bool saveToPNG(const core::Path& filePath) const noexcept;
 
 	private:
 

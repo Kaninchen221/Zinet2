@@ -6,6 +6,8 @@ namespace zt::software_renderer
 {
 	struct Texel
 	{
+		constexpr inline static int Channels = 4;
+
 		uint8_t r;
 		uint8_t g;
 		uint8_t b;

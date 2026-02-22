@@ -1,8 +1,12 @@
 #include "Zinet/SoftwareRenderer/ZtRenderTarget.hpp"
 
+#include "Zinet/Core/ZtFile.hpp"
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb_image_write.h>
+
 namespace zt::software_renderer
 {
-
 	RenderTarget RenderTarget::Create(const Vector2ui& dimension)
 	{
 		RenderTarget renderTarget;
@@ -67,6 +71,14 @@ namespace zt::software_renderer
 #	endif //ZINET_SANITY_CHECK
 
 		texels[index] = color;
+	}
+
+	bool RenderTarget::saveToPNG(const core::Path& filePath) const noexcept
+	{
+		const auto path = filePath.string();
+		const int width = static_cast<int>(dimension.x);
+		const int height = static_cast<int>(dimension.y);
+		return stbi_write_png(path.c_str(), width, height, Texel::Channels, texels.data(), 0);
 	}
 
 }
