@@ -5,14 +5,16 @@
 
 #include "Zinet/Math/ZtVecTypes.hpp"
 
+#include "Zinet/Core/ZtLogger.hpp"
+
 #include <cstdint>
 #include <vector>
 
 namespace zt::software_renderer
 {
-
 	class ZINET_SOFTWARE_RENDERER_API RenderTarget
 	{
+		inline static auto Logger = core::ConsoleLogger::Create("RenderTarget");
 
 		RenderTarget() = default;
 
@@ -36,9 +38,17 @@ namespace zt::software_renderer
 
 		auto& getTexels() const noexcept { return texels; }
 
+		Texel getTexel(const Vector2ui& coords) const noexcept;
+
 		bool allTexelsAre(const Texel& texel) const noexcept;
 
+		size_t coordsToIndex(const Vector2ui& coords) const noexcept { return coords.y * dimension.x + coords.x; }
+
 		void clear(const Texel& clearColor) noexcept;
+
+		void setTexel(const Vector2ui& coords, const Texel& color) noexcept;
+
+
 
 	private:
 

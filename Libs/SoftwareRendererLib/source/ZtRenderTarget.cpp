@@ -23,6 +23,21 @@ namespace zt::software_renderer
 		return renderTarget;
 	}
 
+	Texel RenderTarget::getTexel(const Vector2ui& coords) const noexcept
+	{
+		const auto index = coordsToIndex(coords);
+
+#	if ZINET_SANITY_CHECK
+		if (index >= texels.size())
+		{
+			Logger->error("Attempted to get texel at out-of-bounds coordinates: ({}, {})", coords.x, coords.y);
+			return {};
+		}
+#	endif //ZINET_SANITY_CHECK
+
+		return texels[index];
+	}
+
 	bool RenderTarget::allTexelsAre(const Texel& texel) const noexcept
 	{
 		for (const auto& srcTexel : texels)
@@ -37,6 +52,21 @@ namespace zt::software_renderer
 	void RenderTarget::clear(const Texel& clearColor) noexcept
 	{
 		std::fill(texels.begin(), texels.end(), clearColor);
+	}
+
+	void RenderTarget::setTexel(const Vector2ui& coords, const Texel& color) noexcept
+	{
+		const auto index = coordsToIndex(coords);
+
+#	if ZINET_SANITY_CHECK
+		if (index >= texels.size())
+		{
+			Logger->error("Attempted to set texel at out-of-bounds coordinates: ({}, {})", coords.x, coords.y);
+			return;
+		}
+#	endif //ZINET_SANITY_CHECK
+
+		texels[index] = color;
 	}
 
 }
