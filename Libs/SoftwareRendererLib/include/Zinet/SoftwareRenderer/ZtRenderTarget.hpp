@@ -17,14 +17,14 @@ namespace zt::software_renderer
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("RenderTarget");
 
-		RenderTarget() = default;
-
 	public:
 
-		RenderTarget(const RenderTarget&) = delete;
+		RenderTarget() = default;
+
+		RenderTarget(const RenderTarget&) = default;
 		RenderTarget(RenderTarget&&) = default;
 
-		RenderTarget& operator=(const RenderTarget&) = delete;
+		RenderTarget& operator=(const RenderTarget&) = default;
 		RenderTarget& operator=(RenderTarget&&) = default;
 
 		~RenderTarget() = default;

@@ -23,38 +23,42 @@ namespace zt::software_renderer::tests
 			vertices.push_back(Vertex{ Vector3f{ 0.2f, 0.8f, 0.0f }, Vector2f{ 0.0f, 1.0f }, Texel{ 0, 0, 0, 255 } });
 		}
 
+		void SetUp() override
+		{
+			FillVertices(vertices);
+			indices = { 0, 1, 2, 0, 2, 3 };
+			renderTarget = RenderTarget::Create(SmallDimension, WhiteColor);
+
+			drawData = 
+			{
+				.vertices = &vertices,
+				.indices = &indices,
+				.renderTarget = &renderTarget,
+				.drawMode = DrawMode::Points
+			}; 
+			
+			auto testInfo = ::testing::UnitTest::GetInstance()->current_test_info();
+
+			resultFilePath = FolderPath / (std::string(testInfo->test_suite_name()) + "_" + testInfo->name() + PNGExt);
+		}
+
 		inline static auto FolderPath = core::Paths::CurrentProjectRootPath() / "results";
 		inline static auto PNGExt = std::string(".png");
-	};
 
-	TEST_F(SoftwareRendererTests, IsAvailable)
-	{
-		ASSERT_TRUE(SoftwareRenderer::IsAvailable());
-	}
-
-	TEST_F(SoftwareRendererTests, DrawPoints)
-	{
 		SoftwareRenderer renderer;
 
 		Vertices vertices;
-		FillVertices(vertices);
+		Indices indices;
+		RenderTarget renderTarget;
+		DrawData drawData;
+		core::Path resultFilePath;
+	};
 
-		const Indices indices{ 0, 1, 2, 0, 2, 3 };
-
-		auto renderTarget = RenderTarget::Create(SmallDimension, WhiteColor);
-
-		const DrawData drawData
-		{
-			.vertices = &vertices,
-			.indices = &indices,
-			.renderTarget = &renderTarget,
-			.drawMode = DrawMode::Points
-		};
-
+	TEST_F(SoftwareRendererTests, DrawPoints)
+	{
 		renderer.draw(drawData);
 
-		const auto path = FolderPath / ("RenderTargetTests_DrawPoints" + PNGExt);
-		ASSERT_TRUE(renderTarget.saveToPNG(path));
+		ASSERT_TRUE(renderTarget.saveToPNG(resultFilePath));
 
 		// Verify that the expected points were drawn with the correct colors
 		for (const auto index : indices)
@@ -69,5 +73,10 @@ namespace zt::software_renderer::tests
 			const auto actualColor = renderTarget.getTexel(coords);
 			EXPECT_EQ(expectedColor, actualColor);
 		}
+	}
+
+	TEST(SoftwareRendererTest, IsAvailable)
+	{
+		ASSERT_TRUE(SoftwareRenderer::IsAvailable());
 	}
 }
