@@ -8,7 +8,6 @@
 namespace zt::software_renderer::tests
 {
 	// TODO List:
-	// - Draw Lines
 	// - Draw Triangles
 	// - Blending modes
 	class SoftwareRendererTests : public ::testing::Test
