@@ -14,7 +14,9 @@
 #include <glm/glm.hpp>
 #include <glm/trigonometric.hpp>
 #include <glm/matrix.hpp>
+
 #include <glm/gtx/transform.hpp>
+#include <glm/gtx/compatibility.hpp>
 
 namespace zt
 {

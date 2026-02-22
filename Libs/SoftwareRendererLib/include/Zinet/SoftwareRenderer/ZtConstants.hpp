@@ -12,4 +12,5 @@ namespace zt::software_renderer
 
 	constexpr Texel BlackColor{ 0, 0, 0, 255 };
 	constexpr Texel WhiteColor{ 255, 255, 255, 255 };
+	constexpr Texel BlueColor{ 0, 0, 255, 255 };
 }

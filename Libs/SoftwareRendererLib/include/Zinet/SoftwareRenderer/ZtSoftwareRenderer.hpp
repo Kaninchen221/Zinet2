@@ -19,10 +19,12 @@ namespace zt::software_renderer
 
 	struct DrawData
 	{
-		const Vertices* vertices;
-		const Indices* indices;
-		RenderTarget* renderTarget;
+		const Vertices* vertices{};
+		const Indices* indices{};
+		RenderTarget* renderTarget{};
 		DrawMode drawMode = DrawMode::Triangles;
+
+		Texel* linesColor{}; // Used only for lines drawing mode
 
 		constexpr bool IsValid() const noexcept
 		{
@@ -46,7 +48,15 @@ namespace zt::software_renderer
 
 		void drawLines(const DrawData& drawData);
 
-		void lineAlgorithm(const Vector2i& position1, const Vector2i& position2, const Vertex& vertex1, const Vertex& vertex2, RenderTarget& renderTarget) const noexcept;
+		struct LineAlgorithmData
+		{
+			Vector2i position1;
+			Vector2i position2;
+			RenderTarget* renderTarget;
+			Texel* color;
+		};
+
+		void lineAlgorithm(const LineAlgorithmData& data) const noexcept;
 
 		inline Vector2i normalizedToRenderTarget(const Vertex& vertex, const Vector2i& renderTargetDimension) const noexcept;
 

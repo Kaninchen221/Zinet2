@@ -3,6 +3,8 @@
 #include "Zinet/SoftwareRenderer/ZtDirectXMathSingleHeader.hpp"
 #include "Zinet/SoftwareRenderer/ZtConstants.hpp"
 
+#include "Zinet/Math/ZtMath.hpp"
+
 #include <algorithm>
 
 namespace zt::software_renderer
@@ -80,6 +82,7 @@ namespace zt::software_renderer
 		auto& indices = *drawData.indices;
 		auto& vertices = *drawData.vertices;
 		auto& renderTarget = *drawData.renderTarget;
+		auto& linesColor = drawData.linesColor;
 
 		for (size_t i = 0; i + 1 < indices.size(); i += 2)
 		{
@@ -94,17 +97,25 @@ namespace zt::software_renderer
 			}
 #		endif // ZINET_SANITY_CHECK
 
-			lineAlgorithm(
-				normalizedToRenderTarget(vertices[index1], renderTarget.getDimension()),
-				normalizedToRenderTarget(vertices[index2], renderTarget.getDimension()),
-				vertices[index1],
-				vertices[index2],
-				renderTarget);
+			LineAlgorithmData data
+			{
+				.position1 = normalizedToRenderTarget(vertices[index1], renderTarget.getDimension()),
+				.position2 = normalizedToRenderTarget(vertices[index2], renderTarget.getDimension()),
+				.renderTarget = &renderTarget,
+				.color = linesColor
+			};
+
+			lineAlgorithm(data);
 		}
 	}
 
-	void SoftwareRenderer::lineAlgorithm(const Vector2i& position1, const Vector2i& position2, const Vertex&, const Vertex&, RenderTarget& renderTarget) const noexcept
+	void SoftwareRenderer::lineAlgorithm(const LineAlgorithmData& data) const noexcept
 	{
+		auto& position1 = data.position1;
+		auto& position2 = data.position2;
+		auto& renderTarget = *data.renderTarget;
+		auto& color = *data.color;
+
 		auto position = position1;
 
 		// Bresenham's line algorithm
@@ -118,9 +129,7 @@ namespace zt::software_renderer
 
 		while (true)
 		{
-			renderTarget.setTexel(position, BlackColor);
-
-			Logger->info("error: {}", err);
+			renderTarget.setTexel(position, color);
 
 			int32_t e2 = 2 * err;
 

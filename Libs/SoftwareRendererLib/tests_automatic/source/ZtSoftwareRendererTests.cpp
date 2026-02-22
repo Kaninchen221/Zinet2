@@ -34,7 +34,8 @@ namespace zt::software_renderer::tests
 				.vertices = &vertices,
 				.indices = &indices,
 				.renderTarget = &renderTarget,
-				.drawMode = DrawMode::Points
+				.drawMode = DrawMode::Points,
+				.linesColor = &linesColor
 			}; 
 			
 			auto testInfo = ::testing::UnitTest::GetInstance()->current_test_info();
@@ -55,6 +56,7 @@ namespace zt::software_renderer::tests
 		Vertices vertices;
 		Indices indices;
 		RenderTarget renderTarget;
+		Texel linesColor = BlueColor;
 		DrawData drawData;
 		core::Path resultFilePath;
 	};
