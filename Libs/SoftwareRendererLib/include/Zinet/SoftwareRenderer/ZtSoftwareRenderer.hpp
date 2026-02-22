@@ -13,7 +13,7 @@ namespace zt::software_renderer
 	enum class DrawMode
 	{
 		Triangles,
-		Lines,
+		TriangleLines,
 		Points
 	};
 
@@ -46,7 +46,7 @@ namespace zt::software_renderer
 
 		void drawPoints(const DrawData& drawData);
 
-		void drawLines(const DrawData& drawData);
+		void drawTriangleLines(const DrawData& drawData);
 
 		struct LineAlgorithmData
 		{

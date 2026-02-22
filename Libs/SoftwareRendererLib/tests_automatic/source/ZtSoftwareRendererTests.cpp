@@ -10,6 +10,7 @@ namespace zt::software_renderer::tests
 	// TODO List:
 	// - Draw Triangles
 	// - Blending modes
+	// - Cache simplified/optimized draw data
 	class SoftwareRendererTests : public ::testing::Test
 	{
 	protected:
@@ -81,10 +82,16 @@ namespace zt::software_renderer::tests
 
 	TEST_F(SoftwareRendererTests, DrawLines)
 	{
-		indices = { 0, 1, 1, 2, 2, 3, 3, 0 };
-		drawData.drawMode = DrawMode::Lines;
+		drawData.drawMode = DrawMode::TriangleLines;
 
 		renderer.draw(drawData);
+	}
+
+	TEST_F(SoftwareRendererTests, DrawTriangles)
+	{
+		drawData.drawMode = DrawMode::Triangles;
+
+		//renderer.draw(drawData);
 	}
 
 	TEST(SoftwareRendererTest, IsAvailable)

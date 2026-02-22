@@ -31,8 +31,8 @@ namespace zt::software_renderer
 			Logger->error("Draw triangles is not implemented");
 			break;
 
-		case DrawMode::Lines:
-			drawLines(drawData);
+		case DrawMode::TriangleLines:
+			drawTriangleLines(drawData);
 			break;
 
 		case DrawMode::Points:
@@ -77,17 +77,49 @@ namespace zt::software_renderer
 		}
 	}
 
-	void SoftwareRenderer::drawLines(const DrawData& drawData)
+	void SoftwareRenderer::drawTriangleLines(const DrawData& drawData)
 	{
 		auto& indices = *drawData.indices;
 		auto& vertices = *drawData.vertices;
 		auto& renderTarget = *drawData.renderTarget;
 		auto& linesColor = drawData.linesColor;
 
-		for (size_t i = 0; i + 1 < indices.size(); i += 2)
+		// Search for duplicated lines
+		Indices simplifiedIndices; // TODO: Nice candidate for caching
+		for (size_t i = 0; i < indices.size(); ++i)
 		{
-			const size_t index1 = indices[i];
-			const size_t index2 = indices[i + 1];
+			const size_t nextIndex = (i + 1) % indices.size();
+
+			const auto index1 = indices[i];
+			const auto index2 = indices[nextIndex];
+
+			bool addIndices = true;
+			if (!simplifiedIndices.empty())
+			{
+				for (size_t siIndex = 0; siIndex < simplifiedIndices.size() - 1; siIndex += 2)
+				{
+					auto si1 = simplifiedIndices[siIndex];
+					auto si2 = simplifiedIndices[siIndex + 1];
+					if ((index1 == si1 && index2 == si2) || (index1 == si2 && index2 == si1))
+					{
+						addIndices = false;
+						break;
+					}
+				}
+			}
+
+			if (addIndices)
+			{
+				simplifiedIndices.push_back(index1);
+				simplifiedIndices.push_back(index2);
+			}
+		}
+
+		// Draw lines
+		for (size_t i = 0; i < simplifiedIndices.size() - 1; i += 2)
+		{
+			const auto index1 = simplifiedIndices[i];
+			const auto index2 = simplifiedIndices[i + 1];
 
 #		if ZINET_SANITY_CHECK
 			if (index1 >= vertices.size() || index2 >= vertices.size()) ZINET_UNLIKELY
