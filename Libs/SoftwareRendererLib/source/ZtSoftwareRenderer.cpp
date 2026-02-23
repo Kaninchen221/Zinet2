@@ -28,7 +28,7 @@ namespace zt::software_renderer
 		switch (drawData.drawMode)
 		{
 		case DrawMode::Triangles:
-			Logger->error("Draw triangles is not implemented");
+			drawTriangles(drawData);
 			break;
 
 		case DrawMode::TriangleLines:
@@ -185,6 +185,26 @@ namespace zt::software_renderer
 		}
 	}
 
+	void SoftwareRenderer::drawTriangles(const DrawData& drawData)
+	{
+		auto& indices = *drawData.indices;
+		auto& vertices = *drawData.vertices;
+		auto& renderTarget = *drawData.renderTarget;
+
+		for (size_t i = 0; i < indices.size(); i += 3)
+		{
+			auto& v0 = vertices[0];
+			auto& v1 = vertices[0];
+			auto& v2 = vertices[0];
+
+			drawTriangle({ &v0, &v1, &v2, &renderTarget });
+		}
+	}
+
+	void SoftwareRenderer::drawTriangle(const DrawTriangleData&)
+	{
+	}
+
 	Vector2i SoftwareRenderer::normalizedToRenderTarget(const Vertex& vertex, const Vector2i& renderTargetDimension) const noexcept
 	{
 		const auto x = static_cast<int32_t>(vertex.position.x * renderTargetDimension.x);
@@ -196,5 +216,4 @@ namespace zt::software_renderer
 			glm::clamp(y, 0, renderTargetDimension.y - 1)
 		};
 	}
-
 }

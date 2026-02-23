@@ -63,6 +63,8 @@ namespace zt::software_renderer::tests
 
 	TEST_F(SoftwareRendererTests, DrawPoints)
 	{
+		drawData.drawMode = DrawMode::Points;
+
 		renderer.draw(drawData);
 
 		// Verify that the expected points were drawn with the correct colors
@@ -91,7 +93,7 @@ namespace zt::software_renderer::tests
 	{
 		drawData.drawMode = DrawMode::Triangles;
 
-		//renderer.draw(drawData);
+		renderer.draw(drawData);
 	}
 
 	TEST(SoftwareRendererTest, IsAvailable)

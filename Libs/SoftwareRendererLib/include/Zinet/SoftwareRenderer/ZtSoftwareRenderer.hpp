@@ -58,6 +58,18 @@ namespace zt::software_renderer
 
 		void lineAlgorithm(const LineAlgorithmData& data) const noexcept;
 
+		void drawTriangles(const DrawData& drawData);
+
+		struct DrawTriangleData
+		{
+			const Vertex* v0;
+			const Vertex* v1;
+			const Vertex* v2;
+			RenderTarget* renderTarget;
+		};
+
+		void drawTriangle(const DrawTriangleData& data);
+
 		inline Vector2i normalizedToRenderTarget(const Vertex& vertex, const Vector2i& renderTargetDimension) const noexcept;
 
 	};
