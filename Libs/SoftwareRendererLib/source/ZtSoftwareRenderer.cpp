@@ -32,6 +32,8 @@ namespace zt::software_renderer
 	{
 		currentRenderTarget = renderTarget;
 
+		// TODO: Transform vertices
+
 		for (const auto* drawDataPtr : submittedDrawData)
 		{
 			auto& drawData = *drawDataPtr;
@@ -223,8 +225,79 @@ namespace zt::software_renderer
 		}
 	}
 
-	void SoftwareRenderer::rasterizeTriangle(const DrawTriangleData&)
+	void SoftwareRenderer::rasterizeTriangle(const DrawTriangleData& data)
 	{
+		// TODO: Simplify and optimize it
+
+		auto edgeFunction = [](const Vector3f& v0, const Vector3f& v1, const Vector3f& v2) -> float
+		{
+			return (v2.x - v0.x) * (v1.y - v0.y) - (v2.y - v0.y) * (v1.x - v0.x);
+		};
+
+		auto& renderTarget = *currentRenderTarget;
+
+		auto& v0 = *data.v0;
+		auto& v1 = *data.v1;
+		auto& v2 = *data.v2;
+
+		auto& pos0 = v0.position;
+		auto& pos1 = v1.position;
+		auto& pos2 = v2.position;
+
+		const auto& dimension = renderTarget.getDimension();
+
+		Vector2f boundsMinScalar;
+		Vector2f boundsMaxScalar;
+
+		boundsMinScalar.x = std::min({ pos0.x, pos1.x, pos2.x });
+		boundsMinScalar.y = std::min({ pos0.y, pos1.y, pos2.y });
+
+		boundsMaxScalar.x = std::max({ pos0.x, pos1.x, pos2.x });
+		boundsMaxScalar.y = std::max({ pos0.y, pos1.y, pos2.y });
+
+		boundsMinScalar.x = std::max(0.f, boundsMinScalar.x);
+		boundsMinScalar.y = std::max(0.f, boundsMinScalar.y);
+
+		boundsMaxScalar.x = std::min(static_cast<float>(renderTarget.getDimension().x - 1), boundsMaxScalar.x);
+		boundsMaxScalar.y = std::min(static_cast<float>(renderTarget.getDimension().y - 1), boundsMaxScalar.y);
+
+		const Vector2i boundsMin{ boundsMinScalar.x * dimension.x, boundsMinScalar.y * dimension.y };
+		const Vector2i boundsMax{ boundsMaxScalar.x * dimension.x, boundsMaxScalar.y * dimension.y };
+
+		const float area = edgeFunction(pos0, pos1, pos2);
+
+		const float invWidth = 1.f / dimension.x;
+		const float invHeight = 1.f / dimension.y;
+
+		Vector3f coords{ 0.0f, 0.0f, 0 };
+		for (int32_t x = boundsMin.x; x < boundsMax.x; ++x)
+		{
+			for (int32_t y = boundsMin.y; y < boundsMax.y; ++y)
+			{
+				coords.x = (static_cast<float>(x) + 0.5f) * invWidth;
+				coords.y = (static_cast<float>(y) + 0.5f) * invHeight;
+
+				float w0 = edgeFunction(pos1, pos2, coords);
+				float w1 = edgeFunction(pos2, pos0, coords);
+				float w2 = edgeFunction(pos0, pos1, coords);
+
+				if (w0 >= 0 && w1 >= 0 && w2 >= 0) 
+				{
+					// Calculate weights for colors, normals, uv etc.
+					w0 /= area;
+					w1 /= area;
+					w2 /= area;
+					
+					// Blend colors
+// 					float r = w0 * c0[0] + w1 * c1[0] + w2 * c2[0];
+// 					float g = w0 * c0[1] + w1 * c1[1] + w2 * c2[1];
+// 					float b = w0 * c0[2] + w1 * c1[2] + w2 * c2[2];
+
+					// Set texel
+					setTexel({ coords.x * dimension.x, coords.y * dimension.y }, BlueColor, renderTarget);
+				}
+			}
+		}
 
 		if constexpr (StatsEnabled)
 		{
@@ -242,16 +315,6 @@ namespace zt::software_renderer
 			glm::clamp(x, 0, renderTargetDimension.x - 1),
 			glm::clamp(y, 0, renderTargetDimension.y - 1)
 		};
-	}
-
-	void SoftwareRenderer::setTexel(const Vector2i& position, const Texel& color, RenderTarget& renderTarget) noexcept
-	{
-		renderTarget.setTexel(position, color);
-
-		if constexpr (StatsEnabled)
-		{
-			++texelsRasterized;
-		}
 	}
 
 	void SoftwareRenderer::logStats() const noexcept

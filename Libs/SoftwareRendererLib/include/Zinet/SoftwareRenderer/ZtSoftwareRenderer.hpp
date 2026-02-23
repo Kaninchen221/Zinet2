@@ -108,4 +108,14 @@ namespace zt::software_renderer
 	private:
 
 	};
+
+	inline void SoftwareRenderer::setTexel(const Vector2i& position, const Texel& color, RenderTarget& renderTarget) noexcept
+	{
+		renderTarget.setTexel(position, color);
+
+		if constexpr (StatsEnabled)
+		{
+			++texelsRasterized;
+		}
+	}
 }

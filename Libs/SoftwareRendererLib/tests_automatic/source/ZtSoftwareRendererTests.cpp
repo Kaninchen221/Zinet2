@@ -26,7 +26,7 @@ namespace zt::software_renderer::tests
 		void SetUp() override
 		{
 			FillVertices(vertices);
-			indices = { 0, 1, 2, 0, 2, 3 };
+			indices = { 0, 2, 1, 0, 3, 2 };
 			renderTarget = RenderTarget::Create(SmallDimension, WhiteColor);
 
 			drawData = 
