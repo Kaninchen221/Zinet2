@@ -8,6 +8,13 @@
 
 #include "Zinet/Core/ZtLogger.hpp"
 
+#if ZINET_DEBUG
+#	define ZINET_SOFTWARE_RENDERER_STATS 1
+#else
+#	define ZINET_SOFTWARE_RENDERER_STATS 0
+#endif // ZINET_DEBUG
+
+
 namespace zt::software_renderer
 {
 	enum class DrawMode
@@ -21,14 +28,14 @@ namespace zt::software_renderer
 	{
 		const Vertices* vertices{};
 		const Indices* indices{};
-		RenderTarget* renderTarget{};
 		DrawMode drawMode = DrawMode::Triangles;
 
 		Texel* linesColor{}; // Used only for lines drawing mode
 
 		constexpr bool IsValid() const noexcept
 		{
-			return vertices != nullptr && indices != nullptr && renderTarget != nullptr;
+			return vertices && indices && 
+				(drawMode != DrawMode::Points || linesColor);
 		}
 	};
 
@@ -36,11 +43,22 @@ namespace zt::software_renderer
 	{
 		inline static auto Logger = core::ConsoleLogger::Create("SoftwareRenderer");
 
+#if ZINET_SOFTWARE_RENDERER_STATS
+		constexpr static bool StatsEnabled = true;
+#else
+		constexpr static bool StatsEnabled = false;
+#endif // ZINET_DEBUG
+
 	public:
 
 		static bool IsAvailable() noexcept;
 
-		void draw(const DrawData& drawData);
+		constexpr static bool GetStatsEnabled() noexcept { return StatsEnabled; }
+
+		// Submitted draw data must exists until the draw call finishes
+		void submitDrawData(DrawData* drawData);
+
+		void draw(RenderTarget* renderTarget);
 
 	private:
 
@@ -56,7 +74,7 @@ namespace zt::software_renderer
 			Texel* color;
 		};
 
-		void lineAlgorithm(const LineAlgorithmData& data) const noexcept;
+		void rasterizeLine(const LineAlgorithmData& data) noexcept;
 
 		void rasterizeTriangles(const DrawData& drawData);
 
@@ -72,6 +90,22 @@ namespace zt::software_renderer
 
 		inline Vector2i normalizedToRenderTarget(const Vertex& vertex, const Vector2i& renderTargetDimension) const noexcept;
 
-	};
+		std::vector<DrawData*> submittedDrawData;
 
+		RenderTarget* currentRenderTarget{};
+
+		void setTexel(const Vector2i& position, const Texel& color, RenderTarget& renderTarget) noexcept;
+
+		// Stats
+		size_t pointsRasterized = 0;
+		size_t linesRasterized = 0;
+		size_t trianglesRasterized = 0;
+
+		size_t texelsRasterized = 0;
+
+	public:
+		void logStats() const noexcept;
+	private:
+
+	};
 }

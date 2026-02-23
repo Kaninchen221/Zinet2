@@ -15,33 +15,45 @@ namespace zt::software_renderer
 		return IsDirectXMathSupported;
 	}
 
-	void SoftwareRenderer::draw(const DrawData& drawData)
+	void SoftwareRenderer::submitDrawData(DrawData* drawData)
 	{
-#	if ZINET_DEBUG
-		if (!drawData.IsValid()) ZINET_UNLIKELY
+#	if ZINET_SANITY_CHECK
+		if (!drawData->IsValid()) ZINET_UNLIKELY
 		{
 			Logger->error("Invalid draw data provided to SoftwareRenderer::draw");
 			return;
 		}
-#	endif
+#	endif // ZINET_SANITY_CHECK
 
-		switch (drawData.drawMode)
+		submittedDrawData.push_back(drawData);
+	}
+
+	void SoftwareRenderer::draw(RenderTarget* renderTarget)
+	{
+		currentRenderTarget = renderTarget;
+
+		for (const auto* drawDataPtr : submittedDrawData)
 		{
-		case DrawMode::Triangles:
-			rasterizeTriangles(drawData);
-			break;
+			auto& drawData = *drawDataPtr;
 
-		case DrawMode::TriangleLines:
-			rasterizeTriangleLines(drawData);
-			break;
+			switch (drawData.drawMode)
+			{
+			case DrawMode::Triangles:
+				rasterizeTriangles(drawData);
+				break;
 
-		case DrawMode::Points:
-			rasterizePoints(drawData);
-			break;
+			case DrawMode::TriangleLines:
+				rasterizeTriangleLines(drawData);
+				break;
 
-		default:
-			Logger->warn("Unknown draw mode specified in DrawData");
-			break;
+			case DrawMode::Points:
+				rasterizePoints(drawData);
+				break;
+
+			default:
+				Logger->warn("Unknown draw mode specified in DrawData");
+				break;
+			}
 		}
 	}
 
@@ -55,7 +67,7 @@ namespace zt::software_renderer
 
 		// Draw each point
 		const auto& vertices = *drawData.vertices;
-		auto& renderTarget = *drawData.renderTarget;
+		auto& renderTarget = *currentRenderTarget;
 
 		for (const auto index : indices)
 		{
@@ -73,7 +85,12 @@ namespace zt::software_renderer
 			// Convert normalized coordinates to render target pixel coordinates
 			const auto position = normalizedToRenderTarget(vertex, renderTarget.getDimension());
 
-			renderTarget.setTexel({ position.x, position.y }, color);
+			setTexel(position, color, renderTarget);
+		}
+
+		if constexpr (StatsEnabled)
+		{
+			pointsRasterized += indices.size();
 		}
 	}
 
@@ -81,7 +98,7 @@ namespace zt::software_renderer
 	{
 		auto& indices = *drawData.indices;
 		auto& vertices = *drawData.vertices;
-		auto& renderTarget = *drawData.renderTarget;
+		auto& renderTarget = *currentRenderTarget;
 		auto& linesColor = drawData.linesColor;
 
 		// Search for duplicated lines
@@ -137,15 +154,15 @@ namespace zt::software_renderer
 				.color = linesColor
 			};
 
-			lineAlgorithm(data);
+			rasterizeLine(data);
 		}
 	}
 
-	void SoftwareRenderer::lineAlgorithm(const LineAlgorithmData& data) const noexcept
+	void SoftwareRenderer::rasterizeLine(const LineAlgorithmData& data) noexcept
 	{
 		auto& position1 = data.position1;
 		auto& position2 = data.position2;
-		auto& renderTarget = *data.renderTarget;
+		auto& renderTarget = *currentRenderTarget;
 		auto& color = *data.color;
 
 		auto position = position1;
@@ -161,7 +178,7 @@ namespace zt::software_renderer
 
 		while (true)
 		{
-			renderTarget.setTexel(position, color);
+			setTexel(position, color, renderTarget);
 
 			int32_t e2 = 2 * err;
 
@@ -183,19 +200,24 @@ namespace zt::software_renderer
 				position.y += signY;
 			}
 		}
+
+		if constexpr (StatsEnabled)
+		{
+			++linesRasterized;
+		}
 	}
 
 	void SoftwareRenderer::rasterizeTriangles(const DrawData& drawData)
 	{
 		auto& indices = *drawData.indices;
 		auto& vertices = *drawData.vertices;
-		auto& renderTarget = *drawData.renderTarget;
+		auto& renderTarget = *currentRenderTarget;
 
-		for (size_t i = 0; i < indices.size(); i += 3)
+		for (size_t i = 0; i < indices.size() - 2; i += 3)
 		{
-			auto& v0 = vertices[0];
-			auto& v1 = vertices[0];
-			auto& v2 = vertices[0];
+			auto& v0 = vertices[indices[i]];
+			auto& v1 = vertices[indices[i + 1]];
+			auto& v2 = vertices[indices[i + 2]];
 
 			rasterizeTriangle({ &v0, &v1, &v2, &renderTarget });
 		}
@@ -203,6 +225,11 @@ namespace zt::software_renderer
 
 	void SoftwareRenderer::rasterizeTriangle(const DrawTriangleData&)
 	{
+
+		if constexpr (StatsEnabled)
+		{
+			++trianglesRasterized;
+		}
 	}
 
 	Vector2i SoftwareRenderer::normalizedToRenderTarget(const Vertex& vertex, const Vector2i& renderTargetDimension) const noexcept
@@ -216,4 +243,31 @@ namespace zt::software_renderer
 			glm::clamp(y, 0, renderTargetDimension.y - 1)
 		};
 	}
+
+	void SoftwareRenderer::setTexel(const Vector2i& position, const Texel& color, RenderTarget& renderTarget) noexcept
+	{
+		renderTarget.setTexel(position, color);
+
+		if constexpr (StatsEnabled)
+		{
+			++texelsRasterized;
+		}
+	}
+
+	void SoftwareRenderer::logStats() const noexcept
+	{
+		if constexpr (StatsEnabled)
+		{
+			const auto info =
+				fmt::format("SoftwareRenderer Stats:\n"""
+					"Texels Rasterized : {}\n"
+					"Points Rasterized : {}\n"
+					"Lines Rasterized : {}\n"
+					"Triangles Rasterized : {}",
+					texelsRasterized, pointsRasterized, linesRasterized, trianglesRasterized);
+
+			Logger->info(info);
+		}
+	}
+
 }

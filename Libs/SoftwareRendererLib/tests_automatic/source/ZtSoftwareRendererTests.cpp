@@ -33,7 +33,6 @@ namespace zt::software_renderer::tests
 			{
 				.vertices = &vertices,
 				.indices = &indices,
-				.renderTarget = &renderTarget,
 				.drawMode = DrawMode::Points,
 				.linesColor = &linesColor
 			}; 
@@ -46,6 +45,11 @@ namespace zt::software_renderer::tests
 		void TearDown() override
 		{
 			ASSERT_TRUE(renderTarget.saveToPNG(resultFilePath));
+
+			if constexpr (SoftwareRenderer::GetStatsEnabled())
+			{
+				renderer.logStats();
+			}
 		}
 
 		inline static auto FolderPath = core::Paths::CurrentProjectRootPath() / "results";
@@ -65,7 +69,8 @@ namespace zt::software_renderer::tests
 	{
 		drawData.drawMode = DrawMode::Points;
 
-		renderer.draw(drawData);
+		renderer.submitDrawData(&drawData);
+		renderer.draw(&renderTarget);
 
 		// Verify that the expected points were drawn with the correct colors
 		for (const auto index : indices)
@@ -86,18 +91,29 @@ namespace zt::software_renderer::tests
 	{
 		drawData.drawMode = DrawMode::TriangleLines;
 
-		renderer.draw(drawData);
+		renderer.submitDrawData(&drawData);
+		renderer.draw(&renderTarget);
 	}
 
 	TEST_F(SoftwareRendererTests, DrawTriangles)
 	{
 		drawData.drawMode = DrawMode::Triangles;
 
-		renderer.draw(drawData);
+		renderer.submitDrawData(&drawData);
+		renderer.draw(&renderTarget);
 	}
 
 	TEST(SoftwareRendererTest, IsAvailable)
 	{
 		ASSERT_TRUE(SoftwareRenderer::IsAvailable());
+	}
+
+	TEST(SoftwareRendererTest, StatsEnabled)
+	{
+#if ZINET_SOFTWARE_RENDERER_STATS
+		ASSERT_TRUE(SoftwareRenderer::GetStatsEnabled());
+#else
+		ASSERT_FALSE(SoftwareRenderer::GetStatsEnabled());
+#endif // ZINET_DEBUG
 	}
 }
