@@ -28,15 +28,15 @@ namespace zt::software_renderer
 		switch (drawData.drawMode)
 		{
 		case DrawMode::Triangles:
-			drawTriangles(drawData);
+			rasterizeTriangles(drawData);
 			break;
 
 		case DrawMode::TriangleLines:
-			drawTriangleLines(drawData);
+			rasterizeTriangleLines(drawData);
 			break;
 
 		case DrawMode::Points:
-			drawPoints(drawData);
+			rasterizePoints(drawData);
 			break;
 
 		default:
@@ -45,7 +45,7 @@ namespace zt::software_renderer
 		}
 	}
 
-	void SoftwareRenderer::drawPoints(const DrawData& drawData)
+	void SoftwareRenderer::rasterizePoints(const DrawData& drawData)
 	{
 		// Get unique indices to avoid drawing the same point multiple times
 		auto indices = *drawData.indices;
@@ -77,7 +77,7 @@ namespace zt::software_renderer
 		}
 	}
 
-	void SoftwareRenderer::drawTriangleLines(const DrawData& drawData)
+	void SoftwareRenderer::rasterizeTriangleLines(const DrawData& drawData)
 	{
 		auto& indices = *drawData.indices;
 		auto& vertices = *drawData.vertices;
@@ -185,7 +185,7 @@ namespace zt::software_renderer
 		}
 	}
 
-	void SoftwareRenderer::drawTriangles(const DrawData& drawData)
+	void SoftwareRenderer::rasterizeTriangles(const DrawData& drawData)
 	{
 		auto& indices = *drawData.indices;
 		auto& vertices = *drawData.vertices;
@@ -197,11 +197,11 @@ namespace zt::software_renderer
 			auto& v1 = vertices[0];
 			auto& v2 = vertices[0];
 
-			drawTriangle({ &v0, &v1, &v2, &renderTarget });
+			rasterizeTriangle({ &v0, &v1, &v2, &renderTarget });
 		}
 	}
 
-	void SoftwareRenderer::drawTriangle(const DrawTriangleData&)
+	void SoftwareRenderer::rasterizeTriangle(const DrawTriangleData&)
 	{
 	}
 

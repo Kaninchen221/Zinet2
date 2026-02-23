@@ -44,9 +44,9 @@ namespace zt::software_renderer
 
 	private:
 
-		void drawPoints(const DrawData& drawData);
+		void rasterizePoints(const DrawData& drawData);
 
-		void drawTriangleLines(const DrawData& drawData);
+		void rasterizeTriangleLines(const DrawData& drawData);
 
 		struct LineAlgorithmData
 		{
@@ -58,7 +58,7 @@ namespace zt::software_renderer
 
 		void lineAlgorithm(const LineAlgorithmData& data) const noexcept;
 
-		void drawTriangles(const DrawData& drawData);
+		void rasterizeTriangles(const DrawData& drawData);
 
 		struct DrawTriangleData
 		{
@@ -68,7 +68,7 @@ namespace zt::software_renderer
 			RenderTarget* renderTarget;
 		};
 
-		void drawTriangle(const DrawTriangleData& data);
+		void rasterizeTriangle(const DrawTriangleData& data);
 
 		inline Vector2i normalizedToRenderTarget(const Vertex& vertex, const Vector2i& renderTargetDimension) const noexcept;
 
