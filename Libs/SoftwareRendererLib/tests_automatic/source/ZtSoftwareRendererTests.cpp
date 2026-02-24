@@ -17,10 +17,11 @@ namespace zt::software_renderer::tests
 
 		static void FillVertices(Vertices& vertices)
 		{
-			vertices.push_back(Vertex{ Vector3f{ 0.2f, 0.2f, 0.0f }, Vector2f{ 0.0f, 0.0f }, Texel{ 255, 0, 0, 255 } });
-			vertices.push_back(Vertex{ Vector3f{ 0.8f, 0.2f, 0.0f }, Vector2f{ 1.0f, 0.0f }, Texel{ 0, 255, 0, 255 } });
+			const float min = 0.0f;
+			vertices.push_back(Vertex{ Vector3f{ min, min, 0.0f }, Vector2f{ 0.0f, 0.0f }, Texel{ 255, 0, 0, 255 } });
+			vertices.push_back(Vertex{ Vector3f{ 0.8f, min, 0.0f }, Vector2f{ 1.0f, 0.0f }, Texel{ 0, 255, 0, 255 } });
 			vertices.push_back(Vertex{ Vector3f{ 0.8f, 0.8f, 0.0f }, Vector2f{ 1.0f, 1.0f }, Texel{ 0, 0, 255, 255 } });
-			vertices.push_back(Vertex{ Vector3f{ 0.2f, 0.8f, 0.0f }, Vector2f{ 0.0f, 1.0f }, Texel{ 0, 0, 0, 255 } });
+			vertices.push_back(Vertex{ Vector3f{ min, 0.8f, 0.0f }, Vector2f{ 0.0f, 1.0f }, Texel{ 0, 0, 0, 255 } });
 		}
 
 		void SetUp() override
@@ -38,7 +39,7 @@ namespace zt::software_renderer::tests
 			}; 
 			
 			auto testInfo = ::testing::UnitTest::GetInstance()->current_test_info();
-
+			
 			resultFilePath = FolderPath / (std::string(testInfo->test_suite_name()) + "_" + testInfo->name() + PNGExt);
 		}
 
@@ -99,7 +100,9 @@ namespace zt::software_renderer::tests
 	{
 		drawData.drawMode = DrawMode::Triangles;
 
-		renderer.submitDrawData(&drawData);
+		for (size_t i = 0; i < 50'000; i++) // We draw 2 triangles, so 50k iterations will draw 100k triangles
+			renderer.submitDrawData(&drawData);
+
 		renderer.draw(&renderTarget);
 	}
 
