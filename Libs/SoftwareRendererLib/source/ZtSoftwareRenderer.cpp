@@ -267,30 +267,41 @@ namespace zt::software_renderer
 		const Vector2i boundsMax{ boundsMaxScalar.x * dimension.x, boundsMaxScalar.y * dimension.y };
 
 		// 1. Convert everything to PIXELS immediately
-		float x0 = pos0.x * dimension.x; float y0 = pos0.y * dimension.y;
-		float x1 = pos1.x * dimension.x; float y1 = pos1.y * dimension.y;
-		float x2 = pos2.x * dimension.x; float y2 = pos2.y * dimension.y;
+		int32_t x0 = int(pos0.x * dimension.x); 
+		int32_t y0 = int(pos0.y * dimension.y);
+
+		int32_t x1 = int(pos1.x * dimension.x); 
+		int32_t y1 = int(pos1.y * dimension.y);
+
+		int32_t x2 = int(pos2.x * dimension.x); 
+		int32_t y2 = int(pos2.y * dimension.y);
 
 		// 2. Define the Edge Function constants (The Pineda "A, B, C")
 		// E(x, y) = (y0 - y1)x + (x1 - x0)y + (x0y1 - y0x1)
-		float a01 = y0 - y1; float b01 = x1 - x0; float c01 = x0 * y1 - y0 * x1;
-		float a12 = y1 - y2; float b12 = x2 - x1; float c12 = x1 * y2 - y1 * x2;
-		float a20 = y2 - y0; float b20 = x0 - x2; float c20 = x2 * y0 - y2 * x0;
+		int32_t a01 = y0 - y1; 
+		int32_t b01 = x1 - x0; 
+		int32_t c01 = x0 * y1 - y0 * x1;
+		int32_t a12 = y1 - y2; 
+		int32_t b12 = x2 - x1; 
+		int32_t c12 = x1 * y2 - y1 * x2;
+		int32_t a20 = y2 - y0; int32_t b20 = x0 - x2; int32_t c20 = x2 * y0 - y2 * x0;
 
 		// 3. Evaluate at the center of the first pixel in the bounding box
-		float startX = (float)boundsMin.x + 0.5f;
-		float startY = (float)boundsMin.y + 0.5f;
+		int32_t startX = boundsMin.x;// +0.5f;
+		int32_t startY = boundsMin.y;// +0.5f;
 
-		float w01_row = a01 * startX + b01 * startY + c01;
-		float w12_row = a12 * startX + b12 * startY + c12;
-		float w20_row = a20 * startX + b20 * startY + c20;
+		int32_t w01_row = a01 * startX + b01 * startY + c01;
+		int32_t w12_row = a12 * startX + b12 * startY + c12;
+		int32_t w20_row = a20 * startX + b20 * startY + c20;
 
-		for (int32_t y = boundsMin.y; y < boundsMax.y; ++y) {
-			float w01 = w01_row;
-			float w12 = w12_row;
-			float w20 = w20_row;
+		for (int32_t y = boundsMin.y; y < boundsMax.y; ++y) 
+		{
+			int32_t w01 = w01_row;
+			int32_t w12 = w12_row;
+			int32_t w20 = w20_row;
 
-			for (int32_t x = boundsMin.x; x < boundsMax.x; ++x) {
+			for (int32_t x = boundsMin.x; x < boundsMax.x; ++x) 
+			{
 				// Use the winding-independent check
 				if ((w01 >= 0 && w12 >= 0 && w20 >= 0) || (w01 <= 0 && w12 <= 0 && w20 <= 0)) {
 					setTexel({ x, y }, BlueColor, renderTarget);
