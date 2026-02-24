@@ -291,7 +291,7 @@ namespace zt::software_renderer
 					w2 *= invArea;
 
 					// Set texel
-					setTexel({ coords.x * dimension.x, coords.y * dimension.y }, BlueColor, renderTarget);
+					setTexel({ x, y }, BlueColor, renderTarget);
 				}
 			}
 		}
