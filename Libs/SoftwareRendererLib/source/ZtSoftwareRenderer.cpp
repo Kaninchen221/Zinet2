@@ -227,6 +227,8 @@ namespace zt::software_renderer
 
 	void SoftwareRenderer::rasterizeTriangle(const DrawTriangleData& data)
 	{
+		using namespace DirectX;
+
 		// TODO: Simplify and optimize it
 
 		auto edgeFunction = [](const Vector3f& v0, const Vector3f& v1, const Vector3f& v2) -> float
@@ -300,10 +302,12 @@ namespace zt::software_renderer
 			int32_t w12 = w12_row;
 			int32_t w20 = w20_row;
 
+			// TODO: Process in an one go 4 pixels in a row (SIMD)
 			for (int32_t x = boundsMin.x; x < boundsMax.x; ++x) 
 			{
 				// Use the winding-independent check
-				if ((w01 >= 0 && w12 >= 0 && w20 >= 0) || (w01 <= 0 && w12 <= 0 && w20 <= 0)) {
+				if ((w01 >= 0 && w12 >= 0 && w20 >= 0) || (w01 <= 0 && w12 <= 0 && w20 <= 0)) 
+				{
 					setTexel({ x, y }, BlueColor, renderTarget);
 				}
 				w01 += a01;
