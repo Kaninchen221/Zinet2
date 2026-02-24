@@ -244,6 +244,8 @@ namespace zt::software_renderer
 		auto& pos1 = v1.position;
 		auto& pos2 = v2.position;
 
+		//const float area = edgeFunction(pos0, pos1, pos2);
+
 		const auto& dimension = renderTarget.getDimension();
 
 		Vector2f boundsMinScalar;
@@ -264,36 +266,42 @@ namespace zt::software_renderer
 		const Vector2i boundsMin{ boundsMinScalar.x * dimension.x, boundsMinScalar.y * dimension.y };
 		const Vector2i boundsMax{ boundsMaxScalar.x * dimension.x, boundsMaxScalar.y * dimension.y };
 
-		const float area = edgeFunction(pos0, pos1, pos2);
-		const float invArea = 1.f / area;
+		// 1. Convert everything to PIXELS immediately
+		float x0 = pos0.x * dimension.x; float y0 = pos0.y * dimension.y;
+		float x1 = pos1.x * dimension.x; float y1 = pos1.y * dimension.y;
+		float x2 = pos2.x * dimension.x; float y2 = pos2.y * dimension.y;
 
-		const float invWidth = 1.f / dimension.x;
-		const float invHeight = 1.f / dimension.y;
+		// 2. Define the Edge Function constants (The Pineda "A, B, C")
+		// E(x, y) = (y0 - y1)x + (x1 - x0)y + (x0y1 - y0x1)
+		float a01 = y0 - y1; float b01 = x1 - x0; float c01 = x0 * y1 - y0 * x1;
+		float a12 = y1 - y2; float b12 = x2 - x1; float c12 = x1 * y2 - y1 * x2;
+		float a20 = y2 - y0; float b20 = x0 - x2; float c20 = x2 * y0 - y2 * x0;
 
-		Vector3f coords{ 0.0f, 0.0f, 0 };
-		for (int32_t x = boundsMin.x; x < boundsMax.x; ++x)
-		{
-			coords.x = (static_cast<float>(x) + 0.5f) * invWidth;
+		// 3. Evaluate at the center of the first pixel in the bounding box
+		float startX = (float)boundsMin.x + 0.5f;
+		float startY = (float)boundsMin.y + 0.5f;
 
-			for (int32_t y = boundsMin.y; y < boundsMax.y; ++y)
-			{
-				coords.y = (static_cast<float>(y) + 0.5f) * invHeight;
+		float w01_row = a01 * startX + b01 * startY + c01;
+		float w12_row = a12 * startX + b12 * startY + c12;
+		float w20_row = a20 * startX + b20 * startY + c20;
 
-				float w0 = edgeFunction(pos1, pos2, coords);
-				float w1 = edgeFunction(pos2, pos0, coords);
-				float w2 = edgeFunction(pos0, pos1, coords);
+		for (int32_t y = boundsMin.y; y < boundsMax.y; ++y) {
+			float w01 = w01_row;
+			float w12 = w12_row;
+			float w20 = w20_row;
 
-				if (w0 >= 0 && w1 >= 0 && w2 >= 0) 
-				{
-					// Calculate weights for colors, normals, uv etc.
-					w0 *= invArea;
-					w1 *= invArea;
-					w2 *= invArea;
-
-					// Set texel
+			for (int32_t x = boundsMin.x; x < boundsMax.x; ++x) {
+				// Use the winding-independent check
+				if ((w01 >= 0 && w12 >= 0 && w20 >= 0) || (w01 <= 0 && w12 <= 0 && w20 <= 0)) {
 					setTexel({ x, y }, BlueColor, renderTarget);
 				}
+				w01 += a01;
+				w12 += a12;
+				w20 += a20;
 			}
+			w01_row += b01;
+			w12_row += b12;
+			w20_row += b20;
 		}
 
 		if constexpr (StatsEnabled)
