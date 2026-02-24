@@ -272,9 +272,10 @@ namespace zt::software_renderer
 		Vector3f coords{ 0.0f, 0.0f, 0 };
 		for (int32_t x = boundsMin.x; x < boundsMax.x; ++x)
 		{
+			coords.x = (static_cast<float>(x) + 0.5f) * invWidth;
+
 			for (int32_t y = boundsMin.y; y < boundsMax.y; ++y)
 			{
-				coords.x = (static_cast<float>(x) + 0.5f) * invWidth;
 				coords.y = (static_cast<float>(y) + 0.5f) * invHeight;
 
 				float w0 = edgeFunction(pos1, pos2, coords);
@@ -287,11 +288,6 @@ namespace zt::software_renderer
 					w0 /= area;
 					w1 /= area;
 					w2 /= area;
-					
-					// Blend colors
-// 					float r = w0 * c0[0] + w1 * c1[0] + w2 * c2[0];
-// 					float g = w0 * c0[1] + w1 * c1[1] + w2 * c2[1];
-// 					float b = w0 * c0[2] + w1 * c1[2] + w2 * c2[2];
 
 					// Set texel
 					setTexel({ coords.x * dimension.x, coords.y * dimension.y }, BlueColor, renderTarget);

@@ -86,7 +86,7 @@ namespace zt::software_renderer
 			RenderTarget* renderTarget;
 		};
 
-		void rasterizeTriangle(const DrawTriangleData& data);
+		inline void rasterizeTriangle(const DrawTriangleData& data);
 
 		inline Vector2i normalizedToRenderTarget(const Vertex& vertex, const Vector2i& renderTargetDimension) const noexcept;
 
