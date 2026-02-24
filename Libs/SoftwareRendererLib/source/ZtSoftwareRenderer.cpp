@@ -265,6 +265,7 @@ namespace zt::software_renderer
 		const Vector2i boundsMax{ boundsMaxScalar.x * dimension.x, boundsMaxScalar.y * dimension.y };
 
 		const float area = edgeFunction(pos0, pos1, pos2);
+		const float invArea = 1.f / area;
 
 		const float invWidth = 1.f / dimension.x;
 		const float invHeight = 1.f / dimension.y;
@@ -285,9 +286,9 @@ namespace zt::software_renderer
 				if (w0 >= 0 && w1 >= 0 && w2 >= 0) 
 				{
 					// Calculate weights for colors, normals, uv etc.
-					w0 /= area;
-					w1 /= area;
-					w2 /= area;
+					w0 *= invArea;
+					w1 *= invArea;
+					w2 *= invArea;
 
 					// Set texel
 					setTexel({ coords.x * dimension.x, coords.y * dimension.y }, BlueColor, renderTarget);
