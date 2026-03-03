@@ -82,4 +82,7 @@ auto constexpr inline static ZinetImGuiPayloadType = "ASSET";
 
 // Resolve problem with min/max macros on Windows
 // It was causing compilation errors with std::numeric_limits::max() and similiar functions
-#define NOMINMAX
+#if ZINET_WINDOWS
+#	define NOMINMAX
+#	include <Windows.h>
+#endif
