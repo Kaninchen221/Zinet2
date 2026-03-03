@@ -7,6 +7,7 @@
 #include <gtest/gtest.h>
 
 #include <array>
+#include <limits>
 
 namespace zt::computer_systems::tests
 {
@@ -22,12 +23,24 @@ namespace zt::computer_systems::tests
 
 	TEST_F(MemoryUtilsTests, ToHexStringTest)
 	{
+		// uint8_t
 		EXPECT_EQ(ToHexString(uint8_t(255u)), "ff");
 		EXPECT_EQ(ToHexString(uint8_t(0u)), "00");
 		EXPECT_EQ(ToHexString(uint8_t(1u)), "01");
 		EXPECT_EQ(ToHexString(uint8_t(132u)), "84");
 		EXPECT_EQ(ToHexString(uint8_t(15u)), "0f");
-		EXPECT_EQ(ToHexString(112'345.f), "806cdb47");
+
+		// uint16_t
+		const uint16_t twoBytesMax = std::numeric_limits<uint16_t>::max();
+		EXPECT_EQ(ToHexString(twoBytesMax), "ffff");
+
+		const uint16_t twoBytesHalf = 255;
+		EXPECT_EQ(ToHexString(twoBytesHalf), "00ff");
+
+		// Float
+		EXPECT_EQ(ToHexString(112'345.f), "47db6c80");
+
+		// Char
 		EXPECT_EQ(ToHexString('a'), "61");
 
 		Logger->info("20 decimal as hex: {}", ToHexString(20));

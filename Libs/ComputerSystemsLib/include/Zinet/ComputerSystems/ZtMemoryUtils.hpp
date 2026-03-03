@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zinet/ComputerSystems/ZtComputerSystemsConfig.hpp"
+
 #include <format>
 
 namespace zt::computer_systems::memory_utils
@@ -27,9 +29,9 @@ namespace zt::computer_systems::memory_utils
 		result.reserve(size * 2);
 
 		char buffer[3];
-		for (size_t i = 0; i < size; ++i)
+		for (size_t i = 1; i <= size; ++i)
 		{
-			auto len = sprintf_s(buffer, format, pointer[i]); // I hate this
+			auto len = sprintf_s(buffer, format, pointer[size - i]);
 			result.append(buffer, len);
 		}
 
