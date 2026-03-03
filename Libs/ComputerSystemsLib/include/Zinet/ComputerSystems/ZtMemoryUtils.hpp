@@ -9,6 +9,9 @@ namespace zt::computer_systems::memory_utils
 
 	template<std::swappable T>
 	void InPlaceSwap(T& l, T& r);
+
+	template<class T>
+	void ReverseArray(T& array);
 }
 
 namespace zt::computer_systems::memory_utils
@@ -44,5 +47,16 @@ namespace zt::computer_systems::memory_utils
 		l = l ^ r; // l ^ l ^ r = 0 ^ r = r    l ^ r
 		r = l ^ r; // r                        r ^ l ^ r = r ^ r ^ l = 0 ^ l = l
 		           // r                        l
+	}
+
+	template<class T>
+	void ReverseArray(T& array)
+	{
+		size_t last = array.size() - 1;
+		for (size_t first = 0; first < last; ++first)
+		{
+			InPlaceSwap(array[first], array[last]);
+			--last;
+		}
 	}
 }

@@ -2,8 +2,11 @@
 
 #include "Zinet/ComputerSystems/ZtMemoryUtils.hpp"
 
-#include <gtest/gtest.h>
 #include "Zinet/Core/ZtLogger.hpp"
+
+#include <gtest/gtest.h>
+
+#include <array>
 
 namespace zt::computer_systems::tests
 {
@@ -41,5 +44,18 @@ namespace zt::computer_systems::tests
 
 		EXPECT_EQ(a, 45666);
 		EXPECT_EQ(b, 100);
+	}
+
+	TEST_F(MemoryUtilsTests, ReverseArrayTest)
+	{
+		std::array<int, 7> arrayIntEvenLength = { 0, 1, 2, 3, 4, 5, 6 };
+		const std::array<int, 7> arrayIntEvenLengthExpected = { 6, 5, 4, 3, 2, 1, 0 };
+		ReverseArray(arrayIntEvenLength);
+		EXPECT_EQ(arrayIntEvenLength, arrayIntEvenLengthExpected);
+
+		std::array<int, 3> arrayIntOddLength = { 0, 1, 2 };
+		const std::array<int, 3> arrayIntOddLengthExpected = { 2, 1, 0 };
+		ReverseArray(arrayIntOddLength);
+		EXPECT_EQ(arrayIntOddLength, arrayIntOddLengthExpected);
 	}
 }
