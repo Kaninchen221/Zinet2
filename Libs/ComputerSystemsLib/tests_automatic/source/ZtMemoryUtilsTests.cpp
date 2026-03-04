@@ -71,4 +71,24 @@ namespace zt::computer_systems::tests
 		ReverseArray(arrayIntOddLength);
 		EXPECT_EQ(arrayIntOddLength, arrayIntOddLengthExpected);
 	}
+
+	TEST_F(MemoryUtilsTests, GetOnlyLeastSignificantByteTest)
+	{
+		const uint64_t value = 0x87654321;
+		const uint64_t result = GetOnlyLeastSignificantByte(value);
+		const uint64_t expected = 0x00000021;
+		EXPECT_EQ(result, expected);
+
+		Logger->info("Only Least Significant Byte of '0x87654321': {}", ToHexString(result));
+	}
+
+	TEST_F(MemoryUtilsTests, ComplementBytesLeastByteUnchangedTest)
+	{
+		const uint32_t value = 0x87654321;
+		const uint32_t result = ComplementBytesLeastByteUnchanged(value);
+		Logger->info("Result: {}", ToHexString(result));
+		const uint32_t expected = 0x789ABC21;
+		EXPECT_EQ(result, expected);
+
+	}
 }
