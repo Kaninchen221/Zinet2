@@ -20,6 +20,12 @@ namespace zt::computer_systems::memory_utils
 
 	template<class T>
 	T ComplementBytesLeastByteUnchanged(const T value) noexcept;
+
+	template<class T>
+	T Bis(const T value, const T mask) noexcept;
+
+	template<class T>
+	T Bic(const T value, const T mask) noexcept;
 }
 
 namespace zt::computer_systems::memory_utils
@@ -80,8 +86,21 @@ namespace zt::computer_systems::memory_utils
 	T ComplementBytesLeastByteUnchanged(const T value) noexcept
 	{
 		const T mask = ~(T{} + std::numeric_limits<uint8_t>::max());
-		const auto result = value ^ mask;
+		const T result = value ^ mask;
 		return result;
 	}
 
+	template<class T>
+	T Bis(const T value, const T mask) noexcept
+	{
+		const T result = value | mask;
+		return result;
+	}
+
+	template<class T>
+	T Bic(const T value, const T mask) noexcept
+	{
+		const T result = (value | mask) ^ mask;
+		return result;
+	}
 }

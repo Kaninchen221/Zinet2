@@ -74,9 +74,9 @@ namespace zt::computer_systems::tests
 
 	TEST_F(MemoryUtilsTests, GetOnlyLeastSignificantByteTest)
 	{
-		const uint64_t value = 0x87654321;
-		const uint64_t result = GetOnlyLeastSignificantByte(value);
-		const uint64_t expected = 0x00000021;
+		const uint32_t value = 0x87654321;
+		const uint32_t result = GetOnlyLeastSignificantByte(value);
+		const uint32_t expected = 0x00000021;
 		EXPECT_EQ(result, expected);
 
 		Logger->info("Only Least Significant Byte of '0x87654321': {}", ToHexString(result));
@@ -86,9 +86,36 @@ namespace zt::computer_systems::tests
 	{
 		const uint32_t value = 0x87654321;
 		const uint32_t result = ComplementBytesLeastByteUnchanged(value);
-		Logger->info("Result: {}", ToHexString(result));
 		const uint32_t expected = 0x789ABC21;
 		EXPECT_EQ(result, expected);
+
+		Logger->info("Result: {}", ToHexString(result));
+	}
+
+	TEST_F(MemoryUtilsTests, BisTest)
+	{
+		const uint8_t value = 0b00110011;
+		const uint8_t mask  = 0b00001111;
+		const uint8_t result = Bis(value, mask);
+		const uint8_t expected = 0b00111111;
+		EXPECT_EQ(result, expected);
+
+		Logger->info("Result: {}", ToHexString(result));
+	}
+
+	TEST_F(MemoryUtilsTests, BicTest)
+	{
+		const uint8_t value = 0b00110011;
+		const uint8_t mask  = 0b00001111;
+		const uint8_t result = Bic(value, mask);
+		const uint8_t expected = 0b00110000;
+		EXPECT_EQ(result, expected);
+
+		Logger->info("Result: {}", ToHexString(result));
+	}
+
+	TEST_F(MemoryUtilsTests, BoolOrTest)
+	{
 
 	}
 }
